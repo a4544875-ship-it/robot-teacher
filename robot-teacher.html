@@ -488,19 +488,28 @@ var Store=(function(){
   function failWarn(){if(warned)return;warned=true;warn('⚠ 雲端同步出了點問題，紀錄暫時只存在這台裝置。')}
   function saveLocal(){ls.set('rt-data',{kids:kids,activity:activity.slice(0,200),pin:pin})}
   (function(){var d=ls.get('rt-data',null);if(d){kids.ren=knorm(d.kids&&d.kids.ren);kids.de=knorm(d.kids&&d.kids.de);activity=Array.isArray(d.activity)?d.activity:[];pin=d.pin||null}})();
+  function wireDb(d){
+    db=d;
+    KIDS.forEach(function(k){db.doc('kids/'+k.id).onSnapshot(function(s){
+      if(s.exists&&!dirty[k.id]&&!writing[k.id])kids[k.id]=knorm(s.data());saveLocal();emit();},failWarn);});
+    db.collection('activity').orderBy('ts','desc').limit(250).onSnapshot(function(s){
+      activity=s.docs.map(function(x){var o=x.data();o._id=x.id;return o});
+      if(s.size>200){s.docs.slice(200).forEach(function(x){db.doc('activity/'+x.id).delete().catch(function(){})})}
+      saveLocal();emit();},failWarn);
+    db.doc('settings/parent').onSnapshot(function(s){pin=s.exists?(s.data().pin||null):null;pinLoaded=true;emit()},function(){pinLoaded=true;emit()});
+  }
   function connect(){
+    // Claude Artifact 的 db 能力優先；不在 Artifact 裡（例如開源版自架的 Firebase）時，
+    // 退回使用 window.__rtFirestore（由外層頁面的 <script> 視需要注入，與 Artifact db 介面相容）。
     var p=(window.claude&&typeof window.claude.use==='function')?window.claude.use('db'):Promise.resolve(null);
     p.then(function(d){
+      if(!d)d=window.__rtFirestore||null;
       if(!d){pinLoaded=true;warn('目前沒有連上雲端，分數與紀錄只存在這台裝置。');emit();return}
-      db=d;
-      KIDS.forEach(function(k){db.doc('kids/'+k.id).onSnapshot(function(s){
-        if(s.exists&&!dirty[k.id]&&!writing[k.id])kids[k.id]=knorm(s.data());saveLocal();emit();},failWarn);});
-      db.collection('activity').orderBy('ts','desc').limit(250).onSnapshot(function(s){
-        activity=s.docs.map(function(x){var o=x.data();o._id=x.id;return o});
-        if(s.size>200){s.docs.slice(200).forEach(function(x){db.doc('activity/'+x.id).delete().catch(function(){})})}
-        saveLocal();emit();},failWarn);
-      db.doc('settings/parent').onSnapshot(function(s){pin=s.exists?(s.data().pin||null):null;pinLoaded=true;emit()},function(){pinLoaded=true;emit()});
-    }).catch(function(){pinLoaded=true;warn('目前沒有連上雲端，分數與紀錄只存在這台裝置。');emit()});
+      wireDb(d);
+    }).catch(function(){
+      if(window.__rtFirestore){wireDb(window.__rtFirestore);return}
+      pinLoaded=true;warn('目前沒有連上雲端，分數與紀錄只存在這台裝置。');emit();
+    });
   }
   function scheduleFlush(){clearTimeout(flushT);flushT=setTimeout(flushKids,700)}
   function flushKids(){clearTimeout(flushT);

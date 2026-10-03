@@ -21,7 +21,7 @@
 | 10 款英文遊戲 | 純前端 JS/CSS | ✅ **完全可離線使用**，開啟 HTML 檔案就能玩 |
 | 排行榜、等級、分數計算 | 純前端（localStorage 備援） | ✅ 可離線使用（單機版，資料存在瀏覽器本機） |
 | AI 問老師（聊天功能） | Claude Artifact 的 `sample` 能力，**或**自備 Anthropic API 金鑰（見下） | ⚠️ 兩種方式都不能把「某一個人」的帳號或金鑰內建在公開程式碼裡（這樣既不安全，也違反 Claude 的使用規範），但可以讓**每個使用者自己**提供金鑰，見下方「自備 API 金鑰」。 |
-| 跨裝置同步（家長在不同裝置看到一樣的紀錄） | Claude Artifact 的 `db` 能力 | ❌ 同樣無法跨帳號公開使用。沒有 `db` 時，程式會自動退回「只存在這個瀏覽器的 localStorage」模式，並顯示同步警示。如果想要雲端同步，需要自己接一個資料庫（例如 Firebase、Supabase）。 |
+| 跨裝置同步（分數、紀錄一直存在雲端） | Claude Artifact 的 `db` 能力，**或** `index.html` 內建的 Firebase Firestore 同步（見下） | ✅ `index.html` 已經接好 Firebase，只要資料庫的安全規則發布了就能跨裝置同步；沒有連上雲端時會自動退回「只存在這個瀏覽器的 localStorage」模式，並顯示同步警示。 |
 
 ## 如何使用
 
@@ -40,6 +40,53 @@
 
 ### 方法三：`robot-teacher.html`（Artifact 原始碼）
 這份是給 Claude Artifact 用的「無 `<head>`」精簡版本，內容跟 `index.html` 一樣（只是少了外層 `<!doctype>`/`<head>`），適合直接貼回 claude.ai 重新發布，或你想自己重新包裝成其他格式時使用。
+
+## 雲端同步（Firestore）已經接好，只差一步
+
+`index.html` 已經內建 [Firebase](https://firebase.google.com) Firestore 雲端同步：Ray、Dave 的分數、等級、問答與遊戲紀錄會自動寫進雲端資料庫，不管用哪台裝置、哪個瀏覽器打開，看到的都是同一份資料（家長查看紀錄也會是最新的）。
+
+**使用方式：**
+
+1. 到 [Firebase 主控台](https://console.firebase.google.com) 建立一個免費專案，啟用 Firestore Database（標準版即可）。
+2. 新增一個「網頁應用程式」，把拿到的 `firebaseConfig` 設定值貼進 `index.html` 最上方 `<head>` 區塊裡的 `firebaseConfig` 物件（這組值是公開的用戶端識別碼，不是密碼，可以放心寫進程式碼裡）。
+3. **到 Firestore 的「規則」頁面，貼上以下安全規則並按發布**（這一步一定要做，否則資料庫預設會拒絕所有讀寫）：
+
+```js
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /kids/{kidId} {
+      allow read: if true;
+      allow write: if kidId in ['ren', 'de']
+        && request.resource.data.pts is number
+        && request.resource.data.pts >= 0
+        && request.resource.data.pts <= 1000000;
+    }
+
+    match /activity/{activityId} {
+      allow read: if true;
+      allow create: if request.resource.data.kid in ['ren', 'de'];
+      allow update, delete: if false;
+    }
+
+    match /settings/parent {
+      allow read: if true;
+      allow write: if request.resource.data.pin is string;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+```
+
+這份規則做的事：排行榜本來就要給大家看，所以分數和紀錄開放讀取；但只允許寫入看起來合理的分數（擋掉亂寫的資料），問答/遊戲紀錄只能新增、不能被竄改或刪除，家長 PIN 碼的雜湊值可以讀寫（因為密碼比對是前端自己做的）。
+
+**老實說的限制：** 這個 App 沒有串 Firebase 帳號登入系統，所以上面的規則只能照「資料長相」擋，擋不住一個懂技術、刻意想搗亂的人直接用瀏覽器開發者工具送出假資料。對一般訪客、意外誤用、網路上亂掃描的機器人來說已經足夠，但不是銀行等級的安全性。想要更嚴格（例如真的只有本人能改自己的分數），可以再加上 Firebase Authentication。
+
+沒有設定 Firebase，或規則還沒發布的時候，程式會自動偵測失敗並退回「只存在這個瀏覽器」的模式，不會整個壞掉，只是看不到跨裝置同步。
 
 ## 課綱內容授權（重要，請務必閱讀）
 
