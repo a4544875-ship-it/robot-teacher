@@ -530,8 +530,13 @@ var Store=(function(){
     pinLoaded:function(){return pinLoaded},hasDb:function(){return !!db},
     getPin:function(){return db?pin:ls.get('rt-pin',null)},
     setPin:function(h){if(db){pin=h;chain=chain.then(function(){return db.doc('settings/parent').set({pin:h,clearedAt:clearedAt})}).catch(failWarn)}else ls.set('rt-pin',h)},
-    clearRecords:function(){clearedAt=Date.now();saveLocal();emit();
-      if(db){chain=chain.then(function(){return db.doc('settings/parent').set({pin:pin||'',clearedAt:clearedAt})}).catch(failWarn)}},
+    clearRecords:function(){clearedAt=Date.now();
+      KIDS.forEach(function(k){kids[k.id]=kblank();dirty[k.id]=false});
+      saveLocal();emit();
+      if(db){
+        chain=chain.then(function(){return db.doc('settings/parent').set({pin:pin||'',clearedAt:clearedAt})}).catch(failWarn);
+        KIDS.forEach(function(k){chain=chain.then(function(){return db.doc('kids/'+k.id).set(kblank())}).catch(failWarn)});
+      }},
     award:function(id,pts,gid){var k=kids[id];if(!k)return;k.pts+=pts;
       var g=k.byGame[gid]||(k.byGame[gid]={pts:0,plays:0,best:0});g.pts+=pts;dirty[id]=true;scheduleFlush();emit();},
     finishGame:function(id,gid,info){var k=kids[id];if(!k)return 0;
@@ -1082,7 +1087,7 @@ function renderRec(){
   var h='<h2 class="h">'+(parent?'📒 孩子們的學習紀錄':'📒 我的學習紀錄')+'</h2>';
   if(parent){h+='<div class="chiprow seg">'+[['all','全部']].concat(KIDS.map(function(k){return [k.id,k.short]})).map(function(x){return '<button class="chip" data-f="'+x[0]+'" aria-pressed="'+(recFilter===x[0])+'">'+esc(x[1])+'</button>'}).join('')+'</div>';
     h+='<div class="kpi">'+KIDS.map(function(k){var d=Store.kid(k.id);return '<div class="k"><b class="en">'+d.pts+'</b><small>'+esc(k.short)+' 總分</small></div>'}).join('')+'<div class="k"><b class="en">'+qs.length+'</b><small>問題數</small></div></div>';
-    h+='<div style="margin:10px 0">'+(clearConfirm?'<button class="btn danger" id="btnClearRec">⚠️ 再按一次「確定清除」</button> <button class="btn ghost" id="btnClearRecCancel">取消</button>':'<button class="btn ghost" id="btnClearRec">🗑 清除所有紀錄</button>')+'<p style="font-size:13px;color:var(--ink-soft);margin-top:4px">只會清掉「問過的問題」與「玩過的遊戲」紀錄，不會動到分數和等級。</p></div>';}
+    h+='<div style="margin:10px 0">'+(clearConfirm?'<button class="btn danger" id="btnClearRec">⚠️ 再按一次「確定全部歸零」</button> <button class="btn ghost" id="btnClearRecCancel">取消</button>':'<button class="btn ghost" id="btnClearRec">🗑 全部歸零（分數、等級、紀錄）</button>')+'<p style="font-size:13px;color:var(--ink-soft);margin-top:4px">會把 Ray 和 Dave 的分數、等級，和「問過的問題」「玩過的遊戲」紀錄全部清空，這個動作沒辦法復原。</p></div>';}
   h+='<h3 class="h">問過的問題（'+qs.length+'）</h3>';
   if(!qs.length)h+='<p class="empty">還沒有問過問題。</p>';
   qs.slice(0,80).forEach(function(q){var id=(q._id||q.ts)+'-'+q.kid,k=kidOf(q.kid)||{short:'?'};
@@ -1097,7 +1102,7 @@ function renderRec(){
   el.querySelectorAll('[data-f]').forEach(function(b){b.addEventListener('click',function(){recFilter=b.dataset.f;renderRec()})});
   el.querySelectorAll('details.qrec').forEach(function(d){d.addEventListener('toggle',function(){openQ[d.dataset.id]=d.open})});
   var bc=$('#btnClearRec');if(bc)bc.addEventListener('click',function(){
-    if(clearConfirm){clearConfirm=false;Store.clearRecords();renderRec();say('紀錄已經清空囉！','happy')}
+    if(clearConfirm){clearConfirm=false;Store.clearRecords();renderRec();updatePill();say('已經全部歸零囉！','happy')}
     else{clearConfirm=true;renderRec()}
   });
   var bcc=$('#btnClearRecCancel');if(bcc)bcc.addEventListener('click',function(){clearConfirm=false;renderRec()});
