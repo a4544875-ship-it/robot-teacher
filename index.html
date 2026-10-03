@@ -178,6 +178,9 @@ body.typing .top{padding:4px 12px}
 .prompt{display:flex;align-items:center;gap:12px;margin-bottom:12px;background:var(--surface);border-radius:20px;padding:12px 14px;box-shadow:var(--shadow)}
 .ask{font-size:17px;font-weight:700;min-width:0;overflow-wrap:anywhere}
 .bigw{font-size:26px;color:var(--sky);letter-spacing:.03em}
+.wpic{display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em;vertical-align:middle}
+.wpic.has-img{width:1.35em;height:1.35em}
+.wpic.has-img img{width:100%;height:100%;object-fit:cover;border-radius:14px;box-shadow:var(--shadow);font-size:inherit}
 .flash{background:var(--surface);border-radius:26px;box-shadow:var(--shadow);padding:16px 12px;text-align:center}
 .flash .pic{font-size:90px;line-height:1.1;font-family:var(--font-emoji);animation:float 2.6s ease-in-out infinite}
 .flash .word{font-size:40px;font-weight:700;letter-spacing:.04em;margin-top:2px;font-family:var(--font-en)}
@@ -812,6 +815,44 @@ function tier(){return EGRADES.indexOf(egrade)+1}
 function poolW(){var b=tier(),a=WORDS.filter(function(w){return w[3]<=b&&w[3]>=b-1});if(a.length<10)a=WORDS.filter(function(w){return w[3]<=b});return a}
 function others(w,n){return shuffle(WORDS.filter(function(x){return x[3]<=tier()&&x[0]!==w[0]})).slice(0,n)}
 
+/* ---- 真實圖片（取代 emoji）：在瀏覽器端即時向維基百科抓縮圖，失敗就維持原本的 emoji ----
+   在 Claude Artifact 裡，瀏覽器的安全限制（CSP）會擋掉這個 fetch，所以 Artifact 版會自動
+   保持顯示 emoji，不會壞掉；只有開源版（index.html／GitHub Pages）才看得到真實照片。 */
+var NO_PHOTO_WORDS={red:1,blue:1,green:1,yellow:1,purple:1};
+var WIKI_TITLE_OVERRIDE={pig:'Domestic pig',cow:'Cattle',bee:'Bee',egg:'Egg (food)',cup:'Mug',box:'Box',key:'Key (lock)',hand:'Hand',bed:'Bed',ball:'Ball',bike:'Bicycle',boat:'Boat',foot:'Human foot',nose:'Human nose',door:'Door',window:'Window',chair:'Chair',water:'Water',grass:'Grass',snow:'Snow',cloud:'Cloud',rain:'Rain',moon:'Moon',sun:'Sun',star:'Star',bridge:'Bridge',river:'River',school:'School',family:'Family',friend:'Friendship',music:'Music',money:'Banknote',candy:'Candy',juice:'Juice',robot:'Robot',ghost:'Ghost',present:'Gift',telephone:'Telephone',calendar:'Calendar',scissors:'Scissors',camera:'Camera',guitar:'Guitar',castle:'Castle',vegetable:'Vegetable',dictionary:'Dictionary',environment:'Natural environment',electricity:'Electricity',universe:'Universe',volcano:'Volcano',triangle:'Triangle',telescope:'Telescope',medicine:'Medication',treasure:'Buried treasure',passport:'Passport',satellite:'Satellite',mosquito:'Mosquito',helicopter:'Helicopter',frog:'Frog',pen:'Pen',kite:'Kite',hat:'Cap (headwear)'};
+function wordPicHTML(en,emo){
+  if(!en||NO_PHOTO_WORDS[en])return '<span class="wpic">'+emo+'</span>';
+  return '<span class="wpic" data-wp="'+esc(en)+'">'+emo+'</span>';
+}
+var wpicCache=(function(){try{return JSON.parse(localStorage.getItem('rt-pic-cache')||'{}')}catch(e){return{}}})();
+var wpicInflight={};
+function wpicSaveCache(){try{localStorage.setItem('rt-pic-cache',JSON.stringify(wpicCache))}catch(e){}}
+function wpicTitle(en){return WIKI_TITLE_OVERRIDE[en]||(en.charAt(0).toUpperCase()+en.slice(1))}
+function wpicApply(en){
+  var url=wpicCache[en];if(!url)return;
+  document.querySelectorAll('.wpic[data-wp="'+en+'"]').forEach(function(el){
+    if(el.querySelector('img'))return;
+    var img=new Image();img.alt='';img.loading='lazy';
+    img.onload=function(){el.classList.add('has-img');el.innerHTML='';el.appendChild(img)};
+    img.onerror=function(){};
+    img.src=url;
+  });
+}
+function wpicFetch(en){
+  if(!en||NO_PHOTO_WORDS[en]||wpicInflight[en])return;
+  if(wpicCache.hasOwnProperty(en)){wpicApply(en);return}
+  if(typeof fetch!=='function')return;
+  wpicInflight[en]=true;
+  fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(wpicTitle(en)))
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(d){wpicCache[en]=(d&&d.thumbnail&&d.thumbnail.source)||null;wpicSaveCache();delete wpicInflight[en];wpicApply(en)})
+    .catch(function(){delete wpicInflight[en]});
+}
+function wpicScan(){document.querySelectorAll('.wpic[data-wp]').forEach(function(el){wpicFetch(el.dataset.wp)})}
+(function(){var t=null;
+  try{new MutationObserver(function(){clearTimeout(t);t=setTimeout(wpicScan,60)}).observe(document.body,{childList:true,subtree:true})}catch(e){}
+})();
+
 /* ========== 8. GAMES ========== */
 var GAMES=[
  {id:'pw',  cls:'g1', ico:'🖼️',zh:'看圖選字',en:'Picture → Word',d:'看圖片，選正確的英文'},
@@ -873,14 +914,14 @@ function quiz(g,kind){
     }
     var w=order[i],k=race?'pw':kind,n=b>=4?5:3,first=true,locked=false,os,html;prog((i+1)+'/'+rounds);lanes();
     if(k==='pw'){os=shuffle([w].concat(others(w,n)));
-      html='<div class="flash"><div class="pic">'+w[1]+'</div>'+(b<=1?'<div class="zh">'+esc(w[2])+'</div>':'')+'</div><div class="opts">'+os.map(function(o,x){return '<button class="optb" data-x="'+x+'">'+esc(o[0])+'</button>'}).join('')+'</div>';
+      html='<div class="flash"><div class="pic">'+wordPicHTML(w[0],w[1])+'</div>'+(b<=1?'<div class="zh">'+esc(w[2])+'</div>':'')+'</div><div class="opts">'+os.map(function(o,x){return '<button class="optb" data-x="'+x+'">'+esc(o[0])+'</button>'}).join('')+'</div>';
     }else if(k==='pp'){os=shuffle([w].concat(others(w,n)));
-      html='<div class="prompt"><div class="ask">哪個圖是 <span class="en bigw">'+esc(w[0])+'</span>？'+(b<=1?'<br><small>'+esc(w[2])+'</small>':'')+'</div></div><div class="grid2">'+os.map(function(o,x){return '<button class="tile" data-x="'+x+'" aria-label="選項'+(x+1)+'">'+o[1]+'</button>'}).join('')+'</div>';
+      html='<div class="prompt"><div class="ask">哪個圖是 <span class="en bigw">'+esc(w[0])+'</span>？'+(b<=1?'<br><small>'+esc(w[2])+'</small>':'')+'</div></div><div class="grid2">'+os.map(function(o,x){return '<button class="tile" data-x="'+x+'" aria-label="選項'+(x+1)+'">'+wordPicHTML(o[0],o[1])+'</button>'}).join('')+'</div>';
     }else{var pos=rand(w[0].length),ch=w[0][pos],ds=[],abc='abcdefghijklmnopqrstuvwxyz',cnt=b>=4?3:2;
       while(ds.length<cnt){var c=abc[rand(26)];if(c!==ch&&ds.indexOf(c)<0)ds.push(c)}
       os=shuffle([ch].concat(ds)).map(function(c){return [c]});
       var shown=w[0].split('').map(function(c,x){return x===pos?'<span class="blank">?</span>':'<span>'+esc(c)+'</span>'}).join('');
-      html='<div class="flash"><div class="pic">'+w[1]+'</div><div class="word">'+shown+'</div><div class="zh">'+esc(w[2])+'</div></div><div class="opts">'+os.map(function(o,x){return '<button class="optb" data-x="'+x+'">'+esc(o[0])+'</button>'}).join('')+'</div>';
+      html='<div class="flash"><div class="pic">'+wordPicHTML(w[0],w[1])+'</div><div class="word">'+shown+'</div><div class="zh">'+esc(w[2])+'</div></div><div class="opts">'+os.map(function(o,x){return '<button class="optb" data-x="'+x+'">'+esc(o[0])+'</button>'}).join('')+'</div>';
     }
     qbox.innerHTML=html;
     say(k==='pp'?'找出對的圖！':k==='miss'?'缺了哪個字母？':'這個圖的英文是？','talk');
@@ -912,7 +953,7 @@ GAME_FN.match=function(g){
   var grid=$('#mgrid');
   cards.forEach(function(c,idx){var b=document.createElement('button');b.className='mcard';b.textContent='?';b.setAttribute('aria-label','第'+(idx+1)+'張牌');
     b.addEventListener('click',function(){if(lock||c.up||c.done)return;c.up=true;sfx('tap');b.className='mcard up';
-      b.innerHTML=c.t==='pic'?'<span class="p">'+c.w[1]+'</span>':'<span class="w">'+esc(c.w[0])+'<small>'+esc(c.w[2])+'</small></span>';open.push({c:c,b:b});
+      b.innerHTML=c.t==='pic'?'<span class="p">'+wordPicHTML(c.w[0],c.w[1])+'</span>':'<span class="w">'+esc(c.w[0])+'<small>'+esc(c.w[2])+'</small></span>';open.push({c:c,b:b});
       if(open.length===2){moves++;prog(moves+' 步');var a=open[0],d=open[1];
         if(a.c.id===d.c.id&&a.c.t!==d.c.t){a.c.done=d.c.done=true;a.b.className=d.b.className='mcard done';matched++;open=[];
           var isLast=matched===pick.length;
@@ -933,7 +974,7 @@ GAME_FN.spell=function(g){
     var w=order[i],word=w[0],tiles=shuffle(word.split('').concat(decoys(word)).map(function(ch,k){return {ch:ch,used:false,id:k}})),slots=[],hinted=false,done=false;
     for(var k=0;k<word.length;k++)slots.push(null);
     prog((i+1)+'/'+order.length);
-    gBody.innerHTML='<div class="spellpic"><div class="p">'+w[1]+'</div><div class="z">'+esc(w[2])+'</div></div><div class="slots" id="slots"></div><div class="tiles" id="tiles"></div><div class="row"><button class="btn alt" id="hint">💡 提示</button></div>';
+    gBody.innerHTML='<div class="spellpic"><div class="p">'+wordPicHTML(w[0],w[1])+'</div><div class="z">'+esc(w[2])+'</div></div><div class="slots" id="slots"></div><div class="tiles" id="tiles"></div><div class="row"><button class="btn alt" id="hint">💡 提示</button></div>';
     var slotsEl=$('#slots'),tilesEl=$('#tiles');
     function render(){slotsEl.innerHTML='';tilesEl.innerHTML='';
       slots.forEach(function(t,k){var b=document.createElement('button');b.className='slot en'+(t!==null?' fill':'');b.style.setProperty('--k',k);
@@ -965,7 +1006,7 @@ GAME_FN.pop=function(g){
     var w=order[i],opts=shuffle([w].concat(others(w,3))),wrong=0,over=false,maxT=0;prog((i+1)+'/'+rounds);
     var html='<div class="prompt"><div class="ask">戳破 <span class="en bigw">'+esc(w[0])+'</span> 的氣球！'+(b<=2?'<br><small>'+esc(w[2])+'</small>':'')+'</div></div><div class="sky-b" id="skyb">';
     opts.forEach(function(o,k){var d=Math.max(5.5,11-b*0.9)+rand(2),delay=(k*0.35).toFixed(2);maxT=Math.max(maxT,d+parseFloat(delay));
-      html+='<button class="balloon b'+k+'" style="--x:'+(6+k*24)+'%;--d:'+d+'s;--delay:'+delay+'s;--yb:'+(18+k*14)+'%" data-w="'+esc(o[0])+'" aria-label="氣球'+(k+1)+'"><span class="bl">'+o[1]+'</span></button>';});
+      html+='<button class="balloon b'+k+'" style="--x:'+(6+k*24)+'%;--d:'+d+'s;--delay:'+delay+'s;--yb:'+(18+k*14)+'%" data-w="'+esc(o[0])+'" aria-label="氣球'+(k+1)+'"><span class="bl">'+wordPicHTML(o[0],o[1])+'</span></button>';});
     gBody.innerHTML=html+'</div>';say('找找看，哪個氣球是對的？','talk');
     function end(ok){if(over)return;over=true;if(!ok){sfx('no');say('氣球飛走了，答案是 '+w[0]+'（'+w[2]+'）。','oops')}later(function(){i++;next()},1300)}
     gBody.querySelectorAll('.balloon').forEach(function(bl){var done=false;
@@ -993,7 +1034,7 @@ GAME_FN.whack=function(g){
       h.addEventListener('pointerdown',hit);h.addEventListener('click',hit);});
     function pop(){if(over)return;hs.forEach(function(h){h.classList.remove('up','hit');h.textContent=''});
       var idx=shuffle([0,1,2,3,4,5,6,7,8]).slice(0,3),useT=cycle%2===0;cycle++;
-      idx.forEach(function(hi,k){var item=(k===0&&useT)?w:others(w,1)[0];hs[hi].dataset.w=item[0];hs[hi].textContent=item[1];hs[hi].classList.add('up')});
+      idx.forEach(function(hi,k){var item=(k===0&&useT)?w:others(w,1)[0];hs[hi].dataset.w=item[0];hs[hi].innerHTML=wordPicHTML(item[0],item[1]);hs[hi].classList.add('up')});
       later(pop,Math.max(850,1500-b*110));}
     pop();later(function(){end(false)},15000);
   }
@@ -1005,7 +1046,7 @@ GAME_FN.fish=function(g){
   function next(){
     if(i>=rounds)return finish({score:score,total:rounds,icon:'🎣',title:score+' / '+rounds+' 條魚',text:'每釣中一條得 10 分。',say:score>=rounds-1?'天才小釣手！':'再試一次，釣更多魚！',replay:function(){GAME_FN.fish(g)}});
     var w=order[i],opts=shuffle([w].concat(others(w,4))),wrong=0,over=false;prog((i+1)+'/'+rounds);
-    var html='<div class="prompt"><div class="ask">釣起 <span class="en bigw">'+esc(w[1])+'</span> 的魚！'+(b<=2?'<br><small>'+esc(w[2])+'</small>':'')+'</div></div><div class="pond" id="pond">';
+    var html='<div class="prompt"><div class="ask">釣起 <span class="en bigw">'+esc(w[0])+'</span> 的魚！'+(b<=2?'<br><small>'+esc(w[2])+'</small>':'')+'</div></div><div class="pond" id="pond">';
     opts.forEach(function(o,k){var d=Math.max(5,12-b)+rand(3),y=6+k*17;
       html+='<button class="fish" style="--d:'+d+'s;animation-delay:-'+rand(6)+'s;--y:'+y+'%;--xb:'+(4+(k%3)*30)+'%" data-w="'+esc(o[0])+'" aria-label="魚"><span class="fp">🐟</span><span class="fw">'+esc(o[0])+'</span></button>';});
     gBody.innerHTML=html+'</div>';say('看準了再點，把對的魚釣起來！','talk');
@@ -1025,7 +1066,7 @@ GAME_FN.star=function(g){
   function next(){
     if(i>=rounds)return finish({score:score,total:rounds,icon:'⭐',title:score+' / '+rounds+' 顆星星',text:'每接中一顆得 10 分。',say:score>=rounds-1?'眼明手快！':'星星掉好快，再挑戰！',replay:function(){GAME_FN.star(g)}});
     var w=order[i],opts=shuffle([w].concat(others(w,3))),wrong=0,over=false,maxT=0;prog((i+1)+'/'+rounds);
-    var html='<div class="prompt"><div class="ask">接住 <span class="en bigw">'+esc(w[1])+'</span> 的星星！'+(b<=2?'<br><small>'+esc(w[2])+'</small>':'')+'</div></div><div class="sky-n" id="skyn">';
+    var html='<div class="prompt"><div class="ask">接住 <span class="en bigw">'+esc(w[0])+'</span> 的星星！'+(b<=2?'<br><small>'+esc(w[2])+'</small>':'')+'</div></div><div class="sky-n" id="skyn">';
     opts.forEach(function(o,k){var d=Math.max(4,9-b*0.8)+rand(2),delay=(k*1.1).toFixed(2);maxT=Math.max(maxT,d+parseFloat(delay));
       html+='<button class="star-i" style="--x:'+(8+k*22)+'%;--d:'+d+'s;--delay:'+delay+'s;--ys:'+(18+k*16)+'%" data-w="'+esc(o[0])+'" aria-label="星星"><span class="sp">⭐</span><span class="sw">'+esc(o[0])+'</span></button>';});
     gBody.innerHTML=html+'</div>';say('星星掉下來了，快點對的！','talk');
