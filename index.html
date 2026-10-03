@@ -1101,7 +1101,7 @@ function renderRank(){
 }
 
 /* ========== 10. records ========== */
-var recFilter='all',openQ={},clearConfirm=false,clearConfirmT=null;
+var recFilter='all',openQ={},clearConfirm=false;
 function fmtTime(t){try{return new Date(t).toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 function gInfo(id){var g=GAMES.filter(function(x){return x.id===id})[0];return g?g.ico+' '+g.zh:(id||'遊戲')}
 function renderRec(){
@@ -1126,10 +1126,10 @@ function renderRec(){
   el.querySelectorAll('[data-f]').forEach(function(b){b.addEventListener('click',function(){recFilter=b.dataset.f;renderRec()})});
   el.querySelectorAll('details.qrec').forEach(function(d){d.addEventListener('toggle',function(){openQ[d.dataset.id]=d.open})});
   var bc=$('#btnClearRec');if(bc)bc.addEventListener('click',function(){
-    if(clearConfirm){clearTimeout(clearConfirmT);clearConfirm=false;Store.clearRecords();renderRec()}
-    else{clearConfirm=true;renderRec();clearConfirmT=setTimeout(function(){clearConfirm=false;renderRec()},5000)}
+    if(clearConfirm){clearConfirm=false;Store.clearRecords();renderRec();say('紀錄已經清空囉！','happy')}
+    else{clearConfirm=true;renderRec()}
   });
-  var bcc=$('#btnClearRecCancel');if(bcc)bcc.addEventListener('click',function(){clearTimeout(clearConfirmT);clearConfirm=false;renderRec()});
+  var bcc=$('#btnClearRecCancel');if(bcc)bcc.addEventListener('click',function(){clearConfirm=false;renderRec()});
 }
 
 /* ========== boot ========== */
