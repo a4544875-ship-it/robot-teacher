@@ -20,18 +20,26 @@
 | --- | --- | --- |
 | 10 款英文遊戲 | 純前端 JS/CSS | ✅ **完全可離線使用**，開啟 HTML 檔案就能玩 |
 | 排行榜、等級、分數計算 | 純前端（localStorage 備援） | ✅ 可離線使用（單機版，資料存在瀏覽器本機） |
-| AI 問老師（聊天功能） | Claude Artifact 的 `sample` 能力 | ❌ **無法直接公開使用**。這個能力只有「以瀏覽該頁面的人自己的 Claude 帳號」才能呼叫，不能把某一個人的帳號或 API 金鑰寫進公開程式碼裡（這樣既不安全，也違反 Claude 的使用規範）。如果想要公開版也能問老師，你需要：<br>1. 自己申請 [Anthropic API](https://docs.claude.com) 金鑰，<br>2. 架一個後端伺服器幫忙轉接問題給 Claude API（絕對不要把金鑰放在前端程式碼或 GitHub 上），<br>3. 把 `sample` 呼叫換成打你自己後端的 API。 |
+| AI 問老師（聊天功能） | Claude Artifact 的 `sample` 能力，**或**自備 Anthropic API 金鑰（見下） | ⚠️ 兩種方式都不能把「某一個人」的帳號或金鑰內建在公開程式碼裡（這樣既不安全，也違反 Claude 的使用規範），但可以讓**每個使用者自己**提供金鑰，見下方「自備 API 金鑰」。 |
 | 跨裝置同步（家長在不同裝置看到一樣的紀錄） | Claude Artifact 的 `db` 能力 | ❌ 同樣無法跨帳號公開使用。沒有 `db` 時，程式會自動退回「只存在這個瀏覽器的 localStorage」模式，並顯示同步警示。如果想要雲端同步，需要自己接一個資料庫（例如 Firebase、Supabase）。 |
-
-**換句話說：** 把這個 HTML 檔案直接丟到網路上給大家玩，遊戲、排行榜、等級都能正常運作；但「問老師」聊天功能在你自己的 Claude Artifact 頁面才能用（用你自己的帳號），一般網頁訪客打開這個 HTML 檔案時，聊天功能會偵測不到能力並隱藏／提示無法使用。
 
 ## 如何使用
 
-### 方法一：在 Claude 裡當作 Artifact 使用（最簡單，功能最完整）
-把 `robot-teacher.html` 的內容貼到 [claude.ai](https://claude.ai) 請 Claude 幫你發布成 Artifact，這樣聊天與跨裝置同步都能用（用你自己的帳號）。
+### 方法一：在 Claude 裡當作 Artifact 使用（功能最完整）
+把 `robot-teacher.html` 的內容貼到 [claude.ai](https://claude.ai) 請 Claude 幫你發布成 Artifact，這樣聊天與跨裝置同步都能用（用你自己的 Claude 帳號，開啟頁面的人才需要同意）。
 
-### 方法二：當作一般網頁開啟（遊戲與排行榜可用，聊天功能需自行串接）
-直接用瀏覽器開啟 `robot-teacher.html`，或放到任何靜態網站空間（GitHub Pages、Netlify 等）。遊戲、分數、排行榜都能正常運作（存在瀏覽器本機）。若要讓聊天功能運作，請參考上表自行串接後端。
+### 方法二：當作一般網頁開啟，自備 API 金鑰（推薦給開源部署）
+直接用瀏覽器開啟 `index.html`（已包裝好 `<html>`/`<head>` 的完整網頁版本），或放到任何靜態網站空間（GitHub Pages、Netlify 等）。
+
+- 遊戲、分數、排行榜完全可離線使用（存在瀏覽器本機 localStorage）。
+- 「問老師」聊天功能：點右上角的 🔧 齒輪按鈕，貼上**你自己的** [Anthropic API 金鑰](https://console.anthropic.com/settings/keys)（格式通常是 `sk-ant-...`），儲存後即可在**這個瀏覽器**直接呼叫 Claude API 使用聊天功能。
+  - 金鑰只存在你自己的瀏覽器 localStorage，程式不會把它傳到除了 Anthropic 官方 API 以外的任何地方，也不會寫進原始碼或上傳到 GitHub。
+  - 這是「每個使用者自備金鑰（BYOK）」的做法：如果你把網站公開分享給其他人（例如你的孩子、朋友），**每個人都需要自己貼上自己的金鑰**才能用聊天功能；你不能、也不應該把自己的金鑰設成所有訪客共用，那樣等於把你的帳單開放給所有人刷。
+  - 金鑰會呼叫 Anthropic 官方 API（`https://api.anthropic.com`），直接從瀏覽器發出（用了 Anthropic 官方支援的 CORS 標頭），所以不需要自架後端；但缺點是金鑰會留在該瀏覽器的開發者工具可見範圍內，**不要在公用電腦或别人的裝置上輸入**。
+  - 想要更安全（金鑰完全不經過瀏覽器）的話，可以自己架一個小後端幫忙轉發請求，把前端的直接呼叫換成打你自己的伺服器。
+
+### 方法三：`robot-teacher.html`（Artifact 原始碼）
+這份是給 Claude Artifact 用的「無 `<head>`」精簡版本，內容跟 `index.html` 一樣（只是少了外層 `<!doctype>`/`<head>`），適合直接貼回 claude.ai 重新發布，或你想自己重新包裝成其他格式時使用。
 
 ## 課綱內容授權（重要，請務必閱讀）
 
