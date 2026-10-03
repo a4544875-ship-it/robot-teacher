@@ -118,6 +118,7 @@ body.typing .top{padding:4px 12px}
 /* ---------- buttons ---------- */
 .btn{border-radius:16px;padding:10px 16px;background:var(--sky);color:var(--sky-ink);font-size:16px;font-weight:700;box-shadow:var(--shadow)}
 .btn.alt{background:var(--sun);color:var(--sun-ink)}
+.btn.danger{background:var(--coral);color:#fff}
 .btn.ghost{background:var(--surface);color:var(--ink)}
 .btn.mint{background:var(--mint);color:#06382a}
 .btn[disabled]{opacity:.45}
@@ -478,7 +479,7 @@ function levelOf(p){var r=LV[0];for(var i=0;i<LV.length;i++)if(p>=LV[i][0])r=LV[
 function nextLv(p){for(var i=0;i<LV.length;i++)if(p<LV[i][0])return LV[i];return null}
 
 var Store=(function(){
-  var db=null,pin=null,pinLoaded=false,subs=[];
+  var db=null,pin=null,pinLoaded=false,subs=[],clearedAt=0;
   var kids={ren:kblank(),de:kblank()},activity=[];
   var dirty={ren:false,de:false},writing={ren:0,de:0},flushT=null,chain=Promise.resolve(),warned=false;
   function kblank(){return {pts:0,byGame:{},qCount:0,lastDay:''}}
@@ -486,8 +487,8 @@ var Store=(function(){
   function emit(){subs.forEach(function(f){try{f()}catch(e){}})}
   function warn(t){var n=$('#syncNote');n.textContent=t;n.hidden=false}
   function failWarn(){if(warned)return;warned=true;warn('⚠ 雲端同步出了點問題，紀錄暫時只存在這台裝置。')}
-  function saveLocal(){ls.set('rt-data',{kids:kids,activity:activity.slice(0,200),pin:pin})}
-  (function(){var d=ls.get('rt-data',null);if(d){kids.ren=knorm(d.kids&&d.kids.ren);kids.de=knorm(d.kids&&d.kids.de);activity=Array.isArray(d.activity)?d.activity:[];pin=d.pin||null}})();
+  function saveLocal(){ls.set('rt-data',{kids:kids,activity:activity.slice(0,200),pin:pin,clearedAt:clearedAt})}
+  (function(){var d=ls.get('rt-data',null);if(d){kids.ren=knorm(d.kids&&d.kids.ren);kids.de=knorm(d.kids&&d.kids.de);activity=Array.isArray(d.activity)?d.activity:[];pin=d.pin||null;clearedAt=+d.clearedAt||0}})();
   function wireDb(d){
     db=d;
     KIDS.forEach(function(k){db.doc('kids/'+k.id).onSnapshot(function(s){
@@ -496,7 +497,7 @@ var Store=(function(){
       activity=s.docs.map(function(x){var o=x.data();o._id=x.id;return o});
       if(s.size>200){s.docs.slice(200).forEach(function(x){db.doc('activity/'+x.id).delete().catch(function(){})})}
       saveLocal();emit();},failWarn);
-    db.doc('settings/parent').onSnapshot(function(s){pin=s.exists?(s.data().pin||null):null;pinLoaded=true;emit()},function(){pinLoaded=true;emit()});
+    db.doc('settings/parent').onSnapshot(function(s){pin=s.exists?(s.data().pin||null):null;clearedAt=s.exists?(+s.data().clearedAt||0):0;pinLoaded=true;emit()},function(){pinLoaded=true;emit()});
   }
   function connect(){
     // Claude Artifact 的 db 能力優先；不在 Artifact 裡（例如開源版自架的 Firebase）時，
@@ -522,10 +523,12 @@ var Store=(function(){
   document.addEventListener('visibilitychange',function(){if(document.hidden)flushKids()});
   return {
     connect:connect,onChange:function(f){subs.push(f)},
-    kid:function(id){return kids[id]},activity:function(){return activity},
+    kid:function(id){return kids[id]},activity:function(){return activity.filter(function(a){return (a.ts||0)>clearedAt})},
     pinLoaded:function(){return pinLoaded},hasDb:function(){return !!db},
     getPin:function(){return db?pin:ls.get('rt-pin',null)},
-    setPin:function(h){if(db){pin=h;chain=chain.then(function(){return db.doc('settings/parent').set({pin:h})}).catch(failWarn)}else ls.set('rt-pin',h)},
+    setPin:function(h){if(db){pin=h;chain=chain.then(function(){return db.doc('settings/parent').set({pin:h,clearedAt:clearedAt})}).catch(failWarn)}else ls.set('rt-pin',h)},
+    clearRecords:function(){clearedAt=Date.now();saveLocal();emit();
+      if(db){chain=chain.then(function(){return db.doc('settings/parent').set({pin:pin||'',clearedAt:clearedAt})}).catch(failWarn)}},
     award:function(id,pts,gid){var k=kids[id];if(!k)return;k.pts+=pts;
       var g=k.byGame[gid]||(k.byGame[gid]={pts:0,plays:0,best:0});g.pts+=pts;dirty[id]=true;scheduleFlush();emit();},
     finishGame:function(id,gid,info){var k=kids[id];if(!k)return 0;
@@ -1028,7 +1031,7 @@ function renderRank(){
 }
 
 /* ========== 10. records ========== */
-var recFilter='all',openQ={};
+var recFilter='all',openQ={},clearConfirm=false,clearConfirmT=null;
 function fmtTime(t){try{return new Date(t).toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 function gInfo(id){var g=GAMES.filter(function(x){return x.id===id})[0];return g?g.ico+' '+g.zh:(id||'遊戲')}
 function renderRec(){
@@ -1037,7 +1040,8 @@ function renderRec(){
   var qs=acts.filter(function(a){return a.type==='q'}),gs=acts.filter(function(a){return a.type==='game'});
   var h='<h2 class="h">'+(parent?'📒 孩子們的學習紀錄':'📒 我的學習紀錄')+'</h2>';
   if(parent){h+='<div class="chiprow seg">'+[['all','全部']].concat(KIDS.map(function(k){return [k.id,k.short]})).map(function(x){return '<button class="chip" data-f="'+x[0]+'" aria-pressed="'+(recFilter===x[0])+'">'+esc(x[1])+'</button>'}).join('')+'</div>';
-    h+='<div class="kpi">'+KIDS.map(function(k){var d=Store.kid(k.id);return '<div class="k"><b class="en">'+d.pts+'</b><small>'+esc(k.short)+' 總分</small></div>'}).join('')+'<div class="k"><b class="en">'+qs.length+'</b><small>問題數</small></div></div>';}
+    h+='<div class="kpi">'+KIDS.map(function(k){var d=Store.kid(k.id);return '<div class="k"><b class="en">'+d.pts+'</b><small>'+esc(k.short)+' 總分</small></div>'}).join('')+'<div class="k"><b class="en">'+qs.length+'</b><small>問題數</small></div></div>';
+    h+='<div style="margin:10px 0">'+(clearConfirm?'<button class="btn danger" id="btnClearRec">⚠️ 再按一次「確定清除」</button> <button class="btn ghost" id="btnClearRecCancel">取消</button>':'<button class="btn ghost" id="btnClearRec">🗑 清除所有紀錄</button>')+'<p style="font-size:13px;color:var(--ink-soft);margin-top:4px">只會清掉「問過的問題」與「玩過的遊戲」紀錄，不會動到分數和等級。</p></div>';}
   h+='<h3 class="h">問過的問題（'+qs.length+'）</h3>';
   if(!qs.length)h+='<p class="empty">還沒有問過問題。</p>';
   qs.slice(0,80).forEach(function(q){var id=(q._id||q.ts)+'-'+q.kid,k=kidOf(q.kid)||{short:'?'};
@@ -1051,6 +1055,11 @@ function renderRec(){
   el.innerHTML=h;
   el.querySelectorAll('[data-f]').forEach(function(b){b.addEventListener('click',function(){recFilter=b.dataset.f;renderRec()})});
   el.querySelectorAll('details.qrec').forEach(function(d){d.addEventListener('toggle',function(){openQ[d.dataset.id]=d.open})});
+  var bc=$('#btnClearRec');if(bc)bc.addEventListener('click',function(){
+    if(clearConfirm){clearTimeout(clearConfirmT);clearConfirm=false;Store.clearRecords();renderRec()}
+    else{clearConfirm=true;renderRec();clearConfirmT=setTimeout(function(){clearConfirm=false;renderRec()},5000)}
+  });
+  var bcc=$('#btnClearRecCancel');if(bcc)bcc.addEventListener('click',function(){clearTimeout(clearConfirmT);clearConfirm=false;renderRec()});
 }
 
 /* ========== boot ========== */
