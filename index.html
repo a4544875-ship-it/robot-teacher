@@ -552,6 +552,9 @@ details.rule ul{margin:6px 0 0;padding-left:1.2em}
 .stars .gi{width:1.9em;height:1.9em;object-fit:cover;border-radius:50%;box-shadow:none;border:2px solid #fff;vertical-align:-.55em;background:#fff}
 .kidcard .kt .gl .gi,.gdw .gi{box-shadow:none}
 .gcard.feat{padding-top:24px}
+/* iPhone 裝成 App 時，系統會在「可以捲動的頁面」頂端加一層模糊；整頁鎖住不捲動（裡面的面板自己捲）就不會被蓋到 */
+html{overflow:hidden;overscroll-behavior:none}
+body{position:fixed;top:0;bottom:0;left:0;right:0;height:auto;overscroll-behavior:none}
 </style>
 
 <header class="top">
