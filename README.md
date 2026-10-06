@@ -47,6 +47,10 @@
 ### 方法三：`robot-teacher.html`（Artifact 原始碼）
 這份是給 Claude Artifact 用的「無 `<head>`」精簡版本，內容跟 `index.html` 一樣（只是少了外層 `<!doctype>`/`<head>`），適合直接貼回 claude.ai 重新發布，或你想自己重新包裝成其他格式時使用。
 
+## 安裝成 App（PWA）
+
+`index.html` 是可安裝的網頁 App：有 `manifest.webmanifest`、圖示和 `sw.js` 離線快取。部署到 https 網站後，在手機瀏覽器選「加入主畫面」就會多一個全螢幕的「機器人老師」圖示。主頁面採「先抓最新、抓不到才用快取」，所以更新網站後 App 會自動更新；沒有網路時仍可開啟並玩不需連線的遊戲，分數會先存在本機。
+
 ## 雲端同步（Firestore）已經接好，只差一步
 
 `index.html` 已經內建 [Firebase](https://firebase.google.com) Firestore 雲端同步：Ray、Dave 的分數、等級、問答與遊戲紀錄會自動寫進雲端資料庫，不管用哪台裝置、哪個瀏覽器打開，看到的都是同一份資料（家長查看紀錄也會是最新的）。
