@@ -433,6 +433,30 @@ details.rule ul{margin:6px 0 0;padding-left:1.2em}
 .ttab button{border-radius:16px;padding:12px 4px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow);font-family:var(--font-en);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums;min-width:0}
 .ttab button b{color:var(--coral)}
 .ttab button:active{transform:translateY(3px);box-shadow:none}
+/* 數學遊戲（2D） */
+.obplay.pd{display:flex;flex-direction:column;background:linear-gradient(160deg,#fff3d6,#ffd9c2 55%,#cfe9ff);padding:calc(66px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));color:#14173a}
+.pdq{flex:none;background:#fff;border:3px solid #14173a;border-radius:18px;padding:8px 14px;font-size:18px;font-weight:700;text-align:center;box-shadow:0 4px 0 rgba(0,0,0,.18);margin-bottom:10px;text-wrap:balance}
+.pdq b{color:#d6452f}.pdq b.big{font-size:32px;color:#14173a;letter-spacing:.02em}
+.pdb{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.obrace.sc{flex-direction:row;gap:12px;width:auto;color:#fff;font-size:20px}
+.obrace.sc div{gap:4px}.obrace.sc b{font-variant-numeric:tabular-nums}
+.shk{animation:shake .4s}
+.cmp{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;width:100%;max-width:560px}
+.cc{min-height:150px;border-radius:24px;background:#fff;color:#14173a;border:4px solid #14173a;box-shadow:0 6px 0 rgba(0,0,0,.22);font-size:clamp(22px,6.5vw,38px);font-weight:700;padding:6px;overflow-wrap:anywhere;min-width:0}
+.cc:active{transform:translateY(5px);box-shadow:none}.cc.right{background:#36dcab}.cc.wrong{background:#ff8a80}
+.cm{font-size:44px;font-family:var(--font-emoji);width:56px;text-align:center}.cm.sg{font-family:var(--font-en);font-weight:700;color:#d6452f;font-size:52px}
+.ceq{border-radius:18px;background:#ffc531;color:#4a3600;border:3px solid #14173a;font-size:20px;font-weight:700;padding:12px 22px;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.ceq:active{transform:translateY(4px);box-shadow:none}
+.bub{position:absolute;left:0;top:0;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,hsl(var(--h) 85% 78%) 62%,hsl(var(--h) 70% 62%));border:3px solid rgba(20,23,58,.55);color:#14173a;font-size:26px;font-weight:700;touch-action:none;box-shadow:0 4px 8px rgba(0,0,0,.15);padding:0}
+.bub.sel{border-color:#14173a;box-shadow:0 0 0 6px #ffc531}
+.bub.pop{transition:scale .25s,opacity .25s;scale:1.7;opacity:0}
+.snc{max-width:100%;max-height:100%;border-radius:18px;border:4px solid #14173a;box-shadow:0 6px 0 rgba(0,0,0,.2);touch-action:none}
+.bg5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;width:min(100%,440px)}
+.bg5 button{aspect-ratio:1;border-radius:14px;background:#fff;color:#14173a;border:3px solid #14173a;font-size:clamp(18px,5.5vw,26px);font-weight:700;box-shadow:0 4px 0 rgba(0,0,0,.2);min-width:0;padding:0}
+.bg5 button:active{transform:translateY(3px);box-shadow:none}
+.bg5 button.m{background:#2b8af0;color:#fff}.bg5 button.o{background:#ff6a5c;color:#fff}
+.bgk{margin:0;font-size:14px;font-weight:700;text-align:center}.bgk i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px;border:2px solid #14173a}.bgk i.m{background:#2b8af0}.bgk i.o{background:#ff6a5c}
+.g17{background:linear-gradient(135deg,#ffe08a,#ffb3a8)}.g18{background:linear-gradient(135deg,#c8f2a8,#8fe3c8)}.g19{background:linear-gradient(135deg,#b8e4ff,#e3c8ff)}.g20{background:linear-gradient(135deg,#bfe9a0,#ffe08a)}
 </style>
 
 <header class="top">
@@ -937,14 +961,14 @@ var GAMES=[
  {id:'tower',cls:'g16 feat',ico:'🗼',tag:'NEW',zh:'單字爬塔',en:'Tower Race',d:'補上缺的字母往上爬，先爬到塔頂的人贏！',how:'看圖片和中文，選出單字裡缺的那個字母。答對往上爬一層，答錯會掉一層，先爬到第 12 層的人獲勝。',duel:1},
  {id:'shoot',cls:'g13 feat',ico:'🎯',tag:'對戰',zh:'單字射擊場',en:'Word Blaster',d:'瞄準對的氣球把它射下來，可以連線比誰先射完！',how:'聽題目，點對的氣球把它射下來。自己玩有 3 顆愛心；連線對戰時射錯會暫停一下，先射完 10 題的人獲勝。'},
  {id:'meteor',cls:'g14 feat',ico:'☄️',tag:'對戰',zh:'字母隕石',en:'Letter Meteors',d:'照順序射下字母隕石拼出單字，可以連線比誰先拼完！',how:'看圖片和中文，照順序點字母隕石把單字拼出來。連線對戰時先拼完 6 個單字的人獲勝。'},
- {id:'mkart',sub:'math',impl:'kart',math:'tt',cls:'g12 feat',ico:'🏎️',tag:'九九乘法',zh:'九九乘法飛車',en:'Times Table Kart',d:'看乘法題，開進正確答案的車道！可以連線比賽。',how:'看上面的乘法題，開進答案正確的車道會加速，開錯會變慢。可以選只練某一段乘法。'},
- {id:'mtower',sub:'math',impl:'tower',math:'tt',cls:'g16 feat',ico:'🗼',tag:'九九乘法',zh:'九九爬塔',en:'Times Table Tower',d:'6 × ? = 42，找出缺的數字往上爬，先到塔頂的人贏！',how:'找出算式裡缺的數字。答對往上爬一層，答錯掉一層，先爬到第 12 層的人獲勝。可以選只練某一段乘法。',duel:1},
- {id:'mshoot',sub:'math',impl:'shoot',math:'mix',cls:'g13 feat',ico:'🎯',tag:'加減乘除',zh:'數學射擊場',en:'Math Blaster',d:'算出答案，把正確數字的氣球射下來！',how:'題目會依照上面選的年級出加、減、乘、除。點答案正確的氣球把它射下來。'},
- {id:'mtug',sub:'math',impl:'tug',math:'mix',cls:'g15 feat',ico:'🪢',tag:'加減乘除',zh:'數學拔河',en:'Math Tug of War',d:'算對就把繩子拉過來，把對手拉過線就贏！',how:'題目會依照上面選的年級出加、減、乘、除。每算對一題就把繩子往自己這邊拉一格。',duel:1},
+ {id:'mbingo',sub:'math',cls:'g17 feat',ico:'🟦',tag:'對決',zh:'九九賓果搶地盤',en:'Times Table Bingo',d:'算對九九乘法就佔一格，先連成 4 格一條線的人贏！',how:'看上面的乘法題，在格子裡找到答案點下去，那一格就是你的。先把 4 格連成一條線（直、橫、斜都可以）的人獲勝；點錯會暫停一下。',duel:1},
+ {id:'msnake',sub:'math',cls:'g18 feat',ico:'🐍',tag:'NEW',zh:'數字貪吃蛇',en:'Number Snake',d:'把蛇開去吃正確答案，越吃越長！',how:'場上有 3 個數字，只有一個是正確答案。手機滑動螢幕（或點蛇頭的上下左右），電腦按方向鍵轉彎。吃錯或撞到自己會少一顆愛心，90 秒內吃越多越好。'},
+ {id:'mbond',sub:'math',cls:'g19 feat',ico:'🫧',tag:'NEW',zh:'泡泡湊數',en:'Bubble Bonds',d:'點兩個泡泡，加起來或乘起來剛好等於目標！',how:'上面會給一個目標數字。點兩個泡泡，讓它們加起來（三年級以上有時是乘起來）剛好等於目標。60 秒內湊越多組越好，點錯扣 2 秒。'},
+ {id:'mcmp',sub:'math',cls:'g20 feat',ico:'🐊',tag:'NEW',zh:'鱷魚比大小',en:'Hungry Croc',d:'鱷魚要吃大的！快點出比較大的那一邊。',how:'左右各有一個數字或算式，點比較大的那一邊；一樣大就按下面的「＝」。60 秒內答越多越好，答錯扣 3 秒。'},
  {id:'ttab',sub:'math',cls:'g14 feat',ico:'📋',tag:'複習',zh:'九九乘法表',en:'Times Table Chart',d:'忘記了？先來看表複習，點一下會唸給你聽。',noscore:1}
 ];
 /* 已下架的舊遊戲：只留名字，讓以前的遊戲紀錄還讀得懂 */
-var OLD_GAMES={pw:'🖼️ 看圖選字',pp:'🔎 看字選圖',match:'🧩 翻牌配對',spell:'🔤 拼字工廠',pop:'🎈 氣球派對',whack:'🔨 打地鼠',miss:'🕵️ 補上字母',fish:'🎣 釣魚大師',star:'⭐ 星空接接樂',race:'🏎️ 單字賽車'};
+var OLD_GAMES={mkart:'🏎️ 九九乘法飛車',mtower:'🗼 九九爬塔',mshoot:'🎯 數學射擊場',mtug:'🪢 數學拔河',pw:'🖼️ 看圖選字',pp:'🔎 看字選圖',match:'🧩 翻牌配對',spell:'🔤 拼字工廠',pop:'🎈 氣球派對',whack:'🔨 打地鼠',miss:'🕵️ 補上字母',fish:'🎣 釣魚大師',star:'⭐ 星空接接樂',race:'🏎️ 單字賽車'};
 var GAME_FN={};
 var gHome=$('#gHome'),gPlay=$('#gPlay'),gBody=$('#gBody');
 var timers=[],curGame='',roundPts=0;
@@ -998,7 +1022,7 @@ function renderRank(){
     h+='</div>';});
   h+='<h2 class="h">🏝️ 闖關島最快紀錄</h2><div class="obrk">'+OB.STG.map(function(s,i){var a=KIDS.map(function(k){return ((Store.kid(k.id).obby||{}).best||{})[i]||0}),mn=Math.min.apply(null,a.filter(Boolean));
     return '<div><span>'+s.ico+' '+(i+1)+'. '+esc(s.n)+'</span>'+KIDS.map(function(k,j){return '<b class="'+(a[j]&&a[j]===mn?'w':'')+'">'+esc(k.short)+' '+(a[j]?OB.ft(a[j]):'—')+'</b>'}).join('')+'</div>'}).join('')+'</div>';
-  h+='<details class="rule"><summary>積分怎麼算？</summary><ul><li>單字闖關島：踩對圖 10 分、拼對字 20 分、過關 30 分（魔王關 50 分）、連線對戰獲勝再加 30 分</li><li>單字飛車：開對車道 10 分，跑完全程 20 分</li><li>單字拔河、單字爬塔：答對一題 10 分</li><li>數學遊戲的計分跟同款英文遊戲一樣</li><li>單字射擊場：射中 10 分；字母隕石：拼對一個單字 20 分</li><li>任何遊戲連線對戰（或跟小機對決）獲勝：再加 30 分</li><li>每天第一次玩完一局：再加 20 分</li><li>稱號：0 小種子・150 小嫩芽・400 小樹苗・800 閃亮之星・1500 英文小達人・3000 英文大師</li></ul></details>';
+  h+='<details class="rule"><summary>積分怎麼算？</summary><ul><li>單字闖關島：踩對圖 10 分、拼對字 20 分、過關 30 分（魔王關 50 分）、連線對戰獲勝再加 30 分</li><li>單字飛車：開對車道 10 分，跑完全程 20 分</li><li>單字拔河、單字爬塔：答對一題 10 分</li><li>九九賓果：佔一格 10 分；數字貪吃蛇：吃對一個 10 分；泡泡湊數：湊對一組 10 分；鱷魚比大小：答對一題 5 分</li><li>單字射擊場：射中 10 分；字母隕石：拼對一個單字 20 分</li><li>任何遊戲連線對戰（或跟小機對決）獲勝：再加 30 分</li><li>每天第一次玩完一局：再加 20 分</li><li>稱號：0 小種子・150 小嫩芽・400 小樹苗・800 閃亮之星・1500 英文小達人・3000 英文大師</li></ul></details>';
   el.innerHTML=h;
 }
 
@@ -1669,9 +1693,167 @@ var OB=(function(){
   }
   IMPL.tug=function(g,o){duel(g,o,false)};IMPL.tower=function(g,o){duel(g,o,true)};
 
+  /* ---------- 數學遊戲（2D）：共用外殼 ----------
+     這幾款用一般網頁元素和 canvas 畫，不需要 3D 引擎。計時一律用真實時間。 */
+  function pad(g,o,build){
+    stop(!!o.tok);curGame=g.id;roundPts=0;
+    var el=document.createElement('div');el.className='obplay pd';
+    el.innerHTML='<div class="obhud"><button class="obx" id="obExit" aria-label="離開遊戲">✕</button><div class="obinfo"><b>'+esc(g.zh)+'</b><span class="en" id="arInfo"></span></div><div class="arhp" id="arHp"></div><div class="obrace sc" id="obRace" hidden></div></div>'+
+      '<div class="pdq" id="pdQ"></div><div class="pdb" id="pdB"></div><div class="obprompt" id="obPrompt" hidden></div><div class="arq" id="arQ" hidden></div><div class="obmsg" id="obMsg"></div><div class="obflash" id="obFlash"></div><div class="obres" id="obRes" hidden></div>';
+    document.body.appendChild(el);
+    var a=A={el:el,g:g,o:o,tok:o.tok||null,dead:false,over:false,fin:false,t:0,nt:0,my:0,w0:performance.now()};
+    $('#obExit').addEventListener('click',function(){sfx('tap');stop();menu(g)});
+    if(a.tok)Net.set({on:1,gm:g.id,k:who,n:nm(),ph:'run',tok:a.tok,rd:0,fin:0,pr:0,sc:0,wn:0,cl:''});
+    build(a);
+    a.last=performance.now();a.raf=requestAnimationFrame(function loop(now){if(a.dead)return;a.raf=requestAnimationFrame(loop);
+      var dt=Math.min(.1,(now-a.last)/1000);a.last=now;if(dt<=0||a.over||a.fin)return;a.t=(now-a.w0)/1000;if(a.step)a.step(dt);
+      if(a.tok){a.nt-=dt;if(a.nt<=0){a.nt=.2;Net.set(a.net?a.net():{sc:a.my});scHud(a)}}});
+  }
+  function scHud(a){var el=$('#obRace');if(!el)return;el.hidden=false;var e=vsPeers(a.tok)[0],q=e&&e.q,k1=kidOf(who)||{emo:'🙂'},k2=(q&&kidOf(q.k))||{emo:'🙂'};
+    el.innerHTML='<div><span>'+k1.emo+'</span><b class="en">'+a.my+'</b></div><div><span>'+k2.emo+'</span><b class="en">'+(q?+q.sc||0:'…')+'</b></div>'}
+  /* 計分賽結束：自己玩直接結算；連線時等對方也結束（最多等 3 秒）再比分數 */
+  function padEnd(a,solo){
+    if(a.fin||a.over)return;a.fin=true;var my=a.my;
+    if(!a.tok)return arcEnd(a,solo);
+    Net.set({sc:my,fin:1});var n=0;(function w(){if(A!==a)return;var e=vsPeers(a.tok)[0],q=e&&e.q;
+      if(!(q&&+q.fin)&&n++<12)return setTimeout(w,250);
+      var op=q?+q.sc||0:null,on=q?String(q.n||'對手').slice(0,12):'對手',res=op===null||my>op?'w':my<op?'l':'d';if(res==='w')award(3);
+      arcEnd(a,{win:res!=='l',score:my,total:Math.max(my,op||0,1),icon:res==='w'?'🏆':res==='d'?'🤝':'🥈',title:res==='w'?(op===null?'對手離開了，你贏了！':'你贏了！'):res==='d'?'平手！':on+' 贏了！',
+        text:'你 '+my+'・'+on+' '+(op===null?'—':op)+'。'+(res==='w'?'獲勝再加 30 分！':''),say:res==='w'?'太厲害了，你贏了！':'再比一次，一定可以贏！'})})()}
+  function bump(el){if(!el)return;el.classList.remove('shk');void el.offsetWidth;el.classList.add('shk')}
+
+  /* ---------- 鱷魚比大小：60 秒內，點比較大的那一邊 ---------- */
+  IMPL.mcmp=function(g,o){var b=tier(),TL=60;
+    pad(g,o,function(a){
+      var B=$('#pdB'),pen=0,cur=null,busy=false;
+      B.innerHTML='<div class="cmp"><button class="cc en" id="cL"></button><div class="cm" id="cM">🐊</div><button class="cc en" id="cR"></button></div><button class="ceq" id="cE">＝ 兩邊一樣大</button>';
+      $('#pdQ').textContent='鱷魚要吃比較大的！哪一邊大？';
+      function gen(){if(b<=1)return {t:String(1+rand(100)),v:0};var w=mq(Math.random,'mix',b,0,3);return {t:w[2],v:+w[0]}}
+      function next(){busy=false;var L=gen(),R;if(b<=1)L.v=+L.t;
+        var r=Math.random();if(r<.16)R={t:String(L.v),v:L.v};else if(r<.6||b<=1){var d=(1+rand(Math.max(2,Math.round(L.v*.12))))*(Math.random()<.5?-1:1),v=Math.max(1,L.v+d);R={t:String(v),v:v}}else R=gen();
+        if(R.t===L.t&&b>1)R={t:String(L.v+1),v:L.v+1};
+        if(Math.random()<.5){var t=L;L=R;R=t}cur={L:L,R:R,ans:L.v>R.v?'L':L.v<R.v?'R':'E'};
+        $('#cL').textContent=L.t;$('#cR').textContent=R.t;$('#cM').textContent='🐊';$('#cM').className='cm';['cL','cR'].forEach(function(id){$('#'+id).className='cc en'})}
+      function pick(x){if(busy||a.fin||a.over)return;busy=true;var ok=x===cur.ans,m=$('#cM');m.textContent=cur.ans==='L'?'＞':cur.ans==='R'?'＜':'＝';m.className='cm sg';
+        if(cur.ans!=='E')$('#c'+cur.ans).classList.add('right');
+        if(ok){a.my++;award(.5);sfx('ok');setTimeout(function(){if(A===a)next()},380)}
+        else{pen+=3;sfx('no');flash();if(x!=='E')$('#c'+x).classList.add('wrong');bump(B);toast('答錯了，扣 3 秒！','bad');setTimeout(function(){if(A===a)next()},1000)}}
+      $('#cL').addEventListener('click',function(){pick('L')});$('#cR').addEventListener('click',function(){pick('R')});$('#cE').addEventListener('click',function(){pick('E')});
+      a.dbg=function(){return {ans:cur&&cur.ans,busy:busy,my:a.my}};
+      say('看清楚兩邊的數字，點比較大的那一邊！','happy');next();
+      a.step=function(){var tl=TL-a.t-pen;$('#arInfo').textContent=Math.max(0,Math.ceil(tl))+' 秒・答對 '+a.my;
+        if(tl<=0)padEnd(a,{score:a.my,total:Math.max(a.my,1),icon:a.my>=20?'🏆':'🐊',title:'時間到！答對 '+a.my+' 題',text:'每答對一題 5 分，答錯會扣 3 秒。',say:a.my>=20?'比大小高手！':'再玩一次，挑戰更多題！'})};
+    })};
+
+  /* ---------- 泡泡湊數：點兩個泡泡，加起來（或乘起來）變成目標 ---------- */
+  IMPL.mbond=function(g,o){var b=tier(),TL=60;
+    pad(g,o,function(a){
+      var B=$('#pdB'),bs=[],sel=null,pen=0,T=10,mul=false,step=1,pops=0,SZ=74;
+      function pair(){if(mul){var fs=[];for(var i=2;i<=9;i++)if(T%i===0&&T/i>=2&&T/i<=12)fs.push(i);var x=fs[rand(fs.length)];return [x,T/x]}var y=step*(1+rand(T/step-1));return [y,T-y]}
+      function other(){return mul?2+rand(11):step*(1+rand(T/step-1))}
+      function ok2(p,q){return mul?p.v*q.v===T:p.v+q.v===T}
+      function has(){for(var i=0;i<bs.length;i++)for(var j=i+1;j<bs.length;j++)if(ok2(bs[i],bs[j]))return true;return false}
+      function add(v){var r=B.getBoundingClientRect(),e=document.createElement('button');e.className='bub en';e.textContent=v;e.style.setProperty('--h',rand(360));B.appendChild(e);
+        var p={v:v,el:e,x:rand(Math.max(1,r.width-SZ)),y:rand(Math.max(1,r.height-SZ)),vx:(Math.random()-.5)*46,vy:(Math.random()-.5)*46};bs.push(p);
+        e.addEventListener('pointerdown',function(ev){ev.preventDefault();tap(p)})}
+      function fill(){if(!has()){var p=pair();add(p[0]);add(p[1])}while(bs.length<8){if(bs.length<6&&Math.random()<.5){var q=pair();add(q[0]);add(q[1])}else add(other())}}
+      function target(){mul=b>=3&&Math.random()<(b>=4?.6:.45);
+        if(mul)T=[12,16,18,20,24,28,30,32,36,40,42,48,54,56,63,72][rand(16)];else T=b<=1?[10,10,20][rand(3)]:b===2?[20,50,100][rand(3)]:b===3?[100,200][rand(2)]:[100,500,1000][rand(3)];
+        step=T<=20?1:T<=100?5:T<=200?10:50;bs.forEach(function(p){p.el.remove()});bs=[];sel=null;
+        $('#pdQ').innerHTML='點兩個泡泡，<b>'+(mul?'乘起來':'加起來')+'</b>是 <b class="en big">'+T+'</b>';fill()}
+      function tap(p){if(a.fin||a.over||p.dead)return;
+        if(!sel){sel=p;p.el.classList.add('sel');tone(520,0,.05,'sine',.05);return}
+        if(sel===p){sel=null;p.el.classList.remove('sel');return}
+        var q=sel;sel=null;q.el.classList.remove('sel');
+        if(ok2(p,q)){[p,q].forEach(function(z){z.dead=true;z.el.classList.add('pop');setTimeout(function(){z.el.remove()},260)});bs=bs.filter(function(z){return !z.dead});
+          a.my++;pops++;award(1);sfx('pop');sfx('ok');toast(q.v+(mul?' × ':' + ')+p.v+' = '+T,'ok');if(pops%4===0)setTimeout(function(){if(A===a&&!a.fin)target()},300);else fill()}
+        else{pen+=2;sfx('no');bump(p.el);bump(q.el);toast(q.v+(mul?' × ':' + ')+p.v+' 不是 '+T+'，扣 2 秒','bad')}}
+      a.dbg=function(){for(var i=0;i<bs.length;i++)for(var j=i+1;j<bs.length;j++)if(ok2(bs[i],bs[j]))return {a:bs[i].el,b:bs[j].el,my:a.my};return {my:a.my}};
+      say('找出兩個可以湊成目標的泡泡，點它們！','happy');target();
+      a.step=function(dt){var r=B.getBoundingClientRect(),W=r.width-SZ,H=r.height-SZ;
+        for(var i=0;i<bs.length;i++)for(var j=i+1;j<bs.length;j++){var p1=bs[i],p2=bs[j],dx=p2.x-p1.x,dy=p2.y-p1.y,d=Math.hypot(dx,dy)||1;if(d<SZ+4){var nx=dx/d,ny=dy/d,ov=(SZ+4-d)/2;p1.x-=nx*ov;p1.y-=ny*ov;p2.x+=nx*ov;p2.y+=ny*ov;
+            var t1=p1.vx*nx+p1.vy*ny,t2=p2.vx*nx+p2.vy*ny;if(t1>t2){p1.vx+=(t2-t1)*nx;p1.vy+=(t2-t1)*ny;p2.vx+=(t1-t2)*nx;p2.vy+=(t1-t2)*ny}}}
+        bs.forEach(function(p){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0){p.x=0;p.vx=Math.abs(p.vx)}if(p.x>W){p.x=W;p.vx=-Math.abs(p.vx)}if(p.y<0){p.y=0;p.vy=Math.abs(p.vy)}if(p.y>H){p.y=H;p.vy=-Math.abs(p.vy)}
+          p.el.style.transform='translate('+p.x.toFixed(1)+'px,'+p.y.toFixed(1)+'px)'});
+        var tl=TL-a.t-pen;$('#arInfo').textContent=Math.max(0,Math.ceil(tl))+' 秒・湊對 '+a.my;
+        if(tl<=0)padEnd(a,{score:a.my,total:Math.max(a.my,1),icon:a.my>=12?'🏆':'🫧',title:'時間到！湊對 '+a.my+' 組',text:'每湊對一組 10 分，點錯會扣 2 秒。',say:a.my>=12?'湊數小天才！':'再玩一次，湊更多組！'})};
+    })};
+
+  /* ---------- 數字貪吃蛇：把蛇開去吃正確答案 ---------- */
+  IMPL.msnake=function(g,o){var b=tier(),TL=90;
+    pad(g,o,function(a){
+      var B=$('#pdB');B.innerHTML='<canvas class="snc" id="snC"></canvas>';
+      var cv=$('#snC'),cx=cv.getContext('2d'),COLS=9,ROWS=11,cs=40,sn=[],dir=[1,0],nd=[1,0],foods=[],q=null,acc=0,hp=3,col=who==='de'?'#ff6a5c':'#2b8af0',sp=null;
+      function size(){var r=B.getBoundingClientRect();cs=Math.max(18,Math.floor(Math.min(r.width/COLS,r.height/ROWS)));cv.width=COLS*cs;cv.height=ROWS*cs}
+      function gen(){var x,c,v,t;if(b<=1){if(Math.random()<.6){x=1+rand(10);c=1+rand(9);v=x+c;t=x+' + '+c}else{x=[2,5,10][rand(3)];c=1+rand(9);v=x*c;t=x+' × '+c}}
+        else if(b<=3||Math.random()<.4){x=2+rand(8);c=2+rand(8);v=x*c;t=x+' × '+c}else{x=11+rand(20);c=2+rand(8);v=x*c;t=x+' × '+c}
+        var ds=shuffle([v+1,v-1,v+2,v+10,v-10,v+c,v-c].filter(function(n){return n>0&&n!==v})),os=[v];ds.forEach(function(n){if(os.length<3&&os.indexOf(n)<0)os.push(n)});return {t:t,v:v,os:os}}
+      function free(x,y){return !sn.some(function(s){return s[0]===x&&s[1]===y})&&!foods.some(function(f){return f.x===x&&f.y===y})}
+      function place(){foods=[];q.os.forEach(function(v){for(var n=0;n<200;n++){var x=rand(COLS),y=rand(ROWS),h=sn[0];if(free(x,y)&&Math.abs(x-h[0])+Math.abs(y-h[1])>=3){foods.push({x:x,y:y,v:v});break}}})}
+      function ask(){q=gen();$('#pdQ').innerHTML='<b class="en big">'+q.t+' = ?</b>';place()}
+      function reset(){sn=[[4,5],[3,5],[2,5]];dir=[1,0];nd=[1,0]}
+      function hud(){$('#arHp').textContent='❤️'.repeat(Math.max(0,hp))+'🤍'.repeat(3-Math.max(0,hp))}
+      function over(){padEnd(a,{win:a.my>0,score:a.my,total:Math.max(a.my,1),icon:a.my>=10?'🏆':'🐍',title:(hp<=0?'愛心用完了！':'時間到！')+'吃到 '+a.my+' 個',text:'每吃到一個正確答案 10 分。',say:a.my>=10?'貪吃蛇大師！':'再玩一次，吃更多！'})}
+      function hurt(msg){hp--;hud();sfx('no');flash();toast(msg,'bad');if(hp<=0)over()}
+      function turn(x,y){if(x===-dir[0]&&y===-dir[1])return;nd=[x,y]}
+      function tick(){dir=nd;var h=[(sn[0][0]+dir[0]+COLS)%COLS,(sn[0][1]+dir[1]+ROWS)%ROWS];
+        if(sn.slice(0,-1).some(function(s){return s[0]===h[0]&&s[1]===h[1]})){hurt('撞到自己了！');reset();place();return}
+        sn.unshift(h);var f=foods.filter(function(z){return z.x===h[0]&&z.y===h[1]})[0];
+        if(!f){sn.pop();return}
+        if(f.v===q.v){a.my++;award(1);sfx('ok');toast(q.t+' = '+q.v,'ok');ask()}
+        else{sn.pop();if(sn.length>3)sn.pop();hurt('答案是 '+q.v+'，不是 '+f.v);if(hp>0)ask()}}
+      function draw(){var W=cv.width,H=cv.height,i;cx.clearRect(0,0,W,H);
+        for(var y=0;y<ROWS;y++)for(var x=0;x<COLS;x++){cx.fillStyle=(x+y)%2?'#dff3c8':'#cfeab2';cx.fillRect(x*cs,y*cs,cs,cs)}
+        foods.forEach(function(f){cx.fillStyle='#ffc531';cx.beginPath();cx.arc((f.x+.5)*cs,(f.y+.5)*cs,cs*.46,0,7);cx.fill();cx.lineWidth=2;cx.strokeStyle='#14173a';cx.stroke();
+          cx.fillStyle='#14173a';cx.textAlign='center';cx.textBaseline='middle';var s=String(f.v);cx.font='700 '+Math.floor(cs*(s.length>2?.36:.48))+'px "Baloo 2",system-ui,sans-serif';cx.fillText(s,(f.x+.5)*cs,(f.y+.54)*cs)});
+        for(i=sn.length-1;i>=0;i--){var s2=sn[i];cx.fillStyle=i?col:'#14173a';rr(cx,s2[0]*cs+2,s2[1]*cs+2,cs-4,cs-4,cs*.28);cx.fill();
+          if(!i){cx.fillStyle='#fff';cx.beginPath();cx.arc((s2[0]+.5+dir[0]*.18-dir[1]*.2)*cs,(s2[1]+.5+dir[1]*.18-dir[0]*.2)*cs,cs*.09,0,7);cx.arc((s2[0]+.5+dir[0]*.18+dir[1]*.2)*cs,(s2[1]+.5+dir[1]*.18+dir[0]*.2)*cs,cs*.09,0,7);cx.fill()}}}
+      a.kd=function(e){var k=e.key.toLowerCase(),m={arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0],arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1]}[k];if(m){e.preventDefault();turn(m[0],m[1])}};
+      window.addEventListener('keydown',a.kd);a.rs=function(){size();draw()};window.addEventListener('resize',a.rs);
+      a.el.addEventListener('pointerdown',function(e){if(e.target.closest('button,.obres'))return;e.preventDefault();sp={x:e.clientX,y:e.clientY}});
+      a.el.addEventListener('pointerup',function(e){if(!sp)return;var dx=e.clientX-sp.x,dy=e.clientY-sp.y;sp=null;
+        if(Math.hypot(dx,dy)<14){var r=cv.getBoundingClientRect(),k=r.width/cv.width;dx=e.clientX-(r.left+(sn[0][0]+.5)*cs*k);dy=e.clientY-(r.top+(sn[0][1]+.5)*cs*k)}
+        if(Math.abs(dx)>Math.abs(dy))turn(dx>0?1:-1,0);else turn(0,dy>0?1:-1)});
+      a.dbg=function(){var f=foods.filter(function(z){return z.v===q.v})[0];return {head:sn[0],dir:dir,food:f&&[f.x,f.y],bad:foods.filter(function(z){return z.v!==q.v}).map(function(z){return [z.x,z.y]}),body:sn,my:a.my,hp:hp,cols:COLS,rows:ROWS}};
+      a.turn=turn;size();reset();hud();ask();say('滑動螢幕或按方向鍵轉彎，去吃正確的答案！','happy');
+      a.step=function(dt){if(a.t<1.2){draw();return}acc+=dt;var iv=Math.max(.14,.32-b*.015-a.my*.006);while(acc>=iv&&!a.fin){acc-=iv;tick()}draw();
+        var tl=TL-a.t;$('#arInfo').textContent=Math.max(0,Math.ceil(tl))+' 秒・吃到 '+a.my;if(tl<=0&&!a.fin)over()};
+    })};
+
+  /* ---------- 九九賓果搶地盤：答對就佔一格，先連成 4 格一條線的人贏 ---------- */
+  IMPL.mbingo=function(g,o){var X=seeded(o),b=tier(),vs=!!o.tok;
+    pad(g,o,function(a){
+      var PR=[4,6,8,9,10,12,14,15,16,18,20,21,24,25,27,28,30,32,35,36,40,42,45,48,49,54,56,63,64,72,81],cells=X.sh(PR).slice(0,25);
+      var B=$('#pdB'),mine=[],opp=[],oc='',q=null,lock=0,done=false,botT=5,bi=6.2-b*.6,seen=false,gone=0,opName=vs?'對手':'小機',sig='';
+      B.innerHTML='<div class="bg5">'+cells.map(function(v,i){return '<button class="en" data-i="'+i+'">'+v+'</button>'}).join('')+'</div><p class="bgk"><i class="m"></i>你　<i class="o"></i><span id="bgO">'+esc(opName)+'</span>　先連成 4 格一條線就贏！</p>';
+      var btn=Array.prototype.slice.call(B.querySelectorAll('.bg5 button'));
+      function own(i){var m=mine.indexOf(i)>=0,p=opp.indexOf(i)>=0;return m&&p?(vs&&Net.id>oc?2:1):m?1:p?2:0}
+      function line(w){for(var y=0;y<5;y++)for(var x=0;x<5;x++){if(own(y*5+x)!==w)continue;var D=[[1,0],[0,1],[1,1],[1,-1]];
+          for(var d=0;d<4;d++){var n=1;for(var k=1;k<4;k++){var xx=x+D[d][0]*k,yy=y+D[d][1]*k;if(xx<0||xx>4||yy<0||yy>4||own(yy*5+xx)!==w)break;n++}if(n>=4)return true}}return false}
+      function cnt(w){var n=0;for(var i=0;i<25;i++)if(own(i)===w)n++;return n}
+      function ask(){var fr=[];for(var i=0;i<25;i++)if(!own(i))fr.push(i);if(!fr.length){q=null;return}var v=cells[fr[rand(fr.length)]],ps=[];
+        for(var x=2;x<=9;x++)if(v%x===0&&v/x>=2&&v/x<=9)ps.push(x);var f=ps[rand(ps.length)];q={v:v};$('#pdQ').innerHTML='<b class="en big">'+f+' × '+(v/f)+' = ?</b>　點答案那一格'}
+      function render(){var s=mine.join()+'|'+opp.join();if(s===sig)return;sig=s;btn.forEach(function(e,i){var w=own(i);e.className='en'+(w===1?' m':w===2?' o':'')});a.my=cnt(1);
+        if(q&&!cells.some(function(v,i){return v===q.v&&!own(i)}))ask()}
+      function fin(res,left){if(done)return;done=true;if(vs)Net.set({wn:res==='w'?1:res==='l'?-1:2,fin:1,sc:a.my});if(res==='w')award(3);
+        arcEnd(a,{win:res!=='l',score:cnt(1),total:25,icon:res==='w'?'🏆':res==='d'?'🤝':'🥈',title:res==='w'?(left?opName+' 離開了，你贏了！':'連成一線，你贏了！'):res==='d'?'平手！':opName+' 贏了！',
+          text:'你佔了 '+cnt(1)+' 格，'+opName+' 佔了 '+cnt(2)+' 格。'+(res==='w'?'獲勝再加 30 分！':''),say:res==='w'?'賓果！你贏了！':'再比一次，搶回地盤！'})}
+      function check(){if(done)return;render();if(line(1))return fin('w');if(line(2))return fin('l');if(cnt(1)+cnt(2)>=25){var d=cnt(1)-cnt(2);fin(d>0?'w':d<0?'l':'d')}}
+      B.addEventListener('click',function(e){var bt=e.target.closest('.bg5 button');if(!bt||done||lock>0||!q)return;var i=+bt.dataset.i;if(own(i))return;
+        if(cells[i]===q.v){mine.push(i);award(1);sfx('ok');ask();check()}else{lock=1.5;sfx('no');flash();bump(bt);toast('不是這一格，暫停一下下…','bad')}});
+      a.dbg=function(){var i=-1;if(q)cells.forEach(function(v,k){if(v===q.v&&!own(k))i=k});return {i:i,lock:lock,done:done,mine:mine.length,opp:opp.length}};
+      a.net=function(){return {cl:mine.join(','),sc:a.my}};
+      say(vs?'比賽開始！算對就能佔一格！':'算出答案，點那一格把它佔下來！','happy');ask();render();
+      a.step=function(dt){lock-=dt;
+        if(vs){var e=vsPeers(a.tok)[0],p=e&&e.q;if(p){seen=true;gone=0;oc=p.c;opName=String(p.n||'對手').slice(0,12);$('#bgO').textContent=opName;opp=String(p.cl||'').split(',').filter(Boolean).map(Number).filter(function(n){return n>=0&&n<25});
+            if(p.wn&&!done){render();return fin(p.wn===1?'l':p.wn===-1?'w':'d')}}else if(seen&&(gone+=dt)>4)return fin('w',true)}
+        else{botT-=dt;if(botT<=0){botT=bi*(.7+Math.random()*.6);var fr=[];for(var i=0;i<25;i++)if(!own(i))fr.push(i);if(fr.length)opp.push(fr[rand(fr.length)])}}
+        check();$('#arInfo').textContent='你 '+cnt(1)+' 格・'+opName+' '+cnt(2)+' 格'};
+    })};
+
   return {map:map,stop:stop,STG:STG,WORLDS:WORLDS,ft:ft,menu:menu};
 })();
-GAME_FN.obby=function(g){OB.map(g)};['kart','shoot','meteor','tug','tower','mkart','mtower','mshoot','mtug'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
+GAME_FN.obby=function(g){OB.map(g)};['kart','shoot','meteor','tug','tower','mbingo','msnake','mbond','mcmp'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
 /* 九九乘法表：看表複習，點一下會用中文唸出來 */
 GAME_FN.ttab=function(g){
   var n=2;shell(g.zh);$('#gTitle').textContent=g.zh;
