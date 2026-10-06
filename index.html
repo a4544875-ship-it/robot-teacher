@@ -480,9 +480,9 @@ details.rule ul{margin:6px 0 0;padding-left:1.2em}
 .cm{font-size:44px;font-family:var(--font-emoji);width:56px;text-align:center}.cm.sg{font-family:var(--font-en);font-weight:700;color:#d6452f;font-size:52px}
 .ceq{border-radius:18px;background:#ffc531;color:#4a3600;border:3px solid #14173a;font-size:20px;font-weight:700;padding:12px 22px;box-shadow:0 5px 0 rgba(0,0,0,.2)}
 .ceq:active{transform:translateY(4px);box-shadow:none}
-.bub{position:absolute;left:0;top:0;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,hsl(var(--h) 85% 78%) 62%,hsl(var(--h) 70% 62%));border:3px solid rgba(20,23,58,.55);color:#14173a;font-size:26px;font-weight:700;touch-action:none;box-shadow:0 4px 8px rgba(0,0,0,.15);padding:0}
-.bub.sel{border-color:#14173a;box-shadow:0 0 0 6px #ffc531}
-.bub.pop{transition:scale .25s,opacity .25s;scale:1.7;opacity:0}
+.nbub{position:absolute;left:0;top:0;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,hsl(var(--h) 85% 78%) 62%,hsl(var(--h) 70% 62%));border:3px solid rgba(20,23,58,.55);color:#14173a;font-size:26px;font-weight:700;touch-action:none;box-shadow:0 4px 8px rgba(0,0,0,.15);padding:0}
+.nbub.sel{border-color:#14173a;box-shadow:0 0 0 6px #ffc531}
+.nbub.pop{transition:scale .25s,opacity .25s;scale:1.7;opacity:0}
 .snc{max-width:100%;max-height:100%;border-radius:18px;border:4px solid #14173a;box-shadow:0 6px 0 rgba(0,0,0,.2);touch-action:none}
 .bg5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;width:min(100%,440px)}
 .bg5 button{aspect-ratio:1;border-radius:14px;background:#fff;color:#14173a;border:3px solid #14173a;font-size:clamp(18px,5.5vw,26px);font-weight:700;box-shadow:0 4px 0 rgba(0,0,0,.2);min-width:0;padding:0}
@@ -490,6 +490,14 @@ details.rule ul{margin:6px 0 0;padding-left:1.2em}
 .bg5 button.m{background:#2b8af0;color:#fff}.bg5 button.o{background:#ff6a5c;color:#fff}
 .bgk{margin:0;font-size:14px;font-weight:700;text-align:center}.bgk i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px;border:2px solid #14173a}.bgk i.m{background:#2b8af0}.bgk i.o{background:#ff6a5c}
 .g17{background:linear-gradient(135deg,#ffe08a,#ffb3a8)}.g18{background:linear-gradient(135deg,#c8f2a8,#8fe3c8)}.g19{background:linear-gradient(135deg,#b8e4ff,#e3c8ff)}.g20{background:linear-gradient(135deg,#bfe9a0,#ffe08a)}
+/* 成長等級（英文種樹、數學種花） */
+.kidcard .kt .gl{display:block;font-size:14px;line-height:1.5}
+.stars b{white-space:nowrap}
+.rk .big{font-size:20px;font-family:var(--font-emoji);letter-spacing:.05em;min-height:26px;overflow-wrap:anywhere}
+.rk .big small{font-family:var(--font-zh);font-size:11px;opacity:.75}
+.rk .bar2{width:86%;height:8px;border-radius:99px;background:rgba(255,255,255,.55);overflow:hidden;margin:3px 0}
+.rk .bar2 i{display:block;height:100%;background:#14173a;border-radius:99px}
+.lvtab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;margin:6px 0 0;padding:0;list-style:none;font-size:13px}
 </style>
 
 <header class="top">
@@ -629,10 +637,19 @@ function plusFx(n){var e=document.createElement('div');e.className='plus';e.text
 var PRAISE=['太棒了！','答對了！','你好厲害！','Perfect!','Great job!','讚讚讚！','Nice!','好強！'];
 
 /* ========== 3. DATA LAYER (Store) ========== */
-var KIDS=[{id:'ren',name:'Ray',short:'Ray',emo:'🦁',c:'--sky'},{id:'de',name:'Dave',short:'Dave',emo:'🐯',c:'--coral'}];
-var LV=[[0,'小種子','🌱'],[150,'小嫩芽','🌿'],[400,'小樹苗','🌳'],[800,'閃亮之星','⭐'],[1500,'英文小達人','🏅'],[3000,'英文大師','👑']];
-function levelOf(p){var r=LV[0];for(var i=0;i<LV.length;i++)if(p>=LV[i][0])r=LV[i];return r}
-function nextLv(p){for(var i=0;i<LV.length;i++)if(p<LV[i][0])return LV[i];return null}
+var KIDS=[{id:'de',name:'Dave',short:'Dave',emo:'🐔',c:'--coral'},{id:'ren',name:'Ray',short:'Ray',emo:'🐷',c:'--sky'}];
+/* 成長等級：英文種樹、數學種花，兩邊分開算。每 10000 分長成一棵大樹（或一朵花王），然後從種子重新開始。
+   分數本身沒有分開存：數學分數＝所有數學遊戲的分數加總，其餘都算英文。 */
+var CYC=10000,GROW={
+  en:{name:'英文',ico:'🌳',bigName:'大樹',st:[[0,'小種子','🌰'],[200,'小嫩芽','🌱'],[500,'小葉子','🌿'],[1000,'小樹苗','🎋'],[2000,'小樹','🌲'],[3500,'大樹','🌳'],[5500,'開花的樹','🌸'],[8000,'結果的樹','🍎']],
+    big:[['🌳','橡樹'],['🌲','松樹'],['🌴','椰子樹'],['🍎','蘋果樹'],['🍁','楓樹'],['🍊','橘子樹'],['🎄','聖誕樹'],['🎋','竹子']]},
+  math:{name:'數學',ico:'🌻',bigName:'花王',st:[[0,'花種子','🌰'],[200,'發芽了','🌱'],[500,'小花苞','🌿'],[1000,'小雛菊','🌼'],[2000,'鬱金香','🌷'],[3500,'玫瑰','🌹'],[5500,'向日葵','🌻'],[8000,'大花束','💐']],
+    big:[['🌺','扶桑花王'],['🌸','櫻花王'],['🌻','向日葵王'],['🌹','玫瑰王'],['🌷','鬱金香王'],['🏵️','金盞花王'],['💮','白花王'],['🌼','雛菊王']]}};
+var MATH_IDS={mkart:1,mtower:1,mshoot:1,mtug:1,mbingo:1,msnake:1,mbond:1,mcmp:1};
+function subPts(d,sub){var m=0,g=d.byGame||{};for(var id in g)if(MATH_IDS[id])m+=+g[id].pts||0;return sub==='math'?m:Math.max(0,(+d.pts||0)-m)}
+function growth(sub,p){var G=GROW[sub],cur=p%CYC,i=0;for(var k=0;k<G.st.length;k++)if(cur>=G.st[k][0])i=k;var nb=G.big[Math.floor(p/CYC)%G.big.length];
+  return {G:G,tot:p,cur:cur,n:Math.floor(p/CYC),i:i,lv:G.st[i],nx:G.st[i+1]||[CYC,nb[1],nb[0]],bigs:function(){var o='';for(var j=0;j<Math.floor(p/CYC);j++)o+=G.big[j%G.big.length][0];return o}}}
+function growOf(id,sub){return growth(sub,subPts(Store.kid(id),sub))}
 
 var Store=(function(){
   var db=null,pin=null,pinLoaded=false,subs=[],clearedAt=0;
@@ -712,12 +729,17 @@ function kidOf(id){for(var i=0;i<KIDS.length;i++)if(KIDS[i].id===id)return KIDS[
 function isKid(){return who==='ren'||who==='de'}
 function nm(){var k=kidOf(who);return k?k.short:'同學'}
 function hashPin(s){var x=5381;for(var i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return 'p'+x}
-function updatePill(){var pill=$('#starPill');if(isKid()){$('#starNum').textContent=Store.kid(who).pts;pill.hidden=false}else pill.hidden=true}
+var lvSeen={};
+function updatePill(){var pill=$('#starPill');if(!isKid()){pill.hidden=true;return}
+  var e=growOf(who,'en'),m=growOf(who,'math');$('#starNum').textContent=e.lv[2]+' '+e.cur+'　'+m.lv[2]+' '+m.cur;pill.hidden=false;
+  [e,m].forEach(function(x,j){var key=who+j,val=x.n*100+x.i,old=lvSeen[key];lvSeen[key]=val;if(old===undefined||val<=old)return;
+    var big=Math.floor(val/100)>Math.floor(old/100),b=x.G.big[(x.n-1+x.G.big.length)%x.G.big.length];
+    setTimeout(function(){sfx('win');confetti(null,big?60:30);say(big?'哇！你種出一'+(j?'朵':'棵')+b[1]+' '+b[0]+'！'+x.G.name+'重新從種子開始！':x.G.name+'升級了！變成「'+x.lv[1]+'」'+x.lv[2],'happy')},600)})}
 function renderGate(){
   gateMode='pick';
   var h='<div class="gate-in"><div class="gmas">'+botSVG('')+'</div><h1>你是誰呢？</h1><p class="sub">選自己的帳號，分數和問題都會記在自己名下。</p>';
-  KIDS.forEach(function(k){var d=Store.kid(k.id),lv=levelOf(d.pts);
-    h+='<button class="kidcard '+k.id+'" data-id="'+k.id+'"><span class="face">'+k.emo+'</span><span class="kt"><b>'+esc(k.name)+'</b><div class="en">'+lv[2]+' '+esc(lv[1])+'・'+d.pts+' 分</div></span></button>';});
+  KIDS.forEach(function(k){var e=growOf(k.id,'en'),m=growOf(k.id,'math');
+    h+='<button class="kidcard '+k.id+'" data-id="'+k.id+'"><span class="face">'+k.emo+'</span><span class="kt"><b>'+esc(k.name)+'</b>'+[e,m].map(function(x){return '<span class="gl">'+x.lv[2]+' '+x.G.name+'：'+esc(x.lv[1])+'・'+x.cur+' 分'+(x.n?' '+x.bigs():'')+'</span>'}).join('')+'</span></button>';});
   h+='<button class="btn ghost" id="toParent">👨‍👩‍👦 家長區（看孩子的紀錄）</button></div>';
   gate.innerHTML=h;
   gate.querySelectorAll('.kidcard').forEach(function(b){b.addEventListener('click',function(){sfx('tap');enter(b.dataset.id)})});
@@ -1041,21 +1063,23 @@ function finish(o){
 /* ========== 9. leaderboard ========== */
 function renderRank(){
   var el=PANELS.rank;
-  var arr=KIDS.map(function(k){return {k:k,d:Store.kid(k.id)}}).sort(function(a,b){return b.d.pts-a.d.pts});
-  var h='<h2 class="h">🏆 總排行榜</h2><div class="podium">';
-  arr.forEach(function(r,i){var rank=(i>0&&r.d.pts===arr[0].d.pts)?0:i,lv=levelOf(r.d.pts),nx=nextLv(r.d.pts);
-    h+='<div class="rk '+r.k.id+(i===0&&r.d.pts>0?' lead':'')+'"><div class="medal">'+(r.d.pts>0?['🥇','🥈'][rank]:'')+'</div><div class="face">'+r.k.emo+'</div><b>'+esc(r.k.name)+'</b><div class="lv">'+lv[2]+' '+esc(lv[1])+'</div><div class="pt">'+r.d.pts+'<small> 分</small></div><div class="sm">'+(nx?'再 '+(nx[0]-r.d.pts)+' 分升級':'已達最高級！')+'</div></div>';});
-  var diff=arr[0].d.pts-arr[1].d.pts;
-  h+='</div><p class="gap">'+(arr[0].d.pts===0?'還沒有分數，快去玩遊戲吧！':diff===0?'目前平手，繼續加油！':esc(arr[0].k.short)+' 領先 '+diff+' 分')+'</p>';
-  h+='<h2 class="h">各遊戲排行</h2>';
-  GAMES.filter(function(g){return !g.noscore}).forEach(function(g){var v=KIDS.map(function(k){var x=Store.kid(k.id).byGame[g.id]||{pts:0,plays:0,best:0};return {k:k,x:x}});
-    var mx=Math.max(1,v[0].x.pts,v[1].x.pts),top=Math.max(v[0].x.pts,v[1].x.pts);
-    h+='<div class="grow"><div class="gname">'+g.ico+' '+esc(g.zh)+'</div>';
-    v.forEach(function(r){h+='<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.x.pts===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>';});
-    h+='</div>';});
+  var h='';
+  ['en','math'].forEach(function(sub){var G=GROW[sub],arr=KIDS.map(function(k){return {k:k,g:growOf(k.id,sub)}}).sort(function(a,b){return b.g.tot-a.g.tot});
+    h+='<h2 class="h">'+G.ico+' '+G.name+'排行榜</h2><div class="podium">';
+    arr.forEach(function(r,i){var x=r.g,rank=(i>0&&x.tot===arr[0].g.tot)?0:i,span=x.nx[0]-x.lv[0],pc=Math.round((x.cur-x.lv[0])/span*100);
+      h+='<div class="rk '+r.k.id+(i===0&&x.tot>0?' lead':'')+'"><div class="medal">'+(x.tot>0?['🥇','🥈'][rank]:'')+'</div><div class="face">'+r.k.emo+'</div><b>'+esc(r.k.name)+'</b><div class="lv">'+x.lv[2]+' '+esc(x.lv[1])+'</div><div class="pt">'+x.cur+'<small> 分</small></div>'+
+        '<div class="bar2"><i style="width:'+pc+'%"></i></div><div class="sm">再 '+(x.nx[0]-x.cur)+' 分 → '+x.nx[2]+' '+esc(x.nx[1])+'</div><div class="big">'+(x.n?x.bigs()+' <small>×'+x.n+'</small>':'<small>還沒有'+G.bigName+'</small>')+'</div></div>';});
+    var diff=arr[0].g.tot-arr[1].g.tot;
+    h+='</div><p class="gap">'+(arr[0].g.tot===0?'還沒有分數，快去玩'+G.name+'遊戲吧！':diff===0?'目前平手，繼續加油！':arr[0].g.n>arr[1].g.n?esc(arr[0].k.short)+' 多了 '+(arr[0].g.n-arr[1].g.n)+(sub==='math'?' 朵花王':' 棵大樹')+'！':esc(arr[0].k.short)+' 領先 '+diff+' 分')+'</p>';
+    GAMES.filter(function(g){return !g.noscore&&(g.sub||'en')===sub}).forEach(function(g){var v=KIDS.map(function(k){var x=Store.kid(k.id).byGame[g.id]||{pts:0,plays:0,best:0};return {k:k,x:x}});
+      var mx=Math.max(1,v[0].x.pts,v[1].x.pts),top=Math.max(v[0].x.pts,v[1].x.pts);
+      h+='<div class="grow"><div class="gname">'+g.ico+' '+esc(g.zh)+'</div>';
+      v.forEach(function(r){h+='<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.x.pts===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>';});
+      h+='</div>';});
+  });
   h+='<h2 class="h">🏝️ 闖關島最快紀錄</h2><div class="obrk">'+OB.STG.map(function(s,i){var a=KIDS.map(function(k){return ((Store.kid(k.id).obby||{}).best||{})[i]||0}),mn=Math.min.apply(null,a.filter(Boolean));
     return '<div><span>'+s.ico+' '+(i+1)+'. '+esc(s.n)+'</span>'+KIDS.map(function(k,j){return '<b class="'+(a[j]&&a[j]===mn?'w':'')+'">'+esc(k.short)+' '+(a[j]?OB.ft(a[j]):'—')+'</b>'}).join('')+'</div>'}).join('')+'</div>';
-  h+='<details class="rule"><summary>積分怎麼算？</summary><ul><li>單字闖關島：踩對圖 10 分、拼對字 20 分、過關 30 分（魔王關 50 分）、連線對戰獲勝再加 30 分</li><li>單字飛車：開對車道 10 分，跑完全程 20 分</li><li>單字拔河、單字爬塔：答對一題 10 分</li><li>九九賓果：佔一格 10 分；數字貪吃蛇：吃對一個 10 分；泡泡湊數：湊對一組 10 分；鱷魚比大小：答對一題 5 分</li><li>單字射擊場：射中 10 分；字母隕石：拼對一個單字 20 分</li><li>任何遊戲連線對戰（或跟小機對決）獲勝：再加 30 分</li><li>每天第一次玩完一局：再加 20 分</li><li>稱號：0 小種子・150 小嫩芽・400 小樹苗・800 閃亮之星・1500 英文小達人・3000 英文大師</li></ul></details>';
+  h+='<details class="rule"><summary>積分怎麼算？</summary><ul><li>單字闖關島：踩對圖 10 分、拼對字 20 分、過關 30 分（魔王關 50 分）、連線對戰獲勝再加 30 分</li><li>單字飛車：開對車道 10 分，跑完全程 20 分</li><li>單字拔河、單字爬塔：答對一題 10 分</li><li>九九賓果：佔一格 10 分；數字貪吃蛇：吃對一個 10 分；泡泡湊數：湊對一組 10 分；鱷魚比大小：答對一題 5 分</li><li>單字射擊場：射中 10 分；字母隕石：拼對一個單字 20 分</li><li>任何遊戲連線對戰（或跟小機對決）獲勝：再加 30 分</li><li>每天第一次玩完一局：再加 20 分</li><li>英文和數學的分數分開算：玩英文遊戲長「樹」，玩數學遊戲長「花」</li><li>每 10000 分就長成一棵大樹（或一朵花王），收進收藏，然後從種子重新開始；每一輪長出來的樹和花都不一樣</li></ul><b>🌳 英文成長</b><ul class="lvtab">'+GROW.en.st.map(function(x){return '<li>'+x[2]+' '+x[1]+'：'+x[0]+' 分</li>'}).join('')+'<li>🌳 大樹：10000 分</li></ul><b>🌻 數學成長</b><ul class="lvtab">'+GROW.math.st.map(function(x){return '<li>'+x[2]+' '+x[1]+'：'+x[0]+' 分</li>'}).join('')+'<li>🌺 花王：10000 分</li></ul></details>';
   el.innerHTML=h;
 }
 
@@ -1069,7 +1093,7 @@ function renderRec(){
   var qs=acts.filter(function(a){return a.type==='q'}),gs=acts.filter(function(a){return a.type==='game'});
   var h='<h2 class="h">'+(parent?'📒 孩子們的學習紀錄':'📒 我的學習紀錄')+'</h2>';
   if(parent){h+='<div class="chiprow seg">'+[['all','全部']].concat(KIDS.map(function(k){return [k.id,k.short]})).map(function(x){return '<button class="chip" data-f="'+x[0]+'" aria-pressed="'+(recFilter===x[0])+'">'+esc(x[1])+'</button>'}).join('')+'</div>';
-    h+='<div class="kpi">'+KIDS.map(function(k){var d=Store.kid(k.id);return '<div class="k"><b class="en">'+d.pts+'</b><small>'+esc(k.short)+' 總分</small></div>'}).join('')+'<div class="k"><b class="en">'+qs.length+'</b><small>問題數</small></div></div>';
+    h+='<div class="kpi">'+KIDS.map(function(k){var d=Store.kid(k.id);return '<div class="k"><b class="en">'+subPts(d,'en')+' / '+subPts(d,'math')+'</b><small>'+esc(k.short)+' 英文 / 數學</small></div>'}).join('')+'<div class="k"><b class="en">'+qs.length+'</b><small>問題數</small></div></div>';
     h+='<div style="margin:10px 0">'+(clearConfirm?'<button class="btn danger" id="btnClearRec">⚠️ 再按一次「確定全部歸零」</button> <button class="btn ghost" id="btnClearRecCancel">取消</button>':'<button class="btn ghost" id="btnClearRec">🗑 全部歸零（分數、等級、紀錄）</button>')+'<p style="font-size:13px;color:var(--ink-soft);margin-top:4px">會把 Ray 和 Dave 的分數、等級，和「問過的問題」「玩過的遊戲」紀錄全部清空，這個動作沒辦法復原。</p></div>';}
   h+='<h3 class="h">問過的問題（'+qs.length+'）</h3>';
   if(!qs.length)h+='<p class="empty">還沒有問過問題。</p>';
@@ -1786,7 +1810,7 @@ var OB=(function(){
       function other(){return mul?2+rand(11):step*(1+rand(T/step-1))}
       function ok2(p,q){return mul?p.v*q.v===T:p.v+q.v===T}
       function has(){for(var i=0;i<bs.length;i++)for(var j=i+1;j<bs.length;j++)if(ok2(bs[i],bs[j]))return true;return false}
-      function add(v){var r=B.getBoundingClientRect(),e=document.createElement('button');e.className='bub en';e.textContent=v;e.style.setProperty('--h',rand(360));B.appendChild(e);
+      function add(v){var r=B.getBoundingClientRect(),e=document.createElement('button');e.className='nbub en';e.textContent=v;e.style.setProperty('--h',rand(360));B.appendChild(e);
         var p={v:v,el:e,x:rand(Math.max(1,r.width-SZ)),y:rand(Math.max(1,r.height-SZ)),vx:(Math.random()-.5)*46,vy:(Math.random()-.5)*46};bs.push(p);
         e.addEventListener('pointerdown',function(ev){ev.preventDefault();tap(p)})}
       function fill(){if(!has()){var p=pair();add(p[0]);add(p[1])}while(bs.length<8){if(bs.length<6&&Math.random()<.5){var q=pair();add(q[0]);add(q[1])}else add(other())}}
