@@ -578,7 +578,29 @@ body{position:fixed;top:0;bottom:0;left:0;right:0;height:auto;overscroll-behavio
 .gdact button,.gdshop button{border-radius:14px;padding:10px 6px;background:rgba(255,255,255,.14);color:#fff;font-weight:700;font-size:14px;min-width:0}
 .gdact button.go{background:#3fa9f5}.gdact button[disabled],.gdshop button[disabled]{opacity:.4}
 .gdshop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.gdshop button{font-size:13px;padding:6px 2px}.gdshop button span{display:block;font-size:24px;font-family:var(--font-emoji)}
-.gddeco{position:absolute;transform:translate(-50%,-50%);font-size:clamp(22px,8vw,40px);font-family:var(--font-emoji);filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));pointer-events:none}
+.gddeco{position:absolute;transform:translate(-50%,-50%);font-size:clamp(22px,8vw,40px);font-family:var(--font-emoji);filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));pointer-events:none;background:none;padding:0;line-height:1;z-index:3}
+.gddeco i{display:block;font-style:normal;animation:dfloat 3s ease-in-out infinite}
+.gdscene.own .gddeco{pointer-events:auto;touch-action:none;cursor:grab}
+.gddeco.drag{z-index:6;cursor:grabbing;filter:drop-shadow(0 10px 6px rgba(0,0,0,.45))}.gddeco.drag i{animation:none;transform:scale(1.25)}
+.gddeco.boing{animation:dboing .5s}
+.gdtrash{position:absolute;right:3%;top:3%;width:15%;aspect-ratio:1;border-radius:50%;background:rgba(20,23,58,.6);display:grid;place-items:center;font-size:clamp(20px,7vw,34px);font-family:var(--font-emoji);z-index:5;border:3px dashed #fff}
+.gdtrash.on{background:#ff6a5c;transform:scale(1.2)}
+.gddeco .da0{animation:dfly 7s ease-in-out infinite}.gddeco .da1{animation:dfly 3.4s ease-in-out infinite}
+.gddeco .da2{animation:dcrawl 9s linear infinite}.gddeco .da5{animation:dcrawl 12s linear infinite}
+.gddeco .da3{animation:dhop 4s ease-in-out infinite}.gddeco .da4{animation:dhop 2.8s ease-in-out infinite}
+.gddeco .da6{animation:dsquash 2.2s ease-in-out infinite;transform-origin:50% 100%}.gddeco .da7{animation:dpulse 1.6s ease-in-out infinite;transform-origin:50% 100%}
+.gddeco .da8{animation:dswing 2.6s ease-in-out infinite;transform-origin:50% 0}.gddeco .da10{animation:dswing 3.4s ease-in-out infinite;transform-origin:20% 100%}
+.gddeco .da9{animation:dfloat 3.6s ease-in-out infinite}.gddeco .da11{animation:dglow 4s ease-in-out infinite}
+@keyframes dfly{0%,100%{transform:translate(0,0) rotate(0)}20%{transform:translate(22px,-16px) rotate(12deg)}40%{transform:translate(40px,4px) rotate(-6deg)}60%{transform:translate(14px,16px) rotate(8deg)}80%{transform:translate(-18px,-8px) rotate(-12deg)}}
+@keyframes dcrawl{0%{transform:translateX(-22px) scaleX(-1)}48%{transform:translateX(26px) scaleX(-1)}50%{transform:translateX(26px) scaleX(1)}98%{transform:translateX(-22px) scaleX(1)}100%{transform:translateX(-22px) scaleX(-1)}}
+@keyframes dhop{0%,100%{transform:translate(0,0)}12%{transform:translate(8px,-16px)}24%{transform:translate(16px,0)}36%{transform:translate(24px,-16px)}48%{transform:translate(32px,0) scaleX(1)}52%{transform:translate(32px,0) scaleX(-1)}64%{transform:translate(22px,-16px) scaleX(-1)}76%{transform:translate(11px,0) scaleX(-1)}88%{transform:translate(4px,-12px) scaleX(-1)}98%{transform:translate(0,0) scaleX(-1)}}
+@keyframes dsquash{0%,100%{transform:scale(1,1)}50%{transform:scale(1.12,.88)}}
+@keyframes dpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06,1.14)}}
+@keyframes dswing{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+@keyframes dfloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+@keyframes dglow{0%,100%{opacity:.6;transform:scale(.94)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes dboing{0%,100%{transform:translate(-50%,-50%) scale(1)}35%{transform:translate(-50%,-50%) scale(1.45) rotate(-10deg)}70%{transform:translate(-50%,-50%) scale(.9) rotate(8deg)}}
+@media (prefers-reduced-motion:reduce){.gddeco i{animation:none!important}}
 /* 魔王、本週進步 */
 .boss{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px}
 .bhp{width:min(100%,360px);height:22px;border-radius:99px;background:rgba(20,23,58,.2);border:3px solid #14173a;overflow:hidden}.bhp i{display:block;height:100%;background:linear-gradient(90deg,#ff6a5c,#ffc531);transition:width .25s}
@@ -1226,6 +1248,7 @@ var SCN=["data:image/webp;base64,UklGRipZAABXRUJQVlA4IB5ZAADQhwGdASpVAbwBPp1Cmkm
    每個小孩有兩座：樹園（英文）和花園（數學）。每一輪的種子種在自己選的格子裡，跟著分數長大；
    滿 10000 分收成後留在原地，下一輪再拿到新種子。資料存在 kid.garden[sub] = {bg:場景, p:[第 j 輪種在哪一格]}。 */
 var SCN_N=['綠野草原','清泉溪谷','陽光丘陵','海風沙灘','靜謐竹林','岩石高地','秋楓小徑','夜空平原'],SCN_DY=[0,.035,0,0,0,.03,.03,.02];
+function gclamp(v,a,b){return Math.max(a,Math.min(b,v))}
 var gdnEl=null,gdnV={id:'',sub:'en'},DECO=['🦋','🐝','🐞','🐇','🐿️','🦔','🍄','⛲','🏮','🎈','🪁','🌈'];
 function gdnData(id,sub){var g=(Store.kid(id).garden||{})[sub]||{};return {bg:((g.bg|0)%8+8)%8,p:Array.isArray(g.p)?g.p:[],d:Array.isArray(g.d)?g.d:[]}}
 function gdnPlots(id,sub){
@@ -1240,17 +1263,18 @@ function renderGarden(){
   var h='<div class="in"><div class="gdh"><button class="obx" id="gdX" aria-label="離開花園">✕</button><b>🏡 '+esc(kd.short)+' 的'+(tree?'樹園':'花園')+'</b></div>'+
     '<div class="subsw"><button data-sub="en" aria-pressed="'+tree+'">🌳 樹園（英文）</button><button data-sub="math" aria-pressed="'+!tree+'">🌻 花園（數學）</button></div><div class="gdw">';
   KIDS.forEach(function(k){var y=growOf(k.id,sub);h+='<button data-kid="'+k.id+'" aria-pressed="'+(k.id===id)+'"><b>'+k.emo+' '+esc(k.short)+(isKid()&&k.id===who?'（你）':'')+'</b>收成 '+y.n+' '+G.cnt+G.bigName+'<br>'+gimg(y.lv[2])+' '+esc(y.lv[1])+'・'+y.cur+' 分</button>'});
-  h+='</div><div class="gdscene" style="background-image:url('+SCN[P.d.bg]+')"><span class="gdname">'+esc(SCN_N[P.d.bg])+'</span>';
+  h+='</div><div class="gdscene'+(own?' own':'')+'" style="background-image:url('+SCN[P.d.bg]+')"><span class="gdname">'+esc(SCN_N[P.d.bg])+'</span>';
   for(var i=0;i<20;i++){var r=Math.floor(i/4),c=i%4,c0=P.cells[i],L=(51+(c-1.5)*(14.5+.9*r)).toFixed(1),T=(([39,47.4,56,65.3,75.4][r])+SCN_DY[P.d.bg]*100).toFixed(1),w=(16.5+1.7*r).toFixed(1);
     if(c0){var cur=c0.j===x.n,kn=cur?null:kindOf(G,id,c0.j);h+='<button class="gdp'+(cur?' cur':'')+'" data-i="'+i+'" data-j="'+c0.j+'"'+(cur?' data-l="'+x.cur+' 分"':'')+' style="left:'+L+'%;top:'+T+'%;width:'+(cur?w:(+w*1.3).toFixed(1))+'%" aria-label="'+esc(cur?x.lv[1]:kn[1])+'"><img src="'+ART[cur?x.lv[2]:kn[0]]+'" alt=""></button>'}
     else if(own&&P.need)h+='<button class="gdp add" data-i="'+i+'" data-new="1" style="left:'+L+'%;top:'+T+'%;width:'+(+w*.62).toFixed(1)+'%" aria-label="種在這裡">＋</button>'}
-  (Array.isArray(P.d.d)?P.d.d:[]).slice(0,12).forEach(function(z){if(DECO[z[0]])h+='<span class="gddeco" style="left:'+(+z[1]||50)+'%;top:'+(+z[2]||80)+'%">'+DECO[z[0]]+'</span>'});
+  (Array.isArray(P.d.d)?P.d.d:[]).slice(0,12).forEach(function(z,di){if(DECO[z[0]])h+='<button class="gddeco" data-d="'+di+'" aria-label="裝飾" style="left:'+(+z[1]||50)+'%;top:'+(+z[2]||80)+'%"><i class="da'+z[0]+'" style="animation-delay:-'+(di*.7).toFixed(1)+'s">'+DECO[z[0]]+'</i></button>'});
+  if(own)h+='<span class="gdtrash" id="gdTrash" hidden>🗑️</span>';
   h+='</div>';var lk=Learn.likes(id,sub),W=isKid()?Learn.bal(who):0,ok=KIDS.filter(function(k){return k.id!==id})[0];
   if(own&&P.need)h+='<p class="gdtip new">🌰 你有一顆新'+(tree?'樹':'花')+'種子！點一塊閃閃的空地把它種下去。</p>';
   else h+='<p class="gdtip">'+(P.need?esc(kd.short)+' 還沒把這一輪的種子種下去。':gimg(x.lv[2])+' 現在是「'+esc(x.lv[1])+'」，再 '+(x.nx[0]-x.cur)+' 分就會長成「'+esc(x.nx[1])+'」。點點看每一棵！')+'</p>';
   if(lk)h+='<p class="gdtip">👍 '+esc(ok.short)+' 幫這座'+(tree?'樹園':'花園')+'按了 '+lk+' 個讚！</p>';
   if(own){var nd=(P.d.d||[]).length;h+='<div class="gdact"><button class="go" id="gdWater"'+(W<1||P.need?' disabled':'')+'>💧 澆水（+50 分）</button><button id="gdBook">📖 圖鑑・你有 '+W+' 💧</button></div>'+
-    '<p class="gdtip">🛍️ 裝飾小店：每個 3 💧（完成每日任務可以拿到 💧）'+(nd>=12?'・已經放滿 12 個了':'')+'</p><div class="gdshop">'+DECO.map(function(e,k){return '<button data-deco="'+k+'"'+(W<3||nd>=12?' disabled':'')+'><span>'+e+'</span>3 💧</button>'}).join('')+'</div>'}
+    '<p class="gdtip">🛍️ 裝飾小店：每個 3 💧（完成每日任務可以拿到 💧）。買了以後用手指拖到喜歡的位置，拖到 🗑️ 可以收掉'+(nd>=12?'・已經放滿 12 個了':'')+'</p><div class="gdshop">'+DECO.map(function(e,k){return '<button data-deco="'+k+'"'+(W<3||nd>=12?' disabled':'')+'><span>'+e+'</span>3 💧</button>'}).join('')+'</div>'}
   else if(isKid())h+='<div class="gdact"><button class="go" id="gdLike"'+(Learn.canLike(sub)?'':' disabled')+'>👍 '+(Learn.canLike(sub)?'幫 '+esc(kd.short)+' 按讚':'今天按過讚了')+'</button><button id="gdGift"'+(W<1?' disabled':'')+'>🎁 送 '+esc(kd.short)+' 1 💧（你有 '+W+'）</button></div>';
   if(own){h+='<p class="gdtip">換一個場景：</p><div class="gdbg">'+SCN.map(function(u,k){return '<button data-bg="'+k+'" aria-pressed="'+(k===P.d.bg)+'" style="background-image:url('+u+')">'+SCN_N[k]+'</button>'}).join('')+'</div>'}
   else if(isKid())h+='<p class="gdtip">這是 '+esc(kd.short)+' 的'+(tree?'樹園':'花園')+'，只能參觀喔！</p>';
@@ -1260,7 +1284,16 @@ function renderGarden(){
   e1=$('#gdBook');if(e1)e1.addEventListener('click',function(){sfx('tap');openBook(who)});
   e1=$('#gdLike');if(e1)e1.addEventListener('click',function(){sfx('ok');confetti(e1,20);Learn.like(sub);say('幫 '+kd.short+' 按讚了！互相加油最棒了！','happy')});
   e1=$('#gdGift');if(e1)e1.addEventListener('click',function(){if(!Learn.gift())return;sfx('ok');confetti(e1,20);say('送給 '+kd.short+' 1 滴水！你真大方！','happy')});
-  gdnEl.querySelectorAll('[data-deco]').forEach(function(b){b.addEventListener('click',function(){if(!Learn.spend(3))return;sfx('ok');Store.garden(id,sub,function(g){if(!Array.isArray(g.d))g.d=[];g.d.push([+b.dataset.deco,8+rand(85),36+rand(56)])});say('新的裝飾放進去了！','happy')})});
+  gdnEl.querySelectorAll('[data-deco]').forEach(function(b){b.addEventListener('click',function(){if(!Learn.spend(3))return;sfx('ok');Store.garden(id,sub,function(g){if(!Array.isArray(g.d))g.d=[];g.d.push([+b.dataset.deco,8+rand(85),36+rand(56)])});say('新的裝飾放進去了！用手指把它拖到喜歡的地方吧！','happy')})});
+  if(own)gdnEl.querySelectorAll('.gddeco').forEach(function(b){var drag=null,sc=gdnEl.querySelector('.gdscene'),tr=$('#gdTrash');
+    function pos(e){var r=sc.getBoundingClientRect();return [(e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*100]}
+    b.addEventListener('pointerdown',function(e){e.preventDefault();drag={x:e.clientX,y:e.clientY,mv:false};try{b.setPointerCapture(e.pointerId)}catch(x){}});
+    b.addEventListener('pointermove',function(e){if(!drag)return;if(!drag.mv&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<8)return;if(!drag.mv){drag.mv=true;b.classList.add('drag');tr.hidden=false}
+      var p=pos(e);drag.p=p;b.style.left=gclamp(p[0],4,96)+'%';b.style.top=gclamp(p[1],6,96)+'%';tr.classList.toggle('on',p[0]>80&&p[1]<18)});
+    function up(){if(!drag)return;var d=drag,i=+b.dataset.d;drag=null;b.classList.remove('drag');tr.hidden=true;
+      if(!d.mv){sfx('pop');b.classList.remove('boing');void b.offsetWidth;b.classList.add('boing');return}
+      var del=d.p[0]>80&&d.p[1]<18;sfx(del?'tap':'ok');Store.garden(id,sub,function(g){if(!Array.isArray(g.d)||!g.d[i])return;if(del)g.d.splice(i,1);else{g.d[i][1]=Math.round(gclamp(d.p[0],4,96));g.d[i][2]=Math.round(gclamp(d.p[1],6,96))}});if(del)say('收起來了！','idle')}
+    b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up)});
   gdnEl.querySelectorAll('[data-sub]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.sub=b.dataset.sub;renderGarden()})});
   gdnEl.querySelectorAll('[data-kid]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.id=b.dataset.kid;renderGarden()})});
   gdnEl.querySelectorAll('[data-bg]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');Store.garden(id,sub,function(g){g.bg=+b.dataset.bg});say('換成「'+SCN_N[+b.dataset.bg]+'」了！','happy')})});
