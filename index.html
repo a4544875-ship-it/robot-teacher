@@ -729,6 +729,9 @@ body{background-image:url(data:image/webp;base64,UklGRmIoAABXRUJQVlA4IFYoAABwwAG
 #rosMsg{color:#d8362a;font-size:13px}.rost>.btn{margin-top:10px}
 #gate .gmas{width:96px;height:96px}
 .gdw .kav,.facb .kav{width:1.6em;height:1.6em}
+
+.kav.ph{border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);aspect-ratio:1}
+.rosph{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.rosph .kav{width:56px;height:56px}.rosph .btn{font-size:14px;padding:8px 12px}
 </style>
 
 <header class="top">
@@ -867,7 +870,7 @@ var KIDS=[{id:'de',name:'Dave',short:'Dave',emo:'🐔',c:'--coral',av:'av_de'},{
 /* 角色名單可以由家長新增／刪除，存在 settings/parent 的 rosterJ（和這台裝置的 localStorage）。KIDS 陣列會原地更新。 */
 var KCOLS=['--coral','--sky','--mint','--grape','--sun'],KHEX={'--coral':0xff6a5c,'--sky':0x2b8af0,'--mint':0x18c795,'--grape':0x8d6cf2,'--sun':0xf0a800},KEMOS=['🐶','🐱','🐰','🐻','🐼','🦊','🐯','🦁','🐵','🐸','🐧','🦄','🐲','🐔','🐷','🐮'];
 function kidHex(id){var k=kidOf(id);return (k&&KHEX[k.c])||0x2b8af0}
-function kface(k,cls){return k&&k.av&&PIC[k.av]?'<img class="kav'+(cls?' '+cls:'')+'" src="'+PIC[k.av]+'" alt="">':'<span class="kemo'+(cls?' '+cls:'')+'">'+(k?k.emo:'🙂')+'</span>'}
+function kface(k,cls){var ph=k&&Store.kid(k.id).avd;if(ph)return '<img class="kav ph'+(cls?' '+cls:'')+'" src="'+ph+'" alt="">';return k&&k.av&&PIC[k.av]?'<img class="kav'+(cls?' '+cls:'')+'" src="'+PIC[k.av]+'" alt="">':'<span class="kemo'+(cls?' '+cls:'')+'">'+(k?k.emo:'🙂')+'</span>'}
 function kbg(k){return 'background:color-mix(in srgb,var('+k.c+') 55%,#fff)'}
 /* 成長等級：英文種樹、數學種花，兩邊分開算。每 10000 分長成一棵大樹（或一朵花王），然後從種子重新開始。
    分數本身沒有分開存：數學分數＝所有數學遊戲的分數加總，其餘都算英文。 */
@@ -895,7 +898,7 @@ var Store=(function(){
   var dirty={},writing={},flushT=null,chain=Promise.resolve(),warned=false;
   function kblank(){return {pts:0,byGame:{},qCount:0,lastDay:'',obby:{v:2},garden:{}}}
   function knorm(d){var b=kblank();d=d||{};b.pts=+d.pts||0;b.byGame=d.byGame||{};b.qCount=+d.qCount||0;b.lastDay=d.lastDay||'';b.obby=(d.obby&&typeof d.obby==='object')?d.obby:{v:2};b.garden=(d.garden&&typeof d.garden==='object')?d.garden:{};
-    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;
+    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
     /* v2：關卡改成 20 關、順序重排，舊版的最快紀錄對不上新關卡，只保留已解鎖的進度 */
     if(b.obby.v!==2)b.obby={v:2,stage:Math.min(+b.obby.stage||0,4)};return b}
   function ensure(id){if(!kids[id]){kids[id]=kblank();dirty[id]=false;writing[id]=0}}
@@ -950,7 +953,7 @@ var Store=(function(){
     getPin:function(){return db?pin:ls.get('rt-pin',null)},
     setPin:function(h){if(db){pin=h;saveSettings()}else ls.set('rt-pin',h)},
     clearRecords:function(){clearedAt=Date.now();
-      KIDS.forEach(function(k){var p=kids[k.id]&&kids[k.id].pin;kids[k.id]=kblank();if(p)kids[k.id].pin=p;dirty[k.id]=false});
+      KIDS.forEach(function(k){var p=kids[k.id]&&kids[k.id].pin,av=kids[k.id]&&kids[k.id].avd;kids[k.id]=kblank();if(p)kids[k.id].pin=p;if(av)kids[k.id].avd=av;dirty[k.id]=false});
       saveLocal();emit();
       if(db){
         saveSettings();
@@ -1350,16 +1353,20 @@ function rosterHtml(){var h='<div class="rost"><h3 class="h">👥 角色管理</
     else h+='<div class="rosr"><span class="rf">'+kface(k)+'</span><b>'+esc(k.name)+'</b><small>'+(has?'已設定密碼':'還沒設密碼')+'</small><span class="rb"><button data-re="'+k.id+'">✏️ 修改</button>'+(has?'<button data-rp="'+k.id+'">🔑 重設密碼</button>':'')+(KIDS.length>1?'<button class="'+(rosDel===k.id?'dg':'')+'" data-rd="'+k.id+'">'+(rosDel===k.id?'⚠️ 確定刪除？':'🗑 刪除')+'</button>':'')+'</span></div>'});
   if(rosEd&&rosEd.id==='new')h+=rosForm();else if(KIDS.length<6)h+='<button class="btn ghost" id="rosAdd">＋ 新增角色</button>';else h+='<p class="empty">最多 6 個角色。</p>';
   return h+'<p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0">重設密碼後，那個角色下次進來會重新設定自己的密碼。刪除角色會把他的分數和花園一起刪掉，沒辦法復原。</p></div>'}
-function rosForm(){return '<div class="rosf"><input id="rosName" maxlength="8" placeholder="名字（最多 8 個字）" value="'+esc(rosEd.name)+'" aria-label="名字"><div class="rose">'+KEMOS.map(function(e){return '<button data-em="'+e+'" aria-pressed="'+(rosEd.emo===e)+'">'+e+'</button>'}).join('')+'</div><div class="row"><button class="btn alt" id="rosSave">儲存</button><button class="btn ghost" id="rosCancel">取消</button></div><div id="rosMsg" role="alert"></div></div>'}
+function rosForm(){return '<div class="rosf"><input id="rosName" maxlength="8" placeholder="名字（最多 8 個字）" value="'+esc(rosEd.name)+'" aria-label="名字"><div class="rose">'+KEMOS.map(function(e){return '<button data-em="'+e+'" aria-pressed="'+(rosEd.emo===e)+'">'+e+'</button>'}).join('')+'</div><div class="rosph">'+(rosEd.avd?'<img class="kav ph" src="'+rosEd.avd+'" alt="">':'')+'<label class="btn ghost">📷 '+(rosEd.avd?'換一張':'上傳照片或圖片')+'<input type="file" accept="image/*" id="rosFile" hidden></label>'+(rosEd.avd?'<button class="btn ghost" id="rosNoPh">移除照片</button>':'')+'</div><small style="color:var(--ink-soft);font-size:12px">照片會自動裁成正方形縮小。有上傳照片時會用照片當頭像，沒有才用上面選的圖案。</small><div class="row"><button class="btn alt" id="rosSave">儲存</button><button class="btn ghost" id="rosCancel">取消</button></div><div id="rosMsg" role="alert"></div></div>'}
 function rosterWire(){var el=PANELS.rec;function re(){renderRec()}
   var a=$('#rosAdd');if(a)a.addEventListener('click',function(){sfx('tap');rosEd={id:'new',name:'',emo:KEMOS[KIDS.length%KEMOS.length]};rosDel='';re()});
-  el.querySelectorAll('[data-re]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');var k=kidOf(b.dataset.re);rosEd={id:k.id,name:k.name,emo:k.av?'':k.emo};rosDel='';re()})});
+  el.querySelectorAll('[data-re]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');var k=kidOf(b.dataset.re);rosEd={id:k.id,name:k.name,emo:k.av?'':k.emo,avd:Store.kid(k.id).avd||''};rosDel='';re()})});
   el.querySelectorAll('[data-rp]').forEach(function(b){b.addEventListener('click',function(){sfx('ok');Store.mut(b.dataset.rp,function(d){delete d.pin});say('密碼已經重設，下次進來會重新設定。','happy')})});
   el.querySelectorAll('[data-rd]').forEach(function(b){b.addEventListener('click',function(){if(rosDel!==b.dataset.rd){sfx('tap');rosDel=b.dataset.rd;re();return}sfx('no');rosDel='';Store.delKid(b.dataset.rd);say('角色刪除了。','idle')})});
   el.querySelectorAll('[data-em]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');rosEd.name=$('#rosName').value;rosEd.emo=b.dataset.em;re()})});
   var sv=$('#rosSave');if(sv){sv.addEventListener('click',function(){var n=$('#rosName').value.trim().slice(0,8);if(!n){$('#rosMsg').textContent='請輸入名字。';return}
       if(KIDS.some(function(k){return k.name===n&&k.id!==rosEd.id})){$('#rosMsg').textContent='已經有同樣名字的角色了。';return}
-      sfx('ok');if(rosEd.id==='new'){Store.addKid({name:n,emo:rosEd.emo||'🙂'});say('新角色「'+n+'」加入了！','happy')}else Store.editKid(rosEd.id,{name:n,emo:rosEd.emo});rosEd=null;re()});
+      sfx('ok');var ph=rosEd.avd||'',kid2=rosEd.id;if(kid2==='new'){kid2=Store.addKid({name:n,emo:rosEd.emo||'🙂'});say('新角色「'+n+'」加入了！','happy')}else Store.editKid(kid2,{name:n,emo:rosEd.emo});
+      if(ph!==(Store.kid(kid2).avd||''))Store.mut(kid2,function(d){if(ph)d.avd=ph;else delete d.avd});rosEd=null;re()});
+    var rf=$('#rosFile');rf.addEventListener('change',function(){var f=rf.files&&rf.files[0];if(!f)return;var nm0=$('#rosName').value,fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){var S=160,c=document.createElement('canvas'),m=Math.min(im.width,im.height);c.width=c.height=S;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,S,S);x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);
+        if(!rosEd)return;rosEd.name=nm0;rosEd.avd=c.toDataURL('image/jpeg',.82);re()};im.onerror=function(){$('#rosMsg').textContent='這個檔案打不開，換一張圖片試試。'};im.src=fr.result};fr.readAsDataURL(f)});
+    var np=$('#rosNoPh');if(np)np.addEventListener('click',function(){sfx('tap');rosEd.name=$('#rosName').value;rosEd.avd='';re()});
     $('#rosCancel').addEventListener('click',function(){sfx('tap');rosEd=null;re()})}}
 /* ========== 9. leaderboard ========== */
 function renderRank(){
