@@ -829,6 +829,43 @@ function sfx(k){
   else if(k==='pop'){tone(520,0,.08,'square',.08);tone(780,.05,.1,'square',.06)}
   else if(k==='win'){tone(523,0,.15,'triangle');tone(659,.14,.15,'triangle');tone(784,.28,.15,'triangle');tone(1047,.42,.35,'triangle')}
   else if(k==='tap'){tone(440,0,.06,'sine',.07)}}
+
+/* ========== 背景音樂 ==========
+   全部用 Web Audio 即時合成的原創小曲（沒有音檔，離線也能播）。每首是 4 小節循環：主旋律＋低音＋分解和弦。
+   Music.play(名稱) 只記下「想播哪一首」，排程器下一拍才切換，所以連續呼叫不會爆音。靜音鈕同時關掉音樂。 */
+var MUSIC_G={obby:'obby',kart:'kart',shoot:'space',meteor:'space',tug:'bounce',tower:'bounce',diner:'diner',boss:'boss',mboss:'boss',mbingo:'math',msnake:'math',mbond:'math',mcmp:'math',ttab:'math'};
+var Music=(function(){
+  var MAJ=[0,2,4,5,7,9,11],MIN=[0,2,3,5,7,8,10],_=null;
+  var T={
+    cover:{k:60,bpm:96,lead:'sine',v:1,m:[2,4,7,_,6,4,2,_, 5,7,9,_,8,7,5,_, 3,5,7,_,5,3,5,_, 4,6,8,_,6,4,1,_],b:[0,5,3,4]},
+    lobby:{k:65,bpm:108,lead:'triangle',v:.9,m:[0,_,2,4,_,2,0,_, 5,_,4,2,_,4,5,_, 3,_,5,7,_,5,3,_, 4,_,2,1,_,2,4,_],b:[0,5,3,4]},
+    obby:{k:67,bpm:132,lead:'square',v:.55,m:[0,2,4,2,7,_,4,_, 5,4,2,4,5,_,7,_, 3,5,7,5,9,_,7,_, 8,7,6,4,1,_,4,_],b:[0,5,3,4]},
+    kart:{k:69,bpm:164,lead:'square',v:.5,m:[0,0,4,0,7,0,4,0, 3,3,5,3,7,3,5,3, 4,4,6,4,8,4,6,4, 7,_,6,_,4,_,2,_],b:[0,3,4,0],drive:1},
+    space:{k:62,bpm:118,lead:'triangle',v:.9,min:1,m:[0,_,_,4,_,_,2,_, 5,_,_,4,_,_,2,_, 2,_,_,4,_,_,7,_, 6,_,4,_,1,_,_,_],b:[0,5,2,6]},
+    bounce:{k:60,bpm:144,lead:'triangle',v:.9,m:[0,_,4,_,2,_,4,_, 3,_,7,_,5,_,3,_, 4,_,8,_,6,_,4,_, 7,4,2,4,0,_,_,_],b:[0,3,4,0]},
+    diner:{k:65,bpm:112,lead:'triangle',v:.6,sw:.16,m:[0,_,2,3,4,_,7,_, 5,_,4,_,2,_,0,_, 1,_,3,4,5,_,8,_, 6,_,4,_,1,_,_,_],b:[0,5,1,4]},
+    boss:{k:57,bpm:150,lead:'sawtooth',v:.4,min:1,m:[0,0,_,0,2,_,0,_, 5,5,_,5,4,_,2,_, 6,6,_,6,4,_,6,_, 4,_,7,_,6,4,2,1],b:[0,5,6,4],drive:1},
+    math:{k:67,bpm:122,lead:'triangle',v:.85,m:[4,_,2,0,_,2,4,_, 7,_,5,3,_,5,7,_, 8,_,6,4,_,6,8,_, 7,_,4,_,2,_,0,_],b:[0,3,4,0]},
+    garden:{k:60,bpm:84,lead:'sine',v:1,m:[4,_,_,2,_,_,0,_, 1,_,_,4,_,_,_,_, 5,_,_,4,_,_,2,_, 3,_,_,1,_,_,_,_],b:[0,4,5,3]}};
+  var want='',cur='',tr=null,master=null,step=0,nextT=0,timer=null,unlocked=false;
+  function hz(m){return 440*Math.pow(2,(m-69)/12)}
+  function note(t0,midi,dur,type,vol){var o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.value=hz(midi);g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+.015);g.gain.exponentialRampToValueAtTime(.0001,t0+dur);o.connect(g);g.connect(master);o.start(t0);o.stop(t0+dur+.03)}
+  function deg(t,d){var sc=t.min?MIN:MAJ,o=Math.floor(d/7);return t.k+sc[((d%7)+7)%7]+12*o}
+  function kill(){if(master){var m=master;try{m.gain.cancelScheduledValues(actx.currentTime);m.gain.setTargetAtTime(.0001,actx.currentTime,.05)}catch(e){}setTimeout(function(){try{m.disconnect()}catch(e){}},400);master=null}cur='';tr=null}
+  function tick(){
+    if(!unlocked||!actx)return;var w=(muted||document.hidden)?'':want;
+    if(w!==cur){kill();if(w&&T[w]){cur=w;tr=T[w];master=actx.createGain();master.gain.value=.55;master.connect(actx.destination);step=0;nextT=actx.currentTime+.08}}
+    if(!tr)return;var sd=60/tr.bpm/2;
+    while(nextT<actx.currentTime+.3){var s=step%32,bar=Math.floor(s/8),i=s%8,t0=nextT+((tr.sw&&i%2)?sd*tr.sw:0),r=tr.b[bar],m=tr.m[s];
+      if(m!==null){var L=1;while(s+L<32&&(s+L)%8!==0&&tr.m[s+L]===null&&L<3)L++;note(t0,deg(tr,m)+12,sd*(L>1?L*.85:.9),tr.lead,.05*tr.v)}
+      if(tr.drive?true:i%2===0)note(t0,deg(tr,(i===2||i===6)?r+4:r)-12,sd*(tr.drive?.8:1.6),'triangle',tr.drive&&i%2?.03:.06);
+      if(!tr.drive&&i%2===1)note(t0,deg(tr,r+[2,4,7,4][(i-1)/2]),sd*.8,'sine',.022);
+      step++;nextT+=sd}}
+  function unlock(){if(unlocked)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();unlocked=true;timer=setInterval(tick,80);tick()}catch(e){}}
+  ['pointerdown','keydown','touchend'].forEach(function(ev){document.addEventListener(ev,unlock,{capture:true,passive:true})});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden&&actx&&actx.state==='suspended')try{actx.resume()}catch(e){}});
+  return {play:function(k){want=k||''},stop:function(){want=''},want:function(){return want},cur:function(){return cur}};
+})();
 var fx=$('#fx'),COLORS=['--sun','--coral','--mint','--grape','--sky','--rose'];
 function confetti(target,n){if(REDUCED)return;
   var r=target&&target.getBoundingClientRect?target.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/3,width:0,height:0};
@@ -965,10 +1002,10 @@ function updatePill(){var pill=$('#starPill');if(!isKid()){pill.hidden=true;retu
     var big=Math.floor(val/100)>Math.floor(old/100);
     setTimeout(function(){sfx('win');confetti(null,big?60:30);rewardPop(big?'收成了「'+x.last[1]+'」！':x.G.name+'升級了！',big?'快去花園把新種子種下去吧！':'變成「'+x.lv[1]+'」了，繼續加油！');say(big?'哇！你收成了一'+x.G.cnt+'「'+x.last[1]+'」！快去花園把新種子種下去吧！':x.G.name+'升級了！變成「'+x.lv[1]+'」！','happy')},600)})}
 /* 封面：遊戲標題＋城堡主視覺＋「準備出發」大按鈕，按了才到選角色 */
-function renderCover(){gateMode='cover';gate.classList.add('cover');
+function renderCover(){gateMode='cover';gate.classList.add('cover');Music.play('cover');
   gate.innerHTML='<div class="cvbg" aria-hidden="true"></div><div class="cvin"><h1 class="cvtitle"><small>奇蹟知識島</small><span>魔法城堡</span></h1><div class="cvsp"></div><button class="cvgo" id="cvGo">🚀 準備出發！</button><p class="cvsub">小機老師在城堡裡等你</p></div>';
   $('#cvGo').addEventListener('click',function(){sfx('win');confetti($('#cvGo'),40);gate.classList.remove('cover');renderGate()})}
-function renderGate(){gate.classList.remove('cover');
+function renderGate(){gate.classList.remove('cover');Music.play('cover');
   gateMode='pick';
   var h='<div class="gate-in"><div class="gmas">'+botSVG('')+'</div><h1>你是誰呢？</h1><p class="sub">選自己的帳號，分數和問題都會記在自己名下。</p>';
   KIDS.forEach(function(k){var e=growOf(k.id,'en'),m=growOf(k.id,'math');
@@ -1025,6 +1062,7 @@ var PANELS={chat:$('#chatPanel'),game:$('#gamePanel'),rank:$('#rankPanel'),rec:$
 function showTab(t){
   curTab=t;
   Object.keys(PANELS).forEach(function(k){PANELS[k].hidden=k!==t;$('#tab_'+k).setAttribute('aria-selected',k===t?'true':'false')});
+  Music.play(t==='chat'?'':'lobby');
   if(t==='chat'){cleanupGame();say('有問題就問我，也可以拍照片喔！','idle')}
   else if(t==='game'){backGameHome();say('來玩英文吧！','happy')}
   else if(t==='rank'){cleanupGame();renderRank();say('看看誰是第一名！','happy')}
@@ -1287,6 +1325,7 @@ var gHome=$('#gHome'),gPlay=$('#gPlay'),gBody=$('#gBody');
 var timers=[],curGame='',roundPts=0;
 function later(fn,ms){var t=setTimeout(fn,ms);timers.push(t);return t}
 function cleanupGame(){timers.forEach(clearTimeout);timers=[];if(typeof OB!=='undefined'&&OB)OB.stop()}
+var musPrev='';
 function renderGameHome(){
   renderDay();
   if(gOpenWho!==who){gOpen='';gOpenWho=who}
@@ -1419,8 +1458,8 @@ function gdnPlots(id,sub){
   for(j=from;j<=n;j++){var i=d.p[j];if(typeof i==='number'&&i>=0&&i<20&&!used[i]){used[i]=1;cells[i]={j:j};done[j]=1}}
   for(j=from;j<n;j++)if(!done[j])for(f=0;f<20;f++)if(!used[f]){used[f]=1;cells[f]={j:j};done[j]=1;break}
   return {cells:cells,need:!done[n],x:x,d:d}}
-function openGarden(id,sub){gdnV={id:id,sub:sub||'en'};if(!gdnEl){gdnEl=document.createElement('div');gdnEl.className='gdn';document.body.appendChild(gdnEl)}renderGarden()}
-function closeGarden(){if(gdnEl){gdnEl.remove();gdnEl=null}}
+function openGarden(id,sub){gdnV={id:id,sub:sub||'en'};if(!gdnEl){musPrev=Music.want();Music.play('garden');gdnEl=document.createElement('div');gdnEl.className='gdn';document.body.appendChild(gdnEl)}renderGarden()}
+function closeGarden(){if(gdnEl){gdnEl.remove();gdnEl=null;Music.play(musPrev)}}
 function renderGarden(){
   if(!gdnEl)return;var id=gdnV.id,sub=gdnV.sub,G=GROW[sub],P=gdnPlots(id,sub),x=P.x,own=isKid()&&who===id,kd=kidOf(id),tree=sub==='en';
   var h='<div class="in"><div class="gdh"><button class="obx" id="gdX" aria-label="離開花園">✕</button><b>🏡 '+esc(kd.short)+' 的'+(tree?'樹園':'花園')+'</b></div>'+
@@ -1729,7 +1768,7 @@ var OB=(function(){
 
   /* ---------- 進入關卡 ---------- */
   function play(g,o){
-    stop(!!o.tok);curGame='obby';roundPts=0;
+    stop(!!o.tok);curGame='obby';roundPts=0;Music.play('obby');
     var el=document.createElement('div');el.className='obplay';
     el.innerHTML='<canvas></canvas><div class="obhud"><button class="obx" id="obExit" aria-label="離開關卡">✕</button><div class="obinfo"><b>'+(o.stage+1)+'. '+esc(STG[o.stage].n)+'</b><span class="en" id="obTime">0:00.0</span></div><div class="obrace" id="obRace" hidden></div></div>'+
       '<div class="obprompt" id="obPrompt" hidden></div><div class="obmsg" id="obMsg">載入中…</div><div class="obstick" id="obStick" hidden><i></i></div><button class="objump" id="obJump" hidden>跳</button><div class="obflash" id="obFlash"></div><div class="obres" id="obRes" hidden></div>';
@@ -1966,7 +2005,7 @@ var OB=(function(){
   }
 
   function stop(keep){
-    if(unNet){unNet();unNet=null}lob=null;clearTimeout(tt);
+    if(unNet){unNet();unNet=null}lob=null;clearTimeout(tt);if(S||A)Music.play('lobby');
     if(A){var a=A;A=null;a.dead=true;cancelAnimationFrame(a.raf);window.removeEventListener('resize',a.rs);if(a.kd)window.removeEventListener('keydown',a.kd);disp(a.sc,a.rd);a.el.remove();try{window.speechSynthesis.cancel()}catch(e){}}
     if(!S){if(!keep)Net.off();return}
     var s=S;S=null;s.dead=true;cancelAnimationFrame(s.raf);clearTimeout(s.tm);clearTimeout(s.tt);
@@ -2020,7 +2059,7 @@ var OB=(function(){
     el.innerHTML=rows.map(function(r){var kd=kidOf(r.k)||{emo:'🙂',c:'--grape'};return '<div><span>'+kd.emo+'</span><span class="trk"><i style="width:'+Math.round(clamp(r.pr,0,1)*100)+'%;background:var('+kd.c+')"></i></span></div>'}).join('')}
   function vsFinish(a,ms,cb){Net.set({fin:ms,pr:1});setTimeout(function(){if(A!==a)return;var best=null;vsPeers(a.tok).forEach(function(e){var f=+e.q.fin;if(f&&(!best||f<best.f))best={f:f,n:e.q.n}});cb(!best||ms<=best.f,best?String(best.n||'對手').slice(0,12):'')},1200)}
   function arc(g,o,setup){
-    stop(!!o.tok);curGame=g.id;roundPts=0;
+    stop(!!o.tok);curGame=g.id;roundPts=0;Music.play(MUSIC_G[g.id]||'bounce');
     var el=document.createElement('div');el.className='obplay';
     el.innerHTML='<canvas></canvas><div class="obhud"><button class="obx" id="obExit" aria-label="離開遊戲">✕</button><div class="obinfo"><b>'+esc(g.zh)+'</b><span class="en" id="arInfo"></span></div><div class="arhp" id="arHp"></div><div class="obrace" id="obRace" hidden></div></div>'+
       '<div class="obprompt" id="obPrompt" hidden></div><div class="obmsg" id="obMsg">載入中…</div><div class="arq" id="arQ" hidden></div><div class="obflash" id="obFlash"></div><div class="obres" id="obRes" hidden></div>';
@@ -2237,7 +2276,7 @@ var OB=(function(){
   /* ---------- 數學遊戲（2D）：共用外殼 ----------
      這幾款用一般網頁元素和 canvas 畫，不需要 3D 引擎。計時一律用真實時間。 */
   function pad(g,o,build){
-    stop(!!o.tok);curGame=g.id;roundPts=0;
+    stop(!!o.tok);curGame=g.id;roundPts=0;Music.play(MUSIC_G[g.id]||'bounce');
     var el=document.createElement('div');el.className='obplay pd';
     el.innerHTML='<div class="obhud"><button class="obx" id="obExit" aria-label="離開遊戲">✕</button><div class="obinfo"><b>'+esc(g.zh)+'</b><span class="en" id="arInfo"></span></div><div class="arhp" id="arHp"></div><div class="obrace sc" id="obRace" hidden></div></div>'+
       '<div class="pdq" id="pdQ"></div><div class="pdb" id="pdB"></div><div class="obprompt" id="obPrompt" hidden></div><div class="arq" id="arQ" hidden></div><div class="obmsg" id="obMsg"></div><div class="obflash" id="obFlash"></div><div class="obres" id="obRes" hidden></div>';
