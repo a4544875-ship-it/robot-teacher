@@ -68,15 +68,17 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /kids/{kidId} {
       allow read: if true;
-      allow write: if kidId in ['ren', 'de']
+      allow create, update: if kidId.matches('^[a-z0-9]{1,16}$')
         && request.resource.data.pts is number
         && request.resource.data.pts >= 0
         && request.resource.data.pts <= 1000000;
+      allow delete: if kidId.matches('^[a-z0-9]{1,16}$');
     }
 
     match /activity/{activityId} {
       allow read: if true;
-      allow create: if request.resource.data.kid in ['ren', 'de'];
+      allow create: if request.resource.data.kid is string
+        && request.resource.data.kid.matches('^[a-z0-9]{1,16}$');
       allow update, delete: if false;
     }
 
