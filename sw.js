@@ -2,10 +2,10 @@
    - 主頁面：先抓網路上最新的，抓不到才用上次存的，所以更新會自動生效。
    - 3D 引擎、Firebase 程式、字型：先用存好的，背景再更新。
    - 分數、紀錄、連線對戰的資料請求一律不碰，交給 Firebase 自己處理。 */
-const CACHE = 'robot-teacher-v15';
+const CACHE = 'robot-teacher-v16';
 const STATIC_HOSTS = ['cdnjs.cloudflare.com', 'www.gstatic.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
-self.addEventListener('install', (e) => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', 'manifest.webmanifest', 'icon-192.png']).catch(() => {}))); });
+self.addEventListener('install', (e) => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', 'manifest.webmanifest', 'castle-192.png']).catch(() => {}))); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
 
 self.addEventListener('fetch', (e) => {
