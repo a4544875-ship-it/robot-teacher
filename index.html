@@ -1209,7 +1209,8 @@ document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click'
 Store.onChange(function(){
   updatePill();
   if(!gate.hidden&&gateMode==='pick')renderGate();
-  if(!gate.hidden&&gateMode==='pin'&&Store.pinLoaded())renderPin();
+  /* 只有還停在「連線中」的時候才重畫，不然每次雲端資料更新都會把輸入框洗掉、手機鍵盤一直跳 */
+  if(!gate.hidden&&gateMode==='pin'&&Store.pinLoaded()&&!$('#pinIn'))renderPin();
   if(!PANELS.rank.hidden)renderRank();
   if(!PANELS.rec.hidden)renderRec();
 });
