@@ -2044,6 +2044,15 @@ function stMenu(g){
 }
 function stopGameOverlay(){if(typeof OB!=='undefined'&&OB)OB.stop()}
 
+/* 排行榜：自然等級頒獎台（跟英文樹、數學花一樣） */
+function sciPodium(){var arr=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}).sort(function(a,b){return b.p-a.p});
+  var h='<div class="podium">'+arr.map(function(r,i){var L=scLevel(r.p),rank=(i>0&&r.p===arr[0].p)?0:i,pc=L.to?Math.round((r.p-L.from)/(L.to-L.from)*100):100;
+    return '<div class="rk '+r.k.id+(i===0&&r.p>0?' lead':'')+'" style="'+kbg(r.k)+'"><div class="medal">'+(r.p>0?(['🥇','🥈','🥉'][rank]||''):'')+'</div><div class="face">'+kface(r.k)+'</div><b>'+esc(r.k.name)+'</b>'+
+      '<div class="lv"><img class="gi xl" src="'+L.img+'" alt="" style="box-shadow:none;border-radius:50%">'+esc(L.name)+'</div><div class="pt en">'+r.p+'<small> 分</small></div><div class="bar2"><i style="width:'+pc+'%"></i></div>'+
+      '<div class="sm">'+(L.to?'再 '+(L.to-r.p)+' 分 → '+esc(L.next):'最高等級！')+'</div><div class="big"><small>印章 '+scStamps(r.k.id)+' / 10</small></div></div>'}).join('')+'</div>';
+  var a1=arr[1]||{p:0},d=arr[0].p-a1.p;
+  return h+'<p class="gap">'+(arr[0].p===0?'還沒有自然分，快去自然探險島玩吧！':d===0?'目前平手，繼續加油！':esc(arr[0].k.short)+' 領先 '+d+' 分！')+'</p>'}
+
 var SCI=(function(){
   var TOPICS=[['plant','植物的身體','🌱'],['animal','動物大會師','🐾'],['insect','昆蟲王國','🦋'],['air','空氣與風','🌬️'],['water','水的變身','💧'],
     ['weather','天氣與生活','⛅'],['moon','月亮','🌙'],['magnet','磁鐵與磁力','🧲'],['circuit','電路與能源','💡'],['sound','聲光世界','🔊']];
@@ -2382,7 +2391,7 @@ function renderRank(){
       v.forEach(function(r){h+='<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.x.pts===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>';});
       h+='</div>';});
   });
-  h+='<h2 class="h">🔬 自然排行榜</h2>'+(function(){var v=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}),top=Math.max.apply(null,v.map(function(r){return r.p})),mx=Math.max(1,top),o='<div class="grow"><div class="gname">🔬 自然總積分</div>';
+  h+='<h2 class="h">🔬 自然排行榜</h2>'+sciPodium()+(function(){var v=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}),top=Math.max.apply(null,v.map(function(r){return r.p})),mx=Math.max(1,top),o='<div class="grow"><div class="gname">🔬 自然總積分</div>';
     v.forEach(function(r){o+='<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.p===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.p/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.p+'</span></div>'});o+='</div>';
     GAMES.filter(function(g){return g.sub==='sci'}).forEach(function(g){var w=KIDS.map(function(k){return {k:k,x:Store.kid(k.id).byGame[g.id]||{pts:0,plays:0,best:0}}}),t2=Math.max.apply(null,w.map(function(r){return r.x.pts})),m2=Math.max(1,t2);
       o+='<div class="grow"><div class="gname">'+g.ico+' '+esc(g.zh)+'</div>';w.forEach(function(r){o+='<div class="bar"><span>'+esc(r.k.short)+(t2>0&&r.x.pts===t2?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/m2*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>'});o+='</div>'});
@@ -2578,9 +2587,9 @@ var Learn=(function(){
   function week(){var d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return dstr(d)}
   function hash(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)}
   function gname(id){var g=GAMES.filter(function(x){return x.id===id})[0];return g?g.ico+' '+g.zh:id}
-  function quests(id,d){var h=hash(id+d),SC_G=STN.filter(function(s){return s.on}).map(function(s){return s.id}),all=EN_G.concat(MA_G,SC_G),g1=all[h%all.length],u1=MA_G.indexOf(g1)>=0?'math':SC_G.indexOf(g1)>=0?'sci':'en',s2=(h>>3)%2?'en':'math',
+  function quests(id,d){var h=hash(id+d),SC_G=STN.filter(function(s){return s.on}).map(function(s){return s.id}),all=EN_G.concat(MA_G,SC_G),g1=all[h%all.length],u1=MA_G.indexOf(g1)>=0?'math':SC_G.indexOf(g1)>=0?'sci':'en',s2=['en','math','sci'][(h>>3)%3],
       oth=u1==='math'?EN_G.concat(SC_G):u1==='sci'?EN_G.concat(MA_G):MA_G.concat(SC_G),g3=oth[(h>>5)%oth.length],q3=(h>>7)%3;
-    return [{t:'play',g:g1,n:1,txt:'玩一局 '+gname(g1)},{t:'ok',s:s2,n:10,txt:'答對 10 題'+(s2==='en'?'英文':'數學')},q3===0?{t:'vs',n:1,txt:'跟人連線或跟小機對決一場'}:q3===1&&u1!=='sci'?{t:'star',n:2,txt:'在自然探險島拿到 2 顆星'}:{t:'play',g:g3,n:1,txt:'玩一局 '+gname(g3)}]}
+    return [{t:'play',g:g1,n:1,txt:'玩一局 '+gname(g1)},{t:'ok',s:s2,n:10,txt:s2==='sci'?'在自然探險島做對 10 次':'答對 10 題'+(s2==='en'?'英文':'數學')},q3===0?{t:'vs',n:1,txt:'跟人連線或跟小機對決一場'}:q3===1&&u1!=='sci'?{t:'star',n:2,txt:'在自然探險島拿到 2 顆星'}:{t:'play',g:g3,n:1,txt:'玩一局 '+gname(g3)}]}
   function ensure(k){var d=day();if(!k.day||k.day.d!==d)k.day={d:d,p:[0,0,0],done:0};if(!Array.isArray(k.day.p))k.day.p=[0,0,0];
     var w=week();if(!k.wk||k.wk.w!==w){if(k.wk)k.pw={w:k.wk.w,g:Math.max(0,subPts(k,'en')-(+k.wk.e||0))};k.wk={w:w,e:subPts(k,'en'),m:subPts(k,'math'),s:subPts(k,'sci')}}}
   var rc={ok:0,cmb:0,mx:0,fast:0,last:0};
@@ -2612,7 +2621,7 @@ var Learn=(function(){
     like:function(to,sub){Store.mut(who,function(k){var l=k.lk||(k.lk={}),d=k.lkD||(k.lkD={}),x=l[to]||(l[to]={});if(d[to+'_'+sub]===day())return;d[to+'_'+sub]=day();x[sub]=(+x[sub]||0)+1})},
     likes:function(id,sub){var n=0;KIDS.forEach(function(o){if(o.id!==id)n+=likesTo(o.id,id,sub)});return n},
 
-    sci:function(key,ok){mark(key,ok,'sci')},
+    sci:function(key,ok){mark(key,ok,'sci')},sciok:function(){ev('ok','sci')},
     ok:function(w){if(w&&!w.m)mark(w[0],true,'en')},bad:function(w){if(w&&!w.m)mark(w[0],false,'en')},
     t:function(a,b,ok){mark(a+'×'+b,ok,'math')},pt:function(sub){ev('ok',sub)},
     play:function(gid){ev('play',gid)},vs:function(){ev('vs')},star:function(n){for(var i=0;i<(n|0);i++)ev('star')},
@@ -3806,7 +3815,7 @@ var OB=(function(){
       var k0=isKid()?Store.kid(who):null;
       var C={a:a,s:s,g:g,lv:lv,gr:sciG(),R:rng(o.seed),B:$('#sBody'),right:0,wrong:0,streak:0,tips:[],fin:false,p0:k0?scLevel(subPts(k0,'sci')).i:0,
         alive:function(){return A===a&&!C.fin&&!a.fin},
-        ok:function(el,txt){C.right++;C.streak++;a.my=C.right;award(1);sfx('ok');if(el)confetti(el,10);sciCombo(C.streak);if(el&&txt)stSpark(el,txt)},
+        ok:function(el,txt){C.right++;C.streak++;a.my=C.right;award(1);Learn.sciok();sfx('ok');if(el)confetti(el,10);sciCombo(C.streak);if(el&&txt)stSpark(el,txt)},
         bad:function(tip){C.wrong++;C.streak=0;sciCombo(0);sfx('no');flash();if(tip&&C.tips.indexOf(tip)<0)C.tips.push(tip)},
         later:function(f,ms){setTimeout(function(){if(C.alive())f()},ms)},
         sheet:function(ok,t,b,btn,cb){sciSheet(ok,t,b,btn,function(){if(C.alive())cb&&cb()})},hide:sciHide,
@@ -3888,8 +3897,8 @@ var OB=(function(){
     C.dbg=function(){var it=items[i];return {i:i,n:items.length,iron:it&&!!it[2],busy:busy}};
     next()}
   /* 第 2 關：沙堆尋寶（拖著磁鐵在沙子裡找鐵做的東西） */
-  function mg2(C){var gr=C.gr,nI=gr===2?4:gr===3?5:6,nN=gr===2?3:gr===3?4:5,TL=gr===2?75:gr===3?65:55,R=C.R,
-      iron=sciSh(R,MGI.filter(function(x){return x[2]&&x[0]!=='scissors'&&x[0]!=='can'})).slice(0,nI),
+  function mg2(C){var gr=C.gr,nI=Math.min(MGI.filter(function(x){return x[2]}).length,gr===2?4:gr===3?5:6),nN=gr===2?3:gr===3?4:5,TL=gr===2?75:gr===3?65:55,R=C.R,
+      iron=sciSh(R,MGI.filter(function(x){return x[2]})).slice(0,nI),
       non=sciSh(R,MGI.filter(function(x){return ['shell','stone','bead','marble','block','coin','eraser'].indexOf(x[0])>=0})).slice(0,nN),
       all=iron.concat(non),pos=[],got=0,peeked={},t=0,over=false,stuck=0;
     while(pos.length<all.length){var p=[10+R()*80,14+R()*72];if(pos.every(function(q){return Math.hypot(q[0]-p[0],(q[1]-p[1])*1.3)>17}))pos.push(p);else if(R()<.02)pos.push(p)}
