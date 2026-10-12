@@ -1272,6 +1272,24 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .psc .pweed{position:absolute;left:4%;bottom:6%;width:24%}
 .psc .pbug{position:absolute;right:20%;top:42%;width:16%}
 .azd{position:absolute;right:4px;bottom:4px;height:62%;max-width:34%;object-fit:contain;opacity:.9;pointer-events:none}
+
+/* 排行榜科目切換 */
+.subsw.rks{grid-template-columns:repeat(3,minmax(0,1fr));margin:4px 0 6px;position:sticky;top:0;z-index:3}
+.subsw.rks button{font-size:16px;padding:10px 4px}
+/* 選角色：三科一起看 */
+.kidcard.kc3{align-items:center}
+.kc3 .kh{display:flex;align-items:baseline;gap:8px;justify-content:space-between}
+.kc3 .kh b{font-size:22px}.kc3 .ktot{font-family:var(--font-en);font-weight:700;font-size:15px;color:#4a3600;background:#ffe08a;border-radius:999px;padding:0 10px;white-space:nowrap}
+.kc3 .k3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px}
+.kc3 .ks{display:flex;flex-direction:column;align-items:center;gap:1px;background:rgba(255,255,255,.75);border-radius:14px;padding:5px 4px 6px;min-width:0;text-align:center;line-height:1.2}
+.kc3 .ks.en{box-shadow:inset 0 0 0 2px #8fd0ff}.kc3 .ks.math{box-shadow:inset 0 0 0 2px #ffb98a}.kc3 .ks.sci{box-shadow:inset 0 0 0 2px #7fdcae}
+.kc3 .ks .gi{height:34px;width:34px;object-fit:cover;border-radius:50%;box-shadow:none}
+.kc3 .ks i{font-style:normal;font-size:11px;color:#55597a;font-weight:700}
+.kc3 .ks b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.kc3 .ks small{font-size:11.5px;color:#2a2d5a;font-family:var(--font-en);white-space:nowrap}
+.kc3 .ks .kbar{width:90%;height:6px;margin:2px 0 0}
+.kc3 .ks.math .kbar i{background:linear-gradient(90deg,#ff9a6b,#ffc531)}.kc3 .ks.sci .kbar i{background:linear-gradient(90deg,#1fae6b,#7fd36a)}.kc3 .ks.en .kbar i{background:linear-gradient(90deg,#2b8af0,#8fd0ff)}
+.kc3 .face .kav{width:62px;height:62px}
 </style>
 
 <header class="top">
@@ -1578,8 +1596,12 @@ function renderCover(){gateMode='cover';gate.classList.add('cover');Music.play('
 function renderGate(){gate.classList.remove('cover');Music.play('cover');
   gateMode='pick';
   var h='<div class="gate-in"><div class="gmas">'+botSVG('')+'</div><h1>你是誰呢？</h1><p class="sub">選自己的帳號，分數和問題都會記在自己名下。</p>';
-  KIDS.forEach(function(k){var e=growOf(k.id,'en'),m=growOf(k.id,'math');
-    h+='<button class="kidcard '+k.id+'" data-id="'+k.id+'" style="--kc:var('+k.c+')"><span class="face">'+kface(k)+'</span><span class="kt"><b>'+esc(k.name)+'</b><span class="gl">🏅 等級：'+esc(e.lv[1])+'　🌟 能量：'+e.cur+' 分'+(e.n?' '+e.bigs():'')+'</span><span class="kbar"><i style="width:'+Math.round((e.cur-e.lv[0])/(e.nx[0]-e.lv[0])*100)+'%"></i></span><span class="gl sm">'+gimg(m.lv[2])+' 數學：'+esc(m.lv[1])+'・'+m.cur+' 分'+(m.n?' '+m.bigs():'')+'</span></span></button>';});
+  KIDS.forEach(function(k){var e=growOf(k.id,'en'),m=growOf(k.id,'math'),d=Store.kid(k.id),sp=subPts(d,'sci'),L=scLevel(sp);
+    function cell(cls,sub,icon,name,pts,pc,extra){return '<span class="ks '+cls+'">'+icon+'<i>'+sub+'</i><b>'+esc(name)+'</b><small>'+pts+' 分'+(extra||'')+'</small><span class="kbar"><i style="width:'+Math.max(4,Math.min(100,pc))+'%"></i></span></span>'}
+    h+='<button class="kidcard kc3 '+k.id+'" data-id="'+k.id+'" style="--kc:var('+k.c+')"><span class="face">'+kface(k)+'</span><span class="kt"><span class="kh"><b>'+esc(k.name)+'</b><span class="ktot">⭐ '+(+d.pts||0)+'</span></span><span class="k3">'+
+      cell('en','🔤 英文',gimg(e.lv[2]),e.lv[1],e.cur,(e.cur-e.lv[0])/(e.nx[0]-e.lv[0])*100,e.n?' ×'+e.n:'')+
+      cell('math','🔢 數學',gimg(m.lv[2]),m.lv[1],m.cur,(m.cur-m.lv[0])/(m.nx[0]-m.lv[0])*100,m.n?' ×'+m.n:'')+
+      cell('sci','🔬 自然','<img class="gi" src="'+L.img+'" alt="">',L.name,sp,L.to?(sp-L.from)/(L.to-L.from)*100:100,'')+'</span></span></button>';});
   h+='<button class="btn ghost" id="toParent">👨‍👩‍👦 家長區（看孩子的紀錄）</button></div>';
   gate.innerHTML=h;
   gate.querySelectorAll('.kidcard').forEach(function(b){b.addEventListener('click',function(){sfx('tap');renderKidPin(b.dataset.id)})});
@@ -2327,12 +2349,14 @@ function rosterWire(){var el=PANELS.rec;function re(){renderRec()}
     var np=$('#rosNoPh');if(np)np.addEventListener('click',function(){sfx('tap');rosEd.name=$('#rosName').value;rosEd.avd='';re()});
     $('#rosCancel').addEventListener('click',function(){sfx('tap');rosEd=null;re()})}}
 /* ========== 9. leaderboard ========== */
+var rankSub={s:'',g:null};
 function renderRank(){
-  var el=PANELS.rank;
+  var el=PANELS.rank,RS=(rankSub.g===gOpen&&rankSub.s)||(gOpen==='math'?'math':gOpen==='sci'?'sci':'en');
   var wg=KIDS.map(function(k){return {k:k,g:Learn.gain(k.id),s:Learn.info(k.id).streak}}),wmx=Math.max.apply(null,wg.map(function(r){return r.g}).concat([1]));
   var h='<div class="wkbox grow"><b>'+ic('trophy')+' 本週進步王</b><small>跟自己比！這個星期多拿最多分的人就是進步王，每週一重新開始。</small>'+wg.map(function(r){return '<div class="bar"><span>'+esc(r.k.short)+(r.g>0&&r.g===wmx?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.g/wmx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">+'+r.g+(r.s?'・🔥'+r.s:'')+'</span></div>'}).join('')+'</div>';
   h+='<div class="gdbtn"><button class="btn alt" data-gd="en">🌳 進入樹園</button><button class="btn alt" data-gd="math">🌻 進入花園</button></div>';
-  ['en','math'].forEach(function(sub){var G=GROW[sub],arr=KIDS.map(function(k){return {k:k,g:growOf(k.id,sub)}}).sort(function(a,b){return b.g.tot-a.g.tot});
+  h+='<div class="subsw rks">'+[['en','🔤 英文'],['math','🔢 數學'],['sci','🔬 自然']].map(function(x){return '<button data-rs="'+x[0]+'" aria-pressed="'+(RS===x[0])+'">'+x[1]+'</button>'}).join('')+'</div>';
+  ['en','math'].filter(function(s){return s===RS}).forEach(function(sub){var G=GROW[sub],arr=KIDS.map(function(k){return {k:k,g:growOf(k.id,sub)}}).sort(function(a,b){return b.g.tot-a.g.tot});
     h+='<h2 class="h">'+G.ico+' '+G.name+'排行榜</h2><div class="podium">';
     arr.forEach(function(r,i){var x=r.g,rank=(i>0&&x.tot===arr[0].g.tot)?0:i,span=x.nx[0]-x.lv[0],pc=Math.round((x.cur-x.lv[0])/span*100);
       h+='<div class="rk '+r.k.id+(i===0&&x.tot>0?' lead':'')+'" style="'+kbg(r.k)+'"><div class="medal">'+(x.tot>0?(['🥇','🥈','🥉'][rank]||''):'')+'</div><div class="face'+(sub==='en'?' rkf" style="--rk:'+rankOf(r.k.id).c:'')+'">'+kface(r.k)+'</div><b'+(sub==='en'&&rankOf(r.k.id).i===4?' class="shine"':'')+'>'+esc(r.k.name)+'</b>'+(sub==='en'?'<div class="rkt">'+rankOf(r.k.id).e+' '+rankOf(r.k.id).n+(facOf(r.k.id)?'・'+FAC[facOf(r.k.id)].e+FAC[facOf(r.k.id)].n:'')+'</div>':'')+'<div class="lv">'+gimg(x.lv[2],'xl')+esc(x.lv[1])+'</div><div class="pt">'+x.cur+'<small> 分</small></div>'+
@@ -2345,16 +2369,17 @@ function renderRank(){
       v.forEach(function(r){h+='<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.x.pts===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>';});
       h+='</div>';});
   });
-  h+='<h2 class="h">🔬 自然排行榜</h2>'+sciPodium()+(function(){var v=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}),top=Math.max.apply(null,v.map(function(r){return r.p})),mx=Math.max(1,top),o='<div class="grow"><div class="gname">🔬 自然總積分</div>';
+  if(RS==='sci')h+='<h2 class="h">🔬 自然排行榜</h2>'+sciPodium()+(function(){var v=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}),top=Math.max.apply(null,v.map(function(r){return r.p})),mx=Math.max(1,top),o='<div class="grow"><div class="gname">🔬 自然總積分</div>';
     v.forEach(function(r){o+='<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.p===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.p/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.p+'</span></div>'});o+='</div>';
     GAMES.filter(function(g){return g.sub==='sci'}).forEach(function(g){var w=KIDS.map(function(k){return {k:k,x:Store.kid(k.id).byGame[g.id]||{pts:0,plays:0,best:0}}}),t2=Math.max.apply(null,w.map(function(r){return r.x.pts})),m2=Math.max(1,t2);
       o+='<div class="grow"><div class="gname">'+g.ico+' '+esc(g.zh)+'</div>';w.forEach(function(r){o+='<div class="bar"><span>'+esc(r.k.short)+(t2>0&&r.x.pts===t2?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/m2*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>'});o+='</div>'});
     return o})();
-  h+='<h2 class="h">🏝️ 闖關島最快紀錄</h2><div class="obrk">'+OB.STG.map(function(s,i){var a=KIDS.map(function(k){return ((Store.kid(k.id).obby||{}).best||{})[i]||0}),mn=Math.min.apply(null,a.filter(Boolean));
+  if(RS==='en')h+='<h2 class="h">🏝️ 闖關島最快紀錄</h2><div class="obrk">'+OB.STG.map(function(s,i){var a=KIDS.map(function(k){return ((Store.kid(k.id).obby||{}).best||{})[i]||0}),mn=Math.min.apply(null,a.filter(Boolean));
     return '<div><span>'+s.ico+' '+(i+1)+'. '+esc(s.n)+'</span>'+KIDS.map(function(k,j){return '<b class="'+(a[j]&&a[j]===mn?'w':'')+'">'+esc(k.short)+' '+(a[j]?OB.ft(a[j]):'—')+'</b>'}).join('')+'</div>'}).join('')+'</div>';
   h+='<details class="rule"><summary>積分怎麼算？</summary><ul><li>單字闖關島：踩對圖 10 分、拼對字 20 分、過關 30 分（魔王關 50 分）、連線對戰獲勝再加 30 分</li><li>單字飛車：開對車道 10 分，跑完全程 20 分</li><li>單字拔河、單字爬塔：答對一題 10 分</li><li>九九賓果：佔一格 10 分；數字貪吃蛇：吃對一個 10 分；泡泡湊數：湊對一組 10 分；鱷魚比大小：答對一題 5 分</li><li>單字射擊場：射中 10 分；字母隕石：拼對一個單字 20 分</li><li>任何遊戲連線對戰（或跟小機對決）獲勝：再加 30 分</li><li>英文遊戲每一局：過關再加 50 分，連續答對還有連擊加成（最多 50 分）；這些分數同時變成陣營的能量</li><li>探險家段位（看英文總分）：1000 分白銀勇士、3000 分黃金守衛、6000 分鑽石法師、10000 分星耀大英雄</li><li>魔法星餐廳：一次就上對一道菜 10 分（自己陣營的客人和貓頭鷹校長兩倍）、今日特餐再加 10 分、尖峰時刻每道菜多 5 分小費</li><li>餐廳招牌：累積接待 50 位客人換上「閃耀霓虹快餐車」招牌、100 位升級「星空玻璃屋餐廳」、200 位升級「漂浮魔法大飯店」，每一級都有新客人</li><li>合作打魔王：打一下 10 分，打贏兩個人都再加 30 分</li><li>每天第一次玩完一局：再加 20 分</li><li>每日任務：每完成一個得 1 💧，三個都完成再送 2 💧。💧 可以在花園澆水（+50 分）、買裝飾，或送給對方</li><li>答錯的題目會記在「圖鑑與錯題本」，之後玩遊戲會多出幾次，連續答對 3 次就畢業</li><li>英文和數學的分數分開算：玩英文遊戲長「樹」，玩數學遊戲長「花」</li><li>拿到種子後，到排行榜上面的「樹園／花園」把它種在喜歡的格子裡，分數越高它長得越大；也可以去參觀對方的花園</li><li>每 10000 分就收成一棵大樹（或一束花王），收進收藏，然後從種子開始再長一次。每一輪收成的品種都不一樣，各有 8 種可以收集</li></ul><b>🌳 英文成長</b><ul class="lvtab">'+GROW.en.st.map(function(x){return '<li>'+gimg(x[2])+' '+x[1]+'：'+x[0]+' 分</li>'}).join('')+'<li>'+gimg('e8')+' 大樹：10000 分</li></ul><b>🌻 數學成長</b><ul class="lvtab">'+GROW.math.st.map(function(x){return '<li>'+gimg(x[2])+' '+x[1]+'：'+x[0]+' 分</li>'}).join('')+'<li>'+gimg('m8')+' 花王：10000 分</li></ul></details>';
   el.innerHTML=h;
   el.querySelectorAll('[data-gd]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');openGarden(isKid()?who:KIDS[0].id,b.dataset.gd)})});
+  el.querySelectorAll('[data-rs]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');rankSub={s:b.dataset.rs,g:gOpen};var y=el.scrollTop;renderRank();el.scrollTop=y})});
 }
 
 /* ========== 10. records ========== */
