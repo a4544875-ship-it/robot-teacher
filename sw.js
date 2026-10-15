@@ -1,9 +1,9 @@
-/* 奇蹟知識島 v3.0 — versioned, atomic offline assets; Firebase stays uncached. */
-const CACHE='robot-teacher-v33';
-const CORE=['./','index.html','manifest.webmanifest','castle-192.png','assets/island-v2.css','assets/english-premium-v3.css',
+/* 奇蹟知識島 v4.0 — versioned, atomic offline assets; Firebase stays uncached. */
+const CACHE='robot-teacher-v35';
+const CORE=["assets/velocity-v4.js?v=4.0.1", "assets/math-v4.js?v=4.0.1", "assets/expansion-v4.css?v=4.0.1", "assets/v4/boss-dragon.webp", "assets/v4/car-aero.webp", "assets/v4/car-nova.webp", "assets/v4/car-rally.webp", "assets/v4/cover-kart.webp", "assets/v4/cover-mbingo.webp", "assets/v4/cover-mbond.webp", "assets/v4/cover-mboss.webp", "assets/v4/cover-mcmp.webp", "assets/v4/cover-meteor.webp", "assets/v4/cover-msnake.webp", "assets/v4/cover-ttab.webp", "assets/v4/cover-v2clock.webp", "assets/v4/cover-v2fraction.webp"].concat(['./','index.html','manifest.webmanifest','castle-192.png','assets/island-v2.css','assets/english-premium-v3.css',
   ...['adventure-island','adventure-diner','adventure-tower','adventure-shoot'].map(n=>'assets/'+n+'.webp'),
   ...['cat','dog','pig','fish','bird','cow','duck','bee','egg','cake','book','bag','hat','car','ball','cup'].map(n=>'assets/word-'+n+'.webp'),
-  ...['sky','kitchen','clock','moon','meadow','sound','owl','fox','robot','frog'].map(n=>'assets/'+n+'.webp')];
+  ...['sky','kitchen','clock','moon','meadow','sound','owl','fox','robot','frog'].map(n=>'assets/'+n+'.webp')]);
 const STATIC_HOSTS=['cdnjs.cloudflare.com','www.gstatic.com','fonts.googleapis.com','fonts.gstatic.com'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));

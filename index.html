@@ -42,6 +42,9 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 })();
 </script>
 <title>奇蹟知識島</title>
+<link rel="stylesheet" href="assets/expansion-v4.css?v=4.0.1">
+<script src="assets/velocity-v4.js?v=4.0.1"></script>
+<script src="assets/math-v4.js?v=4.0.1"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -4855,6 +4858,18 @@ IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o)
 };
 
 
+
+  /* v4 bridge: new implementations use the existing identity, curriculum and score services. */
+  var V4CTX={three:function(){return T},who:function(){return who},ls:ls,$:$,esc:esc,clamp:clamp,
+    seeded:seeded,words:WORDS,Learn:Learn,arc:arc,arcEnd:arcEnd,pad:pad,padEnd:padEnd,mq:mq,
+    award:award,sfx:sfx,tone:tone,toast:toast,ask:ask,speak:speak,ft:ft,vsFinish:vsFinish,vsPeers:vsPeers,
+    reduced:REDUCED,sign:signTex,picture:function(w){var key=w[0],src=V3_WORDS[key]||SIMG[key];if(!src){var food=DN_IDS.filter(function(k){return DN_F[k][0]===key})[0];if(food)src=DNP[food]}return src||''},
+    disposeObject:function(obj){disp(obj,null)},active:function(a){return A===a},body:function(){return gBody},
+    impl:IMPL,games:GAMES,menu:menu,setMenu:function(fn){menu=fn;V4CTX.menu=fn},
+    getHome:function(){return renderGameHome},setHome:function(fn){renderGameHome=fn},netSet:function(v){Net.set(v)}};
+  window.MiracleV4Factory(V4CTX);
+  window.MiracleMathV4Factory(V4CTX);
+
   return {map:map,stop:stop,STG:STG,WORLDS:WORLDS,ft:ft,menu:menu,st:stPlay,mb:mbPlay};
 })();
 GAME_FN.obby=function(g){OB.map(g)};STN.forEach(function(s){GAME_FN[s.id]=function(g){stMenu(g)}});['kart','shoot','meteor','tug','tower','boss','diner','mbingo','msnake','mbond','mcmp','mboss','scisprint','scisort','sciorder','scimatch'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
@@ -5079,6 +5094,9 @@ var V2=(function(){
   window.MiracleEnglishPremium={version:'3.0.0',games:Object.keys(descriptions)};
 })();
 
+
+
+(function(){var old=renderGameHome;renderGameHome=function(){old();var upd=document.querySelector('.gupd');if(upd)upd.textContent='新版 4.0 · 飛車與太空拼字 · 三款數學冒險';var sm=document.querySelector('.v2welcome small');if(sm)sm.textContent='KNOWLEDGE ADVENTURES · 4.0'}})();
 
 /* ========== boot ========== */
 Store.connect();
