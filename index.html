@@ -45,6 +45,8 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 <link rel="stylesheet" href="assets/expansion-v4.css?v=4.1.0">
 <script src="assets/velocity-v4.js?v=4.1.0"></script>
 <script src="assets/math-v4.js?v=4.1.0"></script>
+<link rel="stylesheet" href="assets/v5/star-island.css?v=5.0.0">
+<script src="assets/v5/star-island.js?v=5.0.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -3256,7 +3258,7 @@ var OB=(function(){
 
   function stop(keep){
     if(unNet){unNet();unNet=null}lob=null;clearTimeout(tt);if(S||A)Music.play('lobby');
-    if(A){var a=A;A=null;a.dead=true;cancelAnimationFrame(a.raf);window.removeEventListener('resize',a.rs);if(a.kd)window.removeEventListener('keydown',a.kd);disp(a.sc,a.rd);a.el.remove();try{window.speechSynthesis.cancel()}catch(e){}}
+    if(A){var a=A;if(a.cleanup)a.cleanup();A=null;a.dead=true;cancelAnimationFrame(a.raf);window.removeEventListener('resize',a.rs);if(a.kd)window.removeEventListener('keydown',a.kd);disp(a.sc,a.rd);a.el.remove();try{window.speechSynthesis.cancel()}catch(e){}}
     if(!S){if(!keep)Net.off();return}
     var s=S;S=null;s.dead=true;cancelAnimationFrame(s.raf);clearTimeout(s.tm);clearTimeout(s.tt);
     if(s.kd){window.removeEventListener('keydown',s.kd);window.removeEventListener('keyup',s.ku);window.removeEventListener('resize',s.rs)}
@@ -4869,6 +4871,8 @@ IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o)
     getHome:function(){return renderGameHome},setHome:function(fn){renderGameHome=fn},netSet:function(v){Net.set(v)}};
   window.MiracleV4Factory(V4CTX);
   window.MiracleMathV4Factory(V4CTX);
+  V4CTX.grade=function(){return egrade};V4CTX.mathIds=MATH_IDS;V4CTX.launch=launch;
+  window.StarIslandFactory(V4CTX);
 
   return {map:map,stop:stop,STG:STG,WORLDS:WORLDS,ft:ft,menu:menu,st:stPlay,mb:mbPlay};
 })();
@@ -5097,6 +5101,10 @@ var V2=(function(){
 
 
 (function(){var old=renderGameHome;renderGameHome=function(){old();var upd=document.querySelector('.gupd');if(upd)upd.textContent='新版 4.0 · 飛車與太空拼字 · 三款數學冒險';var sm=document.querySelector('.v2welcome small');if(sm)sm.textContent='KNOWLEDGE ADVENTURES · 4.0'}})();
+
+/* Star Island campaign entries; retain all prior game implementations. */
+['v5word','v5math'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
+(function(){var old=renderGameHome;renderGameHome=function(){old();var t=document.querySelector('.gupd');if(t)t.textContent='新版 5.0 · 星島守護者：英文與數學三章遠征';var s=document.querySelector('.v2welcome small');if(s)s.textContent='STAR ISLAND GUARDIANS · 5.0'}})();
 
 /* ========== boot ========== */
 Store.connect();
