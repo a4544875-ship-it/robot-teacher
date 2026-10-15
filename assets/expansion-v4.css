@@ -7,3 +7,27 @@
 @media(max-width:480px){.gcard.v4-cover-card{min-height:146px;grid-template-columns:38% 1fr}.gcard.v4-cover-card .ico{min-height:146px}.gcard.v4-cover-card .ft{padding:24px 13px 13px}.gcard.v4-cover-card .ft b{font-size:20px}.gcard.v4-cover-card .ft small{font-size:11px}.v4-menu-cover{min-height:230px;padding:85px 18px 20px}.v4-cars{gap:5px}.v4-garage{padding:12px}.v4-cars img{height:73px}.v4-cars b{font-size:12px}.v4-cars small{font-size:9px}.v4-cars button{padding:6px 3px}.v4-mission{padding:8px 12px;top:86px}.v4-mission #v4MissionWord>span{width:42px;height:42px}.v4-spell-slots span{width:29px;height:30px;font-size:20px}.v4-letter-dock{gap:5px}.v4-letter-dock button{width:38px;height:40px;font-size:21px}.v4-speed{bottom:177px;left:12px;min-width:122px;padding:9px 12px}.v4-speed>b{font-size:29px}.v4-lane-options{bottom:calc(18px + env(safe-area-inset-bottom));gap:8px;width:90vw}.v4-lane-options button{height:118px;padding:7px}.v4-lane-options img,.v4-lane-options span{height:77px}.v4-game .obprompt{bottom:305px;font-size:17px;width:max-content;max-width:92vw}.v4-game .obinfo{padding:8px;font-size:12px}.v4-track-label{top:auto;bottom:148px;left:15px;right:auto;font-size:9px}.v4-math .pdq strong{font-size:25px}.v4-math .pdq>small{font-size:10px}.v4-math .pdq{min-height:96px}.v4-math-controls{padding:8px 10px calc(8px + env(safe-area-inset-bottom))}.v4-boss-options{gap:6px}.v4-boss-options button{font-size:23px}.v4-boss-skills{gap:6px}.v4-boss-skills>span{font-size:10px}.v4-boss-bars{gap:6px}.v4-math .obinfo b{font-size:14px}}
 @media(max-height:520px) and (min-width:600px){.v4-math .obhud{min-height:45px;padding:5px 10px}.v4-math .pdq{min-height:70px;padding:4px 10px}.v4-math .pdq strong{font-size:24px;min-height:30px}.v4-math .pdb{flex-direction:row}.v4-math-scene{flex:1}.v4-math-controls{width:280px;flex-shrink:0;overflow:auto;padding:10px}.v4-math .v4-dpad{position:static}.v4-math .v4-snake-tools{display:flex;flex-direction:column;gap:5px}.v4-boss-options{grid-template-columns:repeat(2,1fr)}.v4-boss-bars{flex-wrap:wrap}.v4-boss-skills{flex-direction:column}.v4-mission{width:310px;left:12px;top:75px;transform:none}.v4-mission small{font-size:9px}.v4-mission b{font-size:17px}.v4-mission #v4MissionWord>span{height:34px;width:34px}.v4-spell-slots span{width:25px;height:25px;font-size:17px}.v4-letter-dock{left:auto;right:12px;transform:none;width:45vw;bottom:30px}.v4-game .obprompt{bottom:120px;font-size:16px}.v4-lane-options{width:300px;left:auto;right:20px;transform:none;bottom:20px}.v4-lane-options button{height:90px}.v4-lane-options img,.v4-lane-options span{height:55px}.v4-speed{left:15px;bottom:20px;padding:9px}.v4-track-label{display:none}}
 @media(prefers-reduced-motion:reduce){.gcard.v4-cover-card .ico img,.v4-game *,.v4-math *{transition:none!important;animation:none!important}}
+
+/* v4.1 snake: full-screen map, compact question */
+.v4-snake .pdq{min-height:0;padding:6px 12px 5px}
+.v4-snake .pdq>small{display:none}
+.v4-snake .pdq strong{font-size:22px;min-height:0;line-height:1.25}
+.v4-snake .pdq>span{font-size:11px;min-height:14px;line-height:1.3}
+.v4-snake .v4-math-controls{display:none!important}
+.v4-snake .v4-math-scene{touch-action:none}
+.v4-snake-float{position:absolute;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:3;display:flex!important;flex-direction:row!important;gap:8px!important;align-items:center;min-height:0!important;font-size:12px;color:#e4fff1}
+.v4-snake-float button{color:#e4fff1;border:1px solid #91c7c28a;background:#234b5acc;border-radius:12px;padding:6px 10px;font-weight:750;font-size:12px}
+.v4-snake-float button:disabled{opacity:.5}
+.v4-snake-float span{background:#102f3ecc;border-radius:12px;padding:6px 10px}
+.v4-snake .v4-scene-label{opacity:.75}
+
+/* v4.1 unified game cards: same moderate thumbnail size for English and math */
+#games .gcard.feat{display:flex!important;align-items:center;gap:12px;padding:10px 12px!important;min-height:0!important;grid-template-columns:none!important;border-radius:20px}
+#games .gcard.feat .ico{width:84px!important;height:84px!important;min-height:0!important;flex:none!important;border-radius:16px!important;overflow:hidden;margin:0!important;padding:0!important;display:flex!important;align-items:center;justify-content:center;font-size:46px;line-height:1;background:#ffffff8c}
+#games .gcard.feat .ico img{width:100%!important;height:100%!important;object-fit:cover;border-radius:16px;display:block}
+#games .gcard.feat .ico img.pic{object-fit:contain;padding:6px;box-sizing:border-box}
+#games .gcard.feat .ft{padding:0!important;flex:1;min-width:0;text-align:left}
+#games .gcard.feat .ft b{font-size:18px!important;line-height:1.25}
+#games .gcard.feat .ft .sub{font-size:11px}
+#games .gcard.feat .ft small{font-size:11.5px!important;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#games .gcard.feat .new{top:5px;left:5px;font-size:9.5px;padding:2px 7px;z-index:2}
