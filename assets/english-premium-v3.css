@@ -16,3 +16,27 @@
 @keyframes v3-serve{0%{transform:translateX(0)}60%{transform:translateX(32px);opacity:.4}100%{transform:translateX(0);opacity:1}}
 @media(max-width:430px){.v3-cover{min-height:180px;padding:18px}.v3-cover h2{font-size:25px}.v3-route{width:130px;top:85px;left:8px;font-size:11px}.v3-obby .obprompt{top:162px}.v3-diner-scene{min-height:228px;padding:12px}.v3-tables{gap:7px;padding-right:64px}.v3-table{padding:6px;min-height:134px;border-radius:17px}.v3-table img{height:74px}.v3-chef{width:80px}.v3-chef img{height:88px}.v3-order-ticket{margin:12px 10px;padding:14px}.v3-order-ticket p{font-size:18px}.v3-food-grid{padding:6px 10px;gap:7px}.v3-food-grid button{padding:6px;min-height:84px}.v3-food-grid img{height:50px}.v3-food-grid span{font-size:10px}.v3-tray{margin:12px 10px}.v3-tray button{width:44px;height:53px}.v3-tray img{width:38px;height:43px}.v3-service,.v3-prep{margin:12px 10px}.v3-serve{width:calc(100% - 20px);margin:12px 10px}.v3-tower .v3-caption{bottom:136px;font-size:11px}.v3-ticket-actions button{min-height:40px}}
 @media(prefers-reduced-motion:reduce){.v3-table img,.v3-play .obres .big,.v3-tray button,.v3-delivered .v3-tray,.v3-delivered .v3-chef{animation:none!important}.v3-checkpoint{animation:none;top:30%}}
+
+/* ===== v3.1 鮮豔版：恢復飽和色、文字不超框 ===== */
+.v3-play .obhud{background:none}
+.v3-play .obinfo,.obplay .obinfo{background:rgba(20,23,58,.8);color:#fff;border:2px solid rgba(255,255,255,.55);border-radius:16px;box-shadow:0 4px 0 rgba(0,0,0,.18);padding:5px 14px;max-width:calc(100vw - 170px);min-width:0;line-height:1.25}
+.obplay .obinfo b{font-size:13px;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v3-play .obinfo span,.obplay .obinfo span{color:#fff;font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.v3-play .obx{background:#fff;border:2px solid #14173a;color:#14173a;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.v3-play .obprompt{background:#fff;border:3px solid #14173a;color:#14173a;box-shadow:0 5px 0 rgba(0,0,0,.2);padding:8px 16px;line-height:1.3;max-width:calc(100vw - 24px)}
+.v3-play .obprompt .en,.v3-play .obprompt b{color:#1c6fd6}
+.v3-play .arq button{background:#fff;border:3px solid #14173a;box-shadow:0 5px 0 rgba(0,0,0,.25);color:#14173a;border-radius:20px}
+.v3-play .arq button.right{background:#36dcab;border-color:#14173a}.v3-play .arq button.wrong{background:#ff8a80;border-color:#14173a}
+.v3-play .arhp{background:rgba(20,23,58,.75)}
+.v3-route{top:calc(150px + env(safe-area-inset-top,0px));left:10px;width:150px;background:#fff;border:2px solid #14173a;color:#14173a;box-shadow:0 4px 0 rgba(0,0,0,.18);opacity:0;transform:translateX(-12px);transition:opacity .35s,transform .35s}
+.v3-route.show{opacity:1;transform:none}
+.v3-route b{background:linear-gradient(90deg,#18c795,#ffc531)}.v3-route small{color:#3a4470}
+.v3-checkpoint{background:#ffc531;color:#4a3600;border:3px solid #14173a}
+.v3-caption{background:rgba(20,23,58,.85);color:#fff;font-weight:700;font-size:13px}
+.v3-play .obres .card{background:var(--surface);color:var(--ink);border:3px solid #14173a}
+.v3-play .obres .card .pts{color:var(--sky)}.v3-play .obres .card .st{color:#f5a800}
+.v3-diner .obinfo{background:none;border:0;box-shadow:none;padding:2px 0;max-width:calc(100vw - 80px)}
+.v3-diner .obinfo span{font-size:17px}
+.v3-cover h2{text-shadow:0 2px 6px rgba(0,0,0,.45)}
+
+.sxs .flag{top:42%;z-index:3}

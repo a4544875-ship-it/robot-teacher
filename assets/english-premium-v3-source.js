@@ -9,7 +9,7 @@ signTex=function(txt,emo,bg){
   var word=WORDS.filter(function(w){return w[1]===txt})[0],key=word&&word[0],src=key&&V3_WORDS[key];
   if(!src&&key){var food=DN_IDS.filter(function(k){return DN_F[k][0]===key})[0];if(food)src=DNP[food];else if(SIMG[key])src=SIMG[key]}
   if(!src)return v3Sign0(txt,emo,bg);
-  var canvas=document.createElement('canvas');canvas.width=canvas.height=512;var c=canvas.getContext('2d'),im=v3Image(src),texture=new T.CanvasTexture(canvas);texture.encoding=T.sRGBEncoding;
+  var canvas=document.createElement('canvas');canvas.width=canvas.height=512;var c=canvas.getContext('2d'),im=v3Image(src),texture=new T.CanvasTexture(canvas);
   function draw(){c.clearRect(0,0,512,512);var gr=c.createLinearGradient(0,0,0,512);gr.addColorStop(0,'#fffdf5');gr.addColorStop(1,'#dcefee');c.fillStyle=gr;rr(c,12,12,488,488,48);c.fill();c.strokeStyle='#587c84';c.lineWidth=8;c.stroke();if(im.complete&&im.naturalWidth){var scale=Math.min(420/im.naturalWidth,420/im.naturalHeight),w=im.naturalWidth*scale,h=im.naturalHeight*scale;c.drawImage(im,(512-w)/2,(512-h)/2,w,h)}else{c.font='280px "Apple Color Emoji","Segoe UI Emoji",sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText(txt,256,270)}texture.needsUpdate=true}
   draw();if(!im.complete)im.addEventListener('load',draw,{once:true});return texture;
 };
@@ -32,7 +32,7 @@ function v3Mesh(geo,mat,x,y,z,parent){var m=new T.Mesh(geo,mat);m.position.set(x
 function v3Sphere(r,c,x,y,z,parent){return v3Mesh(new T.SphereGeometry(r,12,8),v3Mat(c),x,y,z,parent)}
 function v3Box(w,h,d,c,x,y,z,parent){return v3Mesh(new T.BoxGeometry(w,h,d),v3Mat(c),x,y,z,parent)}
 function v3Ring(r,c,x,y,z,parent){var m=v3Mesh(new T.TorusGeometry(r,.055,6,28),new T.MeshBasicMaterial({color:c}),x,y,z,parent);return m}
-function v3Renderer(rd){rd.outputEncoding=T.sRGBEncoding;rd.toneMapping=T.ACESFilmicToneMapping;rd.toneMappingExposure=1.1;rd.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6))}
+function v3Renderer(rd){rd.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6))}
 function v3Glow(c){return tex(function(g,s){var grad=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);grad.addColorStop(0,c);grad.addColorStop(.25,c);grad.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=grad;g.fillRect(0,0,s,s)},64)}
 function v3Cloud(x,y,z,scale,parent,motion){var gp=new T.Group(),mat=v3Mat(0xfffdf8);[-1,0,1].forEach(function(k){var m=v3Mesh(new T.SphereGeometry(1,10,7),mat,k*.9,k===0?.3:0,0,gp);m.scale.set(k===0?1.2:1,.65,.75)});gp.position.set(x,y,z);gp.scale.setScalar(scale);parent.add(gp);if(motion)motion.push({m:gp,type:'cloud',x:x,y:y,z:z,p:Math.random()*6})}
 function v3Tree(x,y,z,color,parent){var g=new T.Group();v3Mesh(new T.CylinderGeometry(.09,.15,1.3,8),v3Mat(0x9b7957),0,.65,0,g);[[0,1.7,0],[-.45,1.45,0],[.4,1.55,.1]].forEach(function(p){var leaf=v3Sphere(.66,color,p[0],p[1],p[2],g);leaf.scale.y=.85});g.position.set(x,y,z);parent.add(g)}
@@ -61,7 +61,7 @@ function v3Obby(a){
 function v3ArcScene(a,id){
   if(a.v3||['tower','shoot'].indexOf(id)<0)return;var v=v3InitState(a);v3Renderer(a.rd);a.el.classList.add('v3-play','v3-'+id);
   if(id==='tower'){
-    var sc=a.sc;sc.background=new T.Color(0xd7e6f6);sc.fog=new T.Fog(0xd7e6f6,30,85);
+    var sc=a.sc;sc.background=new T.Color(0x8fd0ff);sc.fog=new T.Fog(0x8fd0ff,30,90);
     [-2.2,2.2].forEach(function(x,side){var castle=new T.Group(),stone=v3Mat(side?0xf2dcd4:0xc4dce9);v3Mesh(new T.CylinderGeometry(1.14,1.4,23.3,12),stone,0,11.2,-1.5,castle);
       for(var y=1;y<24;y+=3.8){var rim=v3Mesh(new T.CylinderGeometry(1.3,1.3,.22,16),v3Mat(0xffefc9),0,y,-1.5,castle);v3Box(.5,.95,.1,0x54657c,0,y+1,-.35,castle);var light=v3Box(.3,.65,.12,0xffdf7c,0,y+1,-.26,castle);light.material.emissive.setHex(0x685129)}
       var roof=v3Mesh(new T.ConeGeometry(1.8,3,12),v3Mat(side?0xc27e97:0x5c8fb8),0,25,-1.5,castle);v3Sphere(.17,0xffd35b,0,26.65,-1.5,castle);
@@ -71,7 +71,7 @@ function v3ArcScene(a,id){
     var crown=v3Mesh(new T.TorusGeometry(.7,.13,8,20),v3Mat(0xffd165,true),0,25,0,sc);crown.rotation.x=Math.PI/2;v.motion.push({m:crown,type:'crown',y:25,p:0});v3SparkField(a,0xffdc8e,20);
     a.el.insertAdjacentHTML('beforeend','<div class="v3-caption">✨ 拼對字母，讓魔法電梯帶你登頂</div>');
   }else{
-    var sc=a.sc;sc.background=new T.Color(0xb9ddd9);sc.fog=new T.Fog(0xb9ddd9,22,70);
+    var sc=a.sc;sc.background=new T.Color(0x9fd8ff);sc.fog=new T.Fog(0x9fd8ff,24,80);
     // Booth stays behind target planes at z=-6 and outside ray hit lists.
     v3Box(19,.45,8,0xb99678,0,-2,-8,sc);[-9.2,9.2].forEach(function(x){v3Mesh(new T.CylinderGeometry(.26,.32,12,10),v3Mat(0xb49471),x,3.5,-10,sc);v3Sphere(.44,0xffd884,x,9.7,-10,sc)});
     v3Box(19,.55,.7,0x91c3ba,0,9,-10,sc);v3Box(19,.2,.7,0xffe0a2,0,8.6,-10,sc);
@@ -106,7 +106,7 @@ function v3Tick(a,dt){
   if(a.g&&a.g.id==='tower'){var caption=a.el.querySelector('.v3-caption');if(caption)caption.textContent='✨ 字母能量 '+(v.combo||0)+' · '+(v.shield?'🛡️ 護盾已準備':'連對三題獲得護盾')}
   v.pool.forEach(function(p){if(!p.live)return;p.age+=dt;var arr=p.m.geometry.attributes.position.array;for(var i=0;i<12;i++){arr[i*3]+=p.vel[i][0]*dt;arr[i*3+1]+=p.vel[i][1]*dt;arr[i*3+2]+=p.vel[i][2]*dt;p.vel[i][1]-=dt*3}p.m.material.opacity=Math.max(0,1-p.age/.65);p.m.geometry.attributes.position.needsUpdate=true;if(p.age>.65){p.live=false;p.m.visible=false}});
   if(a.p){var route=a.el.querySelector('#v3Route');if(route){route.querySelector('span').textContent='✦ 存檔 '+(a.cp+1)+' / '+a.cps.length;route.querySelector('b').style.width=Math.round(clamp((a.z0-a.p.z)/(a.z0-a.z1),0,1)*100)+'%'}
-    if(v.lastCP!==a.cp){v.lastCP=a.cp;if(a.cp>0){var pulse=document.createElement('div');pulse.className='v3-checkpoint';pulse.textContent='✦ 已儲存探險進度';a.el.appendChild(pulse);setTimeout(function(){pulse.remove()},1600)}}
+    if(v.lastCP!==a.cp){v.lastCP=a.cp;var rt=a.el.querySelector('#v3Route');if(rt){rt.classList.add('show');clearTimeout(v.rtT);v.rtT=setTimeout(function(){rt.classList.remove('show')},2600)}if(a.cp>0){var pulse=document.createElement('div');pulse.className='v3-checkpoint';pulse.textContent='✦ 已儲存探險進度';a.el.appendChild(pulse);setTimeout(function(){pulse.remove()},1600)}}
   }
 }
 var v3Build0=build;build=function(){v3Build0();if(S)v3Obby(S)};
