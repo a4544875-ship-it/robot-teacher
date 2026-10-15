@@ -1,5 +1,5 @@
 /* 奇蹟知識島 v3.0 — versioned, atomic offline assets; Firebase stays uncached. */
-const CACHE='robot-teacher-v32-vivid';
+const CACHE='robot-teacher-v33';
 const CORE=['./','index.html','manifest.webmanifest','castle-192.png','assets/island-v2.css','assets/english-premium-v3.css',
   ...['adventure-island','adventure-diner','adventure-tower','adventure-shoot'].map(n=>'assets/'+n+'.webp'),
   ...['cat','dog','pig','fish','bird','cow','duck','bee','egg','cake','book','bag','hat','car','ball','cup'].map(n=>'assets/word-'+n+'.webp'),

@@ -1397,6 +1397,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .plates{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-content:center}
 .plate{width:clamp(70px,22vw,96px);aspect-ratio:1;border-radius:50%;background:radial-gradient(#fff,#e6ecf5);border:3px solid #14173a;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:2px;padding:8px}
 .plate i{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a8f,#e8443a);border:1.5px solid #14173a}
+.mbtog{width:100%;text-align:left;background:none;padding:0;color:inherit;font:inherit;cursor:pointer}.mbtog .mbar{grid-column:1/-1;justify-self:center;margin-top:6px;background:linear-gradient(135deg,#ff9a3c,#ff6a5c);color:#fff;font-weight:700;font-size:14px;border-radius:999px;padding:4px 16px;box-shadow:0 3px 0 rgba(0,0,0,.15)}.mbtog[aria-expanded="true"]{margin-bottom:8px}.mbk .mbh{margin-bottom:0}
+.ttrow{margin-top:-6px}.ttrow .chip{font-weight:700}
 </style>
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
@@ -2162,13 +2164,13 @@ function mbState(id){var g=mbGrade(id);if(!g)return null;var B=MB[g],w=mbWeek(),
 function mbRow(id,k){var s=((Store.kid(id).mu)||{})[k];return Array.isArray(s)?[+s[0]||0,+s[1]||0,+s[2]||0,+s[3]||0]:[0,0,0,0]}
 function mbCards(id){var S=mbState(id);if(!S)return 0;return S.B.u.filter(function(u){var r=mbRow(id,u[0]);return r[0]&&r[1]&&r[2]}).length}
 /* 數學樂園上方的課本地圖 */
-function mbHome(gb){if(!isKid())return;var S=mbState(who),box=document.createElement('div');box.className='mbk';
+var mbOpen=false;function mbHome(gb){if(!isKid())return;var S=mbState(who),box=document.createElement('div');box.className='mbk';
   if(!S){box.innerHTML='<div class="mbh"><b>📘 康軒課本闖關</b><small>這個年級的課本地圖還在準備中，先玩下面的數學遊戲吧！</small></div>';gb.parentNode.insertBefore(box,gb);return}
-  var h='<div class="mbh"><b>📘 康軒數學 '+esc(S.B.book)+'</b><small>學校現在大約教到：第 '+(S.cur+1)+' 單元「'+esc(S.B.u[S.cur][1])+'」'+(S.manual?'（家長設定）':'')+'</small><span class="mbc">🏅 '+mbCards(who)+' / '+S.B.u.length+'</span></div><div class="mbpath">';
+  var h='<button class="mbh mbtog" id="mbTog" aria-expanded="'+mbOpen+'"><b>📘 康軒數學 '+esc(S.B.book)+'</b><small>學校現在大約教到：第 '+(S.cur+1)+' 單元「'+esc(S.B.u[S.cur][1])+'」'+(S.manual?'（家長設定）':'')+'</small><span class="mbc">🏅 '+mbCards(who)+' / '+S.B.u.length+'</span><span class="mbar">'+(mbOpen?'收起 ▲':'打開課本 ▼')+'</span></button><div class="mbpath"'+(mbOpen?'':' hidden')+'>';
   S.B.u.forEach(function(u,i){var open=i<=S.cur,r=mbRow(who,u[0]),st=r[0]+r[1]+r[2],full=r[0]&&r[1]&&r[2],ready=!!u[4];
     h+='<button class="mbn'+(i%2?' r':'')+(open?'':' lock')+(i===S.cur?' now':'')+(full?' full':'')+'" data-u="'+u[0]+'"><span class="no">'+(full?'🏅':open?i+1:'🔒')+'</span><span class="tx"><b>'+esc(u[1])+'</b><small>'+
       (i===S.cur?'📍 學校現在教到這裡':!open?'學校還沒教到':!ready?'🚧 小機老師準備中':'★ '+st+' / 9')+'</small></span></button>'});
-  box.innerHTML=h+'</div>';gb.parentNode.insertBefore(box,gb);
+  box.innerHTML=h+'</div>';gb.parentNode.insertBefore(box,gb);$('#mbTog').addEventListener('click',function(){sfx('tap');mbOpen=!mbOpen;var p=box.querySelector('.mbpath');p.hidden=!mbOpen;this.setAttribute('aria-expanded',mbOpen);this.querySelector('.mbar').textContent=mbOpen?'收起 ▲':'打開課本 ▼';if(mbOpen)say('選一個單元開始練習！','happy')});
   box.querySelectorAll('[data-u]').forEach(function(b){b.addEventListener('click',function(){var i=S.B.u.map(function(u){return u[0]}).indexOf(b.dataset.u),u=S.B.u[i];
     if(i>S.cur){sfx('no');say('學校還沒教到「'+u[1]+'」，先把前面的練熟吧！','oops');return}
     if(!u[4]){sfx('tap');say('「'+u[1]+'」小機老師還在準備，很快就好！先玩下面的數學遊戲吧！','happy');return}
@@ -2453,7 +2455,6 @@ function sciHomeOld(){
 var GAMES=[
  {id:'obby',cls:'g11 feat',ico:'🏝️',tag:'20 關',zh:'單字闖關島',en:'Word Island 3D',d:'3D 跑跳闖關，4 個世界 20 關，可以兩個人連線比賽！'},
  {id:'kart',cls:'g12 feat',ico:'🏎️',tag:'對戰',zh:'單字飛車',en:'Word Kart 3D',d:'開進對的車道加速衝刺，可以兩個人連線比誰先到終點！',how:'看題目，開進對的車道會加速，開錯會變慢，還要閃路障。電腦按左右鍵，手機點螢幕左邊或右邊換車道。'},
- {id:'tug',cls:'g15 feat',ico:'🪢',tag:'NEW',zh:'單字拔河',en:'Tug of Words',d:'答對就把繩子拉過來，把對手拉過線就贏！',how:'看題目選對的答案，每答對一題就把繩子往自己這邊拉一格；答錯會暫停一下。60 秒內把對手拉過線，或時間到時領先的人獲勝。',duel:1},
  {id:'tower',cls:'g16 feat',ico:'🗼',tag:'NEW',zh:'單字爬塔',en:'Tower Race',d:'補上缺的字母往上爬，先爬到塔頂的人贏！',how:'看圖片和中文，選出單字裡缺的那個字母。答對往上爬一層，答錯會掉一層，先爬到第 12 層的人獲勝。',duel:1},
  {id:'shoot',cls:'g13 feat',ico:'🎯',img:'balloon',tag:'對戰',zh:'單字射擊場',en:'Word Blaster',d:'瞄準對的氣球把它射下來，可以連線比誰先射完！',how:'聽題目，點對的氣球把它射下來。自己玩有 3 顆愛心；連線對戰時射錯會暫停一下，先射完 10 題的人獲勝。'},
  {id:'meteor',cls:'g14 feat',ico:'☄️',tag:'對戰',zh:'字母隕石',en:'Letter Meteors',d:'照順序射下字母隕石拼出單字，可以連線比誰先拼完！',how:'看圖片和中文，照順序點字母隕石把單字拼出來。連線對戰時先拼完 6 個單字的人獲勝。'},
@@ -2463,9 +2464,8 @@ var GAMES=[
  {id:'mbingo',sub:'math',cls:'g17 feat',ico:'🟦',tag:'對決',zh:'九九賓果搶地盤',en:'Times Table Bingo',d:'算對九九乘法就佔一格，先連成 4 格一條線的人贏！',how:'看上面的乘法題，在格子裡找到答案點下去，那一格就是你的。先把 4 格連成一條線（直、橫、斜都可以）的人獲勝；點錯會暫停一下。',duel:1},
  {id:'msnake',sub:'math',cls:'g18 feat',ico:'🐍',tag:'NEW',zh:'數字貪吃蛇',en:'Number Snake',d:'把蛇開去吃正確答案，越吃越長！',how:'場上有 3 個數字，只有一個是正確答案。手機滑動螢幕（或點蛇頭的上下左右），電腦按方向鍵轉彎。吃錯或撞到自己會少一顆愛心，90 秒內吃越多越好。'},
  {id:'mbond',sub:'math',cls:'g19 feat',ico:'🫧',tag:'NEW',zh:'泡泡湊數',en:'Bubble Bonds',d:'點兩個泡泡，加起來或乘起來剛好等於目標！',how:'上面會給一個目標數字。點兩個泡泡，讓它們加起來（三年級以上有時是乘起來）剛好等於目標。60 秒內湊越多組越好，點錯扣 2 秒。'},
- {id:'mcmp',sub:'math',cls:'g20 feat',ico:'🐊',tag:'NEW',zh:'鱷魚比大小',en:'Hungry Croc',d:'鱷魚要吃大的！快點出比較大的那一邊。',how:'左右各有一個數字或算式，點比較大的那一邊；一樣大就按下面的「＝」。60 秒內答越多越好，答錯扣 3 秒。'},
  {id:'mboss',sub:'math',impl:'boss',math:'mix',cls:'g21 feat',ico:'🐲',tag:'合作',zh:'數學打魔王',en:'Math Boss',d:'不比輸贏！兩個人一起算數學，合力打敗魔王！',how:'魔王有很多血，90 秒內每算對一題就打魔王一下；算錯魔王會休息一下。題目會照自己的年級出，所以年級不同也能公平合作。打贏了兩個人都加 30 分！',coop:1},
- {id:'ttab',sub:'math',cls:'g14 feat',ico:'📋',tag:'複習',zh:'九九乘法表',en:'Times Table Chart',d:'忘記了？先來看表複習，點一下會唸給你聽。',noscore:1}
+ {id:'ttab',sub:'math',hide:1,cls:'g14 feat',ico:'📋',tag:'複習',zh:'九九乘法表',en:'Times Table Chart',d:'忘記了？先來看表複習，點一下會唸給你聽。',noscore:1}
 ,
  {id:'smag',sub:'sci',st:1,cls:'g23',ico:'🧲',zh:'磁鐵大探險',en:'Magnets',d:'猜一猜、沙堆尋寶、N 極和 S 極'},
  {id:'scirc',sub:'sci',st:1,cls:'g24',ico:'💡',zh:'點亮燈泡',en:'Circuits',d:'接電線、導體大考驗、電路修理工'},
@@ -2474,7 +2474,7 @@ var GAMES=[
  {id:'sanimal',sub:'sci',st:1,cls:'g23',ico:'🐾',zh:'動物園管理員',en:'Animals',d:'動物的家、餵食、動物分類'},
 ];
 /* 已下架的舊遊戲：只留名字，讓以前的遊戲紀錄還讀得懂 */
-var OLD_GAMES={scisprint:'🧪 自然搶答',scisort:'🧺 分類快手',sciorder:'🔢 排排看',scimatch:'🧩 配對連連看',mkart:'🏎️ 九九乘法飛車',mtower:'🗼 九九爬塔',mshoot:'🎯 數學射擊場',mtug:'🪢 數學拔河',pw:'🖼️ 看圖選字',pp:'🔎 看字選圖',match:'🧩 翻牌配對',spell:'🔤 拼字工廠',pop:'🎈 氣球派對',whack:'🔨 打地鼠',miss:'🕵️ 補上字母',fish:'🎣 釣魚大師',star:'⭐ 星空接接樂',race:'🏎️ 單字賽車'};
+var OLD_GAMES={tug:'🪢 單字拔河',mcmp:'🐊 鱷魚比大小',scisprint:'🧪 自然搶答',scisort:'🧺 分類快手',sciorder:'🔢 排排看',scimatch:'🧩 配對連連看',mkart:'🏎️ 九九乘法飛車',mtower:'🗼 九九爬塔',mshoot:'🎯 數學射擊場',mtug:'🪢 數學拔河',pw:'🖼️ 看圖選字',pp:'🔎 看字選圖',match:'🧩 翻牌配對',spell:'🔤 拼字工廠',pop:'🎈 氣球派對',whack:'🔨 打地鼠',miss:'🕵️ 補上字母',fish:'🎣 釣魚大師',star:'⭐ 星空接接樂',race:'🏎️ 單字賽車'};
 function dnTierOf(n){return n>=200?3:n>=100?2:n>=50?1:0}
 var GAME_FN={},gOpen='',gOpenWho=null;
 var gHome=$('#gHome'),gPlay=$('#gPlay'),gBody=$('#gBody');
@@ -2492,7 +2492,7 @@ function renderGameHome(){
   gb0.hidden=!lobby;$('#gLobby').hidden=lobby;$('#heroBox').hidden=$('#egRow').hidden=$('#games').hidden=lobby;if(lobby)$('#dayBox').hidden=!isKid();else $('#dayBox').hidden=true;
   renderFac();
   $('#heroBox').className='hero'+(gsub==='math'?' math':gsub==='sci'?' sci':'');$('#heroIco').innerHTML=gsub==='math'?'🧮':gsub==='sci'?'🔬':ic('pad');$('#heroT').textContent=gsub==='math'?'數學遊戲樂園':gsub==='sci'?'自然遊戲樂園':'英文遊戲樂園';
-  var er=$('#egRow');er.innerHTML='<span class="lab">🎒 冒險等級</span>';
+  var er=$('#egRow');er.innerHTML='<span class="lab">🎒 冒險等級</span>';var ttr=$('#ttRow');if(!ttr){ttr=document.createElement('div');ttr.id='ttRow';ttr.className='chiprow egrow ttrow';er.parentNode.insertBefore(ttr,er.nextSibling);ttr.innerHTML='<span class="lab">📖 小幫手</span><button class="chip" id="ttGo">📋 九九乘法表</button>';$('#ttGo').addEventListener('click',function(){sfx('tap');var g=GAMES.filter(function(x){return x.id==='ttab'})[0];if(g)GAME_FN.ttab(g)})}ttr.hidden=gsub!=='math'||lobby;
   EGRADES.forEach(function(g){var b=document.createElement('button');b.className='chip';b.innerHTML=GICO[g]+' '+g+'年級<span class="en" style="font-size:12px;margin-left:3px">'+ELAB[g]+'</span>';b.setAttribute('aria-pressed',g===egrade?'true':'false');
     b.addEventListener('click',function(){egrade=g;ls.set('rt-eg-'+who,g);sfx('tap');renderGameHome();say(g+'年級，'+ELAB[g]+'難度！','happy')});er.appendChild(b);});
   $('#heroSub').textContent=gsub==='sci'?'依 '+egrade+' 年級自動調整難度':'現在是 '+egrade+'年級・'+ELAB[egrade]+'難度';
@@ -2754,7 +2754,7 @@ $('#starPill').addEventListener('click',function(){if(isKid()){sfx('tap');openGa
    k.day   ：今天的任務進度；k.streak：連續完成天數；k.water：水滴（任務獎勵，可在花園澆水或換裝飾）
    k.wk    ：這一週開始時的分數，用來算「本週進步」 */
 var Learn=(function(){
-  var NEED=3,EN_G=['obby','kart','tug','tower','shoot','meteor','boss','diner'],MA_G=['mbingo','msnake','mbond','mcmp','mboss'];
+  var NEED=3,EN_G=['obby','kart','tower','shoot','meteor','boss','diner'],MA_G=['mbingo','msnake','mbond','mboss'];
   function pad2(n){return (n<10?'0':'')+n}
   function dstr(d){return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())}
   function day(off){var d=new Date();d.setDate(d.getDate()+(off||0));return dstr(d)}
