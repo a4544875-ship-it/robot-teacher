@@ -55,3 +55,9 @@ body.ev-hw .tab[aria-selected="true"]{background:#f2843a;color:#2a1600}
 .fm-back{display:inline-flex;align-items:center;margin:0 0 8px;border-radius:12px;padding:6px 12px;background:var(--surface-2);color:var(--ink);font-weight:700;font-size:14px;box-shadow:var(--shadow)}
 .tab.fm-badge{position:relative}
 .tab.fm-badge:after{content:"";position:absolute;right:10px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 2px var(--surface)}
+.fm-cfg{margin-top:12px;background:var(--surface-2);border-radius:14px;padding:8px 12px}
+.fm-cfg summary{font-weight:700;cursor:pointer;font-size:14px}
+.fm-cfg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.fm-cfg label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink-soft)}
+.fm-cfg input{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:7px 8px;font-size:16px;font-family:var(--font-en);width:100%}
+.fm-cfg-msg{margin-left:8px;font-size:13px;font-weight:700;color:#14805e}

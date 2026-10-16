@@ -36,6 +36,8 @@
   function normRD(raw) {
     var r = raw && typeof raw === "object" ? JSON.parse(JSON.stringify(raw)) : {};
     r.sp = Math.max(0, Math.floor(Number(r.sp) || 0));
+    /* e：新版上線後才開始累積的「兌換點數」，跟總分分開 */
+    r.e = Math.max(0, Math.floor(Number(r.e) || 0));
     if (!r.gd || typeof r.gd !== "object") r.gd = { d: "", n: 0 };
     if (!Array.isArray(r.log)) r.log = [];
     return r;
@@ -64,8 +66,57 @@
         hold = pending(r).reduce(function (a, x) {
           return a + x.c;
         }, 0);
-      return Math.max(0, Math.floor(Number(k.pts) || 0) - r.sp - hold);
+      return Math.max(0, r.e - r.sp - hold);
     }
+    var DEF = { game: 2000, daily: 3, mcd: 50000, hotpot: 80000 };
+    function cfg() {
+      var c = null;
+      F.KIDS().some(function (K) {
+        var r = kid(K.id).rd;
+        if (r && r.cfg && typeof r.cfg === "object") {
+          c = r.cfg;
+          return true;
+        }
+      });
+      var o = {};
+      Object.keys(DEF).forEach(function (k) {
+        var v = c ? Math.floor(Number(c[k])) : NaN;
+        o[k] = v > 0 ? v : DEF[k];
+      });
+      o.daily = Math.min(10, o.daily);
+      return o;
+    }
+    function applyCfg() {
+      var c = cfg();
+      REWARDS[0].cost = c.game;
+      REWARDS[0].daily = c.daily;
+      REWARDS[0].rule = "自己兌換 · 每天最多 " + c.daily + " 次";
+      REWARDS[1].cost = c.mcd;
+      REWARDS[2].cost = c.hotpot;
+      return c;
+    }
+    /* 每次加分時，同時累積兌換點數（只算新版上線之後賺到的分數） */
+    function earnHook(name) {
+      var orig = F.Store[name];
+      if (typeof orig !== "function") return;
+      F.Store[name] = function (id) {
+        var k0 = F.Store.kid(id),
+          before = k0 ? Number(k0.pts) || 0 : 0;
+        var out = orig.apply(this, arguments);
+        var k1 = F.Store.kid(id),
+          diff = k1 ? (Number(k1.pts) || 0) - before : 0;
+        if (diff > 0)
+          F.Store.mut(id, function (k) {
+            var r = normRD(k.rd);
+            r.e += Math.round(diff);
+            if (!r.since) r.since = today();
+            k.rd = r;
+          });
+        return out;
+      };
+    }
+    earnHook("award");
+    earnHook("finishGame");
     function gameToday(r) {
       return r.gd.d === today() ? r.gd.n | 0 : 0;
     }
@@ -80,6 +131,7 @@
       return out;
     }
     function redeem(id, it) {
+      applyCfg();
       var R = REWARDS.filter(function (x) {
         return x.id === it;
       })[0];
@@ -131,12 +183,22 @@
 
     /* ---------- 小朋友：兌換面板 ---------- */
     function kidPanel(id) {
+      applyCfg();
       var k = kid(id),
         r = normRD(k.rd),
         bal = balance(id),
         g = gameToday(r),
         h = '<section class="fm-rw" id="fmRw"><button class="fm-back" id="fmBack">← 上一頁</button><div class="fm-head"><h2>🎁 獎勵兌換</h2><div class="fm-bal"><small>可用點數</small><b>' + fmt(bal) + "</b></div></div>";
-      h += '<p class="fm-note">總分 ' + fmt(k.pts || 0) + "（排行榜不會因為兌換而變少）· 已兌換 " + fmt(r.sp) + "</p>";
+      h +=
+        '<p class="fm-note">兌換點數從 ' +
+        (r.since ? r.since.slice(5).replace("-", "/") : "今天") +
+        " 開始累積：累積 " +
+        fmt(r.e) +
+        " · 已兌換 " +
+        fmt(r.sp) +
+        "。總分 " +
+        fmt(k.pts || 0) +
+        " 不會因為兌換而變少，排行榜照舊。</p>";
       h += '<div class="fm-cards">';
       REWARDS.forEach(function (R) {
         var wait = pending(r).filter(function (x) {
@@ -307,10 +369,54 @@
           '">這次先不行</button></div></div>';
       });
       h += '<div class="fm-today">' + todayRows.join("") + "</div>";
-      h += '<p class="fm-note">規則：2,000 點換 30 分鐘手機遊戲（孩子自己兌換，每天最多 3 次）；麥當勞 50,000 點、小火鍋 80,000 點需要家長同意。同意後才會扣點數，不同意不扣。</p></section>';
+      var c = applyCfg();
+      h +=
+        '<p class="fm-note">規則：' +
+        fmt(c.game) +
+        " 點換 30 分鐘手機遊戲（孩子自己兌換，每天最多 " +
+        c.daily +
+        " 次）；麥當勞 " +
+        fmt(c.mcd) +
+        " 點、小火鍋 " +
+        fmt(c.hotpot) +
+        " 點需要家長同意。同意後才扣點數，不同意不扣。兌換點數只算新版上線後賺到的分數，跟總分分開。</p>";
+      h +=
+        '<details class="fm-cfg"><summary>⚙️ 修改兌換門檻</summary><div class="fm-cfg-grid">' +
+        [
+          ["game", "手機遊戲 30 分鐘（點）"],
+          ["daily", "手機遊戲每天最多（次）"],
+          ["mcd", "麥當勞（點）"],
+          ["hotpot", "小火鍋（點）"],
+        ]
+          .map(function (x) {
+            return '<label><span>' + x[1] + '</span><input type="number" inputmode="numeric" min="1" data-cfg="' + x[0] + '" value="' + c[x[0]] + '"></label>';
+          })
+          .join("") +
+        '</div><button class="fm-yes" id="fmCfgSave">儲存門檻</button><span class="fm-cfg-msg" id="fmCfgMsg"></span></details>';
       return h;
     }
     function wireParent(el) {
+      var save = el.querySelector("#fmCfgSave");
+      if (save)
+        save.onclick = function () {
+          var c = {},
+            root = save.closest(".fm-rw") || document;
+          root.querySelectorAll("[data-cfg]").forEach(function (inp) {
+            var v = Math.floor(Number(inp.value));
+            c[inp.dataset.cfg] = v > 0 ? v : DEF[inp.dataset.cfg];
+          });
+          c.daily = Math.min(10, c.daily);
+          F.KIDS().forEach(function (K) {
+            F.Store.mut(K.id, function (k) {
+              var r = normRD(k.rd);
+              r.cfg = c;
+              k.rd = r;
+            });
+          });
+          F.sfx("ok");
+          var m = root.querySelector("#fmCfgMsg");
+          if (m) m.textContent = "已儲存！";
+        };
       el.querySelectorAll("[data-ok],[data-deny]").forEach(function (b) {
         b.onclick = function () {
           var v = (b.dataset.ok || b.dataset.deny).split("|");
