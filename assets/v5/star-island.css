@@ -42,3 +42,61 @@
 .si-combat-actions small{font-size:9px}
 .si-game:has(.si-defense:not([hidden])) .si-toast{bottom:calc(285px + env(safe-area-inset-bottom))}
 }
+
+/* ===== v7：答題就是攻擊（戰鬥題目列）＋戰功星商店 ===== */
+.si-qbar{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:14;background:linear-gradient(160deg,#fffbeef5,#e6f2e9f2);border:2px solid #e3cf98;border-radius:20px;padding:8px 10px 6px;box-shadow:0 10px 30px #0b2a3a55;color:#24484f;max-width:620px;margin:0 auto}
+.si-qbar[hidden]{display:none}
+.sq-top{display:flex;align-items:center;gap:8px;min-height:30px}
+.sq-tag{flex:none;font-size:10px;font-weight:700;background:#ffd36b;color:#5a3f00;border-radius:999px;padding:2px 8px}
+.sq-top b{flex:1;min-width:0;font-size:22px;line-height:1.2;text-align:center;font-family:"Baloo 2","Fredoka",var(--font-zh,sans-serif);color:#1f4f57;overflow-wrap:anywhere}
+.sq-top button{flex:none;width:34px;height:34px;border-radius:12px;background:#d8efe6;border:1px solid #9fcfbe;font-size:16px}
+.sq-opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:6px}
+.sq-opts button{min-width:0;border-radius:14px;background:#fff;border:2px solid #b9d8cb;box-shadow:0 3px 0 #9bbdb0;padding:4px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:#23464d;min-height:64px;touch-action:manipulation}
+.sq-opts button img{width:40px;height:40px;object-fit:contain}
+.sq-opts button .si-emoji{font-size:30px;line-height:1.2}
+.sq-opts button small{font-size:11px;line-height:1.2}
+.sq-opts.nums button{min-height:52px}
+.sq-opts.nums button b{font-size:21px;font-variant-numeric:tabular-nums;font-family:"Baloo 2","Fredoka",sans-serif}
+.sq-opts button:active{transform:translateY(3px);box-shadow:none}
+.sq-opts button.right{background:#7fe0b9;border-color:#2e9e78}
+.sq-opts button.wrong{background:#ffb4a8;border-color:#e0705f;opacity:.75}
+#sqFb{margin:4px 0 0;min-height:16px;font-size:12px;text-align:center;font-weight:700}
+#sqFb.good{color:#14805e}#sqFb.bad{color:#b4523f}
+.si-merit-line{margin:4px 0 0!important;font-size:12px!important;color:#ffe08a!important;font-weight:700}
+/* 戰鬥中：收起米露對話、互動鈕；搖桿與射擊鈕移到題目列上方 */
+.si-battle .si-companion,.si-battle .si-help,.si-battle #siInteract{display:none!important}
+.si-battle .si-joystick{bottom:calc(178px + env(safe-area-inset-bottom))!important}
+.si-battle .si-actions{bottom:calc(182px + env(safe-area-inset-bottom))!important}
+.si-battle .si-combat-actions{bottom:calc(252px + env(safe-area-inset-bottom))!important}
+.si-battle .si-toast{top:calc(250px + env(safe-area-inset-top))!important;bottom:auto!important}
+.si-battle .si-combat-actions #sdFire{width:76px;height:76px;font-size:30px;background:radial-gradient(circle at 35% 25%,#ffe9a8,#e0a93a);color:#4a3200;border-color:#fff3c8}
+@media(min-width:700px){.si-battle .si-joystick{bottom:150px!important}.si-battle .si-actions{bottom:150px!important}.si-battle .si-combat-actions{bottom:150px!important;right:130px!important}.si-battle .si-toast{bottom:160px!important}}
+@media(max-height:560px) and (min-width:600px){.si-qbar{left:auto;right:10px;width:min(430px,52vw)}.sq-opts button{min-height:46px}.sq-opts button img{width:30px;height:30px}.si-battle .si-joystick{bottom:20px!important}.si-battle .si-actions{bottom:20px!important;right:calc(min(430px,52vw) + 24px)!important}.si-battle .si-combat-actions{bottom:110px!important;right:calc(min(430px,52vw) + 24px)!important}}
+
+/* 商店 */
+.si-shop{margin-top:14px;background:var(--surface,#fff);border-radius:22px;padding:14px;box-shadow:var(--shadow,0 5px 0 rgba(26,34,80,.12))}
+.si-shop .si-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.si-shop h3{margin:0;font-size:18px}
+.si-shop h4{margin:14px 0 6px;font-size:14px;color:var(--ink-soft,#5a6494)}
+.si-merit{background:#ffd36b;color:#4a3600;border-radius:999px;padding:3px 12px;font-weight:800;font-size:18px;white-space:nowrap}
+.si-merit small{font-size:10px;font-weight:600;margin-left:6px;opacity:.8}
+.si-shop-tip{font-size:12px;color:var(--ink-soft,#5a6494);margin:6px 0 0;line-height:1.5}
+.si-water{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface-2,#f1f7ff);border-radius:14px;padding:8px 10px;margin-top:10px;font-size:13px}
+.si-water button,.si-shop-item button{flex:none;border-radius:12px;padding:6px 10px;background:var(--sky,#2b8af0);color:var(--sky-ink,#fff);font-weight:700;font-size:12px}
+.si-water button[disabled],.si-shop-item button[disabled]{opacity:.45}
+.si-shop-item button.on{background:#18c795;color:#06382a;opacity:1}
+.si-shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.si-shop-item{display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--surface-2,#f1f7ff);border-radius:14px;padding:10px 6px;text-align:center;min-width:0}
+.si-shop-item b{font-size:13px}
+.si-shop-item img{width:54px;height:54px;object-fit:contain}
+.si-shop-item .sw{display:block;width:40px;height:40px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px #0003}
+.si-shop-item .sw.rb{background:conic-gradient(#ff6b6b,#ffd36b,#6be38f,#6bc6ff,#b28bff,#ff6b6b)}
+.si-bestiary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.si-bestiary div{background:var(--surface-2,#f1f7ff);border-radius:12px;padding:8px 10px;opacity:.55}
+.si-bestiary div.seen{opacity:1;border:2px solid #9fe0c6}
+.si-bestiary b{display:block;font-size:14px}.si-bestiary small{font-size:11px;color:var(--ink-soft,#5a6494)}
+.si-badge{font-style:normal;font-size:12px;background:#ffd36b;color:#4a3600;border-radius:999px;padding:1px 8px}
+.sq-wait{display:none}
+.si-qbar.wait .sq-opts{opacity:.35;pointer-events:none}
+.si-qbar.wait .sq-wait{display:block;text-align:center;font-size:12px;font-weight:700;color:#7a6a3a}
+.si-qbar.wait #sqFb{display:none}
