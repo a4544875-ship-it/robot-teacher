@@ -1361,6 +1361,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <script src="assets/math-v4.js?v=4.1.0"></script>
 <link rel="stylesheet" href="assets/v5/star-island.css?v=7.0.0">
 <script src="assets/v5/star-island.js?v=7.0.0"></script>
+<link rel="stylesheet" href="assets/v8/family.css?v=8.0.0">
+<script src="assets/v8/family.js?v=8.0.0"></script>
 
 
 <header class="top">
@@ -1566,7 +1568,7 @@ var Store=(function(){
   var dirty={},writing={},flushT=null,chain=Promise.resolve(),warned=false;
   function kblank(){return {pts:0,byGame:{},qCount:0,lastDay:'',obby:{v:2},garden:{}}}
   function knorm(d){var b=kblank();/* 雲端資料可能是唯讀（凍結）物件，先深拷貝才能修改 */try{d=d?JSON.parse(JSON.stringify(d)):{}}catch(e){d={}}b.pts=+d.pts||0;b.byGame=d.byGame||{};b.qCount=+d.qCount||0;b.lastDay=d.lastDay||'';b.obby=(d.obby&&typeof d.obby==='object')?d.obby:{v:2};b.garden=(d.garden&&typeof d.garden==='object')?d.garden:{};
-    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD','hv','sc','mu','mo','si'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq','scl'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.gr==='string'&&d.gr)b.gr=d.gr;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
+    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD','hv','sc','mu','mo','si','rd','hw'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq','scl'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.gr==='string'&&d.gr)b.gr=d.gr;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
     /* v2：關卡改成 20 關、順序重排，舊版的最快紀錄對不上新關卡，只保留已解鎖的進度 */
     if(b.obby.v!==2)b.obby={v:2,stage:Math.min(+b.obby.stage||0,4)};return b}
   function ensure(id){if(!kids[id]){kids[id]=kblank();dirty[id]=false;writing[id]=0}}
@@ -2590,11 +2592,11 @@ var GDC={a:['🐾 小動物',3],s:['🏠 建築',10],g:['🌼 地面',3],k:['�
 var GD=[['butterfly','a','蝴蝶',8,'fly'],['bee','a','蜜蜂',8,'fly'],['ladybug','a','瓢蟲',7,'walk'],['rabbit','a','兔子',9,'hop'],['squirrel','a','松鼠',9,'hop'],['hedgehog','a','刺蝟',8,'walk'],['bird','a','小鳥',8,'fly'],['frog','a','青蛙',9,'hop'],
   ['cabin','s','小木屋',20],['windmill','s','風車',18],['gazebo','s','涼亭',18],['fountain','s','噴水池',17],['treehouse','s','樹屋',20],['swing','s','鞦韆',16],['slide','s','溜滑梯',16],['scarecrow','s','稻草人',13],
   ['mushroom','g','蘑菇',11],['pond','g','池塘',15],['path','g','石頭小路',15],['fence','g','柵欄',13],['bench','g','長椅',13],['lamp','g','路燈',10],['mailbox','g','信箱',11],['flowerpot','g','花盆',11],
-  ['mtrain','m','磁鐵小火車',17,'walk'],['mlamp','m','魔法路燈',11],['mcloud','m','小雨雲',14,'fly'],['msun','m','神奇向日葵',13],['mdeer','m','小鹿',11,'walk'],['sidragon','m','水晶守護龍',18,'fly'],['sifox','m','狐狸米露',12,'walk'],['rainbow','k','彩虹',17],['balloon_hot','k','熱氣球',13],['balloon','k','氣球',11],['kite','k','風箏',12],['lantern','k','燈籠',11],['cloud','k','雲朵',13],['star','k','星星',10],['sun','k','太陽',12]];
-GDI.mtrain=SCIA.rw_train;GDI.mlamp=SCIA.rw_lamp;GDI.mcloud=SCIA.rw_cloud;GDI.msun=SCIA.rw_sun;GDI.mdeer=SCIA.rw_deer;GDI.sidragon='assets/v4/boss-dragon.webp';GDI.sifox='assets/fox.webp';var GDEN={balloon_hot:'hot air balloon',mtrain:'magnet train',mlamp:'magic lamp',mcloud:'rain cloud',msun:'sunflower',mdeer:'deer',sidragon:'crystal dragon',sifox:'fox Milu'};
+  ['mtrain','m','磁鐵小火車',17,'walk'],['mlamp','m','魔法路燈',11],['mcloud','m','小雨雲',14,'fly'],['msun','m','神奇向日葵',13],['mdeer','m','小鹿',11,'walk'],['sidragon','m','水晶守護龍',18,'fly'],['sifox','m','狐狸米露',12,'walk'],['hwpumpkin','m','南瓜燈',13],['hwghost','m','小幽靈',12,'fly'],['rainbow','k','彩虹',17],['balloon_hot','k','熱氣球',13],['balloon','k','氣球',11],['kite','k','風箏',12],['lantern','k','燈籠',11],['cloud','k','雲朵',13],['star','k','星星',10],['sun','k','太陽',12]];
+GDI.mtrain=SCIA.rw_train;GDI.mlamp=SCIA.rw_lamp;GDI.mcloud=SCIA.rw_cloud;GDI.msun=SCIA.rw_sun;GDI.mdeer=SCIA.rw_deer;GDI.sidragon='assets/v4/boss-dragon.webp';GDI.sifox='assets/fox.webp';GDI.hwpumpkin='assets/v8/hw-pumpkin.svg';GDI.hwghost='assets/v8/hw-ghost.svg';var GDEN={balloon_hot:'hot air balloon',mtrain:'magnet train',mlamp:'magic lamp',mcloud:'rain cloud',msun:'sunflower',mdeer:'deer',sidragon:'crystal dragon',sifox:'fox Milu',hwpumpkin:'jack-o-lantern',hwghost:'little ghost'};
 var GDK={};GD.forEach(function(x){GDK[x[0]]={k:x[0],c:x[1],zh:x[2],sz:x[3],mv:x[4]||'',en:GDEN[x[0]]||x[0],p:GDC[x[1]][1]}});
 /* 魔法裝飾：對應的自然站全破才解鎖；每座島各放一個 */
-function gdMagic(k,id,sub){var has=gdnData(id,sub).d.some(function(z){return gdKey(z)===k});if(k.indexOf('si')===0){var si=(Store.kid(id)||{}).si||{};return {s:{zh:'星島商店兌換'},ok:isKid()&&!!(si.own&&si.own[k]),has:has}}var s=STN.filter(function(x){return x.rw===k})[0],ok=!!s&&isKid()&&scStamp(id,s.k);return {s:s,ok:ok,has:has}}
+function gdMagic(k,id,sub){var has=gdnData(id,sub).d.some(function(z){return gdKey(z)===k});if(k.indexOf('si')===0){var si=(Store.kid(id)||{}).si||{};return {s:{zh:'星島商店兌換'},ok:isKid()&&!!(si.own&&si.own[k]),has:has}}if(k.indexOf('hw')===0){var hw=(Store.kid(id)||{}).hw||{};return {s:{zh:'萬聖節糖果'},ok:isKid()&&(+hw.c||0)>=7,has:has}}var s=STN.filter(function(x){return x.rw===k})[0],ok=!!s&&isKid()&&scStamp(id,s.k);return {s:s,ok:ok,has:has}}
 var GD_LEG=['butterfly','bee','ladybug','rabbit','squirrel','hedgehog','mushroom','fountain','lantern','balloon','kite','rainbow'],GD_MAX=40,gdShop='a';
 function gdKey(z){return typeof z[0]==='number'?GD_LEG[z[0]]:z[0]}
 function gdTime(){var h=new Date().getHours();return h>=19||h<5?'night':h<7?'dawn':h>=17?'dusk':'day'}
@@ -2645,7 +2647,7 @@ function renderGarden(){
   /* 底部抽屜：商店／換島／看誰的花園 */
   if(gdPanel){h+='<div class="gdsheet"><div class="gdsh"><b>'+(gdPanel==='shop'?'🛍️ 裝飾小店・你有 '+W+' 💧'+(nd>=GD_MAX?'（已放滿 '+GD_MAX+' 個）':'（'+nd+'/'+GD_MAX+'）'):gdPanel==='isl'?'🏝️ 換一座島':'👀 去誰的'+(tree?'樹園':'花園')+'？')+'</b><button id="gdShX" aria-label="關閉">✕</button></div>';
     if(gdPanel==='shop')h+='<div class="gdtabs">'+Object.keys(GDC).map(function(c){return '<button data-tab="'+c+'" aria-pressed="'+(gdShop===c)+'">'+GDC[c][0]+'<small>'+(c==='m'?'自然獎勵':GDC[c][1]+' 💧')+'</small></button>'}).join('')+'</div><div class="gdshop">'+
-      GD.filter(function(x){return x[1]===gdShop}).map(function(x){var D=GDK[x[0]];if(D.c==='m'){var M=gdMagic(D.k,id,sub);return '<button data-deco="'+D.k+'" class="mg'+(M.ok?'':' lock')+'"'+(!M.ok||M.has||nd>=GD_MAX?' disabled':'')+'><img src="'+GDI[D.k]+'" alt=""><b class="en">'+esc(D.en)+'</b><small>'+D.zh+'・'+(M.has?'已經放了':M.ok?'免費':(D.k.indexOf('si')===0?'🔒 星島商店兌換':'🔒 全破'+(M.s?M.s.zh:'')))+'</small></button>'}
+      GD.filter(function(x){return x[1]===gdShop}).map(function(x){var D=GDK[x[0]];if(D.c==='m'){var M=gdMagic(D.k,id,sub);return '<button data-deco="'+D.k+'" class="mg'+(M.ok?'':' lock')+'"'+(!M.ok||M.has||nd>=GD_MAX?' disabled':'')+'><img src="'+GDI[D.k]+'" alt=""><b class="en">'+esc(D.en)+'</b><small>'+D.zh+'・'+(M.has?'已經放了':M.ok?'免費':(D.k.indexOf('si')===0?'🔒 星島商店兌換':D.k.indexOf('hw')===0?'🔒 集滿 7 顆萬聖節糖果':'🔒 全破'+(M.s?M.s.zh:'')))+'</small></button>'}
    return '<button data-deco="'+D.k+'"'+(W<D.p||nd>=GD_MAX?' disabled':'')+'><img src="'+GDI[D.k]+'" alt=""><b class="en">'+esc(D.en)+'</b><small>'+D.zh+'・'+D.p+' 💧</small></button>'}).join('')+(gdShop==='m'?'<p class="gdtip" style="grid-column:1/-1">到「自然探險島」把一站的 3 關都過關，或在「星島守護者」用戰功星兌換，就能免費放魔法裝飾！</p>':'')+'</div><p class="gdtip">買了會放在島的中間，再用手指拖到喜歡的地方。拖到島外面就收起來。</p>';
     else if(gdPanel==='isl')h+='<div class="gdbg">'+ISL.map(function(u,k){return '<button data-bg="'+k+'" aria-pressed="'+(k===P.d.bg)+'"><img src="'+u.img+'" alt=""><span>'+ISL_N[k]+'</span></button>'}).join('')+'</div>';
     else h+='<div class="gdw">'+KIDS.map(function(k){var y=growOf(k.id,sub);return '<button data-kid="'+k.id+'" aria-pressed="'+(k.id===id)+'"><b>'+kface(k)+' '+esc(k.short)+(isKid()&&k.id===who?'（你）':'')+'</b>收成 '+y.n+' '+G.cnt+G.bigName+'<br>'+gimg(y.lv[2])+' '+esc(y.lv[1])+'・'+y.cur+' 分</button>'}).join('')+'</div>';
@@ -4815,6 +4817,10 @@ IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o)
 
 
 
+  /* v8 萬聖節：活動期間把萬聖節單字加進題庫（每個年級都會出現）；圖片一直可用 */
+  window.MiracleHalloweenPool&&window.MiracleHalloweenPool.forEach(function(w){V3_WORDS[w]='assets/v8/hw-'+w+'.svg';v3Image(V3_WORDS[w])});
+  if(window.MiracleHalloweenWords&&window.MiracleHalloweenActive&&window.MiracleHalloweenActive())window.MiracleHalloweenWords.forEach(function(w){if(!WORDS.some(function(x){return x[0]===w[0]}))WORDS.push(w.slice())});
+  seeded=(function(orig){return function(o){var r=orig(o);if(window.MiracleHalloweenActive&&window.MiracleHalloweenActive()){var have={};r.pool.forEach(function(w){have[w[0]]=1});WORDS.forEach(function(w){if(window.MiracleHalloweenPool.indexOf(w[0])>=0&&!have[w[0]])r.pool.push(w)})}return r}})(seeded);
   /* v4 bridge: new implementations use the existing identity, curriculum and score services. */
   var V4CTX={three:function(){return T},who:function(){return who},ls:ls,$:$,esc:esc,clamp:clamp,
     seeded:seeded,words:WORDS,Learn:Learn,arc:arc,arcEnd:arcEnd,pad:pad,padEnd:padEnd,mq:mq,
@@ -5058,6 +5064,8 @@ var V2=(function(){
 
 /* Star Island campaign entries; retain all prior game implementations. */
 ['v5word','v5math'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
+/* v8 真實獎勵兌換＋節日活動 */
+if(window.FamilyFactory)window.FamilyFactory({Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
 (function(){var old=renderGameHome;renderGameHome=function(){old();var t=document.querySelector('.gupd');if(t)t.textContent='新版 6.0 · 星島守護者：星光戰役與雙塔防禦';var s=document.querySelector('.v2welcome small');if(s)s.textContent='STAR ISLAND GUARDIANS · 6.0'}})();
 
 /* ========== boot ========== */
