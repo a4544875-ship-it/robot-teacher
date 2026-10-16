@@ -31,6 +31,12 @@
 .si-defense p{margin:6px 0;font-size:11px}
 .si-build{gap:6px!important}
 .si-defense button{padding:7px 4px;font-size:12px}
+.si-defense-heading small{display:none}
+.si-core-track{margin-top:5px}
+.si-build{grid-template-columns:1fr 1fr 1fr!important}
+.si-build button,.si-defense .si-build button{padding:6px 2px;font-size:11px;line-height:1.25}
+.si-build button small{display:block!important;font-size:8.5px!important;margin-top:2px}
+#sdRepair{grid-column:auto!important}
 .si-combat-actions{right:16px;bottom:calc(205px + env(safe-area-inset-bottom));gap:10px}
 .si-combat-actions button{width:62px;height:62px;font-size:24px}
 .si-combat-actions small{font-size:9px}
