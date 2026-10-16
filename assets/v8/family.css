@@ -1,0 +1,63 @@
+/* v8 獎勵兌換 */
+.fm-chip{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:0 0 10px;padding:10px 12px;border-radius:16px;background:linear-gradient(120deg,#ffd36b,#ffb36b);color:#4a3000;font-weight:700;font-size:15px;box-shadow:var(--shadow)}
+.fm-chip b{font-size:18px;font-family:var(--font-en)}
+.fm-rw{background:var(--surface);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin:0 0 14px}
+.fm-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.fm-head h2{margin:0;font-size:20px}
+.fm-bal{display:flex;flex-direction:column;align-items:flex-end;background:#ffd36b;color:#4a3000;border-radius:16px;padding:4px 14px;line-height:1.1}
+.fm-bal small{font-size:11px}.fm-bal b{font-size:24px;font-family:var(--font-en)}
+.fm-note{font-size:12px;color:var(--ink-soft);margin:8px 0 0;line-height:1.5}
+.fm-cards{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.fm-card{display:flex;gap:12px;align-items:center;background:var(--surface-2);border-radius:18px;padding:10px 12px;border:2px solid transparent}
+.fm-card.ready{border-color:#ffd36b}
+.fm-card>img{width:64px;height:64px;flex:none;object-fit:contain}
+.fm-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.fm-info b{font-size:17px}.fm-info span{font-size:12px;color:var(--ink-soft)}
+.fm-bar{display:block;height:8px;border-radius:99px;background:var(--line);overflow:hidden}.fm-bar em{display:block;height:100%;background:linear-gradient(90deg,#ffb347,#ffd36b);border-radius:99px}
+.fm-go,.fm-yes{align-self:flex-start;border-radius:12px;padding:7px 16px;background:var(--sky);color:var(--sky-ink);font-weight:700;font-size:14px;box-shadow:var(--shadow)}
+.fm-go[disabled]{background:var(--surface);color:var(--ink-soft);box-shadow:none;opacity:.8}
+.fm-yes{background:#18c795;color:#06382a}
+.fm-sub{border-radius:12px;padding:6px 12px;background:var(--surface);color:var(--ink-soft);font-size:13px;font-weight:700}
+.fm-confirm{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.fm-confirm span{font-size:13px;font-weight:700;width:100%}
+.fm-wait{font-size:13px;font-weight:700;color:#c07a00}
+.fm-tickets,.fm-hist,.fm-today{display:flex;flex-direction:column;gap:6px;margin-top:12px;font-size:13px}
+.fm-ticket{background:#e6fff4;border:2px dashed #18c795;border-radius:12px;padding:6px 10px;font-weight:700;color:#0d6b4c}
+.fm-hist span,.fm-today span{background:var(--surface-2);border-radius:10px;padding:5px 10px}
+.fm-dot{background:var(--coral);color:#fff;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700}
+.fm-req{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;background:#fff7e0;border:2px solid #ffd36b;border-radius:14px;padding:10px 12px;margin-top:10px;font-size:14px;color:#3d2c00}
+.fm-req div{display:flex;gap:6px}
+
+/* v8 萬聖節 */
+.hw-banner{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,#3b2466,#7a3b8f 60%,#f2843a);color:#fff;border-radius:22px;padding:12px 14px;margin:0 0 12px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.hw-banner:after{content:"";position:absolute;right:-10px;top:-14px;width:90px;height:90px;background:url(hw-bat.svg) center/contain no-repeat;opacity:.35;transform:rotate(12deg)}
+.hw-pk{width:66px;height:66px;flex:none;animation:float 3s ease-in-out infinite}
+.hw-banner>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;position:relative;z-index:1}
+.hw-banner b{font-size:18px}.hw-banner small{font-size:12px;opacity:.95;line-height:1.4}
+.hw-candies{display:flex;align-items:center;gap:2px;margin:2px 0}
+.hw-candies img{width:26px;height:26px;filter:grayscale(1) brightness(1.6);opacity:.45}
+.hw-candies img.on{filter:none;opacity:1}
+.hw-candies em{font-style:normal;font-weight:700;margin-left:6px;font-family:var(--font-en)}
+body.ev-hw .top{background:linear-gradient(180deg,#2e1f52,rgba(46,31,82,0));}
+body.ev-hw .top:before{content:"";position:absolute;left:66px;top:2px;width:34px;height:34px;background:url(hw-bat.svg) center/contain no-repeat;pointer-events:none;animation:float 2.4s ease-in-out infinite}
+body.ev-hw nav.tabs:before{content:"";position:absolute;left:8px;top:-30px;width:34px;height:34px;background:url(hw-pumpkin.svg) center/contain no-repeat;pointer-events:none}
+body.ev-hw .tab[aria-selected="true"]{background:#f2843a;color:#2a1600}
+/* v8.1：首頁精簡成一排兩顆小按鈕 */
+.fm-row{display:flex;gap:8px;margin:0 0 10px}
+.fm-row .fm-chip{margin:0;flex:1;min-width:0;justify-content:flex-start;padding:6px 10px;font-size:13px;gap:6px}
+.fm-chip img{width:28px;height:28px;flex:none}
+.fm-chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fm-chip b{font-size:16px}
+.hw-pill{flex:none;display:flex;align-items:center;gap:6px;padding:6px 10px 6px 6px;border-radius:16px;background:linear-gradient(120deg,#3b2466,#8a3f8f);color:#fff;font-size:12px;font-weight:700;box-shadow:var(--shadow);max-width:52%}
+.hw-pill img{width:28px;height:28px;flex:none}
+.hw-pill span{display:flex;flex-direction:column;line-height:1.15;text-align:left;white-space:nowrap}
+.hw-pill b{font-family:var(--font-en);font-size:14px;color:#ffd36b}
+.hw-pill small{font-size:10px;font-weight:600;opacity:.85}
+.fm-back{display:inline-flex;align-items:center;margin:0 0 8px;border-radius:12px;padding:6px 12px;background:var(--surface-2);color:var(--ink);font-weight:700;font-size:14px;box-shadow:var(--shadow)}
+.tab.fm-badge{position:relative}
+.tab.fm-badge:after{content:"";position:absolute;right:10px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 2px var(--surface)}
+.fm-cfg{margin-top:12px;background:var(--surface-2);border-radius:14px;padding:8px 12px}
+.fm-cfg summary{font-weight:700;cursor:pointer;font-size:14px}
+.fm-cfg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.fm-cfg label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink-soft)}
+.fm-cfg input{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:7px 8px;font-size:16px;font-family:var(--font-en);width:100%}
+.fm-cfg-msg{margin-left:8px;font-size:13px;font-weight:700;color:#14805e}
