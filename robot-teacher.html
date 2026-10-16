@@ -1361,8 +1361,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <script src="assets/math-v4.js?v=4.1.0"></script>
 <link rel="stylesheet" href="assets/v5/star-island.css?v=7.0.0">
 <script src="assets/v5/star-island.js?v=7.0.0"></script>
-<link rel="stylesheet" href="assets/v8/family.css?v=8.0.0">
-<script src="assets/v8/family.js?v=8.0.0"></script>
+<link rel="stylesheet" href="assets/v8/family.css?v=8.0.1">
+<script src="assets/v8/family.js?v=8.0.1"></script>
 
 
 <header class="top">
@@ -1587,7 +1587,7 @@ var Store=(function(){
     db=d;
     KIDS.forEach(function(k){subKid(k.id)});
     db.collection('activity').orderBy('ts','desc').limit(250).onSnapshot(function(s){
-      activity=s.docs.map(function(x){var o=x.data();o._id=x.id;return o});
+      activity=s.docs.map(function(x){var o=Object.assign({},x.data());o._id=x.id;return o});
       /* 紀錄超過 200 筆就刪掉最舊的。每筆只刪一次、30 秒最多清一批：以前每次刪除都會觸發新的快照、又再刪一輪，紀錄一多就會連鎖爆量讓手機當機 */
       if(s.size>200&&!pruning){pruning=true;s.docs.slice(200).forEach(function(x){if(pruned[x.id])return;pruned[x.id]=1;db.doc('activity/'+x.id).delete().catch(function(){})});setTimeout(function(){pruning=false},30000)}
       saveLocal();emit();},failWarn);
@@ -5065,7 +5065,7 @@ var V2=(function(){
 /* Star Island campaign entries; retain all prior game implementations. */
 ['v5word','v5math'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
 /* v8 真實獎勵兌換＋節日活動 */
-if(window.FamilyFactory)window.FamilyFactory({Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
+if(window.FamilyFactory)window.FamilyFactory({Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
 (function(){var old=renderGameHome;renderGameHome=function(){old();var t=document.querySelector('.gupd');if(t)t.textContent='新版 6.0 · 星島守護者：星光戰役與雙塔防禦';var s=document.querySelector('.v2welcome small');if(s)s.textContent='STAR ISLAND GUARDIANS · 6.0'}})();
 
 /* ========== boot ========== */

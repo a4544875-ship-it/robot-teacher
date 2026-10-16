@@ -41,3 +41,17 @@ body.ev-hw .top{background:linear-gradient(180deg,#2e1f52,rgba(46,31,82,0));}
 body.ev-hw .top:before{content:"";position:absolute;left:66px;top:2px;width:34px;height:34px;background:url(hw-bat.svg) center/contain no-repeat;pointer-events:none;animation:float 2.4s ease-in-out infinite}
 body.ev-hw nav.tabs:before{content:"";position:absolute;left:8px;top:-30px;width:34px;height:34px;background:url(hw-pumpkin.svg) center/contain no-repeat;pointer-events:none}
 body.ev-hw .tab[aria-selected="true"]{background:#f2843a;color:#2a1600}
+/* v8.1：首頁精簡成一排兩顆小按鈕 */
+.fm-row{display:flex;gap:8px;margin:0 0 10px}
+.fm-row .fm-chip{margin:0;flex:1;min-width:0;justify-content:flex-start;padding:6px 10px;font-size:13px;gap:6px}
+.fm-chip img{width:28px;height:28px;flex:none}
+.fm-chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fm-chip b{font-size:16px}
+.hw-pill{flex:none;display:flex;align-items:center;gap:6px;padding:6px 10px 6px 6px;border-radius:16px;background:linear-gradient(120deg,#3b2466,#8a3f8f);color:#fff;font-size:12px;font-weight:700;box-shadow:var(--shadow);max-width:52%}
+.hw-pill img{width:28px;height:28px;flex:none}
+.hw-pill span{display:flex;flex-direction:column;line-height:1.15;text-align:left;white-space:nowrap}
+.hw-pill b{font-family:var(--font-en);font-size:14px;color:#ffd36b}
+.hw-pill small{font-size:10px;font-weight:600;opacity:.85}
+.fm-back{display:inline-flex;align-items:center;margin:0 0 8px;border-radius:12px;padding:6px 12px;background:var(--surface-2);color:var(--ink);font-weight:700;font-size:14px;box-shadow:var(--shadow)}
+.tab.fm-badge{position:relative}
+.tab.fm-badge:after{content:"";position:absolute;right:10px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 2px var(--surface)}

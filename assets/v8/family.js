@@ -135,7 +135,7 @@
         r = normRD(k.rd),
         bal = balance(id),
         g = gameToday(r),
-        h = '<section class="fm-rw" id="fmRw"><div class="fm-head"><h2>🎁 獎勵兌換</h2><div class="fm-bal"><small>可用點數</small><b>' + fmt(bal) + "</b></div></div>";
+        h = '<section class="fm-rw" id="fmRw"><button class="fm-back" id="fmBack">← 上一頁</button><div class="fm-head"><h2>🎁 獎勵兌換</h2><div class="fm-bal"><small>可用點數</small><b>' + fmt(bal) + "</b></div></div>";
       h += '<p class="fm-note">總分 ' + fmt(k.pts || 0) + "（排行榜不會因為兌換而變少）· 已兌換 " + fmt(r.sp) + "</p>";
       h += '<div class="fm-cards">';
       REWARDS.forEach(function (R) {
@@ -207,6 +207,12 @@
       return h + "</section>";
     }
     function wireKid(el, id) {
+      var back = el.querySelector("#fmBack");
+      if (back)
+        back.onclick = function () {
+          F.sfx("tap");
+          F.showTab("game");
+        };
       el.querySelectorAll("[data-rw]").forEach(function (b) {
         b.onclick = function () {
           F.sfx("tap");
@@ -310,7 +316,10 @@
           var v = (b.dataset.ok || b.dataset.deny).split("|");
           decide(v[0], v[1], !!b.dataset.ok);
           F.sfx(b.dataset.ok ? "win" : "tap");
-          F.getRec()();
+          var inRank = F.PANELS.rank && !F.PANELS.rank.hidden;
+          if (inRank && F.getRank) F.getRank()();
+          else F.getRec()();
+          badge();
         };
       });
     }
@@ -334,6 +343,33 @@
       if (h2 && h2.nextSibling) el.insertBefore(box.firstChild, h2.nextSibling);
       else el.prepend(box.firstChild);
     });
+
+    function pendingCount() {
+      return F.KIDS().reduce(function (a, K) {
+        return a + pending(normRD(kid(K.id).rd)).length;
+      }, 0);
+    }
+    function badge() {
+      var t = document.getElementById("tab_rec");
+      if (t) t.classList.toggle("fm-badge", F.who() === "parent" && pendingCount() > 0);
+    }
+    if (F.getRank) {
+      var oldRank = F.getRank();
+      F.setRank(function () {
+        oldRank.apply(this, arguments);
+        badge();
+        var el = F.PANELS.rank;
+        if (!el || F.who() !== "parent" || !pendingCount()) return;
+        var box = document.createElement("div");
+        box.innerHTML = parentPanel();
+        wireParent(box);
+        el.prepend(box.firstChild);
+      });
+    }
+    F.Store.sub &&
+      F.Store.sub(function () {
+        badge();
+      });
 
     /* ---------- 萬聖節 ---------- */
     function candyCheck() {
@@ -373,19 +409,17 @@
       var hw = normHW(kid(F.who()).hw),
         left = HW.to - new Date().getDate();
       return (
-        '<section class="hw-banner"><img class="hw-pk" src="' +
-        V8 +
-        'hw-pumpkin.svg" alt=""><div><b>🎃 萬聖節週</b><small>' +
-        (left > 0 ? "還有 " + left + " 天" : "今天最後一天！") +
-        " · 每天完成任務拿 1 顆糖果，集滿 " +
+        '<button class="hw-pill" id="hwPill" title="每天完成任務拿 1 顆糖果，集滿 ' +
         HW.need +
-        ' 顆換花園限定的南瓜燈＋小幽靈</small><div class="hw-candies">' +
-        candyRow(hw.c) +
-        "<em>" +
+        ' 顆換花園限定的南瓜燈＋小幽靈"><img src="' +
+        V8 +
+        'hw-pumpkin.svg" alt=""><span>萬聖節糖果 <b>' +
         Math.min(hw.c, HW.need) +
         "/" +
         HW.need +
-        "</em></div><small>英文遊戲會出現萬聖節單字：pumpkin、bat、witch、spider…</small></div></section>"
+        "</b><small>" +
+        (left > 0 ? "還有 " + left + " 天" : "最後一天") +
+        "</small></span></button>"
       );
     }
     function rewardChip() {
@@ -393,18 +427,24 @@
       var b = balance(F.who()),
         r = normRD(kid(F.who()).rd),
         wait = pending(r).length;
-      return '<button class="fm-chip" id="fmChip">🎁 獎勵兌換 · 可用 <b>' + fmt(b) + "</b> 點" + (wait ? " · ⏳" + wait : "") + "</button>";
+      return '<button class="fm-chip" id="fmChip"><img src="' + V8 + 'rw-game.svg" alt=""><span>獎勵兌換 <b>' + fmt(b) + "</b> 點" + (wait ? " · ⏳" + wait : "") + "</span></button>";
     }
     var oldHome = F.getHome();
     F.setHome(function () {
       oldHome.apply(this, arguments);
       document.body.classList.toggle("ev-hw", hwActive());
       var day = document.getElementById("dayBox");
-      document.querySelectorAll(".hw-banner,.fm-chip").forEach(function (x) {
+      document.querySelectorAll(".fm-row").forEach(function (x) {
         x.remove();
       });
       if (!day || day.hidden) return;
-      day.insertAdjacentHTML("afterend", rewardChip() + hwBanner());
+      day.insertAdjacentHTML("afterend", '<div class="fm-row">' + rewardChip() + hwBanner() + "</div>");
+      var pill = document.getElementById("hwPill");
+      if (pill)
+        pill.onclick = function () {
+          F.sfx("tap");
+          F.say("萬聖節週：每天把今日任務全部完成，就得到 1 顆糖果！集滿 " + HW.need + " 顆，花園「✨ 魔法」會出現南瓜燈和小幽靈。英文遊戲也會出現 pumpkin、bat、witch 等萬聖節單字喔！", "happy");
+        };
       var chip = document.getElementById("fmChip");
       if (chip)
         chip.onclick = function () {
