@@ -393,9 +393,76 @@
           })
           .join("") +
         '</div><button class="fm-yes" id="fmCfgSave">儲存門檻</button><span class="fm-cfg-msg" id="fmCfgMsg"></span></details>';
+      if (F.subPts)
+        h +=
+          '<details class="fm-cfg fm-adj"><summary>✏️ 調整孩子分數（補回遺失的分數）</summary><p class="fm-note">直接填「應該是幾分」，系統會自動補上差額，總分跟著變。兌換點數填「現在可以用幾點」。</p>' +
+          F.KIDS()
+            .map(function (K) {
+              var d = kid(K.id);
+              return (
+                '<div class="fm-adj-kid" data-kid="' +
+                K.id +
+                '"><b>' +
+                E(K.short) +
+                '</b><div class="fm-cfg-grid">' +
+                [
+                  ["en", "英文", F.subPts(d, "en")],
+                  ["math", "數學", F.subPts(d, "math")],
+                  ["sci", "自然", F.subPts(d, "sci")],
+                  ["rp", "兌換點數", balance(K.id)],
+                ]
+                  .map(function (x) {
+                    return '<label><span>' + x[1] + '</span><input type="number" inputmode="numeric" min="0" data-adj="' + x[0] + '" value="' + Math.floor(x[2]) + '"></label>';
+                  })
+                  .join("") +
+                '</div><button class="fm-yes" data-adjsave="' +
+                K.id +
+                '">儲存 ' +
+                E(K.short) +
+                ' 的分數</button><span class="fm-cfg-msg"></span></div>'
+              );
+            })
+            .join("") +
+          "</details>";
       return h;
     }
+    function adjustKid(id, t) {
+      F.Store.mut(id, function (k) {
+        var cur = { en: F.subPts(k, "en"), math: F.subPts(k, "math"), sci: F.subPts(k, "sci") },
+          g = k.byGame || (k.byGame = {});
+        function bucket(key) {
+          return g[key] || (g[key] = { pts: 0, plays: 0, best: 0 });
+        }
+        var dm = Math.round(t.math - cur.math),
+          ds = Math.round(t.sci - cur.sci),
+          de = Math.round(t.en - cur.en);
+        if (dm) bucket("adj_m").pts += dm;
+        if (ds) bucket("adj_s").pts += ds;
+        if (de) bucket("adj_e").pts += de;
+        k.pts = Math.max(0, (Number(k.pts) || 0) + dm + ds + de);
+        var r = normRD(k.rd),
+          hold = pending(r).reduce(function (a, x) {
+            return a + x.c;
+          }, 0);
+        r.e = Math.max(0, Math.round(t.rp) + r.sp + hold);
+        if (!r.since) r.since = today();
+        k.rd = r;
+      });
+    }
     function wireParent(el) {
+      el.querySelectorAll("[data-adjsave]").forEach(function (b) {
+        b.onclick = function () {
+          var box = b.closest(".fm-adj-kid"),
+            t = {};
+          box.querySelectorAll("[data-adj]").forEach(function (inp) {
+            t[inp.dataset.adj] = Math.max(0, Math.floor(Number(inp.value) || 0));
+          });
+          adjustKid(b.dataset.adjsave, t);
+          F.sfx("ok");
+          var m = box.querySelector(".fm-cfg-msg");
+          if (m) m.textContent = "已儲存！";
+        };
+      });
       var save = el.querySelector("#fmCfgSave");
       if (save)
         save.onclick = function () {
