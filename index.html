@@ -47,8 +47,8 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 <script src="assets/math-v4.js?v=4.1.0"></script>
 <link rel="stylesheet" href="assets/v5/star-island.css?v=7.0.0">
 <script src="assets/v5/star-island.js?v=7.0.0"></script>
-<link rel="stylesheet" href="assets/v8/family.css?v=8.1.0">
-<script src="assets/v8/family.js?v=8.1.0"></script>
+<link rel="stylesheet" href="assets/v8/family.css?v=8.2.0">
+<script src="assets/v8/family.js?v=8.2.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -1600,8 +1600,8 @@ var ART={"e0":"data:image/webp;base64,UklGRogFAABXRUJQVlA4IHwFAACQGwCdASp8AHwAPn
 function kindOf(G,id,j){var h=0;for(var i=0;i<id.length;i++)h+=id.charCodeAt(i);return G.kinds[(j*5+h+(G.big==='m8'?3:0))%G.kinds.length]}
 function ic(k,cls){return '<img class="ic'+(ICO_T[k]?' t':'')+(cls?' '+cls:'')+'" src="'+ICO[k]+'" alt="">'}
 function gimg(k,cls){return '<img class="gi'+(cls?' '+cls:'')+'" src="'+ART[k]+'" alt="">'}
-var MATH_IDS={mbook:1,mkart:1,mtower:1,mshoot:1,mtug:1,mbingo:1,msnake:1,mbond:1,mcmp:1,mboss:1,water_m:1};
-var SCI_IDS={scisprint:1,scisort:1,sciorder:1,scimatch:1,smag:1,scirc:1,swater:1,splant:1,sanimal:1,smoon:1,ssound:1,swind:1,sweather:1,sinsect:1};
+var MATH_IDS={adj_m:1,mbook:1,mkart:1,mtower:1,mshoot:1,mtug:1,mbingo:1,msnake:1,mbond:1,mcmp:1,mboss:1,water_m:1};
+var SCI_IDS={adj_s:1,scisprint:1,scisort:1,sciorder:1,scimatch:1,smag:1,scirc:1,swater:1,splant:1,sanimal:1,smoon:1,ssound:1,swind:1,sweather:1,sinsect:1};
 function subPts(d,sub){var m=0,sc=0,g=d.byGame||{};for(var id in g){if(MATH_IDS[id])m+=+g[id].pts||0;else if(SCI_IDS[id])sc+=+g[id].pts||0}return sub==='math'?m:sub==='sci'?sc:Math.max(0,(+d.pts||0)-m-sc)}
 function growth(sub,p,id){var G=GROW[sub],cur=p%CYC,n=Math.floor(p/CYC),i=0;for(var k=0;k<G.st.length;k++)if(cur>=G.st[k][0])i=k;
   return {G:G,tot:p,cur:cur,n:n,i:i,lv:G.st[i],nx:G.st[i+1]||[CYC,G.bigName,G.big],last:n?kindOf(G,id,n-1):null,
@@ -5115,7 +5115,7 @@ var V2=(function(){
 /* Star Island campaign entries; retain all prior game implementations. */
 ['v5word','v5math'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
 /* v8 真實獎勵兌換＋節日活動 */
-if(window.FamilyFactory)window.FamilyFactory({Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
+if(window.FamilyFactory)window.FamilyFactory({subPts:subPts,Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
 (function(){var old=renderGameHome;renderGameHome=function(){old();var t=document.querySelector('.gupd');if(t)t.textContent='新版 6.0 · 星島守護者：星光戰役與雙塔防禦';var s=document.querySelector('.v2welcome small');if(s)s.textContent='STAR ISLAND GUARDIANS · 6.0'}})();
 
 /* ========== boot ========== */
