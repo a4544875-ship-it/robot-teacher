@@ -1359,8 +1359,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <link rel="stylesheet" href="assets/expansion-v4.css?v=4.1.0">
 <script src="assets/velocity-v4.js?v=4.1.0"></script>
 <script src="assets/math-v4.js?v=4.1.0"></script>
-<link rel="stylesheet" href="assets/v8/family.css?v=8.2.0">
-<script src="assets/v8/family.js?v=8.2.0"></script>
+<link rel="stylesheet" href="assets/v8/family.css?v=8.3.1">
+<script src="assets/v8/family.js?v=8.3.1"></script>
 
 
 <header class="top">
@@ -1664,7 +1664,7 @@ var lvSeen={};
 var rwEl=null,rwT=0;function rewardPop(t,s,pk){if(rwEl)rwEl.remove();clearTimeout(rwT);rwEl=document.createElement('button');rwEl.className='rwpop';rwEl.innerHTML='<span class="card">'+pic(pk||'medal')+'<b>'+esc(t)+'</b><small>'+esc(s)+'</small></span>';document.body.appendChild(rwEl);
   var e=rwEl;function cl(){if(rwEl===e){e.remove();rwEl=null}}e.addEventListener('click',cl);rwT=setTimeout(cl,4200)}
 function updatePill(){var pill=$('#starPill');if(!isKid()){pill.hidden=true;return}
-  var e=growOf(who,'en'),m=growOf(who,'math');$('#starNum').innerHTML=gimg(e.lv[2])+' '+e.cur+'　'+gimg(m.lv[2])+' '+m.cur;pill.hidden=false;
+  var e=growOf(who,'en'),m=growOf(who,'math'),sc=scLevel(subPts(Store.kid(who),'sci'));$('#starNum').innerHTML='<span class="sp">'+gimg(e.lv[2])+'<i>'+e.cur+'</i></span><span class="sp">'+gimg(m.lv[2])+'<i>'+m.cur+'</i></span><span class="sp"><img class="gi" src="'+sc.img+'" alt=""><i>'+sc.cur+'</i></span>';pill.hidden=false;
   [e,m].forEach(function(x,j){var key=who+j,val=x.n*100+x.i,old=lvSeen[key];lvSeen[key]=val;if(old===undefined||val<=old)return;
     var big=Math.floor(val/100)>Math.floor(old/100);
     setTimeout(function(){sfx('win');confetti(null,big?60:30);rewardPop(big?'收成了「'+x.last[1]+'」！':x.G.name+'升級了！',big?'快去花園把新種子種下去吧！':'變成「'+x.lv[1]+'」了，繼續加油！');say(big?'哇！你收成了一'+x.G.cnt+'「'+x.last[1]+'」！快去花園把新種子種下去吧！':x.G.name+'升級了！變成「'+x.lv[1]+'」！','happy')},600)})}
