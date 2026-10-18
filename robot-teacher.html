@@ -1370,8 +1370,6 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <link rel="stylesheet" href="assets/expansion-v4.css?v=4.1.0">
 <script src="assets/velocity-v4.js?v=4.1.0"></script>
 <script src="assets/math-v4.js?v=4.1.0"></script>
-<link rel="stylesheet" href="assets/v5/star-island.css?v=7.0.0">
-<script src="assets/v5/star-island.js?v=7.0.0"></script>
 <link rel="stylesheet" href="assets/v8/family.css?v=8.3.1">
 <script src="assets/v8/family.js?v=8.3.1"></script>
 <link rel="stylesheet" href="assets/v9/lab.css?v=9.0.0">
@@ -4855,7 +4853,6 @@ IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o)
   window.MiracleV4Factory(V4CTX);
   window.MiracleMathV4Factory(V4CTX);
   V4CTX.grade=function(){return egrade};V4CTX.kidData=function(){return isKid()?Store.kid(who):null};V4CTX.mutKid=function(fn){if(isKid())Store.mut(who,fn)};V4CTX.mathIds=MATH_IDS;V4CTX.launch=launch;
-  window.StarIslandFactory(V4CTX);
 
   return {map:map,stop:stop,STG:STG,WORLDS:WORLDS,ft:ft,menu:menu,st:stPlay,mb:mbPlay};
 })();
@@ -5086,12 +5083,10 @@ var V2=(function(){
 (function(){var old=renderGameHome;renderGameHome=function(){old();var upd=document.querySelector('.gupd');if(upd)upd.textContent='新版 4.0 · 飛車與太空拼字 · 三款數學冒險';var sm=document.querySelector('.v2welcome small');if(sm)sm.textContent='KNOWLEDGE ADVENTURES · 4.0'}})();
 
 /* Star Island campaign entries; retain all prior game implementations. */
-['v5word','v5math'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
 /* v9 奇蹟研究所：自然第二座島 */
 if(window.LabFactory)try{window.LabFactory({Store:Store,who:function(){return who},isKid:isKid,esc:esc,sfx:sfx,say:say,confetti:confetti,plusFx:plusFx,shell:shell,body:function(){return gBody},cleanupGame:function(){cleanupGame()},backGameHome:backGameHome,egrade:function(){return egrade},Music:Music,Learn:Learn,subPts:subPts,scLevel:scLevel,scRow:scRow,STN:STN,SCI_IDS:SCI_IDS,GAMES:GAMES,GAME_FN:GAME_FN,gOpen:function(){return gOpen},muted:function(){return muted},kidName:function(){return nm()},goSci:function(){gOpen='sci';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}})}catch(e){console.error('lab',e)}
 /* v8 真實獎勵兌換＋節日活動 */
 if(window.FamilyFactory)window.FamilyFactory({subPts:subPts,Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
-(function(){var old=renderGameHome;renderGameHome=function(){old();var t=document.querySelector('.gupd');if(t)t.textContent='新版 6.0 · 星島守護者：星光戰役與雙塔防禦';var s=document.querySelector('.v2welcome small');if(s)s.textContent='STAR ISLAND GUARDIANS · 6.0'}})();
 
 /* ========== boot ========== */
 Store.connect();
