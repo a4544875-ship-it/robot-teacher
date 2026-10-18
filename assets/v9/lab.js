@@ -38,7 +38,7 @@
     function talk(t){if(C.muted()||!window.speechSynthesis)return;try{var u=new SpeechSynthesisUtterance(String(t).replace(/[①-⑳]/g,''));u.lang='zh-TW';u.rate=.9;window.speechSynthesis.cancel();window.speechSynthesis.speak(u)}catch(e){}}
     function give(n){if(!isKid()||!n)return 0;C.Store.award(who(),n,'lab');C.plusFx(n);return n}
     function firstStamps(){if(!isKid())return 10;var n=0;C.STN.forEach(function(s){var r=C.scRow(who(),s.k);if(r[0]&&r[1]&&r[2])n++});return n}
-    function unlocked(){return !isKid()||firstStamps()>=10}
+    function unlocked(){return !isKid()||!!window.LAB_TEST||firstStamps()>=10}
     function stopAll(){serial++;if(active){active.dead=true;clearInterval(active.tick)}active=null}
     C.addCleanup(stopAll);
 
