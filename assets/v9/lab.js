@@ -83,33 +83,42 @@
     function stars(n){return '<span class="lb-stars" aria-label="'+n+' 顆星">'+'★'.repeat(n)+'<i>'+'☆'.repeat(3-n)+'</i></span>'}
     function seenCount(s){var d=data(),n=0;for(var i=0;i<3;i++)n+=Math.min((d.seen[s.k+i]||[]).length,s.q[i].length);return n}
 
-    function open(){
-      stopAll();C.shell('奇蹟研究所');try{C.Music.play('garden')}catch(e){}
-      if(!unlocked()){var n=firstStamps();
-        frame('<div class="lb-top"><button class="lb-back" data-act="home">← 回自然島</button></div><div class="lb-lock"><div class="lb-lock-ico">🔬</div><h2>奇蹟研究所還沒開門</h2><p>把第一座自然島的 10 站全部蓋到印章，研究所就會開放！</p><div class="lb-meter"><i style="width:'+(n*10)+'%"></i></div><b>'+n+' / 10 個印章</b></div>');
-        on($('[data-act="home"]'),'click',function(){C.backGameHome()});C.say('先把自然島的印章收集完，研究所就會開門！','oops');return}
-      var d=data(),tot=0,stp=0;ST.forEach(function(s){var r=row(s.k);tot+=r[0]+r[1]+r[2];if(r[3])stp++});
-      var h='<div class="lb-top"><button class="lb-back" data-act="home">← 回自然島</button><span class="lb-chip">'+(isKid()?'研究員 '+esc(C.kidName()):'家長預覽（不記分）')+'</span></div>'+
-        '<header class="lb-hero"><div class="lb-hero-t"><small>MIRACLE LAB · 第二座自然島</small><h2>奇蹟研究所</h2><p>10 個研究站，每站 3 關。題目更難、每輪 6 題，<b>做過的題目不會再出現</b>，要做完整站題庫才會重新輪一遍。</p></div><div class="lb-hero-n"><div><b>'+stp+'</b><small>/ 10 印章</small></div><div><b>'+tot+'</b><small>/ 90 星</small></div></div></header>'+
-        (d.badge?'<div class="lb-badge">🏅 小小科學家徽章已獲得！</div>':'')+
-        '<div class="lb-grid">'+ST.map(function(s,i){var r=row(s.k),st=r[0]+r[1]+r[2],sc=seenCount(s),tq=s.q[0].length+s.q[1].length+s.q[2].length;
-          return '<button class="lb-card'+(r[3]?' got':'')+'" data-st="'+s.k+'"><span class="lb-no">'+(i+1)+'</span><span class="lb-ico">'+s.ico+'</span><span class="lb-tag '+(s.tag==='新主題'?'new':'')+'">'+esc(s.tag)+'</span><b>'+esc(s.zh)+'</b><small>'+(r[3]?'✅ 已蓋印章':'★ '+st+' / 9')+'</small><span class="lb-mini"><i style="width:'+Math.round(sc/tq*100)+'%"></i></span><em>題庫 '+sc+' / '+tq+'</em></button>'}).join('')+'</div>'+
-        '<p class="lb-note">一星：首次答對 4 題以上才算過關。三星：6 題全部第一次就答對，而且 '+Math.round(N*TIME3/60*10)/10+' 分鐘內完成。答錯的題目會在最後再出一次。</p>';
-      frame(h,'lb-map');
-      on($('[data-act="home"]'),'click',function(){C.backGameHome()});
-      body().querySelectorAll('[data-st]').forEach(function(b){on(b,'click',function(){C.sfx('tap');station(b.dataset.st)})});
-      C.say(stp>=10?'研究所全部完成了！你是真正的小小科學家！':'歡迎來到奇蹟研究所！選一個研究站開始挑戰吧！','happy');
+    /* 研究所島地圖：10 站的位置（百分比，對應 1024×1536 直式地圖）。家長給的新地圖圖片換上後，只要調整這裡的座標。 */
+    var POS={mag2:[21,15],ckt2:[51,11],moon2:[80,15],eco2:[80,36],wx2:[50,33],temp:[20,37],pond:[21,60],flow:[51,56],sun:[80,60],time:[50,81]};
+    var MAP_IMG=window.LAB_MAP_IMG||'';
+    var tab='a';try{tab=localStorage.getItem('rt-sci-isl')==='b'?'b':'a'}catch(e){}
+    function setTab(t){tab=t;try{localStorage.setItem('rt-sci-isl',t)}catch(e){}}
+    function mapSVG(){
+      var path=ST.map(function(s){var p=POS[s.k];return (p[0]*10.24).toFixed(0)+','+(p[1]*15.36).toFixed(0)}).join(' L');
+      var spots=ST.map(function(s,i){var p=POS[s.k],x=p[0]*10.24,y=p[1]*15.36;
+        return '<g><ellipse cx="'+x+'" cy="'+(y+70)+'" rx="150" ry="46" fill="#3c8f5a" opacity=".55"/><ellipse cx="'+x+'" cy="'+(y+40)+'" rx="140" ry="78" fill="#f1dca4"/><ellipse cx="'+x+'" cy="'+(y+28)+'" rx="132" ry="68" fill="#7cc66a"/><ellipse cx="'+x+'" cy="'+(y+20)+'" rx="96" ry="44" fill="#9bdc7c"/><text x="'+x+'" y="'+(y+30)+'" text-anchor="middle" font-size="118">'+s.ico+'</text></g>'}).join('');
+      return '<svg viewBox="0 0 1024 1536" preserveAspectRatio="xMidYMid slice" class="lbm-svg" aria-hidden="true"><defs><linearGradient id="lbSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fe0ff"/><stop offset=".5" stop-color="#57bce6"/><stop offset="1" stop-color="#2a8fc4"/></linearGradient><radialGradient id="lbGlow" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>'+
+        '<rect width="1024" height="1536" fill="url(#lbSea)"/><rect width="1024" height="1536" fill="url(#lbGlow)"/>'+
+        '<path d="M120 170 C 60 420, 140 700, 90 980 C 60 1200, 260 1420, 520 1440 C 800 1460, 980 1260, 950 980 C 930 760, 990 480, 920 230 C 860 60, 640 40, 500 70 C 340 100, 200 60, 120 170 Z" fill="#e9d29a" opacity=".55"/>'+
+        '<path d="M'+path+'" fill="none" stroke="#fff6dc" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 40" opacity=".95"/>'+
+        spots+'<text x="512" y="1500" text-anchor="middle" font-size="40" font-weight="800" fill="#ffffff" opacity=".85">奇蹟研究所島</text></svg>';
     }
+    function labMapHTML(){
+      var ok=unlocked(),tot=0,stp=0;ST.forEach(function(s){var r=row(s.k);tot+=r[0]+r[1]+r[2];if(r[3])stp++});
+      var h='<div class="lbm-stat"><span>🔬 研究所印章 <b>'+stp+'</b> / 10</span><span>★ <b>'+tot+'</b> / 90</span>'+(data().badge?'<span>🏅 小小科學家</span>':'')+'</div>';
+      h+='<div class="sxmap lbm'+(ok?'':' locked')+'">'+(MAP_IMG?'<img src="'+MAP_IMG+'" alt="奇蹟研究所島地圖">':mapSVG());
+      ST.forEach(function(s){var p=POS[s.k],r=row(s.k),st=r[0]+r[1]+r[2];
+        h+='<button class="sxs" data-lab="'+s.k+'" style="left:'+p[0]+'%;top:'+p[1]+'%" aria-label="'+esc(s.zh)+'"><span class="ring"></span>'+(r[3]?'<span class="done">全破</span>':'')+'</button>'+
+          '<button class="sxl'+(r[3]?' got':'')+'" data-lab="'+s.k+'" style="left:'+p[0]+'%;top:'+(p[1]+8.2)+'%"><b>'+esc(s.zh)+'</b><small>'+(ok?(r[3]?'✅ ':'<i>★</i> ')+st+' / 9':'🔒')+'</small></button>'});
+      if(!ok)h+='<div class="lbm-lock"><b>🔒 第二座島還沒開放</b><span>第一座島 10 站都蓋到印章就能出航！目前 '+firstStamps()+' / 10</span></div>';
+      return h+'</div>';
+    }
+    function open(){setTab('b');stopAll();C.goSci()}
 
     function station(key){
       stopAll();var s=STK[key],r=row(key),d=data();
-      var h='<div class="lb-top"><button class="lb-back" data-act="map">← 回研究所</button><span class="lb-chip">'+s.ico+' '+esc(s.tag)+'</span></div>'+
+      var h='<div class="lb-top"><button class="lb-back" data-act="map">← 回研究所島</button><span class="lb-chip">'+s.ico+' '+esc(s.tag)+'</span></div>'+
         '<header class="lb-st-head" style="background-image:linear-gradient(180deg,rgba(14,48,58,.15),rgba(14,48,58,.88)),url(assets/'+s.bg+'.webp)"><span class="lb-st-ico">'+s.ico+'</span><h2>'+esc(s.zh)+'</h2><p>'+esc(s.d)+'</p></header>'+
         '<div class="lb-levels">'+s.lv.map(function(l,i){var open=i===0||r[i-1]>0,seen=Math.min((d.seen[key+i]||[]).length,s.q[i].length);
           return '<button class="lb-level" data-lv="'+i+'"'+(open?'':' disabled')+'><span class="lb-lvn">'+(open?i+1:'🔒')+'</span><span class="lb-lvt"><b>'+esc(l[0])+'</b><small>'+esc(open?l[1]:'先在前一關拿到至少 1 顆星')+'</small><em>新題目還有 '+(s.q[i].length-seen)+' 題'+(seen>=s.q[i].length?'（題庫做完了，會重新洗牌）':'')+'</em></span>'+stars(r[i])+'</button>'}).join('')+'</div>'+
         '<p class="lb-note">'+(r[3]?'✅ 這一站的印章已經收集了，可以繼續挑戰三星和剩下的新題目。':'三關都過關就能蓋研究所印章，獲得 +100 分和 5 💧。')+'</p>';
       frame(h,'lb-station');
-      on($('[data-act="map"]'),'click',function(){C.sfx('tap');open()});
+      on($('[data-act="map"]'),'click',function(){C.sfx('tap');open()});if(!unlocked()){open();return}
       body().querySelectorAll('[data-lv]').forEach(function(b){on(b,'click',function(){C.sfx('tap');play(key,+b.dataset.lv)})});
       C.say('「'+s.zh+'」有三關，題目越來越難，加油！','happy');
     }
@@ -238,13 +247,19 @@
     C.GAME_FN.lab=function(){open()};
     var home0=C.getHome();
     C.setHome(function(){home0.apply(this,arguments);try{
-      if(C.gOpen()!=='sci')return;var gb=document.getElementById('games');if(!gb||gb.querySelector('.lb-entry'))return;
-      var ok=unlocked(),stp=0;if(ok)ST.forEach(function(s){if(row(s.k)[3])stp++});
-      var b=document.createElement('button');b.className='lb-entry'+(ok?'':' locked');
-      b.innerHTML='<span class="lb-entry-ico">🔬</span><span class="lb-entry-t"><small>'+(ok?'NEW · 第二座自然島':'🔒 收集 10 個自然印章後開放')+'</small><b>奇蹟研究所</b><em>'+(ok?'10 站 · 360 題 · 已蓋 '+stp+' / 10 印章':'目前 '+firstStamps()+' / 10 個印章')+'</em></span><span class="lb-entry-go">'+(ok?'出發 →':'看看')+'</span>';
-      on(b,'click',function(){C.sfx('win');C.cleanupGame();open()});
-      var hd=gb.querySelector('.sxh');if(hd&&hd.nextSibling)gb.insertBefore(b,hd.nextSibling);else gb.prepend(b);
-    }catch(e){}});
+      if(C.gOpen()!=='sci')return;var gb=document.getElementById('games');if(!gb||gb.querySelector('.lbm-tabs'))return;
+      /* 自然首頁只留島嶼：拿掉下方的站點清單、印章手冊與說明 */
+      gb.querySelectorAll('.sxbook,.sxnote,.v2natureshelf').forEach(function(x){x.remove()});
+      var map1=gb.querySelector('.sxmap');if(!map1)return;
+      var tabs=document.createElement('div');tabs.className='lbm-tabs';
+      tabs.innerHTML='<button data-isl="a" aria-pressed="'+(tab==='a')+'">🏝️ 第一島<small>自然探險島</small></button><button data-isl="b" aria-pressed="'+(tab==='b')+'">🔬 第二島<small>奇蹟研究所'+(unlocked()?'':' 🔒')+'</small></button>';
+      map1.parentNode.insertBefore(tabs,map1);
+      var wrap=document.createElement('div');wrap.className='lbm-wrap';map1.parentNode.insertBefore(wrap,map1.nextSibling);
+      function show(){map1.hidden=tab!=='a';wrap.hidden=tab!=='b';if(tab==='b'){wrap.innerHTML=labMapHTML();wrap.querySelectorAll('[data-lab]').forEach(function(b){on(b,'click',function(){if(!unlocked()){C.sfx('no');C.say('先把第一座島 10 站都蓋到印章，研究所島就會開放！','oops');return}C.sfx('win');try{C.confetti(b,16)}catch(e){}C.cleanupGame();C.shell('奇蹟研究所');try{C.Music.play('garden')}catch(e){}station(b.dataset.lab)})})}
+        tabs.querySelectorAll('[data-isl]').forEach(function(x){x.setAttribute('aria-pressed',String(x.dataset.isl===tab))})}
+      tabs.querySelectorAll('[data-isl]').forEach(function(x){on(x,'click',function(){C.sfx('tap');setTab(x.dataset.isl);show();if(tab==='b')C.say(unlocked()?'歡迎來到奇蹟研究所島！點一個研究站開始挑戰！':'第二座島還沒開放，先完成第一座島喔！','happy')})});
+      show();
+    }catch(e){console.error('labhome',e)}});
     window.MiracleLab={version:'9.0.0',visual:visual,stations:ST.map(function(s){return s.k}),count:ST.reduce(function(n,s){return n+s.q[0].length+s.q[1].length+s.q[2].length},0),open:open};
   };
 })();

@@ -125,3 +125,16 @@
 .lb-entry-t em{font-style:normal;font-size:12.5px;opacity:.9}
 .lb-entry-go{background:#ffd88a;color:#3b2a00;font-weight:900;border-radius:999px;padding:7px 14px;white-space:nowrap}
 @media (max-width:420px){.lb{padding:10px 10px 18px;border-radius:16px}.lb-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.lb-card{padding:12px 10px}.lb-card b{font-size:15px}.lb-hero h2{font-size:24px}.lb-qt{font-size:17px}.lb-opt{font-size:15px}.lb-hero-n div{min-width:72px;padding:6px 10px}}
+/* 自然首頁：兩座島切換 */
+.lbm-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:520px;margin:6px auto 10px;width:100%}
+.lbm-tabs button{font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;border:3px solid #8a5a2b;border-radius:16px;padding:8px 6px;background:#fff6e2;color:#5a3a12;font-weight:900;font-size:16px;box-shadow:0 4px 0 rgba(90,58,18,.4)}
+.lbm-tabs button small{font-size:12px;font-weight:700;opacity:.85}
+.lbm-tabs button[aria-pressed="true"]{background:linear-gradient(#ffd66b,#f5b53a);border-color:#8a5a2b;transform:translateY(2px);box-shadow:0 2px 0 rgba(90,58,18,.4)}
+.lbm-wrap{width:100%}
+.lbm-stat{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 auto 10px;max-width:520px}
+.lbm-stat span{background:#fff;border:2px solid #d9e6ee;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;color:#2b4a5a}
+.lbm-stat b{font-variant-numeric:tabular-nums;color:#1f8a83}
+.lbm .lbm-svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.lbm.locked .lbm-svg,.lbm.locked>img{filter:grayscale(.7) brightness(.85)}
+.lbm-lock{position:absolute;left:8%;right:8%;top:42%;z-index:3;background:rgba(20,40,52,.88);color:#fff;border-radius:18px;padding:14px;text-align:center;display:flex;flex-direction:column;gap:4px}
+.lbm-lock span{font-size:13px;opacity:.9}
