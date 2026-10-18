@@ -58,10 +58,11 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/math-v4.js?v=4.1.0"></script>
 <link rel="stylesheet" href="assets/v8/family.css?v=8.3.1">
 <script src="assets/v8/family.js?v=8.3.1"></script>
-<link rel="stylesheet" href="assets/v9/lab.css?v=9.0.0">
+<link rel="stylesheet" href="assets/v9/lab.css?v=9.1.0">
 <script>window.LAB_TEST=1;/* 測試版：研究所不用先收集 10 個印章 */</script>
-<script src="assets/v9/lab-bank.js?v=9.0.0"></script>
-<script src="assets/v9/lab.js?v=9.0.0"></script>
+<script src="assets/v9/lab-bank.js?v=9.1.0"></script>
+<script src="assets/v9/lab-studio.js?v=9.1.0"></script>
+<script src="assets/v9/lab.js?v=9.1.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -5129,8 +5130,11 @@ var V2=(function(){
 (function(){var old=renderGameHome;renderGameHome=function(){old();var upd=document.querySelector('.gupd');if(upd)upd.textContent='新版 4.0 · 飛車與太空拼字 · 三款數學冒險';var sm=document.querySelector('.v2welcome small');if(sm)sm.textContent='KNOWLEDGE ADVENTURES · 4.0'}})();
 
 /* Star Island campaign entries; retain all prior game implementations. */
+/* Nature II 9.1 reward adapter; preserve first-island and seasonal rewards. */
+var labRewards={};var labMagicOriginal=gdMagic;gdMagic=function(k,id,sub){var meta=labRewards[k];if(!meta)return labMagicOriginal(k,id,sub);var d=Store.kid(id).lab||{},r=(d.st||{})[meta.station];return {s:{zh:meta.name},ok:isKid()&&!!(r&&r[3]),has:gdnData(id,sub).d.some(function(z){return gdKey(z)===k})}};
+function registerLabReward(st,name,path){var key='lab_'+st;labRewards[key]={station:st,name:name};if(!GDK[key]){GD.push([key,'m',name,16]);GDK[key]={k:key,c:'m',zh:name,sz:16,mv:'',en:name,p:0};GDI[key]=path}}
 /* v9 奇蹟研究所：自然第二座島 */
-if(window.LabFactory)try{window.LabFactory({Store:Store,who:function(){return who},isKid:isKid,esc:esc,sfx:sfx,say:say,confetti:confetti,plusFx:plusFx,shell:shell,body:function(){return gBody},cleanupGame:function(){cleanupGame()},backGameHome:backGameHome,egrade:function(){return egrade},Music:Music,Learn:Learn,subPts:subPts,scLevel:scLevel,scRow:scRow,STN:STN,SCI_IDS:SCI_IDS,GAMES:GAMES,GAME_FN:GAME_FN,gOpen:function(){return gOpen},muted:function(){return muted},kidName:function(){return nm()},goSci:function(){gOpen='sci';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}})}catch(e){console.error('lab',e)}
+if(window.LabFactory)try{window.LabFactory({registerReward:registerLabReward,Store:Store,who:function(){return who},isKid:isKid,esc:esc,sfx:sfx,say:say,confetti:confetti,plusFx:plusFx,shell:shell,body:function(){return gBody},cleanupGame:function(){cleanupGame()},backGameHome:backGameHome,egrade:function(){return egrade},Music:Music,Learn:Learn,subPts:subPts,scLevel:scLevel,scRow:scRow,STN:STN,SCI_IDS:SCI_IDS,GAMES:GAMES,GAME_FN:GAME_FN,gOpen:function(){return gOpen},muted:function(){return muted},kidName:function(){return nm()},goSci:function(){gOpen='sci';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}})}catch(e){console.error('lab',e)}
 /* v8 真實獎勵兌換＋節日活動 */
 if(window.FamilyFactory)window.FamilyFactory({subPts:subPts,Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
 
