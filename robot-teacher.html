@@ -1,4 +1,15 @@
 <title>機器人老師</title>
+<script>/* 語音修正：手機瀏覽器第一次發音要「手指點過」才會解鎖；cancel 後立刻 speak 會被吃掉；自動挑英文/中文聲音 */
+(function(){var ss=window.speechSynthesis;if(!ss||ss.__rtFix)return;ss.__rtFix=1;var orig=ss.speak.bind(ss),oc=ss.cancel.bind(ss),voices=[],cancelAt=0,unlocked=false;
+function load(){try{voices=ss.getVoices()||[]}catch(e){}}load();try{ss.addEventListener('voiceschanged',load)}catch(e){try{ss.onvoiceschanged=load}catch(_){}}
+function pick(lang){if(!voices.length)load();var l=String(lang||'').toLowerCase(),p=l.split('-')[0],norm=function(x){return String(x.lang||'').toLowerCase().replace('_','-')};
+  return voices.filter(function(x){return norm(x)===l&&x.localService})[0]||voices.filter(function(x){return norm(x)===l})[0]||voices.filter(function(x){return norm(x).indexOf(p)===0})[0]||null}
+ss.cancel=function(){cancelAt=Date.now();try{oc()}catch(e){}};
+ss.speak=function(u){try{if(u&&!u.voice&&u.lang){var v=pick(u.lang);if(v)u.voice=v}}catch(e){}
+  var go=function(){try{if(ss.paused)ss.resume()}catch(e){}try{orig(u)}catch(e){}};if(Date.now()-cancelAt<90)setTimeout(go,120);else go()};
+function unlock(){if(unlocked)return;unlocked=true;try{var u=new SpeechSynthesisUtterance(' ');u.volume=0;u.lang='en-US';orig(u)}catch(e){}}
+['pointerdown','touchend','keydown','click'].forEach(function(ev){document.addEventListener(ev,unlock,{capture:true,passive:true})});
+document.addEventListener('visibilitychange',function(){if(!document.hidden)try{ss.resume()}catch(e){}});})();</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -4795,7 +4806,7 @@ IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o)
       B.querySelectorAll('[data-table]').forEach(function(btn){btn.addEventListener('click',function(){if(busy||done)return;selected=+btn.dataset.table;sfx('tap');draw()})});
       B.querySelectorAll('[data-food]').forEach(function(btn){btn.addEventListener('click',function(){if(busy||done||q.cooking)return;if(q.tray.length>=7)return;q.tray.push(btn.dataset.food);q.cooked=false;q.cooking=0;sfx('tap');drawTray()})});
       B.querySelectorAll('[data-service]').forEach(function(btn){btn.addEventListener('click',function(){if(busy||done)return;q.chosenService=btn.dataset.service;B.querySelectorAll('[data-service]').forEach(function(x){x.setAttribute('aria-pressed',String(x===btn))});sfx('tap')})});
-      $('#v3DinerSpeak').addEventListener('click',function(){speak(q.en)});$('#v3DinerHint').addEventListener('click',function(){hintOpen=true;$('#v3OrderZh').hidden=false});
+      $('#v3DinerSpeak').addEventListener('click',function(){speak(q.en)});if(!q._said){q._said=1;setTimeout(function(){speak(q.en)},500)}$('#v3DinerHint').addEventListener('click',function(){hintOpen=true;$('#v3OrderZh').hidden=false});
       $('#v3Cook').addEventListener('click',function(){if(busy||done||q.cooked||q.cooking)return;if(!q.tray.length){feedback('先把食物放進托盤，再製作熱食。',false);return}q.cooking=.001;sfx('tap');$('#v3Cook').textContent='🔥 製作中…';$('#v3Cook').disabled=true});
       $('#v3Serve').addEventListener('click',serve);drawTray();drawCooking();if(b<=1)q.chosenService='dine';
     }
@@ -5069,6 +5080,8 @@ var V2=(function(){
 
 
 (function(){var old=renderGameHome;renderGameHome=function(){old();var upd=document.querySelector('.gupd');if(upd)upd.textContent='新版 4.0 · 飛車與太空拼字 · 三款數學冒險';var sm=document.querySelector('.v2welcome small');if(sm)sm.textContent='KNOWLEDGE ADVENTURES · 4.0'}})();
+/* v8 真實獎勵兌換＋節日活動 */
+if(window.FamilyFactory)window.FamilyFactory({subPts:subPts,Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
 
 /* Star Island campaign entries; retain all prior game implementations. */
 ['v5word','v5math'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
