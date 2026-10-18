@@ -1364,6 +1364,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .plate i{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a8f,#e8443a);border:1.5px solid #14173a}
 .mbtog{width:100%;text-align:left;background:none;padding:0;color:inherit;font:inherit;cursor:pointer}.mbtog .mbar{grid-column:1/-1;justify-self:center;margin-top:6px;background:linear-gradient(135deg,#ff9a3c,#ff6a5c);color:#fff;font-weight:700;font-size:14px;border-radius:999px;padding:4px 16px;box-shadow:0 3px 0 rgba(0,0,0,.15)}.mbtog[aria-expanded="true"]{margin-bottom:8px}.mbk .mbh{margin-bottom:0}
 .ttrow{margin-top:-6px}.ttrow .chip{font-weight:700}
+.dpbox{background:#fff;border:2px solid #e3ecf3;border-radius:18px;padding:14px;margin:0 0 14px;box-shadow:0 4px 0 #e3ecf3}.dpbox h3{margin:0 0 10px;font-size:18px}.dpbox h3 small{font-size:12px;color:#6b7f8c;font-weight:700}.dptoday{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:10px}.dptoday div{background:linear-gradient(#fff8e6,#ffefc7);border:2px solid #f2cf7c;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px}.dptoday span{font-weight:800;font-size:14px}.dptoday b{font-size:26px;color:#c66a00;font-variant-numeric:tabular-nums}.dptoday small{font-size:12px;color:#7a6a45;font-weight:700}.dpscroll{overflow-x:auto}.dptab{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}.dptab th,.dptab td{padding:6px 8px;border-bottom:1px solid #edf1f4;text-align:right;white-space:nowrap}.dptab th:first-child,.dptab td:first-child{text-align:left}.dptab th{color:#5b6f7c;font-size:12px}.dptab .dpnow td{font-weight:900;background:#fffaf0}.dptab .dp0{color:#b7c2ca}.dptab .dpna{color:#cfd6db}.dpnote{margin:8px 0 0;font-size:12px;color:#7d8b95}
 </style>
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
@@ -1373,9 +1374,11 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <link rel="stylesheet" href="assets/v8/family.css?v=8.3.1">
 <script src="assets/v8/family.js?v=8.3.1"></script>
 <link rel="stylesheet" href="assets/v9/lab.css?v=9.1.0">
-<script src="assets/v9/lab-bank.js?v=9.1.0"></script>
+<script src="assets/v9/lab-bank.js?v=9.2.0"></script>
+<script src="assets/v9/lab-bank-g2.js?v=9.2.0"></script>
+<script src="assets/v9/lab-bank-g4.js?v=9.2.0"></script>
 <script src="assets/v9/lab-studio.js?v=9.1.0"></script>
-<script src="assets/v9/lab.js?v=9.1.0"></script>
+<script src="assets/v9/lab.js?v=9.2.0"></script>
 
 
 <header class="top">
@@ -1579,9 +1582,12 @@ var Store=(function(){
   var db=null,pin=null,pinLoaded=false,subs=[],clearedAt=0;
   var kids={},activity=[],subd={},pruning=false,pruned={},emitT=0;
   var dirty={},writing={},flushT=null,chain=Promise.resolve(),warned=false;
+  /* 每日分數：k.dp['2026-10-18'] = 當天三科玩遊戲得到的總分（台灣當地日期，家長調整分數不算），保留 62 天 */
+  function dayKey(t){var d=t?new Date(t):new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+  function dayAdd(k,n){n=+n||0;if(!n)return;var o=k.dp&&typeof k.dp==='object'?k.dp:(k.dp={}),d=dayKey();o[d]=(+o[d]||0)+n;var ks=Object.keys(o).sort();while(ks.length>62)delete o[ks.shift()]}
   function kblank(){return {pts:0,byGame:{},qCount:0,lastDay:'',obby:{v:2},garden:{}}}
   function knorm(d){var b=kblank();/* 雲端資料可能是唯讀（凍結）物件，先深拷貝才能修改 */try{d=d?fsDec(JSON.parse(JSON.stringify(d))):{}}catch(e){d={}}b.pts=+d.pts||0;b.byGame=d.byGame||{};b.qCount=+d.qCount||0;b.lastDay=d.lastDay||'';b.obby=(d.obby&&typeof d.obby==='object')?d.obby:{v:2};b.garden=(d.garden&&typeof d.garden==='object')?d.garden:{};
-    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD','hv','sc','mu','mo','rd','hw','lab'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq','scl','rev'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.gr==='string'&&d.gr)b.gr=d.gr;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
+    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD','hv','sc','mu','mo','rd','hw','lab','dp'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq','scl','rev'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.gr==='string'&&d.gr)b.gr=d.gr;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
     /* v2：關卡改成 20 關、順序重排，舊版的最快紀錄對不上新關卡，只保留已解鎖的進度 */
     if(b.obby.v!==2)b.obby={v:2,stage:Math.min(+b.obby.stage||0,4)};return b}
   function ensure(id){if(!kids[id]){kids[id]=kblank();dirty[id]=false;writing[id]=0}}
@@ -1657,11 +1663,11 @@ var Store=(function(){
     obbyDone:function(id,i,ms,st){var k=kids[id];if(!k)return;var o=k.obby||(k.obby={});o.best=o.best||{};o.stars=o.stars||{};
       if(!o.best[i]||ms<o.best[i])o.best[i]=ms;if(!(o.stars[i]>=st))o.stars[i]=st;if(!(o.stage>i))o.stage=i+1;dirty[id]=true;touchK(id);scheduleFlush();emit();},
     mut:function(id,fn){var k=kids[id];if(!k)return;fn(k);dirty[id]=true;touchK(id);scheduleFlush();emit();},
-    award:function(id,pts,gid){var k=kids[id];if(!k)return;k.pts+=pts;
+    award:function(id,pts,gid){var k=kids[id];if(!k)return;k.pts+=pts;dayAdd(k,pts);
       var g=k.byGame[gid]||(k.byGame[gid]={pts:0,plays:0,best:0});g.pts+=pts;dirty[id]=true;touchK(id);scheduleFlush();emit();},
     finishGame:function(id,gid,info){var k=kids[id];if(!k)return 0;
       var g=k.byGame[gid]||(k.byGame[gid]={pts:0,plays:0,best:0});g.plays++;if(info.roundPts>g.best)g.best=info.roundPts;
-      var bonus=0;if(k.lastDay!==today()){k.lastDay=today();k.pts+=20;g.pts+=20;bonus=20}
+      var bonus=0;if(k.lastDay!==today()){k.lastDay=today();k.pts+=20;g.pts+=20;bonus=20;dayAdd(k,20)}
       dirty[id]=true;touchK(id);flushKids();
       pushActivity({kid:id,type:'game',ts:Date.now(),gid:gid,score:info.score,total:info.total,pts:info.roundPts+bonus,eg:info.eg});return bonus;},
     recordQ:function(id,o){var k=kids[id];if(k){k.qCount++;dirty[id]=true;touchK(id);scheduleFlush()}
@@ -5088,10 +5094,20 @@ var V2=(function(){
 
 (function(){var old=renderGameHome;renderGameHome=function(){old();var upd=document.querySelector('.gupd');if(upd)upd.textContent='新版 4.0 · 飛車與太空拼字 · 三款數學冒險';var sm=document.querySelector('.v2welcome small');if(sm)sm.textContent='KNOWLEDGE ADVENTURES · 4.0'}})();
 /* Nature II 9.1 reward adapter; preserve first-island and seasonal rewards. */
-var labRewards={};var labMagicOriginal=gdMagic;gdMagic=function(k,id,sub){var meta=labRewards[k];if(!meta)return labMagicOriginal(k,id,sub);var d=Store.kid(id).lab||{},r=(d.st||{})[meta.station];return {s:{zh:meta.name},ok:isKid()&&!!(r&&r[3]),has:gdnData(id,sub).d.some(function(z){return gdKey(z)===k})}};
+var labRewards={};var labMagicOriginal=gdMagic;gdMagic=function(k,id,sub){var meta=labRewards[k];if(!meta)return labMagicOriginal(k,id,sub);var d=Store.kid(id).lab||{},st=d.st||{},r=[meta.station,meta.station+'@2',meta.station+'@3',meta.station+'@4'].some(function(x){return Array.isArray(st[x])&&st[x][3]});return {s:{zh:meta.name},ok:isKid()&&r,has:gdnData(id,sub).d.some(function(z){return gdKey(z)===k})}};
 function registerLabReward(st,name,path){var key='lab_'+st;labRewards[key]={station:st,name:name};if(!GDK[key]){GD.push([key,'m',name,16]);GDK[key]={k:key,c:'m',zh:name,sz:16,mv:'',en:name,p:0};GDI[key]=path}}
 /* v9 奇蹟研究所：自然第二座島 */
 if(window.LabFactory)try{window.LabFactory({registerReward:registerLabReward,scAny:scStampsAny,Store:Store,who:function(){return who},isKid:isKid,esc:esc,sfx:sfx,say:say,confetti:confetti,plusFx:plusFx,shell:shell,body:function(){return gBody},cleanupGame:function(){cleanupGame()},backGameHome:backGameHome,egrade:function(){return egrade},Music:Music,Learn:Learn,subPts:subPts,scLevel:scLevel,scRow:scRow,STN:STN,SCI_IDS:SCI_IDS,GAMES:GAMES,GAME_FN:GAME_FN,gOpen:function(){return gOpen},muted:function(){return muted},kidName:function(){return nm()},goSci:function(){gOpen='sci';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}})}catch(e){console.error('lab',e)}
+/* v9.2 每日分數紀錄：紀錄分頁最上方，看每天三科一共玩了多少分 */
+(function(){var rec0=renderRec;renderRec=function(){rec0.apply(this,arguments);try{if(!who)return;var el=PANELS.rec,parent=who==='parent';if(!el||el.querySelector('.dpbox'))return;
+  var ids=parent?(recFilter==='all'?KIDS.map(function(k){return k.id}):[recFilter]):[who],W=['日','一','二','三','四','五','六'],days=[],now=new Date();
+  for(var i=0;i<14;i++){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i);days.push({k:d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2),t:(d.getMonth()+1)+'/'+d.getDate()+'（'+W[d.getDay()]+'）'})}
+  var dp={},first={};ids.forEach(function(id){var o=(Store.kid(id)||{}).dp||{};dp[id]=o;first[id]=Object.keys(o).sort()[0]||days[0].k});
+  var cell=function(id,d){var v=+dp[id][d.k]||0;return d.k<first[id]?'<td class="dpna">—</td>':'<td class="'+(v?'':'dp0')+'">'+v.toLocaleString()+'</td>'};
+  var sum=function(id,n){var t=0;days.slice(0,n).forEach(function(d){t+=+dp[id][d.k]||0});return t};
+  var h='<h3>📅 每天玩了多少分 <small>英文＋數學＋自然</small></h3><div class="dptoday">'+ids.map(function(id){var k=kidOf(id);return '<div><span>'+kface(k)+' '+esc(k.short)+'</span><b>'+(+dp[id][days[0].k]||0).toLocaleString()+'</b><small>今天 · 近 7 天 '+sum(id,7).toLocaleString()+'</small></div>'}).join('')+'</div>'+
+    '<div class="dpscroll"><table class="dptab"><thead><tr><th>日期</th>'+ids.map(function(id){return '<th>'+esc(kidOf(id).short)+'</th>'}).join('')+'</tr></thead><tbody>'+days.map(function(d,j){return '<tr'+(j===0?' class="dpnow"':'')+'><td>'+(j===0?'今天 ':'')+d.t+'</td>'+ids.map(function(id){return cell(id,d)}).join('')+'</tr>'}).join('')+'</tbody></table></div><p class="dpnote">只算玩遊戲、答題得到的分數，家長手動調整的分數不算。從開始記錄那天起才有資料（之前顯示「—」）。</p>';
+  var box=document.createElement('section');box.className='dpbox';box.innerHTML=h;var h2=el.querySelector('h2.h');if(h2&&h2.nextSibling)el.insertBefore(box,h2.nextSibling);else el.prepend(box)}catch(e){console.error('dp',e)}}})();
 /* v8 真實獎勵兌換＋節日活動 */
 if(window.FamilyFactory)window.FamilyFactory({subPts:subPts,Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
 
