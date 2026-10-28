@@ -1365,12 +1365,16 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .mbtog{width:100%;text-align:left;background:none;padding:0;color:inherit;font:inherit;cursor:pointer}.mbtog .mbar{grid-column:1/-1;justify-self:center;margin-top:6px;background:linear-gradient(135deg,#ff9a3c,#ff6a5c);color:#fff;font-weight:700;font-size:14px;border-radius:999px;padding:4px 16px;box-shadow:0 3px 0 rgba(0,0,0,.15)}.mbtog[aria-expanded="true"]{margin-bottom:8px}.mbk .mbh{margin-bottom:0}
 .ttrow{margin-top:-6px}.ttrow .chip{font-weight:700}
 .dpbox{background:#fff;border:2px solid #e3ecf3;border-radius:18px;padding:14px;margin:0 0 14px;box-shadow:0 4px 0 #e3ecf3}.dpbox h3{margin:0 0 10px;font-size:18px}.dpbox h3 small{font-size:12px;color:#6b7f8c;font-weight:700}.dptoday{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:10px}.dptoday div{background:linear-gradient(#fff8e6,#ffefc7);border:2px solid #f2cf7c;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px}.dptoday span{font-weight:800;font-size:14px}.dptoday b{font-size:26px;color:#c66a00;font-variant-numeric:tabular-nums}.dptoday small{font-size:12px;color:#7a6a45;font-weight:700}.dpscroll{overflow-x:auto}.dptab{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}.dptab th,.dptab td{padding:6px 8px;border-bottom:1px solid #edf1f4;text-align:right;white-space:nowrap}.dptab th:first-child,.dptab td:first-child{text-align:left}.dptab th{color:#5b6f7c;font-size:12px}.dptab .dpnow td{font-weight:900;background:#fffaf0}.dptab .dp0{color:#b7c2ca}.dptab .dpna{color:#cfd6db}.dpnote{margin:8px 0 0;font-size:12px;color:#7d8b95}
+.egrow.pgrow{gap:6px;flex-wrap:wrap}.egrow.pgrow .lab{font-weight:800}.chip.pgchip{cursor:default;pointer-events:none;background:var(--card,#fff);font-size:13px}
+.pgp .pgset{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 10px}.pgp .pgset label{display:flex;gap:6px;align-items:center;font-size:14px}
+.pgp .pgr{display:flex;flex-direction:column;align-items:stretch;gap:6px}.pgp .pgl{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:12px;background:rgba(127,127,127,.08)}
+.pgp .pgl small{opacity:.85;line-height:1.45}.pgp .pgnow{font-weight:700}.pgp .pgnow em{font-style:normal;color:#e08a00}.pgp .pgl code{font-size:12px;padding:0 3px;border-radius:4px;background:rgba(127,127,127,.15)}
 </style>
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
 <link rel="stylesheet" href="assets/expansion-v4.css?v=4.1.0">
 <script src="assets/velocity-v4.js?v=4.1.0"></script>
-<script src="assets/math-v4.js?v=4.1.0"></script>
+<script src="assets/math-v4.js?v=4.2.0"></script>
 <link rel="stylesheet" href="assets/v8/family.css?v=8.3.1">
 <script src="assets/v8/family.js?v=8.3.1"></script>
 <link rel="stylesheet" href="assets/v9/lab.css?v=9.1.0">
@@ -1379,6 +1383,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <script src="assets/v9/lab-bank-g4.js?v=9.2.0"></script>
 <script src="assets/v9/lab-studio.js?v=9.1.0"></script>
 <script src="assets/v9/lab.js?v=9.2.0"></script>
+<script src="assets/v10/progress.js?v=10.0.0"></script>
 
 
 <header class="top">
@@ -1587,7 +1592,7 @@ var Store=(function(){
   function dayAdd(k,n){n=+n||0;if(!n)return;var o=k.dp&&typeof k.dp==='object'?k.dp:(k.dp={}),d=dayKey();o[d]=(+o[d]||0)+n;var ks=Object.keys(o).sort();while(ks.length>62)delete o[ks.shift()]}
   function kblank(){return {pts:0,byGame:{},qCount:0,lastDay:'',obby:{v:2},garden:{}}}
   function knorm(d){var b=kblank();/* 雲端資料可能是唯讀（凍結）物件，先深拷貝才能修改 */try{d=d?fsDec(JSON.parse(JSON.stringify(d))):{}}catch(e){d={}}b.pts=+d.pts||0;b.byGame=d.byGame||{};b.qCount=+d.qCount||0;b.lastDay=d.lastDay||'';b.obby=(d.obby&&typeof d.obby==='object')?d.obby:{v:2};b.garden=(d.garden&&typeof d.garden==='object')?d.garden:{};
-    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD','hv','sc','mu','mo','rd','hw','lab','dp'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq','scl','rev'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.gr==='string'&&d.gr)b.gr=d.gr;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
+    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD','hv','sc','mu','mo','rd','hw','lab','dp','pg'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq','scl','rev'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.gr==='string'&&d.gr)b.gr=d.gr;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
     /* v2：關卡改成 20 關、順序重排，舊版的最快紀錄對不上新關卡，只保留已解鎖的進度 */
     if(b.obby.v!==2)b.obby={v:2,stage:Math.min(+b.obby.stage||0,4)};return b}
   function ensure(id){if(!kids[id]){kids[id]=kblank();dirty[id]=false;writing[id]=0}}
@@ -2144,7 +2149,7 @@ function sciPodium(){var arr=KIDS.map(function(k){return {k:k,p:subPts(Store.kid
 var MB_SEM=[{y:2026,s:'上',start:'2026-08-31'}];
 var MB={'二':{book:'二上（第 3 冊）',u:[['r1','200 以內的數',1,2,1],['r2','二位數的直式加減',3,5,1],['r3','量長度',6,7],['r4','加減關係與應用',8,9],['r5','面積的大小比較',10,10],['r6','兩步驟的加減',11,12],['r7','2、5、4、8 的乘法',13,14],['r8','幾時幾分',15,16],['r9','3、6、9、7 的乘法',17,18],['r10','容量與重量',19,20]]},
   '三':{book:'三上（第 5 冊）',u:[['d1','10000 以內的數',1,2,1],['d2','四位數的加減',3,5,1],['d3','毫米',6,7,1],['d4','乘法',8,9,1],['d5','角',10,11],['d6','面積',12,13],['d7','除法',14,16],['d8','公升和毫升',17,18],['d9','分數',19,21]]}};
-var MB_DEF={de:'三',ren:'二'};/* 還沒設定時的預設學校年級 */
+var MB_DEF={de:'三',ren:'二'};var PGX=null;/* v10 自動進度引擎（檔案最後面接上） *//* 還沒設定時的預設學校年級 */
 var MB_LV={r1:[['積木排數字','用百、十、一的積木排出數字'],['數一數','看積木說出是多少'],['數的大小','比大小、接數字']],
   r2:[['直式加法','從個位開始算，滿十要進位'],['直式減法','不夠減就跟十位借'],['加減大挑戰','加法減法混在一起，看你多厲害']],
   d1:[['積木排數字','用千、百、十、一的積木排出數字'],['讀數和寫數','國字和數字互換'],['數的大小','比大小、位值換算']],
@@ -2161,10 +2166,10 @@ function mbCards(id){var S=mbState(id);if(!S)return 0;return S.B.u.filter(functi
 /* 數學樂園上方的課本地圖 */
 var mbOpen=false;function mbHome(gb){if(!isKid())return;var S=mbState(who),box=document.createElement('div');box.className='mbk';
   if(!S){box.innerHTML='<div class="mbh"><b>📘 康軒課本闖關</b><small>這個年級的課本地圖還在準備中，先玩下面的數學遊戲吧！</small></div>';gb.parentNode.insertBefore(box,gb);return}
-  var h='<button class="mbh mbtog" id="mbTog" aria-expanded="'+mbOpen+'"><b>📘 康軒數學 '+esc(S.B.book)+'</b><small>學校現在大約教到：第 '+(S.cur+1)+' 單元「'+esc(S.B.u[S.cur][1])+'」'+(S.manual?'（家長設定）':'')+'</small><span class="mbc">🏅 '+mbCards(who)+' / '+S.B.u.length+'</span><span class="mbar">'+(mbOpen?'收起 ▲':'打開課本 ▼')+'</span></button><div class="mbpath"'+(mbOpen?'':' hidden')+'>';
+  var h='<button class="mbh mbtog" id="mbTog" aria-expanded="'+mbOpen+'"><b>📘 康軒數學 '+esc(S.B.book)+'</b><small>'+(S.cal!=null&&S.cur>S.cal?'⚡ 已經超前！現在練：第 '+(S.cur+1)+' 單元「'+esc(S.B.u[S.cur][1])+'」':'學校現在大約教到：第 '+(S.cur+1)+' 單元「'+esc(S.B.u[S.cur][1])+'」'+(S.manual?'（家長設定）':''))+'</small><span class="mbc">🏅 '+mbCards(who)+' / '+S.B.u.length+'</span><span class="mbar">'+(mbOpen?'收起 ▲':'打開課本 ▼')+'</span></button><div class="mbpath"'+(mbOpen?'':' hidden')+'>';
   S.B.u.forEach(function(u,i){var open=i<=S.cur,r=mbRow(who,u[0]),st=r[0]+r[1]+r[2],full=r[0]&&r[1]&&r[2],ready=!!u[4];
     h+='<button class="mbn'+(i%2?' r':'')+(open?'':' lock')+(i===S.cur?' now':'')+(full?' full':'')+'" data-u="'+u[0]+'"><span class="no">'+(full?'🏅':open?i+1:'🔒')+'</span><span class="tx"><b>'+esc(u[1])+'</b><small>'+
-      (i===S.cur?'📍 學校現在教到這裡':!open?'學校還沒教到':!ready?'🚧 小機老師準備中':'★ '+st+' / 9')+'</small></span></button>'});
+      (i===S.cur?(S.cal!=null&&S.cur>S.cal?'⚡ 學得很快，已經超前到這裡':'📍 學校現在教到這裡'):!open?'學校還沒教到':!ready?'🚧 小機老師準備中':'★ '+st+' / 9')+'</small></span></button>'});
   box.innerHTML=h+'</div>';gb.parentNode.insertBefore(box,gb);$('#mbTog').addEventListener('click',function(){sfx('tap');mbOpen=!mbOpen;var p=box.querySelector('.mbpath');p.hidden=!mbOpen;this.setAttribute('aria-expanded',mbOpen);this.querySelector('.mbar').textContent=mbOpen?'收起 ▲':'打開課本 ▼';if(mbOpen)say('選一個單元開始練習！','happy')});
   box.querySelectorAll('[data-u]').forEach(function(b){b.addEventListener('click',function(){var i=S.B.u.map(function(u){return u[0]}).indexOf(b.dataset.u),u=S.B.u[i];
     if(i>S.cur){sfx('no');say('學校還沒教到「'+u[1]+'」，先把前面的練熟吧！','oops');return}
@@ -3056,8 +3061,8 @@ var OB=(function(){
       S.boxes.push(b);return b}
     function tree(x,y,z){var t=new T.Group(),tr=new T.Mesh(new T.BoxGeometry(.3,.9,.3),new T.MeshLambertMaterial({color:0x8a5a2b}));tr.position.y=.45;t.add(tr);
       var lf=new T.Mesh(new T.ConeGeometry(.8,1.6,6),new T.MeshLambertMaterial({color:W.leaf,flatShading:true}));lf.position.y=1.6;t.add(lf);t.position.set(x,y,z);sc.add(t)}
-    var words=shuffle2(WORDS.filter(function(w){var b=EGRADES.indexOf(S.eg)+1;return w[3]<=b&&w[3]>=b-1}),R),wi=0;
-    if(words.length<12)words=shuffle2(WORDS.filter(function(w){return w[3]<=EGRADES.indexOf(S.eg)+1}),R);words=Learn.boost(words,S.tok);
+    var pgw=!S.tok&&isKid()&&PGX?PGX.pool(who):null,words=pgw?shuffle2(pgw,R):shuffle2(WORDS.filter(function(w){var b=EGRADES.indexOf(S.eg)+1;return w[3]<=b&&w[3]>=b-1}),R),wi=0;
+    if(!pgw&&words.length<12)words=shuffle2(WORDS.filter(function(w){return w[3]<=EGRADES.indexOf(S.eg)+1}),R);words=Learn.boost(words,S.tok);
     function shuffle2(a,r){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
     function nextW(f){for(var n=0;n<words.length;n++){var w=words[(wi++)%words.length];if(!f||f(w))return w}return words[0]}
     var B={x:0,y:0,z:-3.5,
@@ -3262,14 +3267,14 @@ var OB=(function(){
     if(rd){rd.dispose();if(rd.forceContextLoss)rd.forceContextLoss()}}catch(e){}}
   /* 用種子決定題目，連線時兩邊才會拿到一模一樣的題目 */
   function seeded(o){var R=rng(o.seed),b=EGRADES.indexOf(o.eg)+1;if(b<1)b=tier();
-    var pool=WORDS.filter(function(w){return w[3]<=b&&w[3]>=b-1});if(pool.length<10)pool=WORDS.filter(function(w){return w[3]<=b});
+    var pool=WORDS.filter(function(w){return w[3]<=b&&w[3]>=b-1});if(pool.length<10)pool=WORDS.filter(function(w){return w[3]<=b});var pgp=!o.tok&&isKid()&&PGX?PGX.pool(who):null;if(pgp)pool=pgp;
     function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(R()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-    return {R:R,b:b,pool:pool,sh:sh,oth:function(w,n){return sh(WORDS.filter(function(x){return x[3]<=b&&x[0]!==w[0]})).slice(0,n)}}}
+    return {R:R,b:b,pool:pool,sh:sh,oth:function(w,n){var po=pgp&&PGX.others(w,n);if(po&&po.length>=n)return sh(po).slice(0,n);return sh(WORDS.filter(function(x){return x[3]<=b&&x[0]!==w[0]})).slice(0,n)}}}
   /* 數學題：kind 'tt' 是九九乘法（tb 指定第幾段，0 是全部），'mix' 依年級出加減乘除。
      回傳的格式跟單字一樣是陣列（[答案, 圖示, 算式]），所以賽車／射擊／拔河可以直接共用。 */
   var ttSel=0;
   function mq(R,kind,b,tb,n){n=n||3;function r(k){return Math.floor(R()*k)}var a,c,d,ans,ex,k=r(4),ds;
-    var SK=mbSkills();if(SK&&(kind!=='tt'||!mbHasTT())){var g0=mbGen(R,SK);ex=g0[0];ans=g0[1];ds=[ans+1,ans-1,ans+10,ans-10,ans+2,ans-2,ans+100,ans-100,ans+20]}
+    var SK=mbSkills(),g0=SK&&(kind!=='tt'||!mbHasTT())?mbGen(R,SK,kind):null;if(g0){ex=g0[0];ans=g0[1];ds=g0[2]||[ans+1,ans-1,ans+10,ans-10,ans+2,ans-2,ans+100,ans-100,ans+20]}
     else if(kind==='tt'){a=(SK&&SK.indexOf('tt')<0?mbTab(R,SK):0)||tb||2+r(8);c=2+r(8);if(R()<.5){ex=c+' × '+a}else ex=a+' × '+c;ans=a*c;ds=[a*(c+1),a*(c-1),(a+1)*c,(a-1)*c,ans+1,ans-1,ans+10,ans-10,ans+2]}
     else{
       if(b<=1){if(k<2){a=10+r(70);c=1+r(99-a);ans=a+c;ex=a+' + '+c}else if(k<3){a=20+r(79);c=1+r(a-1);ans=a-c;ex=a+' − '+c}else{a=[2,5,10][r(3)];c=1+r(9);ans=a*c;ex=a+' × '+c}}
@@ -3279,8 +3284,8 @@ var OB=(function(){
       else{if(k===0){a=11+r(10);ans=a*a;ex=a+' × '+a}else if(k===1){a=3+r(7);c=3+r(7);d=1+r(a*c-1);ans=a*c-d;ex=a+' × '+c+' − '+d}else if(k===2){c=3+r(7);ans=30+r(90);a=c*ans;ex=a+' ÷ '+c}else{a=12+r(29);c=11+r(15);ans=a*c;ex=a+' × '+c}}
       ds=[ans+1,ans-1,ans+10,ans-10,ans+2,ans-2,ans+11,ans-9,ans+20]}
     for(var i=ds.length-1;i>0;i--){var j=r(i+1),t=ds[i];ds[i]=ds[j];ds[j]=t}
-    var w=[String(ans),'🔢',ex,0],seen={};w.m=1;w.os=[w];seen[ans]=1;
-    ds.forEach(function(x){if(w.os.length<n&&x>0&&!seen[x]){seen[x]=1;w.os.push([String(x),'',ex,0])}});return w}
+    var w=[String(ans),'🔢',ex,0],seen={};w.m=1;w.os=[w];seen[ans]=1;if(g0&&g0[3])w.pg=g0[3];
+    ds.forEach(function(x){if(w.os.length<n&&(typeof x!=='number'||x>0)&&!seen[x]){seen[x]=1;w.os.push([String(x),'',ex,0])}});return w}
   function mqs(g,o,X,n,k){var a=[],last='';while(a.length<n){var w=mq(X.R,g.math,X.b,o.tb,k);if(w[2]!==last){a.push(w);last=w[2]}}return a}
   function eqs(w){return w.m?w[2]+' = '+w[0]:w[0]+' = '+w[2]}
   function sol(w){return w.m?w[2]+' = '+w[0]:w[0]+'（'+w[2]+'）'}
@@ -3552,7 +3557,7 @@ var OB=(function(){
       var B=$('#pdB'),pen=0,cur=null,busy=false;
       B.innerHTML='<div class="cmp"><button class="cc en" id="cL"></button><div class="cm" id="cM">🐊</div><button class="cc en" id="cR"></button></div><button class="ceq" id="cE">＝ 兩邊一樣大</button>';
       $('#pdQ').textContent='鱷魚要吃比較大的！哪一邊大？';
-      function gen(){if(b<=1)return {t:String(1+rand(100)),v:0};var w=mq(Math.random,'mix',b,0,3);return {t:w[2],v:+w[0]}}
+      function gen(){if(b<=1)return {t:String(1+rand(100)),v:0};var w=mq(Math.random,'cmp',b,0,3);return {t:w[2],v:+w[0]}}
       function next(){busy=false;var L=gen(),R;if(b<=1)L.v=+L.t;
         var r=Math.random();if(r<.16)R={t:String(L.v),v:L.v};else if(r<.6||b<=1){var d=(1+rand(Math.max(2,Math.round(L.v*.12))))*(Math.random()<.5?-1:1),v=Math.max(1,L.v+d);R={t:String(v),v:v}}else R=gen();
         if(R.t===L.t&&b>1)R={t:String(L.v+1),v:L.v+1};
@@ -4541,8 +4546,8 @@ var OB=(function(){
       $('#pdB').innerHTML='<div class="sc2" id="sc2"><div class="sbar"><span class="stag">📘 '+esc(L[0])+'</span><span class="scmbo" id="sCmb" hidden></span><div class="sprog" id="sProg"></div></div><div class="sbody" id="sBody"></div></div>';
       var C={a:a,g:g,uk:uk,lv:lv,U:U,ui:ui,S:S,gr:S?S.g:'三',R:rng(o.seed),B:$('#sBody'),right:0,wrong:0,streak:0,tips:[],fin:false,
         alive:function(){return A===a&&!C.fin&&!a.fin},
-        ok:function(el,txt){C.right++;C.streak++;a.my=C.right;award(1);sfx('ok');if(el)confetti(el,10);sciCombo(C.streak);if(el&&txt)stSpark(el,txt)},
-        bad:function(tip){C.wrong++;C.streak=0;sciCombo(0);sfx('no');flash();if(tip&&C.tips.indexOf(tip)<0)C.tips.push(tip)},
+        ok:function(el,txt){if(PGX)PGX.mbHook(C.uk,true);C.right++;C.streak++;a.my=C.right;award(1);sfx('ok');if(el)confetti(el,10);sciCombo(C.streak);if(el&&txt)stSpark(el,txt)},
+        bad:function(tip){if(PGX)PGX.mbHook(C.uk,false);C.wrong++;C.streak=0;sciCombo(0);sfx('no');flash();if(tip&&C.tips.indexOf(tip)<0)C.tips.push(tip)},
         later:function(f,ms){setTimeout(function(){if(C.alive())f()},ms)},
         sheet:function(ok,t,b,btn,cb){sciSheet(ok,t,b,btn,function(){if(C.alive())cb&&cb()})},hide:sciHide,dots:function(N,cur,res){sciDots(N,cur,res)},
         done:function(force){mbFinish(C,force)}};
@@ -4866,7 +4871,7 @@ IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o)
   window.MiracleV4Factory(V4CTX);
   window.MiracleMathV4Factory(V4CTX);
 
-  return {map:map,stop:stop,STG:STG,WORLDS:WORLDS,ft:ft,menu:menu,st:stPlay,mb:mbPlay};
+  return {map:map,stop:stop,STG:STG,WORLDS:WORLDS,ft:ft,menu:menu,st:stPlay,mb:mbPlay,MB_G:MB_G,mbQs:mbQs};
 })();
 GAME_FN.obby=function(g){OB.map(g)};STN.forEach(function(s){GAME_FN[s.id]=function(g){stMenu(g)}});['kart','shoot','meteor','tug','tower','boss','diner','mbingo','msnake','mbond','mcmp','mboss','scisprint','scisort','sciorder','scimatch'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
 /* 九九乘法表：看表複習，點一下會用中文唸出來 */
@@ -5110,6 +5115,29 @@ if(window.LabFactory)try{window.LabFactory({registerReward:registerLabReward,scA
   var box=document.createElement('section');box.className='dpbox';box.innerHTML=h;var h2=el.querySelector('h2.h');if(h2&&h2.nextSibling)el.insertBefore(box,h2.nextSibling);else el.prepend(box)}catch(e){console.error('dp',e)}}})();
 /* v8 真實獎勵兌換＋節日活動 */
 if(window.FamilyFactory)window.FamilyFactory({subPts:subPts,Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
+
+/* v10 自動進度：英文、數學跟著學校行事曆＋熟練度自動前進；孩子不用再選年級 */
+if(window.ProgressFactory)try{(function(){
+  PGX=window.ProgressFactory({Store:Store,WORDS:WORDS,MB_DEF:MB_DEF,isKid:isKid,who:function(){return who},sfx:sfx,say:say,confetti:confetti});
+  PGX.mbLV(MB_LV);if(OB.MB_G&&OB.mbQs)PGX.mbGenLv(OB.MB_G,OB.mbQs,esc);
+  var mbGrade0=mbGrade,mbState0=mbState,mbSkills0=mbSkills,mbGen0=mbGen,poolW0=poolW,others0=others,scOwnG0=scOwnG;
+  mbGrade=function(id){return PGX.state(id,'m')?PGX.gradeStr(id):mbGrade0(id)};
+  mbState=function(id){return PGX.mbState(id)||mbState0(id)};
+  mbSkills=function(lesson){if(!isKid())return null;return PGX.state(who,'m')?PGX.skills(who):mbSkills0(lesson)};
+  mbGen=function(R,SK,kind){return isKid()&&PGX.state(who,'m')?PGX.gen(R,kind):mbGen0(R,SK)};
+  poolW=function(){var p=isKid()&&PGX.pool(who);return p||poolW0()};
+  others=function(w,n){var p=isKid()&&PGX.others(w,n);return p||others0(w,n)};
+  scOwnG=function(id){var g=PGX.grade(id);return g?Math.max(2,Math.min(4,g)):scOwnG0(id)};
+  mbParentHtml=function(){return PGX.parentHtml(KIDS,kface,esc)};
+  mbParentWire=function(el){PGX.parentWire(el,KIDS)};
+  var lo=Learn.ok,lb=Learn.bad,lr=Learn.round0;
+  Learn.ok=function(w){PGX.hook(w,true);return lo.apply(Learn,arguments)};
+  Learn.bad=function(w){PGX.hook(w,false);return lb.apply(Learn,arguments)};
+  Learn.round0=function(){PGX.round0();return lr.apply(Learn,arguments)};
+  var fg=Store.finishGame;Store.finishGame=function(id){var r=fg.apply(Store,arguments);try{PGX.finish(id)}catch(e){}return r};
+  var rgh=renderGameHome;renderGameHome=function(){var gs=isKid()&&PGX.gradeStr(who);if(gs&&EGRADES.indexOf(gs)>=0)egrade=gs;rgh.apply(this,arguments);
+    if(gs){var er=$('#egRow');if(er){er.innerHTML=PGX.kidChip(who,esc);er.classList.add('pgrow')}var hs=$('#heroSub');if(hs&&gOpen!=='sci')hs.textContent=gs+'年級・題目跟著學校進度自動調整'}};
+})()}catch(e){console.error('progress',e)}
 
 /* ========== boot ========== */
 Store.connect();
