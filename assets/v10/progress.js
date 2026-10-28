@@ -151,6 +151,17 @@ var EN={
      b:[['e4b1','Get Ready 數字 10～100',1,1,['sixty','seventy','eighty','ninety','hundred']],['e4b2','Unit 1 Where are you?',2,5,['bathroom','bedroom','kitchen']],['e4b3','Unit 2 What are you doing?',6,10,['cooking','eating','sleeping','writing','running','reading']],
        ['e4b4','Unit 3 What do you want for lunch?',11,14,['hamburger','hotdog','milk','juice','water','lunch']],['e4b5','Unit 4 Do you like bears?',15,21,['bear','lion','monkey','tiger','zebra']]]}};
 var EBOOK={2:{a:'二年級上學期（暫用主題）',b:'二年級下學期（暫用主題）'},3:{a:'Wonder World 1',b:'Wonder World 2'},4:{a:'Wonder World 3',b:'Wonder World 4'}};
+
+/* ---------------- 課程：自然（康軒三、四年級）[代號, 名稱, 開始週, 結束週, 對應的島嶼站點] ----------------
+   第一島站點：plant mag wind water animal weather sound circ moon insect；第二島：mag2 ckt2 moon2 eco2 wx2 temp pond flow sun time。
+   二年級是生活課程（康軒），不鎖進度。沒有對應站點的單元（廚房裡的科學、地表的靜與動、自然資源與利用）遊戲還沒做，先複習學過的站。 */
+var SCIC={
+  3:{a:[['n3a1','多采多姿的植物',1,5,['plant']],['n3a2','生活中的力（磁力）',6,10,['mag','mag2']],['n3a3','奇妙的空氣',11,14,['wind']],['n3a4','廚房裡的科學（溶解、酸鹼）',15,21,[]]],
+     b:[['n3b1','田園樂（種蔬菜）',1,5,['plant']],['n3b2','溫度變化對物質的影響',6,10,['water','temp']],['n3b3','我是動物解說員',11,14,['animal','eco2']],['n3b4','天氣變變變',15,21,['weather','wx2']]]},
+  4:{a:[['n4a1','地表的靜與動',1,4,[]],['n4a2','水生生物與環境',5,10,['pond']],['n4a3','有趣的聲光現象',11,14,['sound','sun']],['n4a4','好玩的電路',15,21,['circ','ckt2']]],
+     b:[['n4b1','白天和夜晚的天空',1,5,['moon','moon2','sun','time']],['n4b2','水的移動',6,10,['flow']],['n4b3','昆蟲大解密',11,14,['insect']],['n4b4','自然資源與利用',15,21,[]]]}};
+var SBOOK={3:{a:'康軒自然 三上',b:'康軒自然 三下'},4:{a:'康軒自然 四上',b:'康軒自然 四下'}};
+var SGN={2:'二',3:'三',4:'四'};
 var NEWW=[['one','1️⃣','一',1],['two','2️⃣','二',1],['three','3️⃣','三',1],['four','4️⃣','四',1],['five','5️⃣','五',1],['six','6️⃣','六',1],['seven','7️⃣','七',1],['eight','8️⃣','八',1],['nine','9️⃣','九',1],['ten','🔟','十',1],
   ['eleven','11','十一',2],['twelve','12','十二',2],['thirteen','13','十三',2],['fourteen','14','十四',2],['fifteen','15','十五',2],['sixteen','16','十六',3],['seventeen','17','十七',3],['eighteen','18','十八',3],['nineteen','19','十九',3],['twenty','20','二十',3],
   ['thirty','30','三十',3],['forty','40','四十',3],['fifty','50','五十',3],['sixty','60','六十',3],['seventy','70','七十',3],['eighty','80','八十',3],['ninety','90','九十',3],['hundred','100','一百',3],
@@ -176,15 +187,16 @@ global.ProgressFactory=function(C){
   function kidP(k){return k&&k.pg&&typeof k.pg==='object'?k.pg:{}}
   function grade(id){var k=Store.kid(id)||{},b=GN.indexOf(k.gr||C.MB_DEF[id]||'')+1;if(b<1)return 0;var P=kidP(k),gy=+P.gy||2026;return Math.min(6,b+Math.max(0,sem(new Date(),P.s2).ay-gy))}
   function gradeStr(id){var g=grade(id);return g>=2?GN[g-1]:null}
-  function state(id,sub){var k=Store.kid(id);if(!k)return null;var g=grade(id),CU=(sub==='m'?MATH:EN)[g];if(!CU)return null;
-    var P=kidP(k),sm=sem(new Date(),P.s2),units=CU[sm.s],sk=g+sm.s+sm.ay,ov=sub==='m'?P.mo:P.eo,off=0,manual=false;
+  function CUR(sub){return sub==='m'?MATH:sub==='s'?SCIC:EN}
+  function state(id,sub){var k=Store.kid(id);if(!k)return null;var g=grade(id),CU=CUR(sub)[g];if(!CU)return null;
+    var P=kidP(k),sm=sem(new Date(),P.s2),units=CU[sm.s],sk=g+sm.s+sm.ay,ov=P[{m:'mo',e:'eo',s:'so'}[sub]],off=0,manual=false;
     if(ov&&ov.k===sk&&typeof ov.o==='number'){off=ov.o;manual=true}
     else if(sub==='m'&&!ov&&k.mo&&typeof k.mo.o==='number'&&sm.s==='a'&&sm.ay===2026){off=k.mo.o;manual=true}
     var ew=sm.wk+off,cal=0;units.forEach(function(u,i){if(u[2]<=ew)cal=i});
     var D=P[sub]&&P[sub].k===sk?P[sub]:null,adv=D&&typeof D.a==='number'?D.a:-1,cap=P.cap==null?3:Math.max(0,+P.cap||0),cur=Math.min(units.length-1,Math.max(cal,Math.min(adv,cal+cap)));
-    var prev=sm.s==='b'?CU.a:((sub==='m'?MATH:EN)[g-1]||{}).b||null;
+    var prev=sm.s==='b'?CU.a:(CUR(sub)[g-1]||{}).b||null;
     return {g:g,sem:sm,sk:sk,units:units,cal:cal,cur:cur,manual:manual,ew:ew,cap:cap,uid:units[cur][0],U:units[cur],D:D,prev:prev,
-      book:(sub==='m'?BOOK:EBOOK)[g][sm.s]}}
+      book:(sub==='m'?BOOK:sub==='s'?SBOOK:EBOOK)[g][sm.s]}}
   function subD(P,sub,sk){var D=P[sub];if(!D||typeof D!=='object')D=P[sub]={};if(D.k!==sk){D.k=sk;D.a=-1;D.st={}}if(!D.st||typeof D.st!=='object')D.st={};if(!D.rv||typeof D.rv!=='object')D.rv={};return D}
   function mutP(id,f){Store.mut(id,function(k){if(!k.pg||typeof k.pg!=='object')k.pg={};f(k.pg,k)})}
   function rvList(id,sub){var k=Store.kid(id),D=kidP(k)[sub];return D&&D.rv&&typeof D.rv==='object'?D.rv:{}}
@@ -250,10 +262,30 @@ global.ProgressFactory=function(C){
       mbQs(Cx,items,u[1])}})})}
   function mbState(id){var S=state(id,'m');if(!S)return null;return {g:GN[S.g-1],B:{book:S.book,u:S.units.map(function(u){return [u[0],u[1],u[2],u[3],1]})},week:S.sem.wk,ew:S.ew,cur:S.cur,cal:S.cal,manual:S.manual}}
 
+
+  /* ---- 自然：學過的單元的站才開放；目前單元的站全部過關（每站至少 7 顆星）就提前開下一單元 ---- */
+  var starsFn=function(){return [0,0,0]},nameFn=function(k){return k};
+  function sciLearned(S){var o=[];function add(us){(us||[]).forEach(function(u){u[4].forEach(function(x){if(o.indexOf(x)<0)o.push(x)})})}
+    for(var g=3;g<S.g;g++)if(SCIC[g]){add(SCIC[g].a);add(SCIC[g].b)}if(S.sem.s==='b')add(SCIC[S.g].a);add(S.units.slice(0,S.cur+1));return o}
+  function sciWhen(key){for(var g=3;g<=4;g++)for(var x in {a:1,b:1}){var us=SCIC[g][x];for(var i=0;i<us.length;i++)if(us[i][4].indexOf(key)>=0)return SGN[g]+'年級'+(x==='a'?'上':'下')+'學期「'+us[i][1]+'」'}return ''}
+  function sciOpen(id,key){if(!C.isKid())return true;var S=state(id,'s');if(!S)return true;if(sciLearned(S).indexOf(key)>=0)return true;var r=starsFn(id,key);return (+r[0]||0)+(+r[1]||0)+(+r[2]||0)>0}
+  function sciCur(id){var S=C.isKid()&&state(id,'s');return S?S.U[4]:[]}
+  function sciCheck(id){if(!C.isKid())return '';var S=state(id,'s');if(!S||!S.U[4].length||S.cur>=S.units.length-1||S.cur+1>S.cal+S.cap)return '';
+    var ok=S.U[4].every(function(key){var r=starsFn(id,key);return r[0]>0&&r[1]>0&&r[2]>0&&r[0]+r[1]+r[2]>=7});if(!ok)return '';var nx=S.units[S.cur+1];
+    mutP(id,function(P){var D=subD(P,'s',S.sk);D.a=S.cur+1});var m='自然「'+S.U[1]+'」全部過關！提前打開下一單元「'+nx[1]+'」';
+    setTimeout(function(){try{C.sfx('win');C.confetti(null,40);C.say('⚡ '+m+'！','happy')}catch(e){}},1200);return m}
+  function sciBanner(id,esc,STNAME){var S=C.isKid()&&state(id,'s');if(!S)return '';var ks=S.U[4],lead=S.cur-S.cal;
+    return '<div class="pgsci"><b>📍 '+(lead>0?'⚡ 已經超前！現在探索':'學校正在教')+'：'+esc(S.book)+' 第 '+(S.cur+1)+' 單元「'+esc(S.U[1])+'」</b><small>'+(ks.length?'到這些站練習：'+ks.map(function(k){return esc(STNAME(k)||k)}).join('、')+'。全部過關（每站至少 7 顆星）就提前打開下一單元。':'這個單元的遊戲還在準備中，先複習學過的站吧！')+'</small></div>'}
+  function sciTopics(id,STN){var S=C.isKid()&&state(id,'s');if(!S)return null;return STN.filter(function(s){return sciOpen(id,s.k)}).map(function(s){return s.t})}
   /* ---- 家長區 ---- */
   function pct(a){return Array.isArray(a)&&+a[0]?Math.round(100*(+a[1]||0)/(+a[0]))+'%':'—'}
   function rvSum(id,sub){var rv=rvList(id,sub),n=0,hard=[],t=dayN(),due=0;for(var key in rv){var it=rv[key];if(!Array.isArray(it))continue;n++;if(+it[1]<=t)due++;if(+it[2]>=3)hard.push([key,+it[2]])}hard.sort(function(a,b){return b[1]-a[1]});return {n:n,due:due,hard:hard}}
-  function line(id,sub,esc){var S=state(id,sub);if(!S)return '<div class="pgl"><b>'+(sub==='m'?'🔢 數學':'🔤 英文')+'</b><small>這個年級還沒有進度表，照舊用年級難度出題。</small></div>';
+  function sline(id,esc){var S=state(id,'s');if(!S)return '<div class="pgl"><b>🔬 自然</b><small>'+(grade(id)===2?'二年級是生活課程，自然島全部開放、不鎖進度。':'這個年級還沒有進度表，自然島全部開放。')+'</small></div>';var lead=S.cur-S.cal;
+    return '<div class="pgl"><b>🔬 自然 <small>'+esc(S.book)+'・第 '+S.sem.wk+' 週</small></b><span class="pgnow">正在探索：第 '+(S.cur+1)+' 單元「'+esc(S.U[1])+'」'+(lead>0?' <em>⚡ 超前 '+lead+' 單元</em>':'')+'</span>'+
+      '<small>學校進度'+(S.manual?'（家長設定）':'（依行事曆）')+'：第 '+(S.cal+1)+' 單元「'+esc(S.units[S.cal][1])+'」　對應站點：'+(S.U[4].length?S.U[4].map(function(k){var r=starsFn(id,k);return esc(nameFn(k))+' '+(r[0]+r[1]+r[2])+'★'}).join('、'):'（遊戲還沒有這個單元）')+'</small>'+
+      '<small>已開放 '+sciLearned(S).length+' 站；還沒教到的站會鎖住（已經玩過的站保留）。錯題會收進「圖鑑與錯題本」，下次優先出現。</small>'+
+      '<label>學校教到 <select data-pgu="s:'+id+'"><option value="auto"'+(S.manual?'':' selected')+'>自動（依行事曆）</option>'+S.units.map(function(u,i){return '<option value="'+i+'"'+(S.manual&&i===S.cal?' selected':'')+'>第 '+(i+1)+' 單元 '+esc(u[1])+'</option>'}).join('')+'</select></label></div>'}
+  function line(id,sub,esc){if(sub==='s')return sline(id,esc);var S=state(id,sub);if(!S)return '<div class="pgl"><b>'+(sub==='m'?'🔢 數學':'🔤 英文')+'</b><small>這個年級還沒有進度表，照舊用年級難度出題。</small></div>';
     var st=S.D&&S.D.st?S.D.st[S.uid]:null,R=rvSum(id,sub),lead=S.cur-S.cal;
     var h='<div class="pgl"><b>'+(sub==='m'?'🔢 數學':'🔤 英文')+' <small>'+esc(S.book)+'・第 '+S.sem.wk+' 週</small></b>'+
       '<span class="pgnow">正在練：第 '+(S.cur+1)+' 單元「'+esc(S.U[1])+'」'+(lead>0?' <em>⚡ 超前 '+lead+' 單元</em>':'')+'</span>'+
@@ -261,22 +293,23 @@ global.ProgressFactory=function(C){
       '<small>錯題箱 '+R.n+' 題（今天該複習 '+R.due+' 題）'+(R.hard.length?'　頑固錯題：'+R.hard.slice(0,5).map(function(x){return '<code>'+esc(x[0])+'</code>×'+x[1]}).join('、'):'')+'</small>'+
       '<label>學校教到 <select data-pgu="'+sub+':'+id+'"><option value="auto"'+(S.manual?'':' selected')+'>自動（依行事曆）</option>'+S.units.map(function(u,i){return '<option value="'+i+'"'+(S.manual&&i===S.cal?' selected':'')+'>第 '+(i+1)+' 單元 '+esc(u[1])+'</option>'}).join('')+'</select></label></div>';return h}
   function parentHtml(KIDS,kface,esc){var k0=Store.kid(KIDS[0].id)||{},P0=kidP(k0),sm=sem(new Date(),P0.s2),cap=P0.cap==null?3:+P0.cap;
-    var h='<div class="rost mbp pgp"><h3 class="h">📘 學校進度（英文・數學自動跟進）</h3><p class="mbtip">孩子不用選年級或單元：App 依學校行事曆自動換單元（現在是'+sm.ay+' 學年'+(sm.s==='a'?'上':'下')+'學期第 '+sm.wk+' 週）。一輪答對 90% 以上、單元累計滿 20 題就自動前進；答錯的題目會在之後的單元隔 1、3、7、14 天再出現。每年 8 月底自動升一個年級。</p>'+
+    var h='<div class="rost mbp pgp"><h3 class="h">📘 學校進度（英文・數學・自然自動跟進）</h3><p class="mbtip">孩子不用選年級或單元：App 依學校行事曆自動換單元（現在是'+sm.ay+' 學年'+(sm.s==='a'?'上':'下')+'學期第 '+sm.wk+' 週）。一輪答對 90% 以上、單元累計滿 20 題就自動前進；答錯的題目會在之後的單元隔 1、3、7、14 天再出現。每年 8 月底自動升一個年級。</p>'+
       '<div class="pgset"><label>下學期開學日 <input type="date" id="pgS2" value="'+(okDate(P0.s2)?P0.s2:'')+'" placeholder="2027-02-15"></label><label>最多超前學校 <select id="pgCap">'+[0,1,2,3,4,5].map(function(n){return '<option value="'+n+'"'+(n===cap?' selected':'')+'>'+n+' 個單元</option>'}).join('')+'</select></label></div>';
     KIDS.forEach(function(k){var kk=Store.kid(k.id)||{},g=gradeStr(k.id);
-      h+='<div class="mbpr pgr"><b>'+kface(k)+' '+esc(k.short)+'</b><label>現在年級 <select data-gr="'+k.id+'">'+['','二','三','四','五','六'].map(function(x){return '<option value="'+x+'"'+(x&&x===g&&kk.gr?' selected':'')+'>'+(x?x+'年級':'（預設 '+(g||C.MB_DEF[k.id]||'—')+'年級）')+'</option>'}).join('')+'</select></label>'+line(k.id,'m',esc)+line(k.id,'e',esc)+'</div>'});
+      h+='<div class="mbpr pgr"><b>'+kface(k)+' '+esc(k.short)+'</b><label>現在年級 <select data-gr="'+k.id+'">'+['','二','三','四','五','六'].map(function(x){return '<option value="'+x+'"'+(x&&x===g&&kk.gr?' selected':'')+'>'+(x?x+'年級':'（預設 '+(g||C.MB_DEF[k.id]||'—')+'年級）')+'</option>'}).join('')+'</select></label>'+line(k.id,'m',esc)+line(k.id,'e',esc)+line(k.id,'s',esc)+'</div>'});
     return h+'</div>'}
   function parentWire(el,KIDS){var all=KIDS.map(function(k){return k.id});
     el.querySelectorAll('[data-gr]').forEach(function(s){s.addEventListener('change',function(){var v=s.value,id=s.dataset.gr;mutP(id,function(P,k){if(v){k.gr=v;P.gy=sem(new Date(),P.s2).ay}else{delete k.gr;delete P.gy}delete k.mo;delete P.mo;delete P.eo});C.sfx('ok');C.say('年級改好了！','happy')})});
     el.querySelectorAll('[data-pgu]').forEach(function(s){s.addEventListener('change',function(){var p=s.dataset.pgu.split(':'),sub=p[0],id=p[1],v=s.value,S=state(id,sub);if(!S)return;
-      mutP(id,function(P,k){var f=sub==='m'?'mo':'eo';if(v==='auto'){delete P[f];if(sub==='m')delete k.mo}else{P[f]={k:S.sk,o:S.units[+v][2]-S.sem.wk};if(sub==='m')delete k.mo;var D=subD(P,sub,S.sk);D.a=-1}});C.sfx('ok');C.say('學校進度改好了！','happy')})});
+      mutP(id,function(P,k){var f={m:'mo',e:'eo',s:'so'}[sub];if(v==='auto'){delete P[f];if(sub==='m')delete k.mo}else{P[f]={k:S.sk,o:S.units[+v][2]-S.sem.wk};if(sub==='m')delete k.mo;var D=subD(P,sub,S.sk);D.a=-1}});C.sfx('ok');C.say('學校進度改好了！','happy')})});
     var s2=el.querySelector('#pgS2');if(s2)s2.addEventListener('change',function(){var v=s2.value;all.forEach(function(id){mutP(id,function(P){if(okDate(v))P.s2=v;else delete P.s2})});C.sfx('ok');C.say('下學期開學日記好了！','happy')});
     var cp=el.querySelector('#pgCap');if(cp)cp.addEventListener('change',function(){var v=+cp.value;all.forEach(function(id){mutP(id,function(P){P.cap=v})});C.sfx('ok');C.say('超前上限改好了！','happy')})}
   /* 孩子畫面上的進度小卡（取代年級選擇） */
-  function kidChip(id,esc){var g=gradeStr(id);if(!g)return '';var m=state(id,'m'),e=state(id,'e');
+  function kidChip(id,esc,where){var g=gradeStr(id);if(!g)return '';var m=state(id,'m'),e=state(id,'e'),n=state(id,'s');
+    if(where==='sci')return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(n?'<span class="chip pgchip">🔬 '+esc(n.U[1])+'</span>':'<span class="chip pgchip">🔬 自然島全部開放</span>');
     return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(m?'<span class="chip pgchip">🔢 '+esc(m.U[1])+'</span>':'')+(e?'<span class="chip pgchip">🔤 '+esc(e.U[1].replace(/^Unit \d+ /,''))+'</span>':'')}
 
-  return {sem:sem,grade:grade,gradeStr:gradeStr,state:state,skills:skillsAll,gen:gen,pool:pool,others:others,hook:hook,mbHook:mbHook,round0:r0,finish:finish,
+  return {sciOpen:sciOpen,sciWhen:sciWhen,sciCur:sciCur,sciCheck:sciCheck,sciBanner:sciBanner,sciTopics:sciTopics,setStars:function(f){starsFn=f},setNames:function(f){nameFn=f},sem:sem,grade:grade,gradeStr:gradeStr,state:state,skills:skillsAll,gen:gen,pool:pool,others:others,hook:hook,mbHook:mbHook,round0:r0,finish:finish,
     mbLV:mbLV,mbGenLv:mbGenLv,mbState:mbState,unitById:unitById,parentHtml:parentHtml,parentWire:parentWire,kidChip:kidChip,
     _SK:SK,_MATH:MATH,_EN:EN,_dayN:dayN};
 };

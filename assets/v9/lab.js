@@ -44,7 +44,8 @@
     function talk(t){if(C.muted()||!window.speechSynthesis)return;try{var u=new SpeechSynthesisUtterance(String(t).replace(/[①-⑳]/g,''));u.lang='zh-TW';u.rate=.9;window.speechSynthesis.cancel();window.speechSynthesis.speak(u)}catch(e){}}
     function give(n){if(!isKid()||!n)return 0;C.Store.award(who(),n,'lab');C.plusFx(n);return n}
     function firstStamps(){if(!isKid())return 10;if(C.scAny)return C.scAny(who());var n=0;C.STN.forEach(function(s){var r=C.scRow(who(),s.k);if(r[0]&&r[1]&&r[2])n++});return n}
-    function unlocked(){return !isKid()||!!window.LAB_TEST||firstStamps()>=10}
+    function unlocked(){return !isKid()||!!window.LAB_TEST||(C.pg&&C.pg.on()?true:firstStamps()>=10)}
+    function pgLock(k){return !!(C.pg&&C.pg.on()&&!C.pg.open(k))}
     function stopAll(){serial++;if(active){saveRound(active);active.dead=true;clearInterval(active.tick)}active=null;try{window.speechSynthesis.cancel()}catch(e){}}
     C.addCleanup(stopAll);
 
@@ -108,16 +109,16 @@
       var ok=unlocked(),tot=0,stp=0;ST.forEach(function(s){var r=row(s.k);tot+=r[0]+r[1]+r[2];if(r[3])stp++});
       var h='<div class="lbm-stat"><span>🎒 '+GN()+'題庫</span><span>🔬 印章 <b>'+stp+'</b> / 10</span><span>★ <b>'+tot+'</b> / 90</span>'+(data().badge?'<span>🏅 小小科學家</span>':'')+'</div>';
       h+='<div class="sxmap lbm'+(ok?'':' locked')+'">'+(MAP_IMG?'<img src="'+MAP_IMG+'" alt="奇蹟研究所島地圖">':mapSVG());
-      ST.forEach(function(s){var p=POS[s.k],r=row(s.k),st=r[0]+r[1]+r[2];
-        h+='<button class="sxs" data-lab="'+s.k+'" style="left:'+p[0]+'%;top:'+p[1]+'%" aria-label="'+esc(s.zh)+'"><span class="ring"></span>'+(r[3]?'<span class="done">全破</span>':'')+'</button>'+
-          '<button class="sxl'+(r[3]?' got':'')+'" data-lab="'+s.k+'" style="left:'+LABEL[s.k][0]+'%;top:'+LABEL[s.k][1]+'%"><b>'+esc(s.zh)+'</b><small>'+(ok?(r[3]?'✅ ':'<i>★</i> ')+st+' / 9':'🔒')+'</small></button>'});
+      ST.forEach(function(s){var p=POS[s.k],r=row(s.k),st=r[0]+r[1]+r[2],lk=pgLock(s.k),nw=!lk&&C.pg&&C.pg.on()&&C.pg.cur().indexOf(s.k)>=0;
+        h+='<button class="sxs'+(lk?' lock pglock':'')+'" data-lab="'+s.k+'" style="left:'+p[0]+'%;top:'+p[1]+'%" aria-label="'+esc(s.zh)+'"><span class="ring"></span>'+(r[3]?'<span class="done">全破</span>':'')+'</button>'+
+          '<button class="sxl'+(r[3]?' got':'')+(lk?' lock pglock':'')+(nw?' pgnowst':'')+'" data-lab="'+s.k+'" style="left:'+LABEL[s.k][0]+'%;top:'+LABEL[s.k][1]+'%"><b>'+esc(s.zh)+'</b><small>'+(!ok?'🔒':lk?'🔒 還沒教到':(nw?'📍 ':'')+(r[3]?'✅ ':'<i>★</i> ')+st+' / 9')+'</small></button>'});
       if(!ok)h+='<div class="lbm-lock"><b>🔒 第二座島還沒開放</b><span>第一座島 10 站都蓋到印章就能出航！目前 '+firstStamps()+' / 10</span></div>';
       return h+'</div>';
     }
     function open(){setTab('b');stopAll();C.goSci()}
 
     function station(key){
-      stopAll();var s=SK(key),r=row(key),d=data();
+      if(pgLock(key)){open();return}stopAll();var s=SK(key),r=row(key),d=data();
       var h='<div class="lb-top"><button class="lb-back" data-act="map">← 回研究所島</button><span class="lb-chip">'+s.ico+' '+esc(s.tag)+' · '+GN()+'</span></div>'+
         '<header class="lb-st-head" style="background-image:linear-gradient(180deg,rgba(14,48,58,.15),rgba(14,48,58,.88)),url('+art(s)+')"><span class="lb-st-ico">'+s.ico+'</span><small class="lb-eyebrow">MIRACLE RESEARCH ISLAND · '+esc(s.tag)+'</small><h2>'+esc(s.zh)+'</h2><p>'+esc(s.d)+'</p></header>'+
         (window.LabStudio?window.LabStudio.html(ART[s.k]):'')+'<div class="lb-levels">'+s.lv.map(function(l,i){var open=i===0||r[i-1]>0,seen=Math.min((d.seen[P(key)+i]||[]).length,s.q[i].length);
@@ -257,11 +258,11 @@
       tabs.innerHTML='<button data-isl="a" aria-pressed="'+(tab==='a')+'">🏝️ 第一島<small>自然探險島</small></button><button data-isl="b" aria-pressed="'+(tab==='b')+'">🔬 第二島<small>奇蹟研究所'+(unlocked()?'':' 🔒')+'</small></button>';
       map1.parentNode.insertBefore(tabs,map1);
       var wrap=document.createElement('div');wrap.className='lbm-wrap';map1.parentNode.insertBefore(wrap,map1.nextSibling);
-      function show(){map1.hidden=tab!=='a';wrap.hidden=tab!=='b';if(tab==='b'){wrap.innerHTML=labMapHTML();wrap.querySelectorAll('[data-lab]').forEach(function(b){on(b,'click',function(){if(!unlocked()){C.sfx('no');C.say('先把第一座島 10 站都蓋到印章，研究所島就會開放！','oops');return}C.sfx('win');try{C.confetti(b,16)}catch(e){}C.cleanupGame();C.shell('奇蹟研究所');try{C.Music.play('garden')}catch(e){}station(b.dataset.lab)})})}
+      function show(){map1.hidden=tab!=='a';wrap.hidden=tab!=='b';if(tab==='b'){wrap.innerHTML=labMapHTML();wrap.querySelectorAll('[data-lab]').forEach(function(b){on(b,'click',function(){if(!unlocked()){C.sfx('no');C.say('先把第一座島 10 站都蓋到印章，研究所島就會開放！','oops');return}if(pgLock(b.dataset.lab)){C.sfx('no');C.say(C.pg.why(b.dataset.lab),'oops');return}C.sfx('win');try{C.confetti(b,16)}catch(e){}C.cleanupGame();C.shell('奇蹟研究所');try{C.Music.play('garden')}catch(e){}station(b.dataset.lab)})})}
         tabs.querySelectorAll('[data-isl]').forEach(function(x){x.setAttribute('aria-pressed',String(x.dataset.isl===tab))})}
       tabs.querySelectorAll('[data-isl]').forEach(function(x){on(x,'click',function(){C.sfx('tap');setTab(x.dataset.isl);show();if(tab==='b')C.say(unlocked()?'歡迎來到奇蹟研究所島！點一個研究站開始挑戰！':'第二座島還沒開放，先完成第一座島喔！','happy')})});
       show();
     }catch(e){console.error('labhome',e)}});
-    window.MiracleLab={version:'9.2.0',visual:visual,stations:ST.map(function(s){return s.k}),count:ST.reduce(function(n,s){return n+s.q[0].length+s.q[1].length+s.q[2].length},0),open:open,station:station,state:function(){return active?{key:active.key,lv:active.lv,index:active.i,first:active.first,elapsed:active.elapsed,paused:active.paused,locked:active.locked,queue:active.queue.map(function(x){return {id:x.q.id,retry:x.retry}})}:null},parse:parse};document.addEventListener('visibilitychange',function(){if(document.hidden&&active)pause(active,true)});window.addEventListener('blur',function(){if(active)pause(active,true)});
+    window.MiracleLab={version:'9.3.0',visual:visual,stations:ST.map(function(s){return s.k}),count:ST.reduce(function(n,s){return n+s.q[0].length+s.q[1].length+s.q[2].length},0),open:open,station:station,state:function(){return active?{key:active.key,lv:active.lv,index:active.i,first:active.first,elapsed:active.elapsed,paused:active.paused,locked:active.locked,queue:active.queue.map(function(x){return {id:x.q.id,retry:x.retry}})}:null},parse:parse};document.addEventListener('visibilitychange',function(){if(document.hidden&&active)pause(active,true)});window.addEventListener('blur',function(){if(active)pause(active,true)});
   };
 })();

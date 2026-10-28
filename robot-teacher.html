@@ -1365,6 +1365,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .mbtog{width:100%;text-align:left;background:none;padding:0;color:inherit;font:inherit;cursor:pointer}.mbtog .mbar{grid-column:1/-1;justify-self:center;margin-top:6px;background:linear-gradient(135deg,#ff9a3c,#ff6a5c);color:#fff;font-weight:700;font-size:14px;border-radius:999px;padding:4px 16px;box-shadow:0 3px 0 rgba(0,0,0,.15)}.mbtog[aria-expanded="true"]{margin-bottom:8px}.mbk .mbh{margin-bottom:0}
 .ttrow{margin-top:-6px}.ttrow .chip{font-weight:700}
 .dpbox{background:#fff;border:2px solid #e3ecf3;border-radius:18px;padding:14px;margin:0 0 14px;box-shadow:0 4px 0 #e3ecf3}.dpbox h3{margin:0 0 10px;font-size:18px}.dpbox h3 small{font-size:12px;color:#6b7f8c;font-weight:700}.dptoday{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:10px}.dptoday div{background:linear-gradient(#fff8e6,#ffefc7);border:2px solid #f2cf7c;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px}.dptoday span{font-weight:800;font-size:14px}.dptoday b{font-size:26px;color:#c66a00;font-variant-numeric:tabular-nums}.dptoday small{font-size:12px;color:#7a6a45;font-weight:700}.dpscroll{overflow-x:auto}.dptab{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}.dptab th,.dptab td{padding:6px 8px;border-bottom:1px solid #edf1f4;text-align:right;white-space:nowrap}.dptab th:first-child,.dptab td:first-child{text-align:left}.dptab th{color:#5b6f7c;font-size:12px}.dptab .dpnow td{font-weight:900;background:#fffaf0}.dptab .dp0{color:#b7c2ca}.dptab .dpna{color:#cfd6db}.dpnote{margin:8px 0 0;font-size:12px;color:#7d8b95}
+.pgsci{display:flex;flex-direction:column;gap:3px;margin:8px 0;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.88);color:#18304a;box-shadow:0 2px 8px rgba(0,0,0,.08)}.pgsci small{opacity:.85;line-height:1.45}
+.sxmap .pglock{filter:grayscale(.85);opacity:.75}.sxmap .sxl.pgnowst{outline:3px solid #ffc531;outline-offset:1px}
 .egrow.pgrow{gap:6px;flex-wrap:wrap}.egrow.pgrow .lab{font-weight:800}.chip.pgchip{cursor:default;pointer-events:none;background:var(--card,#fff);font-size:13px}
 .pgp .pgset{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 10px}.pgp .pgset label{display:flex;gap:6px;align-items:center;font-size:14px}
 .pgp .pgr{display:flex;flex-direction:column;align-items:stretch;gap:6px}.pgp .pgl{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:12px;background:rgba(127,127,127,.08)}
@@ -1382,8 +1384,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <script src="assets/v9/lab-bank-g2.js?v=9.2.0"></script>
 <script src="assets/v9/lab-bank-g4.js?v=9.2.0"></script>
 <script src="assets/v9/lab-studio.js?v=9.1.0"></script>
-<script src="assets/v9/lab.js?v=9.2.0"></script>
-<script src="assets/v10/progress.js?v=10.0.0"></script>
+<script src="assets/v9/lab.js?v=9.3.0"></script>
+<script src="assets/v10/progress.js?v=10.1.0"></script>
 
 
 <header class="top">
@@ -2149,7 +2151,8 @@ function sciPodium(){var arr=KIDS.map(function(k){return {k:k,p:subPts(Store.kid
 var MB_SEM=[{y:2026,s:'上',start:'2026-08-31'}];
 var MB={'二':{book:'二上（第 3 冊）',u:[['r1','200 以內的數',1,2,1],['r2','二位數的直式加減',3,5,1],['r3','量長度',6,7],['r4','加減關係與應用',8,9],['r5','面積的大小比較',10,10],['r6','兩步驟的加減',11,12],['r7','2、5、4、8 的乘法',13,14],['r8','幾時幾分',15,16],['r9','3、6、9、7 的乘法',17,18],['r10','容量與重量',19,20]]},
   '三':{book:'三上（第 5 冊）',u:[['d1','10000 以內的數',1,2,1],['d2','四位數的加減',3,5,1],['d3','毫米',6,7,1],['d4','乘法',8,9,1],['d5','角',10,11],['d6','面積',12,13],['d7','除法',14,16],['d8','公升和毫升',17,18],['d9','分數',19,21]]}};
-var MB_DEF={de:'三',ren:'二'};var PGX=null;/* v10 自動進度引擎（檔案最後面接上） *//* 還沒設定時的預設學校年級 */
+var MB_DEF={de:'三',ren:'二'};var PGX=null,pgOpenK=function(){return true},pgWhy=function(){return ''};/* v10 自動進度引擎（檔案最後面接上） */
+var LABPG={on:function(){return isKid()&&!!PGX&&!!PGX.state(who,'s')},open:function(k){return pgOpenK(k)},cur:function(){return PGX&&isKid()?PGX.sciCur(who):[]},why:function(k){return pgWhy(k)}};/* 還沒設定時的預設學校年級 */
 var MB_LV={r1:[['積木排數字','用百、十、一的積木排出數字'],['數一數','看積木說出是多少'],['數的大小','比大小、接數字']],
   r2:[['直式加法','從個位開始算，滿十要進位'],['直式減法','不夠減就跟十位借'],['加減大挑戰','加法減法混在一起，看你多厲害']],
   d1:[['積木排數字','用千、百、十、一的積木排出數字'],['讀數和寫數','國字和數字互換'],['數的大小','比大小、位值換算']],
@@ -3809,7 +3812,7 @@ var OB=(function(){
   function sciSh(R,a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(R()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
   function sciImg(k,cls){return SIMG[k]?'<img class="'+(cls||'sci-i')+'" src="'+SIMG[k]+'" alt="">':''}
   function sciVis(e,i,cls){if(i&&SIMG[i])return '<img class="'+cls+'" src="'+SIMG[i]+'" alt="">';if(e)return '<span class="'+cls+' e">'+e+'</span>';return ''}
-  function sciPool(list,o){var l=(o.tp&&o.tp!=='all')?list.filter(function(x){return x.t===o.tp}):list;return l.length?l:list}
+  function sciPool(list,o){var l=(o.tp&&o.tp!=='all')?list.filter(function(x){return x.t===o.tp}):list;if((!o.tp||o.tp==='all')&&!o.tok&&PGX&&isKid()){var ot=PGX.sciTopics(who,STN);if(ot){var fl=l.filter(function(x){return ot.indexOf(x.t)>=0});if(fl.length>=6)l=fl}}return l.length?l:list}
   function sciWeak(list){if(!isKid())return [];var k=Store.kid(who);return list.filter(function(x){return Learn.st(k,x.id)===1})}
   function sciTag(t){var tp=sciTopic(t);return tp?'<span class="stag">'+sciTIco(t,'stgi')+esc(tp[1])+'</span>':''}
   function sciInfo(n,N,extra){var el=$('#arInfo');if(el)el.textContent='第 '+Math.min(n,N)+' / '+N+(extra||'')}
@@ -5102,7 +5105,7 @@ var V2=(function(){
 var labRewards={};var labMagicOriginal=gdMagic;gdMagic=function(k,id,sub){var meta=labRewards[k];if(!meta)return labMagicOriginal(k,id,sub);var d=Store.kid(id).lab||{},st=d.st||{},r=[meta.station,meta.station+'@2',meta.station+'@3',meta.station+'@4'].some(function(x){return Array.isArray(st[x])&&st[x][3]});return {s:{zh:meta.name},ok:isKid()&&r,has:gdnData(id,sub).d.some(function(z){return gdKey(z)===k})}};
 function registerLabReward(st,name,path){var key='lab_'+st;labRewards[key]={station:st,name:name};if(!GDK[key]){GD.push([key,'m',name,16]);GDK[key]={k:key,c:'m',zh:name,sz:16,mv:'',en:name,p:0};GDI[key]=path}}
 /* v9 奇蹟研究所：自然第二座島 */
-if(window.LabFactory)try{window.LabFactory({registerReward:registerLabReward,scAny:scStampsAny,Store:Store,who:function(){return who},isKid:isKid,esc:esc,sfx:sfx,say:say,confetti:confetti,plusFx:plusFx,shell:shell,body:function(){return gBody},cleanupGame:function(){cleanupGame()},backGameHome:backGameHome,egrade:function(){return egrade},Music:Music,Learn:Learn,subPts:subPts,scLevel:scLevel,scRow:scRow,STN:STN,SCI_IDS:SCI_IDS,GAMES:GAMES,GAME_FN:GAME_FN,gOpen:function(){return gOpen},muted:function(){return muted},kidName:function(){return nm()},goSci:function(){gOpen='sci';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}})}catch(e){console.error('lab',e)}
+if(window.LabFactory)try{window.LabFactory({pg:LABPG,registerReward:registerLabReward,scAny:scStampsAny,Store:Store,who:function(){return who},isKid:isKid,esc:esc,sfx:sfx,say:say,confetti:confetti,plusFx:plusFx,shell:shell,body:function(){return gBody},cleanupGame:function(){cleanupGame()},backGameHome:backGameHome,egrade:function(){return egrade},Music:Music,Learn:Learn,subPts:subPts,scLevel:scLevel,scRow:scRow,STN:STN,SCI_IDS:SCI_IDS,GAMES:GAMES,GAME_FN:GAME_FN,gOpen:function(){return gOpen},muted:function(){return muted},kidName:function(){return nm()},goSci:function(){gOpen='sci';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}})}catch(e){console.error('lab',e)}
 /* v9.2 每日分數紀錄：紀錄分頁最上方，看每天三科一共玩了多少分 */
 (function(){var rec0=renderRec;renderRec=function(){rec0.apply(this,arguments);try{if(!who)return;var el=PANELS.rec,parent=who==='parent';if(!el||el.querySelector('.dpbox'))return;
   var ids=parent?(recFilter==='all'?KIDS.map(function(k){return k.id}):[recFilter]):[who],W=['日','一','二','三','四','五','六'],days=[],now=new Date();
@@ -5136,7 +5139,19 @@ if(window.ProgressFactory)try{(function(){
   Learn.round0=function(){PGX.round0();return lr.apply(Learn,arguments)};
   var fg=Store.finishGame;Store.finishGame=function(id){var r=fg.apply(Store,arguments);try{PGX.finish(id)}catch(e){}return r};
   var rgh=renderGameHome;renderGameHome=function(){var gs=isKid()&&PGX.gradeStr(who);if(gs&&EGRADES.indexOf(gs)>=0)egrade=gs;rgh.apply(this,arguments);
-    if(gs){var er=$('#egRow');if(er){er.innerHTML=PGX.kidChip(who,esc);er.classList.add('pgrow')}var hs=$('#heroSub');if(hs&&gOpen!=='sci')hs.textContent=gs+'年級・題目跟著學校進度自動調整'}};
+    if(gs){var er=$('#egRow');if(er){er.innerHTML=PGX.kidChip(who,esc,gOpen);er.classList.add('pgrow')}var hs=$('#heroSub');if(hs&&gOpen!=='sci')hs.textContent=gs+'年級・題目跟著學校進度自動調整'}};
+  /* 自然：跟著學校單元開放站點（v10.1） */
+  var LABN={mag2:'磁力研究室',ckt2:'電路工程師',moon2:'月相日曆',eco2:'生態食物網',wx2:'氣象預報員',temp:'溫度實驗室',pond:'水生家族池塘',flow:'水的移動',sun:'太陽與影子',time:'時間工坊'};
+  var STNAME=function(k){return STK[k]?STK[k].zh:LABN[k]?LABN[k]+'（第二島）':k};
+  PGX.setNames(STNAME);  PGX.setStars(function(id,key){if(STK[key])return scRowG(id,key,scOwnG(id));var g=scOwnG(id),L=(Store.kid(id)||{}).lab||{},r=(L.st||{})[key+'@'+g];return Array.isArray(r)?[+r[0]||0,+r[1]||0,+r[2]||0]:[0,0,0]});
+  pgOpenK=function(k){if(!isKid()||PGX.sciOpen(who,k))return true;var s=STK[k];if(!s)return false;try{return Learn.quests(who,Learn.day()).some(function(q){return q.g===s.id})}catch(e){return false}};
+  pgWhy=function(k){return '「'+STNAME(k)+'」學校還沒教到（'+PGX.sciWhen(k)+'會教），先去學過的小島探險吧！'};
+  STN.forEach(function(s){var f=GAME_FN[s.id];if(!f)return;GAME_FN[s.id]=function(g){if(!pgOpenK(s.k)){sfx('no');say(pgWhy(s.k),'oops');return}return f.apply(this,arguments)}});
+  var std0=scToday;scToday=function(){var r=std0();if(!isKid()||!r||pgOpenK(r.k))return r;var c=PGX.sciCur(who).filter(function(k){return STK[k]})[0];return c?STK[c]:STN.filter(function(s){return s.on&&pgOpenK(s.k)})[0]||r};
+  var sh0=sciHome;sciHome=function(){if(isKid())PGX.sciCheck(who);sh0.apply(this,arguments);if(!isKid()||!PGX.state(who,'s'))return;var gb=$('#games'),map=gb&&gb.querySelector('.sxmap');if(!map)return;var cur=PGX.sciCur(who);
+    gb.querySelectorAll('.sxmap [data-st]').forEach(function(b){var k=b.dataset.st,sm=b.querySelector('small');if(!pgOpenK(k)){b.classList.add('lock','pglock');if(sm)sm.textContent='🔒 還沒教到'}else if(cur.indexOf(k)>=0){b.classList.add('pgnowst');if(sm)sm.innerHTML='📍 '+sm.innerHTML}});
+    var bn=document.createElement('div');bn.innerHTML=PGX.sciBanner(who,esc,STNAME);if(bn.firstChild)map.parentNode.insertBefore(bn.firstChild,map)};
+  var fg2=Store.finishGame;Store.finishGame=function(id){var r=fg2.apply(Store,arguments);try{if(isKid())PGX.sciCheck(id)}catch(e){}return r};
 })()}catch(e){console.error('progress',e)}
 
 /* ========== boot ========== */
