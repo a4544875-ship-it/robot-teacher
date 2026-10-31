@@ -1386,7 +1386,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <script src="assets/v9/lab-studio.js?v=9.1.0"></script>
 <script src="assets/v9/lab.js?v=9.3.0"></script>
 <script src="assets/v10/progress.js?v=10.1.0"></script>
-<script src="assets/v11/esk.js?v=11.0.0"></script>
+<script src="assets/v11/esk.js?v=11.1.0"></script>
 
 
 <header class="top">
@@ -5156,7 +5156,7 @@ if(window.ProgressFactory)try{(function(){
 })()}catch(e){console.error('progress',e)}
 
 /* v11 英文聽說寫教室 */
-if(window.EskFactory)try{window.EskFactory({GAMES:GAMES,GAME_FN:GAME_FN,shell:shell,body:function(){return gBody},award:award,finish:function(o){finish(o)},say:say,sfx:sfx,Learn:Learn,poolW:function(){return poolW()},others:function(w,n){return others(w,n)},PGX:function(){return PGX},isKid:isKid,who:function(){return who},esc:esc,egrade:function(){return egrade},muted:function(){return muted},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}})}catch(e){console.error('esk',e)}
+if(window.EskFactory)try{window.EskFactory({GAMES:GAMES,GAME_FN:GAME_FN,shell:shell,body:function(){return gBody},award:award,finish:function(o){finish(o)},say:say,sfx:sfx,Learn:Learn,poolW:function(){return poolW()},others:function(w,n){return others(w,n)},PGX:function(){return PGX},isKid:isKid,who:function(){return who},esc:esc,egrade:function(){return egrade},muted:function(){return muted},resumeAudio:function(){try{if(actx&&actx.state!=='running')actx.resume()}catch(e){}},musicOff:function(){try{Music.stop()}catch(e){}},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}})}catch(e){console.error('esk',e)}
 /* ========== boot ========== */
 Store.connect();
 renderGameHome();

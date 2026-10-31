@@ -11,6 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="奇蹟知識島">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>var FSR=function(){var s=this;s.start=function(){var m=window.__mode||"ok";if(m==="hang")return;if(m==="deny"){setTimeout(function(){s.onerror&&s.onerror({error:"not-allowed"});s.onend&&s.onend()},50);return}setTimeout(function(){var t=window.__say||"";var r1=[{transcript:t.split(" ")[0]}];r1.isFinal=false;s.onresult&&s.onresult({results:[r1]});setTimeout(function(){var r2=[{transcript:t}];r2.isFinal=true;s.onresult&&s.onresult({results:[r2]});s.onend&&s.onend()},300)},100)};s.stop=function(){};s.abort=function(){}};Object.defineProperty(window,"webkitSpeechRecognition",{value:FSR,configurable:true,writable:true});Object.defineProperty(window,"SpeechRecognition",{value:FSR,configurable:true,writable:true});</script>
 <script>
 // 可安裝的網頁 App：註冊離線快取。只在 https 網站上啟用，直接開檔案時不會動作。
 if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
@@ -65,7 +66,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v9/lab-studio.js?v=9.1.0"></script>
 <script src="assets/v9/lab.js?v=9.3.0"></script>
 <script src="assets/v10/progress.js?v=10.1.0"></script>
-<script src="assets/v11/esk.js?v=11.0.0"></script>
+<script src="assets/v11/esk.js?v=11.1.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -5202,8 +5203,8 @@ if(window.ProgressFactory)try{(function(){
 })()}catch(e){console.error('progress',e)}
 
 /* v11 英文聽說寫教室 */
-if(window.EskFactory)try{window.EskFactory({GAMES:GAMES,GAME_FN:GAME_FN,shell:shell,body:function(){return gBody},award:award,finish:function(o){finish(o)},say:say,sfx:sfx,Learn:Learn,poolW:function(){return poolW()},others:function(w,n){return others(w,n)},PGX:function(){return PGX},isKid:isKid,who:function(){return who},esc:esc,egrade:function(){return egrade},muted:function(){return muted},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}})}catch(e){console.error('esk',e)}
-window.__T={PGX:function(){return PGX},Store:Store,enter:enter,Learn:Learn,quests:function(){return Learn.quests(who,Learn.day()).map(q=>q.g)}};
+if(window.EskFactory)try{window.EskFactory({GAMES:GAMES,GAME_FN:GAME_FN,shell:shell,body:function(){return gBody},award:award,finish:function(o){finish(o)},say:say,sfx:sfx,Learn:Learn,poolW:function(){return poolW()},others:function(w,n){return others(w,n)},PGX:function(){return PGX},isKid:isKid,who:function(){return who},esc:esc,egrade:function(){return egrade},muted:function(){return muted},resumeAudio:function(){try{if(actx&&actx.state!=='running')actx.resume()}catch(e){}},musicOff:function(){try{Music.stop()}catch(e){}},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}})}catch(e){console.error('esk',e)}
+window.__T={enter:enter,start:function(id){startGame(GAMES.filter(function(g){return g.id===id})[0])}};
 /* ========== boot ========== */
 Store.connect();
 renderGameHome();

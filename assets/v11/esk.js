@@ -82,7 +82,7 @@ var CSS='.esk{display:flex;flex-direction:column;gap:12px}.esk-menu{display:grid
  '.esk-pad{position:relative;align-self:center;touch-action:none;border-radius:18px;background:#fffdf6;box-shadow:inset 0 0 0 2px #e8dcc0;max-width:100%}.esk-pad canvas{display:block;touch-action:none;border-radius:18px}'+
  '.esk-slots{display:flex;gap:6px;justify-content:center;font:700 30px '+FONT+';letter-spacing:2px}.esk-slots span{min-width:30px;border-bottom:3px solid #c9b98f;text-align:center}.esk-slots span.cur{border-color:#ff9b3d;color:#ff9b3d}.esk-slots span.done{color:#1f9d55}'+
  '.esk-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.esk-row .btn{min-width:120px}.esk-mic{width:110px;height:110px;border-radius:50%;font-size:52px;background:#ffb3a7;box-shadow:0 6px 0 #e07d6d;align-self:center}'+
- '.esk-mic.on{background:#ff6f5c;animation:eskp 1s infinite}@keyframes eskp{50%{transform:scale(1.07)}}.esk-heard{min-height:24px;text-align:center;font-size:15px}.esk-dots{display:flex;gap:6px;justify-content:center}.esk-dots i{width:10px;height:10px;border-radius:50%;background:#ddd}.esk-dots i.ok{background:#3cc46a}.esk-dots i.no{background:#ff7a6b}.esk-dots i.cur{background:#ffb02e}';
+ '.esk-ear button.on{background:#ffd36b}.esk-mic.on{background:#ff6f5c;animation:eskp 1s infinite}@keyframes eskp{50%{transform:scale(1.07)}}.esk-heard{min-height:24px;text-align:center;font-size:15px}.esk-dots{display:flex;gap:6px;justify-content:center}.esk-dots i{width:10px;height:10px;border-radius:50%;background:#ddd}.esk-dots i.ok{background:#3cc46a}.esk-dots i.no{background:#ff7a6b}.esk-dots i.cur{background:#ffb02e}';
 
 global.EskFactory=function(C){
   var st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
@@ -90,10 +90,19 @@ global.EskFactory=function(C){
   C.GAMES.unshift(G);C.GAME_FN.esk=function(){menu()};
   var live=0,timers=[],rec=null;
   function later(f,ms){var me=live;timers.push(setTimeout(function(){if(me===live)f()},ms))}
-  function stop(){live++;timers.forEach(clearTimeout);timers=[];if(rec){try{rec.abort()}catch(e){}rec=null}}
+  function stop(){live++;timers.forEach(clearTimeout);timers=[];if(rec){try{rec.abort()}catch(e){}rec=null}try{global.speechSynthesis.cancel()}catch(e){}audioOut()}
   C.addCleanup(stop);
   var B=function(){return C.body()},esc=C.esc;
-  function tts(t,slow){if(C.muted())return;try{var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=slow?.55:.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+  /* iPhone／iPad 的語音：保留 utterance（避免被回收後沒聲音）、0.7 秒沒開始就重念一次、麥克風用完先把聲音切回喇叭 */
+  var keep=[],spkBtn=null;
+  function audioOut(){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}try{C.resumeAudio&&C.resumeAudio()}catch(e){}}
+  function tts(t,slow,cb){if(C.muted()){cb&&cb();return}var ss=global.speechSynthesis;if(!ss){cb&&cb();return}audioOut();var tries=0,me=live,fired=false;
+    function fin(){if(fired)return;fired=true;if(spkBtn)spkBtn.classList.remove('on');if(me===live&&cb)cb()}
+    function go(){tries++;var u=new SpeechSynthesisUtterance(t),started=false;u.lang='en-US';u.rate=slow?.55:.8;u.volume=1;keep.push(u);if(keep.length>6)keep.shift();
+      u.onstart=function(){started=true;if(spkBtn)spkBtn.classList.add('on')};u.onend=fin;u.onerror=function(e){if(!started&&tries<2&&e&&e.error!=='interrupted'&&e.error!=='canceled')setTimeout(go,250);else fin()};
+      try{if(ss.paused)ss.resume()}catch(e){}try{ss.speak(u)}catch(e){}
+      setTimeout(function(){if(started||fired||ss.speaking)return;if(tries<2){try{ss.cancel()}catch(e){}setTimeout(go,200)}else fin()},900+t.length*20)}
+    try{if(ss.speaking||ss.pending)ss.cancel()}catch(e){}setTimeout(go,ss.speaking?160:30)}
   function grade(){var P=C.PGX();var g=P&&C.isKid()?P.grade(C.who()):0;return g||(['二','三','四','五','六'].indexOf(C.egrade())+2)}
   function pool(){var p=C.poolW()||[];return p.filter(function(w){return w&&/^[a-z]+$/.test(w[0])})}
   function curWords(){var P=C.PGX(),S=P&&C.isKid()&&P.state(C.who(),'e');return S?S.U[4]:[]}
@@ -103,7 +112,7 @@ global.EskFactory=function(C){
   function dots(n,i,res){return '<div class="esk-dots">'+Array.apply(null,{length:n}).map(function(_,j){return '<i class="'+(res[j]===1?'ok':res[j]===0?'no':j===i?'cur':'')+'"></i>'}).join('')+'</div>'}
   function head(t){C.shell(G.zh);try{document.getElementById('gTitle').textContent=G.zh+'・'+t}catch(e){}}
 
-  function menu(){stop();head('選一項');var P=C.PGX(),S=P&&C.isKid()&&P.state(C.who(),'e');
+  function menu(){stop();try{C.musicOff&&C.musicOff()}catch(e){}head('選一項');var P=C.PGX(),S=P&&C.isKid()&&P.state(C.who(),'e');
     B().innerHTML='<div class="esk"><p class="esk-note">'+(S?'📘 現在練：'+esc(S.book)+'「'+esc(S.U[1])+'」的單字和句型':'跟著年級的單字練習')+'</p><div class="esk-menu">'+
       '<button class="esk-card" data-m="listen"><span class="i">🎧</span><span><b>聽力</b><small>聽小機說，選出圖、單字、開頭字母'+(grade()>=3?'，還有回答課本句型':'')+'</small></span></button>'+
       '<button class="esk-card" data-m="write"><span class="i">✍️</span><span><b>手寫</b><small>在英文四線格上寫字母：先描紅，再聽寫'+(grade()>=3?'整個單字':'')+'</small></span></button>'+
@@ -123,7 +132,7 @@ global.EskFactory=function(C){
       var say=it.t==='sent'?it.s.q:w[0];
       B().innerHTML='<div class="esk">'+dots(items.length,i,res)+'<div class="esk-q">'+h+'<div class="esk-ear"><button data-a="play">🔊 再聽</button><button data-a="slow">🐢 慢慢說</button></div></div><div class="esk-ops'+(it.t==='sent'?' one':'')+'">'+
         ops.map(function(o,j){return it.t==='pic'?'<button class="e" data-j="'+j+'">'+o[1]+'</button>':it.t==='word'?'<button class="en" data-j="'+j+'">'+esc(o[0])+'</button>':it.t==='first'?'<button class="en" data-j="'+j+'">'+o.toUpperCase()+' '+o+'</button>':'<button class="en" data-j="'+j+'">'+esc(o)+'</button>'}).join('')+'</div><div id="eskNx"></div></div>';
-      var q=B();q.querySelector('[data-a="play"]').onclick=function(){tts(say)};q.querySelector('[data-a="slow"]').onclick=function(){tts(say,true)};later(function(){tts(say)},350);
+      var q=B();spkBtn=q.querySelector('[data-a="play"]');spkBtn.onclick=function(){tts(say)};q.querySelector('[data-a="slow"]').onclick=function(){tts(say,true)};later(function(){tts(say)},350);
       q.querySelectorAll('[data-j]').forEach(function(b){b.addEventListener('click',function(){var o=ops[+b.dataset.j],right=it.t==='pic'||it.t==='word'?o===w:it.t==='first'?o===w[0][0]:o===it.s.a;
         if(right){b.classList.add('ok');q.querySelectorAll('[data-j]').forEach(function(x){x.disabled=true});C.sfx('ok');if(first){score++;res[i]=1;C.award(1);if(it.t!=='sent')C.Learn.ok(w)}else if(res[i]===undefined)res[i]=0;
           if(it.t==='sent')tts(it.s.a);C.say(it.t==='sent'?'答對了！'+it.s.a:it.t==='first'?w[0]+' 是 '+w[0][0].toUpperCase()+' 開頭！':w[0]+' = '+w[2],'happy');later(next,it.t==='sent'?1800:1100)}
@@ -183,17 +192,34 @@ global.EskFactory=function(C){
          '<div class="esk-pic">'+esc(it.s.pic)+'</div><div class="esk-big en">'+esc(it.s.q)+'</div><small id="eskHint">看圖，用英文回答小機</small>')+
         '<div class="esk-ear"><button data-a="play">🔊 聽小機'+(it.t==='talk'?'問':'念')+'</button></div></div><button class="esk-mic" data-a="mic" aria-label="按一下開始說">🎤</button><div class="esk-heard" id="eskMsg">按一下 🎤，說完會自動停</div><div class="esk-row"><button class="btn ghost" data-a="skip">跳過這題</button></div></div>';
       var q=B(),msg=q.querySelector('#eskMsg'),mic=q.querySelector('[data-a="mic"]');
-      q.querySelector('[data-a="play"]').onclick=function(){tts(model)};if(it.t!=='pic')later(function(){tts(model)},350);
-      q.querySelector('[data-a="skip"]').onclick=function(){if(rec)try{rec.abort()}catch(e){}res[i]=0;C.say('沒關係，下一題！','idle');next()};
-      mic.onclick=function(){if(rec)return;try{speechSynthesis.cancel()}catch(e){}var r=new SR();rec=r;r.lang='en-US';r.interimResults=false;r.maxAlternatives=5;r.continuous=false;var got=false,me=live;
-        mic.classList.add('on');msg.textContent='🎧 小機在聽…';
-        r.onresult=function(e){if(me!==live)return;got=true;var alts=[];for(var a=0;a<e.results[0].length;a++)alts.push(e.results[0][a].transcript);var ok=heard(alts,keys);
-          msg.textContent='小機聽到：「'+(alts[0]||'')+'」'+(ok?' ✅':'');
-          if(ok){if(!tries){score++;res[i]=1}else res[i]=0;C.award(2);C.sfx('ok');if(w)C.Learn.ok(w);C.say(it.t==='talk'?'說得好！'+it.s.a:'說得好！'+w[0],'happy');later(next,1500)}
-          else{tries++;C.sfx('no');if(tries>=3){res[i]=0;msg.textContent+='　聽小機再念一次，下一題！';tts(it.t==='talk'?it.s.a:w[0],true);later(next,2600)}else{C.say(tries===1?'再說一次，大聲一點、慢一點！':'先聽小機念，再跟著說！','oops');if(tries===2)tts(it.t==='talk'?it.s.a:w[0],true);var hn=document.getElementById('eskHint');if(hn&&it.t==='talk')hn.textContent='可以這樣說：'+it.s.a}}};
-        r.onerror=function(e){if(me!==live)return;msg.textContent=e.error==='not-allowed'||e.error==='service-not-allowed'?'⚠️ 麥克風沒有開。請在跳出的視窗按「允許」，或到設定開啟 Safari 的麥克風。':e.error==='no-speech'?'沒聽到聲音，再按一次 🎤 說說看！':e.error==='network'?'⚠️ 語音辨識需要網路，檢查一下網路再試。':'再按一次 🎤 試試看（'+e.error+'）'};
-        r.onend=function(){mic.classList.remove('on');if(rec===r)rec=null;if(me===live&&!got&&msg.textContent==='🎧 小機在聽…')msg.textContent='沒聽清楚，再按一次 🎤 說說看！'};
-        try{r.start()}catch(e){rec=null;mic.classList.remove('on');msg.textContent='再按一次 🎤'}later(function(){if(rec===r)try{r.stop()}catch(e){}},8000)}}
+      q.querySelector('[data-a="play"]').onclick=function(){if(listening)listening.finish('cancel');tts(model)};if(it.t!=='pic')later(function(){tts(model)},450);
+      q.querySelector('[data-a="skip"]').onclick=function(){if(listening)listening.finish('skip');res[i]=0;C.say('沒關係，下一題！','idle');next()};
+      spkBtn=q.querySelector('[data-a="play"]');var listening=null;
+      function reset(t){mic.classList.remove('on');mic.textContent='🎤';if(t!=null)msg.textContent=t}
+      function judge(alts,why){if(me0!==live)return;var ok=alts.length&&heard(alts,keys);
+        if(ok){msg.textContent='小機聽到：「'+alts[0]+'」 ✅';if(!tries){score++;res[i]=1}else res[i]=0;C.award(2);C.sfx('ok');if(w)C.Learn.ok(w);C.say(it.t==='talk'?'說得好！'+it.s.a:'說得好！'+w[0],'happy');later(next,1600);return}
+        if(!alts.length){reset(why==='not-allowed'?'⚠️ 麥克風沒有開：請在跳出的視窗按「允許」，或到「設定 › Safari › 麥克風」改成允許。':
+          why==='service-not-allowed'?'⚠️ 不能用語音辨識：請用 Safari 打開（不要用主畫面捷徑），並到「設定 › 一般 › 鍵盤」打開「聽寫」。':
+          why==='network'?'⚠️ 語音辨識需要網路，檢查一下網路再試。':why==='audio-capture'?'⚠️ 找不到麥克風，關掉其他在用麥克風的 App 再試。':'沒聽到聲音，再按一次 🎤，靠近一點說！');return}
+        tries++;C.sfx('no');reset('小機聽到：「'+alts[0]+'」');
+        if(tries>=3){res[i]=0;msg.textContent+='　聽小機再念一次，下一題！';later(function(){tts(it.t==='talk'?it.s.a:w[0],true)},500);later(next,3200)}
+        else{C.say(tries===1?'再說一次，大聲一點、慢一點！':'先聽小機念，再跟著說！','oops');var hn=document.getElementById('eskHint');if(hn&&it.t==='talk')hn.textContent='可以這樣說：'+it.s.a;if(tries===2)later(function(){tts(it.t==='talk'?it.s.a:w[0],true)},500)}}
+      var me0=live;
+      mic.onclick=function(){if(listening){listening.finish('stop');return}
+        try{global.speechSynthesis.cancel()}catch(e){}try{if(navigator.audioSession)navigator.audioSession.type='play-and-record'}catch(e){}
+        var r,alts=[],err='',done=false,wd=null,quiet=null;
+        function finish(why){if(done)return;done=true;clearTimeout(wd);clearTimeout(quiet);listening=null;if(rec===r)rec=null;try{r.abort()}catch(e){}reset();setTimeout(audioOut,250);if(why==='skip'||why==='cancel'){msg.textContent='按一下 🎤，說完會自動停';return}judge(alts,err||why)}
+        try{r=new SR();r.lang='en-US';r.interimResults=true;r.maxAlternatives=3;r.continuous=false}catch(e){reset('⚠️ 這台裝置不能用語音辨識');return}
+        listening={finish:finish};rec=r;mic.classList.add('on');mic.textContent='⏹';msg.textContent='🔴 小機在聽…說完再按一下也可以';
+        r.onresult=function(e){alts=[];for(var a=0;a<e.results.length;a++)for(var b=0;b<e.results[a].length;b++)if(e.results[a][b].transcript)alts.push(e.results[a][b].transcript);
+          var all=[];for(a=0;a<e.results.length;a++)all.push(e.results[a][0].transcript);if(all.length>1)alts.unshift(all.join(' '));
+          if(alts.length)msg.textContent='🔴 聽到：「'+alts[0]+'」';
+          if(heard(alts,keys))return finish('ok');clearTimeout(quiet);quiet=setTimeout(function(){finish('quiet')},1400);
+          if(e.results[e.results.length-1].isFinal)finish('final')};
+        r.onerror=function(e){err=e&&e.error||'';if(err!=='no-speech'&&err!=='aborted')finish(err);else if(err==='no-speech')finish('no-speech')};
+        r.onend=function(){finish('end')};
+        try{r.start()}catch(e){err='start';finish('start');return}
+        wd=setTimeout(function(){finish('timeout')},7000)}}
     function done(){C.finish({icon:score>=5?'🏆':'🗣️',title:'口說練習完成！',text:'一次就說對 '+score+' / '+items.length+' 題。',say:'你的英文說得越來越好了！',replay:speak,score:score,total:items.length})}
     C.say('準備好就按麥克風，對小機說英文！','happy');next()}
 
