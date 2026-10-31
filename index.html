@@ -65,10 +65,11 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v9/lab-studio.js?v=9.1.0"></script>
 <script src="assets/v9/lab.js?v=9.3.0"></script>
 <script src="assets/v10/progress.js?v=10.1.0"></script>
+<script src="assets/v11/esk.js?v=11.0.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
    架構：固定頂欄(機器人) + 可捲動內容 + 固定底部分頁。資料層統一走 Store。 */
@@ -5200,6 +5201,8 @@ if(window.ProgressFactory)try{(function(){
   var fg2=Store.finishGame;Store.finishGame=function(id){var r=fg2.apply(Store,arguments);try{if(isKid())PGX.sciCheck(id)}catch(e){}return r};
 })()}catch(e){console.error('progress',e)}
 
+/* v11 英文聽說寫教室 */
+if(window.EskFactory)try{window.EskFactory({GAMES:GAMES,GAME_FN:GAME_FN,shell:shell,body:function(){return gBody},award:award,finish:function(o){finish(o)},say:say,sfx:sfx,Learn:Learn,poolW:function(){return poolW()},others:function(w,n){return others(w,n)},PGX:function(){return PGX},isKid:isKid,who:function(){return who},esc:esc,egrade:function(){return egrade},muted:function(){return muted},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}})}catch(e){console.error('esk',e)}
 /* ========== boot ========== */
 Store.connect();
 renderGameHome();
