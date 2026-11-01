@@ -107,6 +107,10 @@ global.ParentFactory=function(C){
   function subOf(gid){return C.MATH_IDS()[gid]?'math':C.SCI_IDS()[gid]||gid==='lab'?'sci':'en'}
   function dkey(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
   function days(n){var o=[],now=new Date();for(var i=0;i<n;i++){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i);o.push({k:dkey(d),d:d})}return o}
+  function ds(id){var o=(S.kid(id)||{}).ds;return o&&typeof o==='object'?o:{}}
+  function dsDay(id,k){var r=ds(id)[k];return r&&typeof r==='object'?r:null}
+  function restNow(id){var r=(S.kid(id)||{}).rs||{},t=(S.kid(id)||{}).tm||{};if(r.u&&r.u>Date.now())return '😴 休息中，到 '+new Date(r.u).toTimeString().slice(0,5);if(t.off)return '休息提醒已關閉';return '這段已玩 '+Math.floor((+r.a||0)/60)+' / '+(+t.p||30)+' 分'}
+  function mins(n){n=+n||0;return n>=60?Math.floor(n/60)+' 小時 '+(n%60)+' 分':n+' 分鐘'}
   function dp(id){var o=(S.kid(id)||{}).dp;return o&&typeof o==='object'?o:{}}
   function sumDays(id,n){var o=dp(id),t=0;days(n).forEach(function(x){t+=+o[x.k]||0});return t}
   function actsOf(id){return S.activity().filter(function(a){return a.kid===id})}
@@ -149,7 +153,7 @@ global.ParentFactory=function(C){
       if(pm&&pm.acc!==null&&pm.ans>=10&&pm.acc<60)alerts.push('🔢 數學「'+pm.S.U[1]+'」正確率只有 '+pm.acc+'%');
       if(pe&&pe.acc!==null&&pe.ans>=10&&pe.acc<60)alerts.push('🔤 英文「'+pe.S.U[1]+'」正確率只有 '+pe.acc+'%');
       h+='<div class="pd-kc"><div class="top">'+C.kface(k)+'<div><b>'+esc(k.name)+'</b><small>'+(C.PGX()&&C.PGX().gradeStr(k.id)?C.PGX().gradeStr(k.id)+'年級・':'')+'最近一次：'+ago(ls)+'・連續 '+info.streak+' 天 🔥</small></div><button class="go" data-goto="'+k.id+'">詳細 ›</button></div>'+
-        '<div class="pd-tiles">'+tile('今天',num(t0)+' 分')+tile('近 7 天',num(w7)+' 分')+tile('總分',num(d.pts)+' 分')+tile('今日任務',info.p.filter(function(x,i){return x>=info.q[i].n}).length+' / 3',info.done?'全部完成 ✅':'')+'</div>'+
+        '<div class="pd-tiles">'+tile('今天',num(t0)+' 分','今日任務 '+info.p.filter(function(x,i){return x>=info.q[i].n}).length+' / 3'+(info.done?' ✅':''))+tile('今天玩了',mins((dsDay(k.id,today)||{}).t),restNow(k.id))+tile('近 7 天',num(w7)+' 分')+tile('總分',num(d.pts)+' 分')+'</div>'+
         '<div class="pd-subs">'+
           '<button class="pd-sub" data-jump="en:'+k.id+'" style="--sb:'+SUBC.en[3]+';--sc:'+SUBC.en[2]+'"><small>🔤 英文</small><b>'+num(C.subPts(d,'en'))+'</b><i>'+(pe?esc(pe.S.U[1].replace(/^Unit \d+ /,'')):esc(e.lv[1]))+'</i></button>'+
           '<button class="pd-sub" data-jump="math:'+k.id+'" style="--sb:'+SUBC.math[3]+';--sc:'+SUBC.math[2]+'"><small>🔢 數學</small><b>'+num(C.subPts(d,'math'))+'</b><i>'+(pm?esc(pm.S.U[1]):esc(m.lv[1]))+'</i></button>'+
@@ -181,8 +185,10 @@ global.ParentFactory=function(C){
     ds.forEach(function(x){max=Math.max(max,+o[x.k]||0)});var played=ds.filter(function(x){return +o[x.k]>0}).length;
     var chart='<div class="pd-chart">'+ds.map(function(x,i){var v=+o[x.k]||0;return '<div class="c'+(i===ds.length-1?' today':'')+'"><span>'+(v?num(v):'')+'</span><i class="'+(v?'':'z')+'" style="height:'+(v?Math.max(6,Math.round(100*v/max)):4)+'%"></i><em>'+(i===0||x.d.getDate()===1?(x.d.getMonth()+1)+'/':'')+x.d.getDate()+'</em></div>'}).join('')+'</div>';
     var h=kidBtns(id)+sec('📅 近 14 天每天的分數',chart+'<div class="pd-tiles" style="margin-top:10px">'+tile('今天',num(+o[days(1)[0].k]||0)+' 分')+tile('近 7 天',num(sumDays(id,7))+' 分')+tile('14 天裡有玩',played+' 天')+tile('每天平均',num(Math.round(sumDays(id,14)/14))+' 分')+'</div><p class="pd-note">只算玩遊戲得到的分數（英文＋數學＋自然），家長加減分不算在內。</p>');
-    var acts=actsOf(id).filter(function(a){return a.type==='game'}),bySub={};days(7).forEach(function(x){bySub[x.k]={en:0,math:0,sci:0,n:0}});acts.forEach(function(a){var k=dkey(new Date(a.ts));if(bySub[k]){bySub[k][subOf(a.gid)]+=+a.pts||0;bySub[k].n++}});
-    h+=sec('📊 近 7 天各科分數','<div class="pd-scroll"><table class="pd-tbl"><thead><tr><th>日期</th><th>🔤 英文</th><th>🔢 數學</th><th>🔬 自然</th><th>局數</th></tr></thead><tbody>'+days(7).map(function(x,i){var r=bySub[x.k];return '<tr><td>'+(i===0?'今天 ':'')+(x.d.getMonth()+1)+'/'+x.d.getDate()+'（'+W[x.d.getDay()]+'）</td><td>'+num(r.en)+'</td><td>'+num(r.math)+'</td><td>'+num(r.sci)+'</td><td>'+r.n+'</td></tr>'}).join('')+'</tbody></table></div><p class="pd-note">各科分數是從最近的遊戲紀錄加總（雲端最多保留最近 200 筆），可能比上面的每日總分少一點。</p>');
+    var rows=days(14).map(function(x,i){var r=dsDay(id,x.k);return {x:x,i:i,r:r}}),any=rows.some(function(z){return z.r});
+    h+=sec('📊 每天各科紀錄','<div class="pd-scroll"><table class="pd-tbl"><thead><tr><th>日期</th><th>🔤 英文</th><th>🔢 數學</th><th>🔬 自然</th><th>局數</th><th>正確率</th><th>時間</th></tr></thead><tbody>'+rows.map(function(z){var r=z.r,x=z.x;return '<tr><td>'+(z.i===0?'今天 ':'')+(x.d.getMonth()+1)+'/'+x.d.getDate()+'（'+W[x.d.getDay()]+'）</td>'+(r?'<td>'+num(r.e)+'</td><td>'+num(r.m)+'</td><td>'+num(r.s)+'</td><td>'+(+r.g||0)+'</td><td>'+(+r.n?Math.round(100*(+r.r||0)/(+r.n))+'%':'—')+'</td><td>'+(+r.t||0)+' 分</td>':'<td colspan="6" style="text-align:center;color:var(--pd-soft)">'+(+o[x.k]?'（這天還沒有分科紀錄）':'沒有玩')+'</td>')+'</tr>'}).join('')+'</tbody></table></div><p class="pd-note">'+(any?'每天的分科紀錄存在孩子自己的資料裡，保留 90 天。時間是「有在操作」的分鐘數，放著不動不算。':'分科紀錄從這次更新後開始累積，之後每天都會有英文、數學、自然的分數、局數、正確率和遊玩時間。')+'</p>');
+    var wk=days(7).map(function(x){return dsDay(id,x.k)||{}}),tot=function(f){return wk.reduce(function(a,r){return a+(+r[f]||0)},0)};
+    if(any)h+=sec('⏱️ 近 7 天時間分配','<div class="pd-tiles">'+subTile('en','英文',mins(tot('te')))+subTile('math','數學',mins(tot('tm')))+subTile('sci','自然',mins(tot('ts')))+tile('💬 問小機',mins(tot('tq')))+'</div><p class="pd-note">一共 '+mins(tot('t'))+'。</p>');
     return h}
 
   /* ---------- 分頁：設定 ---------- */
@@ -191,7 +197,7 @@ global.ParentFactory=function(C){
     h+=sec('🎨 主題顏色','<div class="pd-sw">'+THEMES.map(function(t){return '<button data-color="'+t[0]+'" aria-pressed="'+(colorOf(cur)===t[0])+'"><i style="background:linear-gradient(135deg,'+t[2][0]+','+t[2][1]+' 55%,'+t[2][2]+')"></i>'+t[1]+'</button>'}).join('')+'</div><p class="pd-note">每個家長帳號可以選自己的顏色，登入畫面的頭像也會一起換。</p>');
     h+=sec('🔑 我的帳號','<div class="pd-acct"><div class="h"><span class="av"'+avStyle(cur)+'>'+initial(a.name)+'</span><div><b>'+esc(a.name)+'</b><small>'+(isAdmin()?'總管理員':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div></div>'+
       (ui.me?'<div class="pd-form"><label>新名字（可不改）</label><input type="text" id="pdMeName" maxlength="12" value="'+esc(a.name)+'"><label>目前密碼</label><input type="password" id="pdMeOld" inputmode="numeric" maxlength="4"><label>新密碼（4 個數字，不改就留空）</label><input type="password" id="pdMeNew" inputmode="numeric" maxlength="4"><div class="pd-msg" id="pdMeMsg"></div><div class="act" style="display:flex;gap:8px"><button class="pd-btn pri" data-act="meSave">儲存</button><button class="pd-btn" data-act="meX">取消</button></div></div>':
-      '<div class="act"><button class="pd-btn" data-act="me">✏️ 改名字或密碼</button></div>')+'</div>');h+=pgH;
+      '<div class="act"><button class="pd-btn" data-act="me">✏️ 改名字或密碼</button></div>')+'</div>');h+=restSec(ks)+pgH;
     if(!isAdmin()){h+=sec('🔒 孩子的登入密碼',ks.map(function(k){var has=!!(S.kid(k.id)||{}).pin;return '<div class="pd-row"><div class="n"><b>'+C.kface(k)+' '+esc(k.name)+'</b><small>'+(has?'已設定密碼':'還沒設密碼')+'</small></div>'+(has?'<button class="pd-btn sm" data-kpin="'+k.id+'">重設密碼</button>':'')+'</div>'}).join('')+'<p class="pd-note">重設後，孩子下次進來會重新設定自己的密碼。</p>');return h}
     /* 總管理員才有：家長帳號、角色管理、歸零 */
     var ps=parents(),body='';
@@ -201,6 +207,7 @@ global.ParentFactory=function(C){
     body+=ui.edit==='new'?'<div class="pd-acct">'+acctForm(null)+'</div>':'<button class="pd-btn pri" data-act="new" style="margin-top:8px">＋ 新增家長帳號</button>';
     body+='<p class="pd-note">每個家長帳號只看得到勾選的孩子。同一個孩子可以給好幾個帳號（例如爸爸、媽媽）。密碼可以先留空，對方第一次登入時自己設定。</p>';
     h+=sec('👨‍👩‍👧 家長帳號',body,(ps.length+1)+' 個帳號');
+    h+=errSec();
     h+=sec('👥 孩子角色','<div id="pdRoster">'+C.rosterHtml()+'</div>');
     h+=sec('🗑 全部歸零',(ui.clr?'<button class="pd-btn dg" data-act="clr2">⚠️ 再按一次「確定全部歸零」</button> <button class="pd-btn" data-act="clrX">取消</button>':'<button class="pd-btn dg" data-act="clr">全部歸零（分數、等級、紀錄）</button>')+'<p class="pd-note">會把「所有孩子」的分數、等級、問過的問題和遊戲紀錄全部清空，沒辦法復原。</p>');
     return h}
@@ -209,12 +216,25 @@ global.ParentFactory=function(C){
     (p?'':'<label>密碼（4 個數字，可留空讓對方第一次登入時自己設）</label><input type="password" id="pdAPin" inputmode="numeric" maxlength="4">')+
     '<div class="pd-msg" id="pdAMsg"></div><div style="display:flex;gap:8px"><button class="pd-btn pri" data-act="aSave">'+(p?'儲存':'建立帳號')+'</button><button class="pd-btn" data-act="aX">取消</button></div></div>'}
 
+  function restSec(ks){if(!ks.length)return '';var O=function(v,list,suf){return list.map(function(n){return '<option value="'+n+'"'+(n===v?' selected':'')+'>'+n+suf+'</option>'}).join('')};
+    return sec('⏰ 休息提醒',ks.map(function(k){var t=(S.kid(k.id)||{}).tm||{},p=+t.p||30,r=+t.r||10,rs=(S.kid(k.id)||{}).rs||{},resting=rs.u&&rs.u>Date.now();
+      return '<div class="pd-row" style="flex-wrap:wrap"><div class="n" style="min-width:140px"><b>'+C.kface(k)+' '+esc(k.name)+'</b><small>'+esc(restNow(k.id))+'</small></div>'+
+        '<label class="pd-chip" style="gap:6px"><input type="checkbox" data-rest-on="'+k.id+'"'+(t.off?'':' checked')+'> 開啟</label>'+
+        '<select class="pd-chip" data-rest-p="'+k.id+'">'+O(p,[20,30,40,45,60],' 分鐘休息')+'</select><select class="pd-chip" data-rest-r="'+k.id+'">'+O(r,[5,10,15,20],' 分鐘')+'</select>'+
+        (resting?'<button class="pd-btn sm" data-rest-end="'+k.id+'">結束休息</button>':'')+'</div>'}).join('')+
+      '<p class="pd-note">孩子連續操作滿設定的時間，會出現全畫面的休息倒數（如果正在玩一局，會等這局結束，最多再 3 分鐘）。放下平板超過休息時間，就會重新計時。休息中可以按「家長解鎖」，輸入任何一個看得到這個孩子的家長密碼。</p>')}
+  function errSec(){var ks=C.KIDS(),rows=[];ks.forEach(function(k){var a=(S.kid(k.id)||{}).er;if(Array.isArray(a))a.forEach(function(e){rows.push({k:k,e:e})})});
+    var mine=global.__rtErrs?global.__rtErrs.all():[];rows.sort(function(a,b){return b.e.t-a.e.t});
+    function line(e,who){return '<details class="pd-q"><summary><b>'+(e.k==='stall'?'🐢 ':'⚠️ ')+esc(e.m)+(e.c>1?' ×'+e.c:'')+'</b><small>'+esc(C.fmtTime(e.t))+'・'+esc(who)+'・'+esc(e.d||'')+(e.g?'・遊戲 '+esc(C.gInfo(e.g)):e.tab?'・'+esc(e.tab):'')+'</small></summary><div class="ans">'+(e.s?'位置：'+esc(e.s)+'<br>':'')+(e.st?esc(e.st)+'<br>':'')+'版本：'+esc(e.v||'—')+(e.o?'・樂園：'+esc(e.o):'')+'</div></details>'}
+    return sec('🛠 當機與卡頓紀錄',(rows.length?rows.slice(0,30).map(function(x){return line(x.e,x.k.short)}).join(''):'<div class="pd-alert ok">✅ 孩子們的裝置目前沒有回報錯誤。</div>')+
+      '<h4 style="margin:14px 0 6px;font-size:14px">這台裝置</h4>'+(mine.length?mine.slice(0,10).map(function(e){return line(e,e.w||'家長')}).join(''):'<p class="pd-note">這台裝置沒有紀錄。</p>')+
+      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="pd-btn sm" data-act="errClr">清除全部紀錄</button></div><p class="pd-note">「⚠️」是程式出錯，「🐢」是畫面卡住超過 2.5 秒。孩子說當機時，看這裡的時間、裝置和遊戲，就能知道是哪裡出問題，可以直接截圖給 Claude 看。</p>',rows.length+' 筆')}
   /* ---------- 主畫面 ---------- */
   var TABS=[['overview','🏠 總覽'],['en','🔤 英文'],['math','🔢 數學'],['sci','🔬 自然'],['qa','💬 問答'],['daily','📅 每日'],['settings','⚙️ 設定']];
   function render(force){var el=C.PANELS.rec;if(!el)return;var ae=document.activeElement;if(!force&&ae&&el.contains(ae)&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;var a=acct();if(!a){cur='admin';a=acct()}
     var fam=null;if(tab==='overview'){try{C.renderPrev();fam=el.querySelector('.fm-parent');if(fam)fam.remove()}catch(e){}}
     var body=tab==='overview'?overview():tab==='en'||tab==='math'||tab==='sci'?subject(tab):tab==='qa'?qa():tab==='daily'?daily():settings();
-    var tc=theme(colorOf(cur));el.innerHTML='<div class="pd" style="--pt1:'+tc[0]+';--pt2:'+tc[1]+';--pt3:'+tc[2]+'"><div class="pd-head"><span class="av">'+initial(a.name)+'</span><div class="t"><b>'+esc(a.name)+(isAdmin()?'<span class="role">總管理員</span>':'')+'</b><small>'+(isAdmin()?'總管理員':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div><button class="out" data-act="out">登出</button></div>'+
+    var tc=theme(colorOf(cur));el.innerHTML='<div class="pd" style="--pt1:'+tc[0]+';--pt2:'+tc[1]+';--pt3:'+tc[2]+'"><div class="pd-head"><span class="av">'+initial(a.name)+'</span><div class="t"><b>'+esc(a.name)+(isAdmin()?'<span class="role">總管理員</span>':'')+'</b><small>'+(isAdmin()?'家長後台':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div><button class="out" data-act="out">登出</button></div>'+
       '<nav class="pd-nav" aria-label="家長後台分頁">'+TABS.map(function(t){return '<button data-tab2="'+t[0]+'" aria-pressed="'+(t[0]===tab)+'">'+t[1]+'</button>'}).join('')+'</nav>'+body+'</div>';
     if(fam){var slot=el.querySelector('#pdFam');if(slot){var s2=document.createElement('section');s2.className='pd-sec';s2.innerHTML='<h3>🎁 獎勵兌換</h3>';s2.appendChild(fam);slot.replaceWith(s2)}}
     wire(el)}
@@ -233,6 +253,12 @@ global.ParentFactory=function(C){
       if(!nm){m.textContent='請輸入名字。';return}if(curPin&&C.hashPin(o)!==curPin){m.textContent='目前密碼不對喔。';return}if(n&&!/^\d{4}$/.test(n)){m.textContent='新密碼要 4 個數字。';return}
       if(isAdmin()){var arr=list().filter(function(x){return x.id!=='admin'});arr.push({id:'admin',name:nm,role:'admin',color:colorOf('admin')});save(arr);if(n)S.setPin(C.hashPin(n))}else{a.name=nm;if(n)a.pin=C.hashPin(n);upsert(a)}
       C.sfx('ok');C.say('帳號更新好了！','happy');ui={};render(true)});
+    function tmSet(id,f){S.mut(id,function(k){var t=k.tm&&typeof k.tm==='object'?k.tm:(k.tm={});f(t)})}
+    el.querySelectorAll('[data-rest-on]').forEach(function(b){b.onchange=function(){var v=b.checked;tmSet(b.dataset.restOn,function(t){if(v)delete t.off;else t.off=1});C.sfx('ok');render(true)}});
+    el.querySelectorAll('[data-rest-p]').forEach(function(b){b.onchange=function(){var v=+b.value;tmSet(b.dataset.restP,function(t){t.p=v});C.sfx('ok');render(true)}});
+    el.querySelectorAll('[data-rest-r]').forEach(function(b){b.onchange=function(){var v=+b.value;tmSet(b.dataset.restR,function(t){t.r=v});C.sfx('ok');render(true)}});
+    el.querySelectorAll('[data-rest-end]').forEach(function(b){b.onclick=function(){S.mut(b.dataset.restEnd,function(k){k.rs={u:0,a:0,l:Date.now()}});C.sfx('ok');C.say('休息結束了，可以繼續玩！','happy');render(true)}});
+    on('[data-act="errClr"]',function(){C.KIDS().forEach(function(k){if((S.kid(k.id)||{}).er)S.mut(k.id,function(d){delete d.er})});if(global.__rtErrs)global.__rtErrs.clear();C.sfx('ok');render(true)});
     el.querySelectorAll('[data-color]').forEach(function(b){b.onclick=function(){C.sfx('tap');setColor(b.dataset.color);render(true)}});
     el.querySelectorAll('[data-kpin]').forEach(function(b){b.onclick=function(){S.mut(b.dataset.kpin,function(d){delete d.pin});C.sfx('ok');C.say('孩子的密碼重設了，下次進來會重新設定。','happy');render(true)}});
     if(!isAdmin())return;
