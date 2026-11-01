@@ -1371,6 +1371,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .pgp .pgset{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 10px}.pgp .pgset label{display:flex;gap:6px;align-items:center;font-size:14px}
 .pgp .pgr{display:flex;flex-direction:column;align-items:stretch;gap:6px}.pgp .pgl{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:12px;background:rgba(127,127,127,.08)}
 .pgp .pgl small{opacity:.85;line-height:1.45}.pgp .pgnow{font-weight:700}.pgp .pgnow em{font-style:normal;color:#e08a00}.pgp .pgl code{font-size:12px;padding:0 3px;border-radius:4px;background:rgba(127,127,127,.15)}
+#btnEngine,#photoBtn{display:none!important}.setup>.slab:first-child,#gradeRow{display:none!important}
 </style>
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
@@ -1387,6 +1388,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <script src="assets/v9/lab.js?v=9.3.0"></script>
 <script src="assets/v10/progress.js?v=10.1.0"></script>
 <script src="assets/v11/esk.js?v=11.2.0"></script>
+<script src="assets/v12/tutor.js?v=12.0.1"></script>
 
 
 <header class="top">
@@ -1435,10 +1437,10 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
       <button class="round photo" id="photoBtn" aria-label="上傳題目照片" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
       <input type="file" id="photo" hidden>
       <button class="round mic" id="micBtn" aria-label="用說的" hidden>🎤</button>
-      <textarea id="msg" rows="1" placeholder="輸入問題，或拍題目給我看" aria-label="輸入問題"></textarea>
+      <textarea id="msg" rows="1" placeholder="輸入問題，例如 23 × 4、apple 是什麼意思" aria-label="輸入問題"></textarea>
       <button class="round go" id="goBtn" aria-label="送出"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.5 20.5l17-8.5-17-8.5v6.5l11 2-11 2z"/></svg></button>
     </div>
-    <div class="note">⚠️ 小機老師是 AI，偶爾也會迷路或說錯話，遇到重要的問題，記得找爸爸媽媽或老師一起當小偵探確認喔！</div>
+    <div class="note">💡 小機老師（離線版）只用 App 裡的題庫回答，不用網路；找不到的問題要問爸爸媽媽或老師喔！</div>
   </section>
 
   <section class="panel scroll" id="gamePanel" hidden aria-label="遊戲">
@@ -1783,7 +1785,7 @@ function showTab(t){
   curTab=t;
   Object.keys(PANELS).forEach(function(k){PANELS[k].hidden=k!==t;$('#tab_'+k).setAttribute('aria-selected',k===t?'true':'false')});
   Music.play(t==='chat'?'':'lobby');
-  if(t==='chat'){cleanupGame();say('有問題就問我，也可以拍照片喔！','idle')}
+  if(t==='chat'){cleanupGame();say('有問題就問我！數學、英文、自然都可以','idle')}
   else if(t==='game'){backGameHome();say('來玩英文吧！','happy')}
   else if(t==='rank'){cleanupGame();renderRank();say('看看誰是第一名！','happy')}
   else{cleanupGame();renderRec();say(who==='parent'?'這裡可以看孩子們的學習紀錄。':'這是你的學習紀錄。','idle')}
@@ -1926,6 +1928,9 @@ async function send(){
   var q=text||'請看這張照片，幫我解題並解釋。';
   var content=img?(q+'\n（小朋友附了一張題目照片，請看圖片回答。）'):q;
   setBusy(true);var asker=who,ans='',failed=false;
+  if(TUTOR){var rr;try{rr=TUTOR.reply(text,{subject:subject,img:!!img})}catch(e){console.error(e);rr={html:'<p>小機想不出來，換個問法試試看。</p>'}}
+    var bb0=addMsg('bot',rr.html);mood('talk',0);setBusy(false);say('還有問題嗎？','happy');log.scrollTop=log.scrollHeight;
+    if(asker&&asker!=='parent')Store.recordQ(asker,{grade:grade,subject:subject||'全部',q:(text||'（照片題）'),img:!!img,a:(bb0.innerText||'').slice(0,2000),ok:true});return}
   var sample=await samplePromise;
   if(!sample){
     if(getApiKey())sample=sampleDirect;
@@ -2152,7 +2157,7 @@ function sciPodium(){var arr=KIDS.map(function(k){return {k:k,p:subPts(Store.kid
 var MB_SEM=[{y:2026,s:'上',start:'2026-08-31'}];
 var MB={'二':{book:'二上（第 3 冊）',u:[['r1','200 以內的數',1,2,1],['r2','二位數的直式加減',3,5,1],['r3','量長度',6,7],['r4','加減關係與應用',8,9],['r5','面積的大小比較',10,10],['r6','兩步驟的加減',11,12],['r7','2、5、4、8 的乘法',13,14],['r8','幾時幾分',15,16],['r9','3、6、9、7 的乘法',17,18],['r10','容量與重量',19,20]]},
   '三':{book:'三上（第 5 冊）',u:[['d1','10000 以內的數',1,2,1],['d2','四位數的加減',3,5,1],['d3','毫米',6,7,1],['d4','乘法',8,9,1],['d5','角',10,11],['d6','面積',12,13],['d7','除法',14,16],['d8','公升和毫升',17,18],['d9','分數',19,21]]}};
-var MB_DEF={de:'三',ren:'二'};var PGX=null,pgOpenK=function(){return true},pgWhy=function(){return ''};/* v10 自動進度引擎（檔案最後面接上） */
+var MB_DEF={de:'三',ren:'二'};var TUTOR=null,PGX=null,pgOpenK=function(){return true},pgWhy=function(){return ''};/* v10 自動進度引擎（檔案最後面接上） */
 var LABPG={on:function(){return isKid()&&!!PGX&&!!PGX.state(who,'s')},open:function(k){return pgOpenK(k)},cur:function(){return PGX&&isKid()?PGX.sciCur(who):[]},why:function(k){return pgWhy(k)}};/* 還沒設定時的預設學校年級 */
 var MB_LV={r1:[['積木排數字','用百、十、一的積木排出數字'],['數一數','看積木說出是多少'],['數的大小','比大小、接數字']],
   r2:[['直式加法','從個位開始算，滿十要進位'],['直式減法','不夠減就跟十位借'],['加減大挑戰','加法減法混在一起，看你多厲害']],
@@ -5157,6 +5162,17 @@ if(window.ProgressFactory)try{(function(){
 
 /* v11 英文聽說寫教室 */
 if(window.EskFactory)try{window.EskFactory({GAMES:GAMES,GAME_FN:GAME_FN,shell:shell,body:function(){return gBody},award:award,finish:function(o){finish(o)},say:say,sfx:sfx,Learn:Learn,poolW:function(){return poolW()},others:function(w,n){return others(w,n)},PGX:function(){return PGX},isKid:isKid,who:function(){return who},esc:esc,egrade:function(){return egrade},muted:function(){return muted},resumeAudio:function(){try{if(actx&&actx.state!=='running')actx.resume()}catch(e){}},musicOff:function(){try{Music.stop()}catch(e){}},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}})}catch(e){console.error('esk',e)}
+/* v12 小機老師離線版：不用 AI，只用 App 內的題庫與規則回答 */
+if(window.TutorFactory)try{(function(){
+  TUTOR=window.TutorFactory({WORDS:WORDS,sciMC:function(){return (SCI.g['三']||{}).mc||[]},PGX:function(){return PGX},isKid:isKid,who:function(){return who},poolW:function(){return poolW()},Learn:Learn,nm:function(){return nm()}});
+  SUBJECTS=function(){return ['數學','英文','自然']};
+  SUGG={'':['現在學到哪裡？','347 + 256 = ?','apple 是什麼意思？','出一題給我練習'],'數學':['347 + 256 = ?','23 × 4 怎麼算？','3 公尺是幾公分？','出一題數學'],
+    '英文':['apple 是什麼意思？','老虎的英文怎麼說？','hungry 怎麼拼？','出一題英文'],'自然':['為什麼會有風？','磁鐵會吸住什麼？','月亮為什麼會變形狀？','種子發芽需要什麼？']};
+  greet=function(){var gs=PGX&&isKid()&&PGX.gradeStr(who);if(gs)grade=gs;log.innerHTML='';turns=[];
+    var hv=document.createElement('div');hv.className='chero';hv.innerHTML=pic('bot3')+'<b>嗨！今天想問什麼？</b>';log.appendChild(hv);
+    addMsg('bot','<p>嗨！'+esc(nm())+'，我是小機老師（離線版）。我會算數學、教直式、換算單位、查英文單字，也會從自然題庫找答案，還可以出題考你！</p><p>下面有範例，點一下就能問。找不到答案時我會老實說，不會亂猜。</p>');
+    say(nm()+'，有問題就問我！','happy')};
+})()}catch(e){console.error('tutor',e)}
 /* ========== boot ========== */
 Store.connect();
 renderGameHome();
