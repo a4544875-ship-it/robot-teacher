@@ -67,6 +67,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v10/progress.js?v=10.1.0"></script>
 <script src="assets/v11/esk.js?v=11.2.0"></script>
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
+<script src="assets/v13/parent.js?v=13.0.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -1639,6 +1640,7 @@ var Store=(function(){
   var kids={},activity=[],subd={},pruning=false,pruned={},emitT=0;
   var dirty={},writing={},flushT=null,chain=Promise.resolve(),warned=false;
   /* 每日分數：k.dp['2026-10-18'] = 當天三科玩遊戲得到的總分（台灣當地日期，家長調整分數不算），保留 62 天 */
+  var accts=[];
   function dayKey(t){var d=t?new Date(t):new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
   function dayAdd(k,n){n=+n||0;if(!n)return;var o=k.dp&&typeof k.dp==='object'?k.dp:(k.dp={}),d=dayKey();o[d]=(+o[d]||0)+n;var ks=Object.keys(o).sort();while(ks.length>62)delete o[ks.shift()]}
   function kblank(){return {pts:0,byGame:{},qCount:0,lastDay:'',obby:{v:2},garden:{}}}
@@ -1651,13 +1653,13 @@ var Store=(function(){
   function subKid(id){if(subd[id]||!db)return;subd[id]=1;db.doc('kids/'+id).onSnapshot(function(s){if(s.exists&&!dirty[id]&&!writing[id]&&kids[id]){var c=knorm(s.data());if((+kids[id].rev||0)>(+c.rev||0)){dirty[id]=true;scheduleFlush()}else kids[id]=c}saveLocal();emit();},failWarn)}
   function applyRoster(r){if(!Array.isArray(r))return;r=r.filter(function(x){return x&&typeof x.id==='string'&&/^[a-z0-9]{1,16}$/.test(x.id)&&typeof x.name==='string'&&x.name}).slice(0,8);if(!r.length)return;
     KIDS.length=0;r.forEach(function(x){var n=String(x.name).slice(0,8);KIDS.push({id:x.id,name:n,short:n,emo:String(x.emo||'🙂').slice(0,4),c:KHEX[x.c]?x.c:'--sky',av:PIC[x.av]?x.av:''});ensure(x.id);subKid(x.id)})}
-  function saveSettings(){if(!db)return;var body={pin:pin||'',clearedAt:clearedAt,rosterJ:JSON.stringify(KIDS)};chain=chain.then(function(){return db.doc('settings/parent').set(body)}).catch(failWarn)}
+  function saveSettings(){if(!db)return;var body={pin:pin||'',clearedAt:clearedAt,rosterJ:JSON.stringify(KIDS),acctJ:JSON.stringify(accts)};chain=chain.then(function(){return db.doc('settings/parent').set(body)}).catch(failWarn)}
   /* 畫面更新合併成一次：雲端一次來很多筆更新時，不會每筆都把整個畫面重畫一遍 */
   function emit(){if(emitT)return;emitT=setTimeout(function(){emitT=0;subs.forEach(function(f){try{f()}catch(e){}})},40)}
   function warn(t){var n=$('#syncNote');n.textContent=t;n.hidden=false}
   function failWarn(){if(warned)return;warned=true;warn('⚠ 雲端同步出了點問題，紀錄暫時只存在這台裝置。')}
-  var slT=0;function saveNow(){if(slT){clearTimeout(slT);slT=0}ls.set('rt-data',{kids:kids,activity:activity.slice(0,200),pin:pin,clearedAt:clearedAt,roster:KIDS})}function saveLocal(){if(!slT)slT=setTimeout(saveNow,300)}try{addEventListener('pagehide',function(){if(slT)saveNow()});document.addEventListener('visibilitychange',function(){if(document.hidden&&slT)saveNow()})}catch(e){}
-  (function(){var d=ls.get('rt-data',null);if(d){applyRoster(d.roster);for(var kk in (d.kids||{}))if(kidOf(kk))kids[kk]=knorm(d.kids[kk]);activity=Array.isArray(d.activity)?d.activity:[];pin=d.pin||null;clearedAt=+d.clearedAt||0}})();
+  var slT=0;function saveNow(){if(slT){clearTimeout(slT);slT=0}ls.set('rt-data',{kids:kids,activity:activity.slice(0,200),pin:pin,clearedAt:clearedAt,roster:KIDS,accts:accts})}function saveLocal(){if(!slT)slT=setTimeout(saveNow,300)}try{addEventListener('pagehide',function(){if(slT)saveNow()});document.addEventListener('visibilitychange',function(){if(document.hidden&&slT)saveNow()})}catch(e){}
+  (function(){var d=ls.get('rt-data',null);if(d){applyRoster(d.roster);for(var kk in (d.kids||{}))if(kidOf(kk))kids[kk]=knorm(d.kids[kk]);activity=Array.isArray(d.activity)?d.activity:[];pin=d.pin||null;clearedAt=+d.clearedAt||0;accts=Array.isArray(d.accts)?d.accts:[]}})();
   function wireDb(d){
     db=d;
     KIDS.forEach(function(k){subKid(k.id)});
@@ -1666,7 +1668,7 @@ var Store=(function(){
       /* 紀錄超過 200 筆就刪掉最舊的。每筆只刪一次、30 秒最多清一批：以前每次刪除都會觸發新的快照、又再刪一輪，紀錄一多就會連鎖爆量讓手機當機 */
       if(s.size>200&&!pruning){pruning=true;s.docs.slice(200).forEach(function(x){if(pruned[x.id])return;pruned[x.id]=1;db.doc('activity/'+x.id).delete().catch(function(){})});setTimeout(function(){pruning=false},30000)}
       saveLocal();emit();},failWarn);
-    db.doc('settings/parent').onSnapshot(function(s){pin=s.exists?(s.data().pin||null):null;clearedAt=s.exists?(+s.data().clearedAt||0):0;if(s.exists&&s.data().rosterJ)try{applyRoster(JSON.parse(s.data().rosterJ))}catch(e){}pinLoaded=true;saveLocal();emit()},function(){pinLoaded=true;emit()});
+    db.doc('settings/parent').onSnapshot(function(s){pin=s.exists?(s.data().pin||null):null;clearedAt=s.exists?(+s.data().clearedAt||0):0;if(s.exists&&s.data().rosterJ)try{applyRoster(JSON.parse(s.data().rosterJ))}catch(e){}if(s.exists&&s.data().acctJ)try{var aa=JSON.parse(s.data().acctJ);if(Array.isArray(aa))accts=aa}catch(e){}pinLoaded=true;saveLocal();emit()},function(){pinLoaded=true;emit()});
   }
   function connect(){
     // Claude Artifact 的 db 能力優先；不在 Artifact 裡（例如開源版自架的 Firebase）時，
@@ -1699,7 +1701,7 @@ var Store=(function(){
     if(db){chain=chain.then(function(){return db.collection('activity').add(entry)}).catch(failWarn)}}
   document.addEventListener('visibilitychange',function(){if(document.hidden)flushKids()});try{addEventListener('pagehide',function(){flushKids()})}catch(e){}
   return {
-    connect:connect,onChange:function(f){subs.push(f)},
+    connect:connect,onChange:function(f){subs.push(f)},accts:function(){return accts},setAccts:function(a){accts=Array.isArray(a)?a:[];saveSettings();saveLocal();emit()},
     kid:function(id){return kids[id]||kblank()},
     addKid:function(o){var id='k'+Date.now().toString(36);KIDS.push({id:id,name:o.name,short:o.name,emo:o.emo,c:KCOLS[KIDS.length%KCOLS.length],av:''});ensure(id);subKid(id);dirty[id]=true;touchK(id);scheduleFlush();saveSettings();saveLocal();emit();return id},
     editKid:function(id,o){var k=kidOf(id);if(!k)return;k.name=k.short=o.name;if(o.emo){k.emo=o.emo;k.av=''}saveSettings();saveLocal();emit()},
@@ -2203,7 +2205,7 @@ function sciPodium(){var arr=KIDS.map(function(k){return {k:k,p:subPts(Store.kid
 var MB_SEM=[{y:2026,s:'上',start:'2026-08-31'}];
 var MB={'二':{book:'二上（第 3 冊）',u:[['r1','200 以內的數',1,2,1],['r2','二位數的直式加減',3,5,1],['r3','量長度',6,7],['r4','加減關係與應用',8,9],['r5','面積的大小比較',10,10],['r6','兩步驟的加減',11,12],['r7','2、5、4、8 的乘法',13,14],['r8','幾時幾分',15,16],['r9','3、6、9、7 的乘法',17,18],['r10','容量與重量',19,20]]},
   '三':{book:'三上（第 5 冊）',u:[['d1','10000 以內的數',1,2,1],['d2','四位數的加減',3,5,1],['d3','毫米',6,7,1],['d4','乘法',8,9,1],['d5','角',10,11],['d6','面積',12,13],['d7','除法',14,16],['d8','公升和毫升',17,18],['d9','分數',19,21]]}};
-var MB_DEF={de:'三',ren:'二'};var TUTOR=null,PGX=null,pgOpenK=function(){return true},pgWhy=function(){return ''};/* v10 自動進度引擎（檔案最後面接上） */
+var MB_DEF={de:'三',ren:'二'};var PARENT=null,TUTOR=null,PGX=null,pgOpenK=function(){return true},pgWhy=function(){return ''};/* v10 自動進度引擎（檔案最後面接上） */
 var LABPG={on:function(){return isKid()&&!!PGX&&!!PGX.state(who,'s')},open:function(k){return pgOpenK(k)},cur:function(){return PGX&&isKid()?PGX.sciCur(who):[]},why:function(k){return pgWhy(k)}};/* 還沒設定時的預設學校年級 */
 var MB_LV={r1:[['積木排數字','用百、十、一的積木排出數字'],['數一數','看積木說出是多少'],['數的大小','比大小、接數字']],
   r2:[['直式加法','從個位開始算，滿十要進位'],['直式減法','不夠減就跟十位借'],['加減大挑戰','加法減法混在一起，看你多厲害']],
@@ -5169,7 +5171,7 @@ if(window.LabFactory)try{window.LabFactory({pg:LABPG,registerReward:registerLabR
     '<div class="dpscroll"><table class="dptab"><thead><tr><th>日期</th>'+ids.map(function(id){return '<th>'+esc(kidOf(id).short)+'</th>'}).join('')+'</tr></thead><tbody>'+days.map(function(d,j){return '<tr'+(j===0?' class="dpnow"':'')+'><td>'+(j===0?'今天 ':'')+d.t+'</td>'+ids.map(function(id){return cell(id,d)}).join('')+'</tr>'}).join('')+'</tbody></table></div><p class="dpnote">只算玩遊戲、答題得到的分數，家長手動調整的分數不算。從開始記錄那天起才有資料（之前顯示「—」）。</p>';
   var box=document.createElement('section');box.className='dpbox';box.innerHTML=h;var h2=el.querySelector('h2.h');if(h2&&h2.nextSibling)el.insertBefore(box,h2.nextSibling);else el.prepend(box)}catch(e){console.error('dp',e)}}})();
 /* v8 真實獎勵兌換＋節日活動 */
-if(window.FamilyFactory)window.FamilyFactory({subPts:subPts,Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
+if(window.FamilyFactory)window.FamilyFactory({subPts:subPts,Store:Store,who:function(){return who},isKid:isKid,KIDS:function(){return who==='parent'&&PARENT&&PARENT.active()?PARENT.kids():KIDS},esc:esc,sfx:sfx,say:say,confetti:confetti,showTab:showTab,PANELS:PANELS,getRec:function(){return renderRec},setRec:function(f){renderRec=f},getRank:function(){return renderRank},setRank:function(f){renderRank=f},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}});
 
 /* v10 自動進度：英文、數學跟著學校行事曆＋熟練度自動前進；孩子不用再選年級 */
 if(window.ProgressFactory)try{(function(){
@@ -5219,6 +5221,20 @@ if(window.TutorFactory)try{(function(){
     addMsg('bot','<p>嗨！'+esc(nm())+'，我是小機老師（離線版）。我會算數學、教直式、換算單位、查英文單字，也會從自然題庫找答案，還可以出題考你！</p><p>下面有範例，點一下就能問。找不到答案時我會老實說，不會亂猜。</p>');
     say(nm()+'，有問題就問我！','happy')};
 })()}catch(e){console.error('tutor',e)}
+/* v13 家長後台＋多家長帳號 */
+if(window.ParentFactory)try{(function(){
+  var LABN={mag2:'磁力研究室',ckt2:'電路工程師',moon2:'月相日曆',eco2:'生態食物網',wx2:'氣象預報員',temp:'溫度實驗室',pond:'水生家族池塘',flow:'水的移動',sun:'太陽與影子',time:'時間工坊'};
+  var recPrev=renderRec;
+  PARENT=window.ParentFactory({Store:Store,KIDS:function(){return KIDS},esc:esc,sfx:sfx,say:say,kface:kface,botSVG:botSVG,hashPin:hashPin,
+    gate:function(){return gate},setGateMode:function(m){gateMode=m},renderGate:function(){renderGate()},enter:function(id){enter(id)},
+    logout:function(){abortChat();cleanupGame();who=null;gate.hidden=false;renderGate()},
+    PANELS:PANELS,renderPrev:function(){recPrev()},subPts:subPts,growOf:growOf,scLevel:scLevel,scRowG:scRowG,scOwnG:scOwnG,scStampsAny:scStampsAny,STN:function(){return STN},LABN:LABN,
+    Learn:Learn,WORDS:WORDS,PGX:function(){return PGX},dayN:function(){return PGX?PGX._dayN():Math.floor(Date.now()/864e5)},gInfo:gInfo,fmtTime:fmtTime,
+    MATH_IDS:function(){return MATH_IDS},SCI_IDS:function(){return SCI_IDS},rosterHtml:rosterHtml,rosterWire:rosterWire});
+  renderPin=function(){PARENT.renderPin()};
+  renderRec=function(){if(who==='parent')return PARENT.render();return recPrev.apply(this,arguments)};
+  var enter0=enter;enter=function(id){if(id!=='parent')PARENT.reset();enter0(id);var rt=$('#tab_rank');if(rt)rt.hidden=id==='parent';if(id==='parent'){$('#recTabLabel').textContent='家長後台';showTab('rec')}};
+})()}catch(e){console.error('parent',e)}
 /* ========== boot ========== */
 Store.connect();
 renderGameHome();
