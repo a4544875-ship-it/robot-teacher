@@ -6,20 +6,22 @@
    注意：沒有伺服器帳號系統，分開是「畫面上看不到」，不是資料加密。 */
 (function(global){
 'use strict';
+var THEMES=[['indigo','星空紫',['#3f51d9','#7b5cff','#b05cff']],['ocean','海洋藍',['#0e6fc4','#2a9be0','#36c2c9']],['forest','森林綠',['#1c7f53','#2fa671','#86c95f']],['sunset','夕陽橘',['#e0562e','#f5803e','#ffb24f']],['rose','櫻花粉',['#cc3d72','#ea6496','#ff9cc0']],['grape','葡萄紫',['#5d36b5','#8650d8','#bb78ee']],['gold','麥穗金',['#b47a0c','#d99a22','#efc552']],['slate','石墨灰',['#283548','#45556f','#7686a3']]];
+function theme(k){for(var i=0;i<THEMES.length;i++)if(THEMES[i][0]===k)return THEMES[i][2];return THEMES[0][2]}
 var PS2={e:'en',m:'math',s:'sci'};var SUBC={en:['🔤','英文','#2f7bf6','#e7f0ff'],math:['🔢','數學','#f07d16','#fff1e2'],sci:['🔬','自然','#1f9e6a','#e3f7ee']};
 var CSS=[
 '.pd{--pd-ink:var(--ink,#1f2a44);--pd-soft:var(--ink-soft,#66728c);--pd-card:var(--surface,#fff);--pd-bg2:var(--surface-2,#f3f5fa);--pd-line:rgba(31,42,68,.09);display:flex;flex-direction:column;gap:14px;color:var(--pd-ink);padding-bottom:20px}',
 '.pd *{box-sizing:border-box}.pd button{font-family:inherit;color:inherit;cursor:pointer}',
-'.pd-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#3f51d9,#7b5cff 60%,#b05cff);box-shadow:0 10px 26px rgba(63,81,217,.25)}',
+'.pd{--pt1:#3f51d9;--pt2:#7b5cff;--pt3:#b05cff}.pd-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:22px;color:#fff;background:linear-gradient(135deg,var(--pt1),var(--pt2) 60%,var(--pt3));box-shadow:0 10px 26px color-mix(in srgb,var(--pt1) 30%,transparent)}',
 '.pd-head .av{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:22px;font-weight:800;background:rgba(255,255,255,.22)}',
 '.pd-head .t{flex:1;min-width:0}.pd-head b{display:block;font-size:19px;line-height:1.2}.pd-head small{opacity:.88;font-size:12.5px}',
 '.pd-head .role{display:inline-block;font-size:11px;font-weight:800;background:rgba(255,255,255,.25);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}',
 '.pd-head .out{flex:none;border:0;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:800;background:rgba(255,255,255,.2);color:#fff}',
 '.pd-nav{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:6px;border-radius:18px;background:var(--pd-card);box-shadow:0 4px 14px rgba(31,42,68,.08);scrollbar-width:none}.pd-nav::-webkit-scrollbar{display:none}',
 '.pd-nav button{border:0;border-radius:13px;padding:8px 4px;font-size:13.5px;font-weight:800;background:transparent;color:var(--pd-soft);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}',
-'.pd-nav button[aria-pressed="true"]{background:var(--pd-ink);color:#fff}',
+'.pd-nav button[aria-pressed="true"]{background:var(--pt1);color:#fff}',
 '.pd-kids{display:flex;gap:8px;flex-wrap:wrap}.pd-kids button{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:5px 12px 5px 5px;font-weight:800;font-size:14px;background:var(--pd-card);box-shadow:inset 0 0 0 1.5px var(--pd-line)}',
-'.pd-kids button .kav,.pd-kids button .kemo{width:28px;height:28px;font-size:20px;border-radius:50%}.pd-kids button[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--pd-ink);background:var(--pd-bg2)}',
+'.pd-kids button .kav,.pd-kids button .kemo{width:28px;height:28px;font-size:20px;border-radius:50%}.pd-kids button[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--pt1);background:color-mix(in srgb,var(--pt1) 10%,#fff)}',
 '.pd-sec{background:var(--pd-card);border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(31,42,68,.07)}',
 '.pd-sec>h3{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:17px}.pd-sec>h3 small{margin-left:auto;font-size:12px;font-weight:600;color:var(--pd-soft)}',
 '.pd-note{font-size:12.5px;color:var(--pd-soft);line-height:1.55;margin:8px 0 0}',
@@ -39,15 +41,16 @@ var CSS=[
 '.pd-stars{color:#f5b301;letter-spacing:1px;font-size:13px}.pd-stars s{color:#d9dde7;text-decoration:none}',
 '.pd-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.pd-unit{border-radius:14px;padding:10px;background:var(--pd-bg2);min-width:0}.pd-unit b{display:block;font-size:13.5px}.pd-unit small{font-size:12px;color:var(--pd-soft)}.pd-unit.now{box-shadow:inset 0 0 0 2px var(--sc)}.pd-unit.lock{opacity:.5}',
 '.pd-chart{display:flex;align-items:flex-end;gap:5px;height:140px;padding-top:18px}.pd-chart .c{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;height:100%;justify-content:flex-end}',
-'.pd-chart .c i{display:block;width:100%;max-width:26px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,#7b8cff,#4a5cf0);position:relative}.pd-chart .c i.z{background:var(--pd-line)}.pd-chart .c em{font-style:normal;font-size:10px;color:var(--pd-soft);white-space:nowrap}.pd-chart .c span{font-size:10px;font-weight:800;font-variant-numeric:tabular-nums}',
+'.pd-chart .c i{display:block;width:100%;max-width:26px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,var(--pt2),var(--pt1));position:relative}.pd-chart .c i.z{background:var(--pd-line)}.pd-chart .c em{font-style:normal;font-size:10px;color:var(--pd-soft);white-space:nowrap}.pd-chart .c span{font-size:10px;font-weight:800;font-variant-numeric:tabular-nums}',
 '.pd-chart .c.today i{background:linear-gradient(180deg,#ffb347,#ff7a2f)}',
 '.pd-tbl{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}.pd-tbl th,.pd-tbl td{padding:8px 6px;border-top:1px solid var(--pd-line);text-align:right}.pd-tbl th:first-child,.pd-tbl td:first-child{text-align:left}.pd-tbl thead th{border-top:0;color:var(--pd-soft);font-size:12px}',
 '.pd-scroll{overflow-x:auto}',
 '.pd-q{border-top:1px solid var(--pd-line);padding:10px 0}.pd-q:first-child{border-top:0}.pd-q summary{cursor:pointer;list-style:none}.pd-q summary::-webkit-details-marker{display:none}.pd-q summary b{display:block;font-size:14.5px}.pd-q summary small{color:var(--pd-soft);font-size:12px}.pd-q .ans{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--pd-bg2);font-size:13.5px;line-height:1.55}',
-'.pd-btn{border:0;border-radius:12px;padding:9px 13px;font-size:14px;font-weight:800;background:var(--pd-bg2)}.pd-btn.pri{background:var(--pd-ink);color:#fff}.pd-btn.dg{background:#ffe3df;color:#b2321f}.pd-btn.sm{padding:6px 10px;font-size:12.5px}',
+'.pd-btn{border:0;border-radius:12px;padding:9px 13px;font-size:14px;font-weight:800;background:var(--pd-bg2)}.pd .pd-btn.pri{background:var(--pt1);color:#fff}.pd-btn.dg{background:#ffe3df;color:#b2321f}.pd-btn.sm{padding:6px 10px;font-size:12.5px}',
 '.pd-form{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:16px;background:var(--pd-bg2)}.pd-form input[type=text],.pd-form input[type=password]{width:100%;font-size:16px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--pd-line);background:var(--pd-card);color:var(--pd-ink)}',
 '.pd-form label{font-size:13px;font-weight:800}.pd-pick{display:flex;gap:6px;flex-wrap:wrap}.pd-pick button{display:inline-flex;align-items:center;gap:5px;border:0;border-radius:999px;padding:6px 11px;font-size:13.5px;font-weight:800;background:var(--pd-card);box-shadow:inset 0 0 0 1.5px var(--pd-line)}.pd-pick button[aria-pressed="true"]{background:#e7ecff;box-shadow:inset 0 0 0 2px #4a5cf0;color:#2b3bb8}',
 '.pd-acct{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--pd-line)}.pd-acct:first-of-type{border-top:0}.pd-acct .h{display:flex;align-items:center;gap:10px}.pd-acct .h .av{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:#e7ecff;color:#2b3bb8}.pd-acct .h b{display:block}.pd-acct .h small{color:var(--pd-soft);font-size:12px}',
+'.pd-sw{display:flex;gap:10px;flex-wrap:wrap}.pd-sw button{display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;font-size:11.5px;font-weight:800;color:var(--pd-soft)}.pd-sw i{display:block;width:44px;height:44px;border-radius:14px;box-shadow:0 3px 8px rgba(0,0,0,.12)}.pd-sw button[aria-pressed="true"] i{box-shadow:0 0 0 3px #fff,0 0 0 5.5px var(--pd-ink)}.pd-sw button[aria-pressed="true"]{color:var(--pd-ink)}'+
 '.pd-acct .act{display:flex;gap:6px;flex-wrap:wrap}.pd-msg{min-height:1.2em;font-size:13px;font-weight:700;color:#c43c2a}',
 '.pd .rost,.pd .mbp{margin:0;background:none;box-shadow:none;padding:0}',
 '.pd-sec .fm-rw{margin:0;box-shadow:none}',
@@ -70,6 +73,9 @@ global.ParentFactory=function(C){
   function upsert(o){var a=list().filter(function(x){return x.id!==o.id});a.push(o);save(a)}
   function acct(){if(!cur)return null;if(cur==='admin')return {id:'admin',name:adminName(),role:'admin'};return parents().filter(function(x){return x.id===cur})[0]||null}
   function isAdmin(){return cur==='admin'}
+  function colorOf(id){if(id==='admin'){var a=list().filter(function(x){return x.id==='admin'})[0];return (a&&a.color)||'indigo'}var p=parents().filter(function(x){return x.id===id})[0];return (p&&p.color)||'ocean'}
+  function avStyle(id){var t=theme(colorOf(id));return ' style="background:linear-gradient(135deg,'+t[0]+','+t[2]+');color:#fff"'}
+  function setColor(c){if(isAdmin()){var arr=list().filter(function(x){return x.id!=='admin'}),old=list().filter(function(x){return x.id==='admin'})[0]||{id:'admin',name:adminName(),role:'admin'};old.color=c;arr.push(old);save(arr)}else{var a=acct();a.color=c;upsert(a)}}
   function kids(){var all=C.KIDS();if(!cur||isAdmin())return all;var a=acct();if(!a)return [];return all.filter(function(k){return (a.kids||[]).indexOf(k.id)>=0})}
   function initial(n){n=String(n||'?').trim();return esc(n.slice(0,1).toUpperCase())}
   function kidNames(ids){return C.KIDS().filter(function(k){return ids.indexOf(k.id)>=0}).map(function(k){return k.short}).join('、')||'還沒指派孩子'}
@@ -77,8 +83,8 @@ global.ParentFactory=function(C){
   /* ---------- 登入畫面（取代原本的單一家長密碼） ---------- */
   function renderPin(){var gate=C.gate();C.setGateMode('pin');if(!S.pinLoaded()){gate.innerHTML='<div class="gate-in"><div class="gmas">'+C.botSVG('')+'</div><h1>家長區</h1><div class="pinbox"><p>連線中，請稍等……</p><button class="btn ghost" id="pinBack">← 回去選帳號</button></div></div>';gate.querySelector('#pinBack').onclick=function(){C.sfx('tap');C.renderGate()};return}
     var ps=parents(),h='<div class="gate-in"><div class="gmas">'+C.botSVG('')+'</div><h1>家長區</h1><p class="sub">選你的家長帳號，再輸入 4 位數密碼。</p><div class="pa-list">';
-    h+='<button data-pa="admin"><span class="av ad">'+initial(adminName())+'</span><span><b>'+esc(adminName())+'</b><small>總管理員・可以看全部孩子</small></span></button>';
-    ps.forEach(function(p){h+='<button data-pa="'+esc(p.id)+'"><span class="av">'+initial(p.name)+'</span><span><b>'+esc(p.name)+'</b><small>'+esc(kidNames(p.kids||[]))+'</small></span></button>'});
+    h+='<button data-pa="admin"><span class="av"'+avStyle('admin')+'>'+initial(adminName())+'</span><span><b>'+esc(adminName())+'</b><small>總管理員</small></span></button>';
+    ps.forEach(function(p){h+='<button data-pa="'+esc(p.id)+'"><span class="av"'+avStyle(p.id)+'>'+initial(p.name)+'</span><span><b>'+esc(p.name)+'</b><small>'+esc(kidNames(p.kids||[]))+'</small></span></button>'});
     h+='</div><button class="btn ghost" id="pinBack" style="margin-top:14px">← 回去選帳號</button></div>';gate.innerHTML=h;
     gate.querySelector('#pinBack').onclick=function(){C.sfx('tap');C.renderGate()};
     gate.querySelectorAll('[data-pa]').forEach(function(b){b.onclick=function(){C.sfx('tap');pinFor(b.dataset.pa)}});
@@ -86,7 +92,7 @@ global.ParentFactory=function(C){
   function pinFor(id,only){var gate=C.gate(),a=id==='admin'?{id:'admin',name:adminName(),pin:S.getPin()}:parents().filter(function(x){return x.id===id})[0];if(!a)return renderPin();
     var first=!a.pin,h='<div class="gate-in"><div class="gmas">'+C.botSVG('')+'</div><h1>'+esc(a.name)+'</h1><div class="pinbox"><p>'+(first?'第一次登入，請設定 4 位數密碼：':'請輸入 4 位數密碼：')+'</p>'+
       '<input id="pinIn" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="密碼">'+(first?'<input id="pinIn2" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="再輸入一次">':'')+
-      '<div id="pinMsg" role="alert"></div><button class="btn" id="pinOk">'+(first?'設定並進入':'進入')+'</button><small>'+(id==='admin'?'總管理員可以看所有孩子，也可以新增其他家長帳號。':'只會看到指派給這個帳號的孩子。')+'</small>'+
+      '<div id="pinMsg" role="alert"></div><button class="btn" id="pinOk">'+(first?'設定並進入':'進入')+'</button><small>'+(id==='admin'?'總管理員':'只會看到指派給這個帳號的孩子。')+'</small>'+
       '<button class="btn ghost" id="pinBack">'+(only?'← 回去選帳號':'← 換一個家長帳號')+'</button></div></div>';gate.innerHTML=h;
     function go(){var v=gate.querySelector('#pinIn').value.trim(),msg=gate.querySelector('#pinMsg');if(!/^\d{4}$/.test(v)){msg.textContent='請輸入 4 個數字。';return}
       if(first){if(v!==gate.querySelector('#pinIn2').value.trim()){msg.textContent='兩次輸入不一樣，再試一次。';return}
@@ -181,15 +187,16 @@ global.ParentFactory=function(C){
 
   /* ---------- 分頁：設定 ---------- */
   function settings(){var ks=kids(),h='',a=acct();
-    var P=C.PGX();if(P&&ks.length){h+=sec('📘 學校進度設定','<div id="pdProg">'+P.parentHtml(ks,C.kface,esc)+'</div>')}
-    h+=sec('🔑 我的帳號','<div class="pd-acct"><div class="h"><span class="av">'+initial(a.name)+'</span><div><b>'+esc(a.name)+'</b><small>'+(isAdmin()?'總管理員・可以看全部孩子':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div></div>'+
+    var P=C.PGX(),pgH=P&&ks.length?sec('📘 學校進度設定','<div id="pdProg">'+P.parentHtml(ks,C.kface,esc)+'</div>'):'';
+    h+=sec('🎨 主題顏色','<div class="pd-sw">'+THEMES.map(function(t){return '<button data-color="'+t[0]+'" aria-pressed="'+(colorOf(cur)===t[0])+'"><i style="background:linear-gradient(135deg,'+t[2][0]+','+t[2][1]+' 55%,'+t[2][2]+')"></i>'+t[1]+'</button>'}).join('')+'</div><p class="pd-note">每個家長帳號可以選自己的顏色，登入畫面的頭像也會一起換。</p>');
+    h+=sec('🔑 我的帳號','<div class="pd-acct"><div class="h"><span class="av"'+avStyle(cur)+'>'+initial(a.name)+'</span><div><b>'+esc(a.name)+'</b><small>'+(isAdmin()?'總管理員':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div></div>'+
       (ui.me?'<div class="pd-form"><label>新名字（可不改）</label><input type="text" id="pdMeName" maxlength="12" value="'+esc(a.name)+'"><label>目前密碼</label><input type="password" id="pdMeOld" inputmode="numeric" maxlength="4"><label>新密碼（4 個數字，不改就留空）</label><input type="password" id="pdMeNew" inputmode="numeric" maxlength="4"><div class="pd-msg" id="pdMeMsg"></div><div class="act" style="display:flex;gap:8px"><button class="pd-btn pri" data-act="meSave">儲存</button><button class="pd-btn" data-act="meX">取消</button></div></div>':
-      '<div class="act"><button class="pd-btn" data-act="me">✏️ 改名字或密碼</button></div>')+'</div>');
+      '<div class="act"><button class="pd-btn" data-act="me">✏️ 改名字或密碼</button></div>')+'</div>');h+=pgH;
     if(!isAdmin()){h+=sec('🔒 孩子的登入密碼',ks.map(function(k){var has=!!(S.kid(k.id)||{}).pin;return '<div class="pd-row"><div class="n"><b>'+C.kface(k)+' '+esc(k.name)+'</b><small>'+(has?'已設定密碼':'還沒設密碼')+'</small></div>'+(has?'<button class="pd-btn sm" data-kpin="'+k.id+'">重設密碼</button>':'')+'</div>'}).join('')+'<p class="pd-note">重設後，孩子下次進來會重新設定自己的密碼。</p>');return h}
     /* 總管理員才有：家長帳號、角色管理、歸零 */
     var ps=parents(),body='';
-    body+='<div class="pd-acct"><div class="h"><span class="av" style="background:linear-gradient(135deg,#3f51d9,#b05cff);color:#fff">'+initial(adminName())+'</span><div><b>'+esc(adminName())+'</b><small>總管理員・全部孩子：'+esc(C.KIDS().map(function(k){return k.short}).join('、'))+'</small></div></div></div>';
-    ps.forEach(function(p){var ed=ui.edit===p.id;body+='<div class="pd-acct"><div class="h"><span class="av">'+initial(p.name)+'</span><div><b>'+esc(p.name)+'</b><small>看得到：'+esc(kidNames(p.kids||[]))+'・'+(p.pin?'已設定密碼':'第一次登入時設定密碼')+'</small></div></div>'+
+    body+='<div class="pd-acct"><div class="h"><span class="av"'+avStyle('admin')+'>'+initial(adminName())+'</span><div><b>'+esc(adminName())+'</b><small>總管理員</small></div></div></div>';
+    ps.forEach(function(p){var ed=ui.edit===p.id;body+='<div class="pd-acct"><div class="h"><span class="av"'+avStyle(p.id)+'>'+initial(p.name)+'</span><div><b>'+esc(p.name)+'</b><small>看得到：'+esc(kidNames(p.kids||[]))+'・'+(p.pin?'已設定密碼':'第一次登入時設定密碼')+'</small></div></div>'+
       (ed?acctForm(p):'<div class="act"><button class="pd-btn sm" data-edit="'+p.id+'">✏️ 修改</button>'+(p.pin?'<button class="pd-btn sm" data-reset="'+p.id+'">🔑 重設密碼</button>':'')+'<button class="pd-btn sm dg" data-del="'+p.id+'">'+(ui.del===p.id?'⚠️ 再按一次確定刪除':'🗑 刪除')+'</button></div>')+'</div>'});
     body+=ui.edit==='new'?'<div class="pd-acct">'+acctForm(null)+'</div>':'<button class="pd-btn pri" data-act="new" style="margin-top:8px">＋ 新增家長帳號</button>';
     body+='<p class="pd-note">每個家長帳號只看得到勾選的孩子。同一個孩子可以給好幾個帳號（例如爸爸、媽媽）。密碼可以先留空，對方第一次登入時自己設定。</p>';
@@ -207,7 +214,7 @@ global.ParentFactory=function(C){
   function render(force){var el=C.PANELS.rec;if(!el)return;var ae=document.activeElement;if(!force&&ae&&el.contains(ae)&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;var a=acct();if(!a){cur='admin';a=acct()}
     var fam=null;if(tab==='overview'){try{C.renderPrev();fam=el.querySelector('.fm-parent');if(fam)fam.remove()}catch(e){}}
     var body=tab==='overview'?overview():tab==='en'||tab==='math'||tab==='sci'?subject(tab):tab==='qa'?qa():tab==='daily'?daily():settings();
-    el.innerHTML='<div class="pd"><div class="pd-head"><span class="av">'+initial(a.name)+'</span><div class="t"><b>'+esc(a.name)+(isAdmin()?'<span class="role">總管理員</span>':'')+'</b><small>'+(isAdmin()?'可以看全部孩子・管理家長帳號':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div><button class="out" data-act="out">登出</button></div>'+
+    var tc=theme(colorOf(cur));el.innerHTML='<div class="pd" style="--pt1:'+tc[0]+';--pt2:'+tc[1]+';--pt3:'+tc[2]+'"><div class="pd-head"><span class="av">'+initial(a.name)+'</span><div class="t"><b>'+esc(a.name)+(isAdmin()?'<span class="role">總管理員</span>':'')+'</b><small>'+(isAdmin()?'總管理員':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div><button class="out" data-act="out">登出</button></div>'+
       '<nav class="pd-nav" aria-label="家長後台分頁">'+TABS.map(function(t){return '<button data-tab2="'+t[0]+'" aria-pressed="'+(t[0]===tab)+'">'+t[1]+'</button>'}).join('')+'</nav>'+body+'</div>';
     if(fam){var slot=el.querySelector('#pdFam');if(slot){var s2=document.createElement('section');s2.className='pd-sec';s2.innerHTML='<h3>🎁 獎勵兌換</h3>';s2.appendChild(fam);slot.replaceWith(s2)}}
     wire(el)}
@@ -224,8 +231,9 @@ global.ParentFactory=function(C){
     on('[data-act="me"]',function(){ui.me=1;render(true)});on('[data-act="meX"]',function(){ui={};render(true)});
     on('[data-act="meSave"]',function(){var a=acct(),nm=el.querySelector('#pdMeName').value.trim().slice(0,12),o=el.querySelector('#pdMeOld').value.trim(),n=el.querySelector('#pdMeNew').value.trim(),m=el.querySelector('#pdMeMsg'),curPin=isAdmin()?S.getPin():a.pin;
       if(!nm){m.textContent='請輸入名字。';return}if(curPin&&C.hashPin(o)!==curPin){m.textContent='目前密碼不對喔。';return}if(n&&!/^\d{4}$/.test(n)){m.textContent='新密碼要 4 個數字。';return}
-      if(isAdmin()){var arr=list().filter(function(x){return x.id!=='admin'});arr.push({id:'admin',name:nm,role:'admin'});save(arr);if(n)S.setPin(C.hashPin(n))}else{a.name=nm;if(n)a.pin=C.hashPin(n);upsert(a)}
+      if(isAdmin()){var arr=list().filter(function(x){return x.id!=='admin'});arr.push({id:'admin',name:nm,role:'admin',color:colorOf('admin')});save(arr);if(n)S.setPin(C.hashPin(n))}else{a.name=nm;if(n)a.pin=C.hashPin(n);upsert(a)}
       C.sfx('ok');C.say('帳號更新好了！','happy');ui={};render(true)});
+    el.querySelectorAll('[data-color]').forEach(function(b){b.onclick=function(){C.sfx('tap');setColor(b.dataset.color);render(true)}});
     el.querySelectorAll('[data-kpin]').forEach(function(b){b.onclick=function(){S.mut(b.dataset.kpin,function(d){delete d.pin});C.sfx('ok');C.say('孩子的密碼重設了，下次進來會重新設定。','happy');render(true)}});
     if(!isAdmin())return;
     on('[data-act="new"]',function(){C.sfx('tap');ui={edit:'new',kids:[],name:''};render(true)});
@@ -235,7 +243,7 @@ global.ParentFactory=function(C){
     on('[data-act="aSave"]',function(){var nm=el.querySelector('#pdAName').value.trim().slice(0,12),m=el.querySelector('#pdAMsg'),pinEl=el.querySelector('#pdAPin'),pin=pinEl?pinEl.value.trim():'';
       if(!nm){m.textContent='請輸入家長名字。';return}if(nm===adminName()||parents().some(function(x){return x.name===nm&&x.id!==ui.edit})){m.textContent='已經有同樣名字的帳號了。';return}
       if(!ui.kids.length){m.textContent='至少勾選一個孩子。';return}if(pin&&!/^\d{4}$/.test(pin)){m.textContent='密碼要 4 個數字，或留空。';return}
-      if(ui.edit==='new')upsert({id:'pa'+Date.now().toString(36),name:nm,kids:ui.kids.slice(),pin:pin?C.hashPin(pin):'',created:Date.now()});
+      if(ui.edit==='new')upsert({id:'pa'+Date.now().toString(36),name:nm,color:THEMES[(parents().length+1)%THEMES.length][0],kids:ui.kids.slice(),pin:pin?C.hashPin(pin):'',created:Date.now()});
       else{var p=parents().filter(function(x){return x.id===ui.edit})[0];if(p){p.name=nm;p.kids=ui.kids.slice();upsert(p)}}
       C.sfx('ok');C.say('家長帳號存好了！','happy');ui={};render(true)});
     el.querySelectorAll('[data-reset]').forEach(function(b){b.onclick=function(){var p=parents().filter(function(x){return x.id===b.dataset.reset})[0];if(!p)return;p.pin='';upsert(p);C.sfx('ok');C.say('密碼已重設，對方下次登入會重新設定。','happy');render(true)}});
