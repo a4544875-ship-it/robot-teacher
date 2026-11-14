@@ -182,7 +182,18 @@ global.ProgressFactory=function(C){
   var Store=C.Store,WORDS=C.WORDS,WI={};
   NEWW.forEach(function(w){if(!WORDS.some(function(x){return x[0]===w[0]}))WORDS.push(w)});
   WORDS.forEach(function(w){WI[w[0]]=w});
-  var RS;function r0(){RS={m:{n:0,c:0},e:{n:0,c:0},seen:{},used:{},done:0}}r0();
+  var RS;function r0(){RS={m:{n:0,c:0},e:{n:0,c:0},all:{m:{n:0,c:0},e:{n:0,c:0}},seen:{},used:{},done:0}}r0();
+  /* ---- 挑戰等級（v16）：0 標準 1 進階 2 挑戰 3 高手；P.ch[sub]={l:等級, au:1 自動(0 家長固定), up:連續高分輪數, dn:連續低分輪數}
+     一輪第一次作答 ≥ 90%（至少 6 題）連續 2 輪 → 升一級；低於 60% 連續 2 輪 → 降一級。 */
+  var CHN=['標準','進階','挑戰','高手'];
+  function chObj(id,sub){var P=kidP(Store.kid(id)),c=P.ch&&P.ch[sub];return c&&typeof c==='object'?c:{l:0,au:1}}
+  function chal(id,sub){if(!id)return 0;var l=+chObj(id,sub).l||0;return Math.max(0,Math.min(3,l))}
+  function aheadSk(S,L){var o=[];S.units.slice(S.cur+1,S.cur+2+L).forEach(function(u){u[4].forEach(function(s){if(o.indexOf(s)<0)o.push(s)})});return o}
+  function wrapQ(r,R,L){if(!/^[0-9 +−×÷()]+$/.test(String(r[0]))||!isInt(r[1]))return r;var a=+r[1],k=Math.floor(R()*3);
+    if(k===0&&a<=(L>=3?300:120)){var m=2+Math.floor(R()*(L>=3?8:4));return ['('+r[0]+') × '+m,a*m,null]}
+    if(k===1){var d=11+Math.floor(R()*(L>=3?189:89));return [r[0]+' + '+d,a+d,null]}
+    if(a>12){var e=2+Math.floor(R()*Math.min(a-2,L>=3?150:60));return [r[0]+' − '+e,a-e,null]}
+    return [r[0]+' + 9',a+9,null]}
 
   function kidP(k){return k&&k.pg&&typeof k.pg==='object'?k.pg:{}}
   function grade(id){var k=Store.kid(id)||{},b=GN.indexOf(k.gr||C.MB_DEF[id]||'')+1;if(b<1)return 0;var P=kidP(k),gy=+P.gy||2026;return Math.min(6,b+Math.max(0,sem(new Date(),P.s2).ay-gy))}
@@ -214,7 +225,9 @@ global.ProgressFactory=function(C){
       if(due.length&&R()<.3){var key=due[Math.floor(R()*due.length)];RS.used['m'+key]=1;var it=rvList(id,'m')[key],ans=isInt(it[3])?+it[3]:it[3];return [key,ans,Array.isArray(it[4])&&it[4].length?it[4].slice():null,{u:it[5]||'old',s:it[6]||'',rk:key,rv:1}]}}
     var cu=S.U[4].filter(function(s){return okKind(s,kind)}),le=learned(S).filter(function(s){return okKind(s,kind)}),pv=prevSk(S).filter(function(s){return okKind(s,kind)}),x=R(),pool;
     if(cu.length&&(x<.6||!le.length&&!pv.length))pool=cu;else if(le.length&&(x<.85||!pv.length))pool=le;else if(pv.length)pool=pv;else pool=cu;
-    if(!pool.length)return null;var s=pool[Math.floor(R()*pool.length)],r=SK[s].f(R);return [r[0],r[1],r[2]||null,{u:pool===pv?'old':unitOf(S,s),s:s}]}
+    var L=chal(id,'m'),ahd=false;if(L){var ah=aheadSk(S,L).filter(function(s){return okKind(s,kind)});if(ah.length&&R()<[0,.4,.55,.7][L]){pool=ah;ahd=true}}
+    if(!pool.length)return null;var s=pool[Math.floor(R()*pool.length)],r=SK[s].f(R);if(L&&R()<[0,.25,.4,.55][L])r=wrapQ(r,R,L);
+    return [r[0],r[1],r[2]||null,{u:ahd?'ch':pool===pv?'old':unitOf(S,s),s:s}]}
 
   /* ---- 英文 ---- */
   function eAll(S){var o=[];function add(us){(us||[]).forEach(function(u){u[4].forEach(function(w){if(WI[w]&&o.indexOf(w)<0)o.push(w)})})}
@@ -225,14 +238,17 @@ global.ProgressFactory=function(C){
     shufM(sem0).forEach(function(w){if(out.length<12&&out.indexOf(w)<0)out.push(w)});
     shufM(eAll(S)).forEach(function(w){if(out.length<14&&out.indexOf(w)<0)out.push(w)});
     if(out.length<12)shufM(WORDS.filter(function(w){return w[3]<=Math.max(1,S.g-1)})).forEach(function(w){if(out.length<14&&out.indexOf(w[0])<0)out.push(w[0])});
-    return out.map(function(w){return WI[w]})}
+    var L=chal(id,'e');if(L){var ah=[];S.units.slice(S.cur+1,S.cur+1+L).forEach(function(u){u[4].forEach(function(w){if(WI[w]&&ah.indexOf(w)<0)ah.push(w)})});
+      shufM(ah).slice(0,2+2*L).forEach(function(w){if(out.indexOf(w)<0)out.push(w)});
+      shufM(WORDS.filter(function(w){return w[3]>=Math.min(5,S.g-1+L)&&w[3]<=Math.min(5,S.g+L)})).slice(0,2*L).forEach(function(w){if(out.indexOf(w[0])<0)out.push(w[0])})}
+    return out.map(function(w){return WI[w]}).filter(Boolean)}
   function others(w,n){var id=C.who(),S=C.isKid()&&state(id,'e');if(!S)return null;var cand=[];S.units.slice(0,S.cur+1).forEach(function(u){cand=cand.concat(u[4])});cand=cand.concat(eAll(S));
     var o=[];shufM(cand).forEach(function(x){if(WI[x]&&x!==w[0]&&o.indexOf(WI[x])<0)o.push(WI[x])});
     if(o.length<n)shufM(WORDS.filter(function(x){return x[3]<=Math.max(2,S.g-1)&&x[0]!==w[0]&&o.indexOf(x)<0})).forEach(function(x){if(o.length<n)o.push(x)});return o.slice(0,n)}
 
   /* ---- 作答紀錄：只算這一輪第一次作答 ---- */
   function hook(w,ok){try{if(!C.isKid()||!w)return;var sub=w.m?'m':'e';if(w.m&&!w.pg)return;var id=C.who(),S=state(id,sub);if(!S)return;
-    var key=w.m?(w.pg.rk||w[2]):w[0];if(RS.seen[sub+key]!==undefined)return;RS.seen[sub+key]=ok?1:0;
+    var key=w.m?(w.pg.rk||w[2]):w[0];if(RS.seen[sub+key]!==undefined)return;RS.seen[sub+key]=ok?1:0;RS.all[sub].n++;if(ok)RS.all[sub].c++;
     var isCur=w.m?w.pg.u===S.uid:S.U[4].indexOf(w[0])>=0;if(!w.m&&!WI[w[0]])return;
     if(isCur){RS[sub].n++;if(ok)RS[sub].c++}
     var ds=w.m&&Array.isArray(w.os)?w.os.slice(1).map(function(x){return String(x[0])}).slice(0,3):0;
@@ -246,6 +262,10 @@ global.ProgressFactory=function(C){
     mutP(id,function(P){var D=subD(P,'m',S.sk),a=Array.isArray(D.st[S.uid])?D.st[S.uid]:[0,0];a[0]=(+a[0]||0)+1;if(ok)a[1]=(+a[1]||0)+1;D.st[S.uid]=a})}catch(e){}}
   /* 一輪結束：正確率 ≥ 90%（至少 4 題目前單元）＋單元累計 ≥ 20 題 → 前進 */
   function finish(id){if(!C.isKid()||RS.done)return;RS.done=1;var msg=[];
+    ['m','e'].forEach(function(sub){var r=RS.all[sub];if(r.n<6)return;var c=chObj(id,sub);if(c.au===0)return;var acc=r.c/r.n,l=chal(id,sub),nl=l,up=+c.up||0,dn=+c.dn||0;
+      if(acc>=.9){up++;dn=0;if(up>=2&&l<3){nl=l+1;up=0}}else if(acc<.6){dn++;up=0;if(dn>=2&&l>0){nl=l-1;dn=0}}else{up=0;dn=0}
+      mutP(id,function(P){if(!P.ch||typeof P.ch!=='object')P.ch={};P.ch[sub]={l:nl,au:1,up:up,dn:dn}});
+      if(nl>l)msg.push((sub==='m'?'數學':'英文')+'挑戰升到「'+CHN[nl]+'」，題目會更難喔');else if(nl<l)msg.push((sub==='m'?'數學':'英文')+'先回到「'+CHN[nl]+'」多練習一下')});
     ['m','e'].forEach(function(sub){var r=RS[sub];if(r.n<4||r.c/r.n<.9)return;var S=state(id,sub);if(!S||S.cur>=S.units.length-1||S.cur+1>S.cal+S.cap)return;
       var st=S.D&&S.D.st&&S.D.st[S.uid];if(!Array.isArray(st)||+st[0]<20)return;var nx=S.units[S.cur+1];
       mutP(id,function(P){var D=subD(P,sub,S.sk);D.a=S.cur+1});msg.push((sub==='m'?'數學':'英文')+'「'+S.U[1]+'」已經很熟了！前進到「'+nx[1]+'」')});
@@ -293,12 +313,16 @@ global.ProgressFactory=function(C){
       '<small>錯題箱 '+R.n+' 題（今天該複習 '+R.due+' 題）'+(R.hard.length?'　頑固錯題：'+R.hard.slice(0,5).map(function(x){return '<code>'+esc(x[0])+'</code>×'+x[1]}).join('、'):'')+'</small>'+
       '<label>學校教到 <select data-pgu="'+sub+':'+id+'"><option value="auto"'+(S.manual?'':' selected')+'>自動（依行事曆）</option>'+S.units.map(function(u,i){return '<option value="'+i+'"'+(S.manual&&i===S.cal?' selected':'')+'>第 '+(i+1)+' 單元 '+esc(u[1])+'</option>'}).join('')+'</select></label></div>';return h}
   function parentHtml(KIDS,kface,esc){var k0=Store.kid(KIDS[0].id)||{},P0=kidP(k0),sm=sem(new Date(),P0.s2),cap=P0.cap==null?3:+P0.cap;
-    var h='<div class="rost mbp pgp"><h3 class="h">📘 學校進度（英文・數學・自然自動跟進）</h3><p class="mbtip">孩子不用選年級或單元：App 依學校行事曆自動換單元（現在是'+sm.ay+' 學年'+(sm.s==='a'?'上':'下')+'學期第 '+sm.wk+' 週）。一輪答對 90% 以上、單元累計滿 20 題就自動前進；答錯的題目會在之後的單元隔 1、3、7、14 天再出現。每年 8 月底自動升一個年級。</p>'+
+    var h='<div class="rost mbp pgp"><h3 class="h">📘 學校進度（英文・數學・自然自動跟進）</h3><p class="mbtip">孩子不用選年級或單元：App 依學校行事曆自動換單元（現在是'+sm.ay+' 學年'+(sm.s==='a'?'上':'下')+'學期第 '+sm.wk+' 週）。一輪答對 90% 以上、單元累計滿 20 題就自動前進；另外有「挑戰等級」：一輪答對 9 成以上連續 2 次自動升級（題目會混入後面單元、兩步驟計算、更多單字），連續 2 次低於 6 成就降一級，也可以在下面固定。答錯的題目會在之後的單元隔 1、3、7、14 天再出現。每年 8 月底自動升一個年級。</p>'+
       '<div class="pgset"><label>下學期開學日 <input type="date" id="pgS2" value="'+(okDate(P0.s2)?P0.s2:'')+'" placeholder="2027-02-15"></label><label>最多超前學校 <select id="pgCap">'+[0,1,2,3,4,5].map(function(n){return '<option value="'+n+'"'+(n===cap?' selected':'')+'>'+n+' 個單元</option>'}).join('')+'</select></label></div>';
     KIDS.forEach(function(k){var kk=Store.kid(k.id)||{},g=gradeStr(k.id);
-      h+='<div class="mbpr pgr"><b>'+kface(k)+' '+esc(k.short)+'</b><label>現在年級 <select data-gr="'+k.id+'">'+['','二','三','四','五','六'].map(function(x){return '<option value="'+x+'"'+(x&&x===g&&kk.gr?' selected':'')+'>'+(x?x+'年級':'（預設 '+(g||C.MB_DEF[k.id]||'—')+'年級）')+'</option>'}).join('')+'</select></label>'+line(k.id,'m',esc)+line(k.id,'e',esc)+line(k.id,'s',esc)+'</div>'});
+      h+='<div class="mbpr pgr"><b>'+kface(k)+' '+esc(k.short)+'</b><label>現在年級 <select data-gr="'+k.id+'">'+['','二','三','四','五','六'].map(function(x){return '<option value="'+x+'"'+(x&&x===g&&kk.gr?' selected':'')+'>'+(x?x+'年級':'（預設 '+(g||C.MB_DEF[k.id]||'—')+'年級）')+'</option>'}).join('')+'</select></label>'+line(k.id,'m',esc)+line(k.id,'e',esc)+line(k.id,'s',esc)+chSel(k.id,'m')+chSel(k.id,'e')+'</div>'});
     return h+'</div>'}
+  function chSel(id,sub){var c=chObj(id,sub),v=c.au===0?String(chal(id,sub)):'auto';
+    return '<label>'+(sub==='m'?'數學':'英文')+'挑戰 <select data-ch="'+sub+':'+id+'"><option value="auto"'+(v==='auto'?' selected':'')+'>自動（現在：'+CHN[chal(id,sub)]+'）</option>'+CHN.map(function(n,i){return '<option value="'+i+'"'+(v===String(i)?' selected':'')+'>固定：'+n+'</option>'}).join('')+'</select></label>'}
   function parentWire(el,KIDS){var all=KIDS.map(function(k){return k.id});
+    el.querySelectorAll('[data-ch]').forEach(function(s){s.addEventListener('change',function(){var p=s.dataset.ch.split(':'),sub=p[0],id=p[1],v=s.value;
+      mutP(id,function(P){if(!P.ch||typeof P.ch!=='object')P.ch={};var c=P.ch[sub]||{l:0};P.ch[sub]=v==='auto'?{l:+c.l||0,au:1,up:0,dn:0}:{l:+v,au:0,up:0,dn:0}});C.sfx('ok');C.say('挑戰等級改好了！','happy')})});
     el.querySelectorAll('[data-gr]').forEach(function(s){s.addEventListener('change',function(){var v=s.value,id=s.dataset.gr;mutP(id,function(P,k){if(v){k.gr=v;P.gy=sem(new Date(),P.s2).ay}else{delete k.gr;delete P.gy}delete k.mo;delete P.mo;delete P.eo});C.sfx('ok');C.say('年級改好了！','happy')})});
     el.querySelectorAll('[data-pgu]').forEach(function(s){s.addEventListener('change',function(){var p=s.dataset.pgu.split(':'),sub=p[0],id=p[1],v=s.value,S=state(id,sub);if(!S)return;
       mutP(id,function(P,k){var f={m:'mo',e:'eo',s:'so'}[sub];if(v==='auto'){delete P[f];if(sub==='m')delete k.mo}else{P[f]={k:S.sk,o:S.units[+v][2]-S.sem.wk};if(sub==='m')delete k.mo;var D=subD(P,sub,S.sk);D.a=-1}});C.sfx('ok');C.say('學校進度改好了！','happy')})});
@@ -307,9 +331,11 @@ global.ProgressFactory=function(C){
   /* 孩子畫面上的進度小卡（取代年級選擇） */
   function kidChip(id,esc,where){var g=gradeStr(id);if(!g)return '';var m=state(id,'m'),e=state(id,'e'),n=state(id,'s');
     if(where==='sci')return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(n?'<span class="chip pgchip">🔬 '+esc(n.U[1])+'</span>':'<span class="chip pgchip">🔬 自然島全部開放</span>');
-    return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(m?'<span class="chip pgchip">🔢 '+esc(m.U[1])+'</span>':'')+(e?'<span class="chip pgchip">🔤 '+esc(e.U[1].replace(/^Unit \d+ /,''))+'</span>':'')}
+    var cm=chal(id,'m'),ce=chal(id,'e'),cl=where==='math'?cm:ce;
+    return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(m?'<span class="chip pgchip">🔢 '+esc(m.U[1])+'</span>':'')+(e?'<span class="chip pgchip">🔤 '+esc(e.U[1].replace(/^Unit \d+ /,''))+'</span>':'')+
+      '<span class="chip pgchip chl'+cl+'" title="一輪答對 9 成以上連續 2 次會升級">⚡ 挑戰：'+CHN[cl]+'</span>'}
 
-  return {sciOpen:sciOpen,sciWhen:sciWhen,sciCur:sciCur,sciCheck:sciCheck,sciBanner:sciBanner,sciTopics:sciTopics,setStars:function(f){starsFn=f},setNames:function(f){nameFn=f},sem:sem,grade:grade,gradeStr:gradeStr,state:state,skills:skillsAll,gen:gen,pool:pool,others:others,hook:hook,mbHook:mbHook,round0:r0,finish:finish,
+  return {chal:chal,CHN:CHN,sciOpen:sciOpen,sciWhen:sciWhen,sciCur:sciCur,sciCheck:sciCheck,sciBanner:sciBanner,sciTopics:sciTopics,setStars:function(f){starsFn=f},setNames:function(f){nameFn=f},sem:sem,grade:grade,gradeStr:gradeStr,state:state,skills:skillsAll,gen:gen,pool:pool,others:others,hook:hook,mbHook:mbHook,round0:r0,finish:finish,
     mbLV:mbLV,mbGenLv:mbGenLv,mbState:mbState,unitById:unitById,parentHtml:parentHtml,parentWire:parentWire,kidChip:kidChip,
     _SK:SK,_MATH:MATH,_EN:EN,_dayN:dayN};
 };

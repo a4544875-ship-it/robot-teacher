@@ -37,7 +37,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v9/lab-bank-g4.js?v=9.2.0"></script>
 <script src="assets/v9/lab-studio.js?v=9.1.0"></script>
 <script src="assets/v9/lab.js?v=9.3.0"></script>
-<script src="assets/v10/progress.js?v=10.1.0"></script>
+<script src="assets/v10/progress.js?v=16.0.0"></script>
 <script src="assets/v11/esk.js?v=11.2.0"></script>
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=15.6.0"></script>
@@ -1402,7 +1402,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .dpbox{background:#fff;border:2px solid #e3ecf3;border-radius:18px;padding:14px;margin:0 0 14px;box-shadow:0 4px 0 #e3ecf3}.dpbox h3{margin:0 0 10px;font-size:18px}.dpbox h3 small{font-size:12px;color:#6b7f8c;font-weight:700}.dptoday{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:10px}.dptoday div{background:linear-gradient(#fff8e6,#ffefc7);border:2px solid #f2cf7c;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px}.dptoday span{font-weight:800;font-size:14px}.dptoday b{font-size:26px;color:#c66a00;font-variant-numeric:tabular-nums}.dptoday small{font-size:12px;color:#7a6a45;font-weight:700}.dpscroll{overflow-x:auto}.dptab{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}.dptab th,.dptab td{padding:6px 8px;border-bottom:1px solid #edf1f4;text-align:right;white-space:nowrap}.dptab th:first-child,.dptab td:first-child{text-align:left}.dptab th{color:#5b6f7c;font-size:12px}.dptab .dpnow td{font-weight:900;background:#fffaf0}.dptab .dp0{color:#b7c2ca}.dptab .dpna{color:#cfd6db}.dpnote{margin:8px 0 0;font-size:12px;color:#7d8b95}
 .pgsci{display:flex;flex-direction:column;gap:3px;margin:8px 0;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.88);color:#18304a;box-shadow:0 2px 8px rgba(0,0,0,.08)}.pgsci small{opacity:.85;line-height:1.45}
 .sxmap .pglock{filter:grayscale(.85);opacity:.75}.sxmap .sxl.pgnowst{outline:3px solid #ffc531;outline-offset:1px}
-.egrow.pgrow{gap:6px;flex-wrap:wrap}.egrow.pgrow .lab{font-weight:800}.chip.pgchip{cursor:default;pointer-events:none;background:var(--card,#fff);font-size:13px}
+.egrow.pgrow{gap:6px;flex-wrap:wrap}.egrow.pgrow .lab{font-weight:800}.chip.pgchip.chl1{background:#e7f6ff;color:#0b6aa8}.pgchip.chl2{background:#fff1d6;color:#a35a00}.pgchip.chl3{background:#ffe2e2;color:#b3261e}.pgchip{cursor:default;pointer-events:none;background:var(--card,#fff);font-size:13px}
 .pgp .pgset{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 10px}.pgp .pgset label{display:flex;gap:6px;align-items:center;font-size:14px}
 .pgp .pgr{display:flex;flex-direction:column;align-items:stretch;gap:6px}.pgp .pgl{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:12px;background:rgba(127,127,127,.08)}
 .pgp .pgl small{opacity:.85;line-height:1.45}.pgp .pgnow{font-weight:700}.pgp .pgnow em{font-style:normal;color:#e08a00}.pgp .pgl code{font-size:12px;padding:0 3px;border-radius:4px;background:rgba(127,127,127,.15)}
@@ -5020,14 +5020,14 @@ var V2=(function(){
   }
   function windSVG(speed){return '<svg class="v2windmill" viewBox="0 0 150 170" role="img" aria-label="風車模型"><path d="M58 158l7-95h20l7 95" fill="#d7b580" stroke="#5e6f74" stroke-width="3"/><rect x="69" y="135" width="13" height="23" rx="6" fill="#538c8b"/><g class="v2blades" style="--speed:'+(speed?Math.max(.3,4/speed):1000)+'s;'+(!speed?'animation-play-state:paused;':'')+'">'+[0,90,180,270].map(function(a){return '<path d="M75 64L66 16Q72 2 89 10L81 64Z" fill="#e7f7f0" stroke="#498981" stroke-width="3" transform="rotate('+a+' 75 64)"/>'}).join('')+'</g><circle cx="75" cy="64" r="8" fill="#ffc762"/></svg>'}
   function soundVisual(amp,rate){return '<div class="v2soundwave" role="img" aria-label="振動示意，非實際聲波測量" style="--amp:'+amp+'px;--rate:'+rate+'s">'+Array.from({length:16},function(_,i){return '<i style="--i:'+i+'"></i>'}).join('')+'</div>'}
-  function make(s){var m=s.meta,g=s.grade,i=s.index,lv=s.level;
+  function make(s){var m=s.meta,g=s.grade,i=s.index,lv=s.level,csub=m.station?null:m.id==='v2post'?'e':m.sub==='math'?'m':null,CL=csub&&isKid()&&PGX&&PGX.chal?PGX.chal(who,csub):0;g=Math.min(6,g+CL);/* 挑戰等級越高，題目照高年級出 */
     if(m.id==='v2post'){
-      var list=Learn.boost(poolW(),false),remaining=list.filter(function(w){return s.seen.indexOf(w[0])<0}),w=Learn.pick(remaining.length?remaining:list);s.seen.push(w[0]);var stage=g>=3&&i%2===1?'spell':'delivery';
+      var list=Learn.boost(poolW(),false),remaining=list.filter(function(w){return s.seen.indexOf(w[0])<0}),w=Learn.pick(remaining.length?remaining:list);s.seen.push(w[0]);var stage=g>=3&&(CL>=2?i%3!==0:i%2===1)?'spell':'delivery';
       if(stage==='spell')return {kind:'spell',title:'包裹標籤掉了！拼出「'+w[2]+'」。',hint:'點字母放到標籤上；點已放的字母可以收回。',word:w,why:w[0]+' 的意思是「'+w[2]+'」。'};
       return {kind:'delivery',title:'聽聽看，飛船要送哪個包裹？',hint:'按「聽單字」可重聽。需要時也能顯示單字。',word:w,opts:[{label:w[2],icon:w[1],ok:true}].concat(others(w,3).map(function(x){return {label:x[2],icon:x[1],ok:false}})),why:w[0]+' 的意思是「'+w[2]+'」。'};
     }
     if(m.id==='v2fraction'){
-      var den=pick(g<=2?[2,3,4]:g===3?[3,4,6,8]:[4,6,8,10,12]),num=g===2?1:1+rand(den-1),title='把派分成 '+den+' 等份，送出 '+num+'/'+den+' 個派。',why='一個派平均分成 '+den+' 份，每份是 1/'+den+'；'+num+' 份就是 '+num+'/'+den+'。';
+      var den=pick(g<=2?[2,3,4]:g===3?[3,4,6,8]:g===4?[4,6,8,10,12]:[6,8,10,12,16]),num=g===2?1:1+rand(den-1),title='把派分成 '+den+' 等份，送出 '+num+'/'+den+' 個派。',why='一個派平均分成 '+den+' 份，每份是 1/'+den+'；'+num+' 份就是 '+num+'/'+den+'。';
       if(g>=3&&i%3===1){var a=1+rand(den-2),b=1+rand(den-a);num=a+b;title='先送 '+a+'/'+den+'，再送 '+b+'/'+den+'，一共要幾片？';why='分母相同，每片大小相同，分子相加：'+a+'/'+den+' + '+b+'/'+den+' = '+num+'/'+den+'。'}
       if(g>=4&&i%3===2){var from=2+rand(den-1),take=1+rand(from-1);num=from-take;title='有 '+from+'/'+den+' 個派，吃掉 '+take+'/'+den+'，留下幾片？';why='分母不變，分子相減：'+from+'/'+den+' − '+take+'/'+den+' = '+num+'/'+den+'。'}
       if(g>=5&&i%2===1){var pair=pick([[2,3,6],[3,4,12],[2,5,10],[3,6,6],[4,6,12]]);den=pair[2];var left=den/pair[0],right=den/pair[1];num=left+right;title='客人要 1/'+pair[0]+' + 1/'+pair[1]+' 個派，請用 '+den+' 等份的派表示。';why='先通分：1/'+pair[0]+' = '+left+'/'+den+'，1/'+pair[1]+' = '+right+'/'+den+'，相加是 '+num+'/'+den+'。'}
