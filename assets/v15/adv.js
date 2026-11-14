@@ -43,7 +43,10 @@ function addCss(){if(css)return;css=true;var st=document.createElement('style');
 '.sav canvas{display:block;width:100%;height:100%}',
 '.sav-top{position:absolute;left:0;right:0;top:0;padding:calc(8px + env(safe-area-inset-top,0px)) calc(10px + env(safe-area-inset-right,0px)) 8px calc(10px + env(safe-area-inset-left,0px));display:flex;align-items:center;gap:8px;pointer-events:none}',
 '.sav-top>*{pointer-events:auto}.sav-x{border:0;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.92);font-size:22px;font-weight:900;color:#334;box-shadow:0 3px 8px rgba(0,0,0,.2)}',
-'.sav-hp{display:flex;gap:2px;font-size:22px;background:rgba(255,255,255,.88);border-radius:999px;padding:4px 10px;box-shadow:0 3px 8px rgba(0,0,0,.15)}.sav-hp i{font-style:normal;color:#e0574a}.sav-hp i.off{color:#cfcfcf}',
+'.sav-hp i svg{display:block;fill:#e0574a}.sav-hp i.off svg{fill:#d5d5d5}.sav-hp.shake{animation:savshake .4s}@keyframes savshake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}',
+'.sav-flash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(transparent 45%,rgba(255,40,40,.55));opacity:0;transition:opacity .35s}.sav-flash.on{opacity:1;transition:none}',
+'.sav-help{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.sav-help div{background:#f4f8fb;border-radius:14px;padding:8px;text-align:center;font-size:13.5px;line-height:1.4}.sav-help b{display:block;font-size:20px;margin-bottom:2px}',
+'.sav-hp{display:flex;gap:2px;align-items:center;font-size:22px;background:rgba(255,255,255,.88);border-radius:999px;padding:4px 10px;box-shadow:0 3px 8px rgba(0,0,0,.15)}.sav-hp i{font-style:normal;color:#e0574a}.sav-hp i.off{color:#cfcfcf}',
 '.sav-coin{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.88);border-radius:999px;padding:4px 12px;font-weight:900;font-size:17px;box-shadow:0 3px 8px rgba(0,0,0,.15)}.sav-coin b{color:#c98f12}',
 '.sav-prog{flex:1;height:10px;background:rgba(255,255,255,.6);border-radius:6px;overflow:hidden;min-width:60px}.sav-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#46b37a,#ffd75e);transition:width .3s}',
 '.sav-q{position:absolute;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);width:min(92vw,620px);background:rgba(255,255,255,.96);border-radius:18px;padding:10px 14px;box-shadow:0 6px 18px rgba(0,0,0,.2);font-size:clamp(16px,4.2vw,20px);font-weight:800;line-height:1.45;text-align:center;color:#1d2b3a;pointer-events:none}',
@@ -150,13 +153,13 @@ function Game(z,net){this.z=z;this.net=net;this.seed=net?net.seed:Math.floor(Mat
 Game.prototype.run=function(){var g=this,z=g.z,id=C.who(),s=sa(id),lv=lvOf(+s.xp||0);
   g.lv=lv;g.maxHp=4+Math.min(3,Math.floor(lv/3));g.hp=g.maxHp;g.coins=0;g.miss=0;g.hurt=0;g.solved={};g.dmg=0;g.alive=true;g.paused=false;g.tm=[];g.t0=Date.now();
   g.spd=6.4+lv*.18;g.roarR=4.5+lv*.2;
-  ROOT.innerHTML='<div class="sav-top"><button class="sav-x" aria-label="離開">✕</button><div class="sav-hp"></div><div class="sav-coin">🪙 <b>0</b></div><div class="sav-prog"><i></i></div></div><div class="sav-q" hidden></div><div class="sav-tip" style="opacity:0"></div><div class="sav-boss" hidden><img src="'+img(z.boss)+'" alt=""><b>'+esc(z.bn)+'</b><div class="bar"><i style="width:100%"></i></div></div><div class="sav-stick"><i></i></div><div class="sav-btns"><button class="sav-b j">跳</button><button class="sav-b r">吼！</button><button class="sav-b d">衝</button></div>';
+  ROOT.innerHTML='<div class="sav-top"><button class="sav-x" aria-label="離開">✕</button><div class="sav-hp"></div><div class="sav-coin">🪙 <b>0</b></div><div class="sav-prog"><i></i></div></div><div class="sav-flash"></div><div class="sav-q" hidden></div><div class="sav-tip" style="opacity:0"></div><div class="sav-boss" hidden><img src="'+img(z.boss)+'" alt=""><b>'+esc(z.bn)+'</b><div class="bar"><i style="width:100%"></i></div></div><div class="sav-stick"><i></i></div><div class="sav-btns"><button class="sav-b j">跳</button><button class="sav-b r">吼！</button><button class="sav-b d">衝</button></div>';
   var W=ROOT.clientWidth,H=ROOT.clientHeight;
   var ren=new T.WebGLRenderer({antialias:true});ren.setPixelRatio(Math.min(2,global.devicePixelRatio||1)*.85);ren.setSize(W,H);ROOT.insertBefore(ren.domElement,ROOT.firstChild);g.ren=ren;
   var sc=new T.Scene();sc.background=new T.Color(z.sky||0x9fd8ff);sc.fog=new T.Fog(z.sky||0x9fd8ff,40,95);g.sc=sc;
   var cam=new T.PerspectiveCamera(H>W?66:58,W/H,.1,220);g.cam=cam;
   sc.add(new T.HemisphereLight(0xffffff,0x88aa77,.85));var dl=new T.DirectionalLight(0xffffff,.65);dl.position.set(8,20,6);sc.add(dl);
-  g.boxes=[];g.items=[];g.coinsL=[];g.foes=[];g.shots=[];g.cps=[];g.trig=[];g.tex={};
+  g.boxes=[];g.occ=[];g.faded=[];g.items=[];g.coinsL=[];g.foes=[];g.shots=[];g.cps=[];g.trig=[];g.tex={};
   g.build();
   /* 小石獅 */
   var P={x:0,y:0,z:0,vx:0,vy:0,vz:0,on:null,jumps:0,face:'back',flip:false,dash:0,dcd:0,rcd:0,inv:0,carry:null};g.P=P;g.cp={x:0,y:.1,z:-2};g.respawn();
@@ -164,13 +167,14 @@ Game.prototype.run=function(){var g=this,z=g.z,id=C.who(),s=sa(id),lv=lvOf(+s.xp
   g.ring=new T.Mesh(new T.TorusGeometry(1,.12,6,28),new T.MeshBasicMaterial({color:0xffe066,transparent:true,opacity:0}));g.ring.rotation.x=Math.PI/2;sc.add(g.ring);
   g.shadow=new T.Mesh(new T.CircleGeometry(.55,16),new T.MeshBasicMaterial({color:0,transparent:true,opacity:.22}));g.shadow.rotation.x=-Math.PI/2;sc.add(g.shadow);
   g.peers={};g.input();g.hud();
-  g.tip('用左邊搖桿移動，按「跳」可以跳兩段！',4);
+  g.paused=true;(function(){var m=document.createElement('div');m.className='sav-mod';m.innerHTML='<div class="sav-card"><div class="who"><img src="'+img('l_front')+'" alt=""><h3>守護「'+esc(z.n)+'」！<br><small style="font-size:14px;color:#b05a1d">打倒'+esc(z.bn)+'，拿回'+esc(z.tr[1])+'</small></h3></div><div class="sav-help"><div><b>🕹️</b>左手搖桿<br>移動</div><div><b>跳</b>按兩下<br>二段跳</div><div><b>衝</b>撞破木箱<br>撞倒小怪</div><div><b>吼！</b>打怪、<br>吼開對的門</div><div><b>🪙</b>沿路收集<br>家鄉幣</div><div><b>🚩</b>旗子是存檔點<br>掉下去從這裡</div></div><button class="sav-go">出發！</button></div>';ROOT.appendChild(m);m.querySelector('.sav-go').addEventListener('click',function(){m.remove();g.paused=false;C.sfx('win');g.tip('往前走！跳上平台！',2.5)})})();
   if(g.net){C.Net.set({on:1,gm:'socadv',zk:z.k,ph:'run',tok:g.net.tok,rd:0,go:null});g.unNet=C.Net.on(function(){g.netIn()})}
+  g.onVis=function(){if(document.hidden&&!g.paused&&!g.ended){g.ask('暫停中',[['繼續玩',null]])}};document.addEventListener('visibilitychange',g.onVis);
   g.onResize=function(){var w=ROOT.clientWidth,h=ROOT.clientHeight;ren.setSize(w,h);cam.aspect=w/h;cam.fov=h>w?66:58;cam.updateProjectionMatrix()};global.addEventListener('resize',g.onResize);
   ROOT.querySelector('.sav-x').addEventListener('click',function(){g.ask('要離開冒險嗎？這一關的進度不會保存。',[['離開',function(){g.stop();lobby()}],['繼續玩',null]])});
   var last=performance.now();g.loop=function(t){if(!g.alive)return;var dt=Math.min(.05,(t-last)/1000);last=t;if(!g.paused)g.step(dt);g.draw(dt);ren.render(sc,cam);g.raf=requestAnimationFrame(g.loop)};g.raf=requestAnimationFrame(g.loop);
   C.say('出發！小石獅要守護「'+z.n+'」！','happy')};
-Game.prototype.stop=function(){var g=this;g.alive=false;cancelAnimationFrame(g.raf);g.tm.forEach(clearTimeout);global.removeEventListener('resize',g.onResize);g.offIn&&g.offIn();g.unNet&&g.unNet();if(g.net){try{C.Net.off()}catch(e){}}
+Game.prototype.stop=function(){var g=this;g.alive=false;cancelAnimationFrame(g.raf);g.tm.forEach(clearTimeout);global.removeEventListener('resize',g.onResize);document.removeEventListener('visibilitychange',g.onVis);g.offIn&&g.offIn();g.unNet&&g.unNet();if(g.net){try{C.Net.off()}catch(e){}}
   try{g.sc.traverse(function(o){if(o.geometry)o.geometry.dispose();if(o.material){if(o.material.map)o.material.map.dispose();o.material.dispose()}});g.ren.dispose();g.ren.forceContextLoss&&g.ren.forceContextLoss()}catch(e){}};
 
 /* ---------- 貼圖 ---------- */
@@ -181,7 +185,7 @@ Game.prototype.card=function(text,k,w,h,col){var g=this,cv=document.createElemen
     x.fillStyle='#1d2b3a';x.textAlign='center';x.textBaseline='middle';var fs=text.length>14?40:text.length>8?50:60;x.font='900 '+fs+'px "PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif';
     var lines=wrap(x,text,cv.width-56);if(!k&&lines.length>3){fs=36;x.font='900 '+fs+'px sans-serif';lines=wrap(x,text,cv.width-50)}var lh=fs*1.18,y0=ty-(lines.length-1)*lh/2;lines.slice(0,k?2:4).forEach(function(l,i){x.fillText(l,cv.width/2,y0+i*lh)});t.needsUpdate=true}
   paint(null);if(k){var im=new Image();im.onload=function(){paint(im)};im.src=img(k)}
-  var m=new T.Mesh(new T.PlaneGeometry(w,w*cv.height/cv.width),new T.MeshBasicMaterial({map:t,transparent:true,side:T.DoubleSide}));return m};
+  var m=new T.Mesh(new T.PlaneGeometry(w,w*cv.height/cv.width),new T.MeshBasicMaterial({map:t,transparent:true,side:T.DoubleSide}));m.userData.card=1;g.occ.push(m);return m};
 function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
 function wrap(x,t,mw){var out=[],cur='';for(var i=0;i<t.length;i++){var c=t[i];if(x.measureText(cur+c).width>mw&&cur){out.push(cur);cur=c}else cur+=c}if(cur)out.push(cur);return out}
 Game.prototype.sprite=function(keys,hgt){var g=this,mat=new T.SpriteMaterial({map:g.imgTex(keys[0]),transparent:true,alphaTest:.15}),sp=new T.Sprite(mat);sp.scale.set(hgt,hgt,1);sp.userData={keys:keys,h:hgt,cur:keys[0]};
@@ -192,6 +196,7 @@ Game.prototype.setSp=function(sp,k,flip){var g=this,t=g.imgTex(k);if(sp.userData
 
 /* ---------- 關卡 ---------- */
 Game.prototype.box=function(x,y,z,w,h,d,col,o){var g=this,m=new T.Mesh(new T.BoxGeometry(w,h,d),new T.MeshLambertMaterial({color:col}));m.position.set(x,y-h/2,z);g.sc.add(m);
+  var ed=new T.LineSegments(new T.EdgesGeometry(m.geometry),new T.LineBasicMaterial({color:0x3d2a18,transparent:true,opacity:.35}));m.add(ed);g.occ.push(m);
   var b={m:m,x:x,y:y,z:z,w:w/2,h:h,d:d/2,on:true,solid:true};if(o)for(var k in o)b[k]=o[k];g.boxes.push(b);return b};
 Game.prototype.ground=function(x,y,z,w,d,top){var g=this,b=g.box(x,y,z,w,1.2,d,g.z.side||0xb07a4a);var t=new T.Mesh(new T.BoxGeometry(w+.02,.18,d+.02),new T.MeshLambertMaterial({color:top||g.z.top||0x7fd06f}));t.position.set(0,.6,0);t.scale.y=.12;b.m.add(t);return b};
 Game.prototype.coin=function(x,y,z){var g=this,m=new T.Mesh(new T.CylinderGeometry(.32,.32,.08,14),new T.MeshLambertMaterial({color:0xffcf3f,emissive:0x664400}));m.rotation.x=Math.PI/2;m.position.set(x,y+.8,z);g.sc.add(m);g.coinsL.push({m:m,x:x,y:y+.8,z:z,on:true})};
@@ -219,23 +224,23 @@ Game.prototype.build=function(){var g=this,z=g.z,Q=g.Q,R=g.R,sc=g.sc;
   g.bridge=g.box(0,0,-68.2,2.4,.5,6,0xc98b4a,{on:false});g.bridge.m.visible=false;if(!q){g.bridge.on=true;g.bridge.m.visible=true}
   /* 3 箱子和小怪 */
   g.ground(0,0,-81,12,20);g.checkpoint(0,0,-72.5);
-  for(var c2=0;c2<7;c2++){var bx=(R()*2-1)*4.5,bz=-75-R()*12;var cr=g.box(bx,1,bz,1,1,1,0xc98b4a,{crate:1});g.coin(bx,0,bz)}
+  for(var c2=0;c2<7;c2++){var bx=(R()*2-1)*4.5,bz=-75-R()*12;var cr=g.box(bx,1,bz,1,1,1,0xc98b4a,{crate:1,solid:false});g.coin(bx,0,bz)}
   ['s_slime','s_ghost','s_flame'].forEach(function(k,i){g.foe(k,(i-1)*3.5,0,-80-i*2.5,1.3,2)});
   for(var c3=0;c3<5;c3++)g.coin(-4+c3*2,0,-88);
   /* 4 吼開的門 */
   var qd=Q.door,dop=qd?opts(qd,R,3):[];g.doors=[];
-  g.box(-6.6,5.2,-91.5,1.2,5.2,1,0xd9b48a);g.box(6.6,5.2,-91.5,1.2,5.2,1,0xd9b48a);g.box(-2.1,5.2,-91.5,1.4,5.2,1,0xd9b48a);g.box(2.1,5.2,-91.5,1.4,5.2,1,0xd9b48a);g.box(0,5.2,-91.5,14.4,1.2,1,0xc79a6a);
-  dop.forEach(function(v,i){var x=(i-1)*4.2,d=g.box(x,4,-91.5,2.8,4,.6,0x8a5a2b,{door:1,ans:v});var c=g.card(optLabel(qd,v),qd.t==='mi'?v:null,2.6);c.position.set(x,2.4,-90.9);sc.add(c);d.cardM=c;g.doors.push(d)});
+  g.box(-6.6,4.2,-91.5,1.2,4.2,1,0xd9b48a);g.box(6.6,4.2,-91.5,1.2,4.2,1,0xd9b48a);g.box(-2.1,4.2,-91.5,1.4,4.2,1,0xd9b48a);g.box(2.1,4.2,-91.5,1.4,4.2,1,0xd9b48a);
+  dop.forEach(function(v,i){var x=(i-1)*4.2,d=g.box(x,4.2,-91.5,2.8,4.2,.6,0x8a5a2b,{door:1,ans:v});var c=g.card(optLabel(qd,v),qd.t==='mi'?v:null,2.6);c.position.set(x,2.4,-90.9);sc.add(c);d.cardM=c;g.doors.push(d)});
   g.trig.push({z:-86,q:qd,kind:'door',txt:'走到正確的門前面，按「吼！」把門吼開！'});
   /* 5 送東西 */
   g.ground(0,0,-103.5,16,25);g.checkpoint(0,0,-94.5);
   var qs=Q.send,sop=qs?opts(qs,R,3):[];g.houses=[];
-  g.pick=g.card('📜',null,1.1,null,'#fff6c9');g.pick.position.set(0,1.2,-97.5);sc.add(g.pick);g.pickXZ={x:0,z:-97.5};
+  g.pick=g.card('要送的信','iv_letter',1.5,null,'#fff6c9');g.pick.position.set(0,1.2,-97.5);sc.add(g.pick);g.pickXZ={x:0,z:-97.5};
   sop.forEach(function(v,i){var x=(i-1)*5.4,hb=g.box(x,3,-110,3.6,3,3,[0xf2a56b,0x8fc7f0,0xf5d36b][i]);var roof=new T.Mesh(new T.ConeGeometry(2.9,1.6,4),new T.MeshLambertMaterial({color:0xb5463a}));roof.rotation.y=Math.PI/4;roof.position.set(x,3.8,-110);sc.add(roof);
     var dr=new T.Mesh(new T.PlaneGeometry(1.2,1.9),new T.MeshLambertMaterial({color:0x6b3f17}));dr.position.set(x,.95,-108.48);sc.add(dr);var c=g.card(optLabel(qs,v),qs.t==='mi'?v:null,2.8);c.position.set(x,4.9,-108.6);sc.add(c);
     g.houses.push({x:x,z:-107.6,ans:v,box:hb})});
-  g.fence=g.box(0,5,-114.6,16,5,.5,0xffffff,{});g.fence.m.material.transparent=true;g.fence.m.material.opacity=.55;if(!qs){g.fence.on=false;g.fence.m.visible=false}
-  g.trig.push({z:-96,q:qs,kind:'send',txt:'撿起卷軸，送進正確的房子！'});
+  g.fence=g.box(0,4.2,-114.6,16,4.2,.5,0xffffff,{});g.fence.lk=g.card('🔒 把信送對就會打開',null,4,null,'#fff6c9');g.fence.lk.position.set(0,2.4,-114.2);sc.add(g.fence.lk);g.fence.m.material.transparent=true;g.fence.m.material.opacity=.55;if(!qs){g.fence.on=false;g.fence.m.visible=false}
+  g.trig.push({z:-96,q:qs,kind:'send',txt:'撿起地上的信，送進正確的房子！'});
   /* 6 消失的磚塊和升降台 */
   g.ground(0,0,-118,6,6);g.checkpoint(0,0,-117);
   [[-1,-122.6],[1,-126.2],[-1,-129.8],[1,-133.4]].forEach(function(p){var b=g.box(p[0],0,p[1],3.2,.6,3.2,0xf2c46b,{vanish:1,vt:0});g.coin(p[0],0,p[1])});
@@ -246,7 +251,7 @@ Game.prototype.build=function(){var g=this,z=g.z,Q=g.Q,R=g.R,sc=g.sc;
     qq.b.forEach(function(lb,i){var x=i?5:-5,fr=new T.Mesh(new T.BoxGeometry(3,1,3),new T.MeshLambertMaterial({color:i?0xf39a6b:0x5cb3e8,transparent:true,opacity:.75}));fr.position.set(x,Y+.5,-154);sc.add(fr);var c=g.card(lb,null,3.4,null,i?'#ffe4d6':'#dceefc');c.position.set(x,Y+2.2,-155.6);sc.add(c);g.srt.bins.push({x:x,z:-154})});
     g.ped=new T.Mesh(new T.CylinderGeometry(.9,1,.6,12),new T.MeshLambertMaterial({color:0xd9b48a}));g.ped.position.set(0,Y+.3,-147);sc.add(g.ped);g.srtCard=null;g.srtNext();
     g.trig.push({z:-141,q:qq,kind:'sort',txt:'把東西撿起來，搬進正確的籃子！'})}
-  g.gate2=g.box(0,Y+5,-159.6,14,5,.5,0xffffff,{});g.gate2.m.material.transparent=true;g.gate2.m.material.opacity=.55;if(!qq){g.gate2.on=false;g.gate2.m.visible=false}
+  g.gate2=g.box(0,Y+4.2,-159.6,14,4.2,.5,0xffffff,{});g.gate2.lk=g.card('🔒 東西都分對就會打開',null,4,null,'#fff6c9');g.gate2.lk.position.set(0,Y+2.4,-159.2);sc.add(g.gate2.lk);g.gate2.m.material.transparent=true;g.gate2.m.material.opacity=.55;if(!qq){g.gate2.on=false;g.gate2.m.visible=false}
   /* 8 魔王 */
   g.ground(0,Y,-163,4,4,z.path);[[0,2.1,-167],[0,1,-170.5]].forEach(function(p){g.ground(p[0],p[1],p[2],4,3,z.path)});
   var ar=new T.Mesh(new T.CylinderGeometry(13,13,1.2,32),new T.MeshLambertMaterial({color:z.side||0xb07a4a}));ar.position.set(0,-.6,-186);sc.add(ar);var at=new T.Mesh(new T.CylinderGeometry(13.02,13.02,.18,32),new T.MeshLambertMaterial({color:0xe8d3a3}));at.position.set(0,.01,-186);sc.add(at);
@@ -278,7 +283,7 @@ Game.prototype.jump=function(){var P=this.P;if(this.paused)return;if(P.on||P.coy
 Game.prototype.dash=function(){var P=this.P;if(this.paused||P.dcd>0)return;P.dash=.26;P.dcd=.9;C.sfx('pop')};
 Game.prototype.roar=function(){var g=this,P=g.P;if(g.paused||P.rcd>0)return;P.rcd=.7;g.ringT=.45;C.sfx('win');
   var R=g.roarR;
-  g.foes.forEach(function(f){if(f.alive&&Math.hypot(f.x-P.x,f.z-P.z)<R&&Math.abs(f.y-P.y)<3){f.alive=false;g.sc.remove(f.sp);g.coins+=3;g.xpAdd(8);g.hud();g.tip('打倒小搗蛋！+3 家鄉幣',1.6);try{C.confetti(null,10)}catch(e){}}});
+  g.foes.forEach(function(f){if(f.alive&&Math.hypot(f.x-P.x,f.z-P.z)<R&&Math.abs(f.y-P.y)<3){f.alive=false;g.sc.remove(f.sp);g.burst(f.x,f.y+.6,f.z,0xb07ad8);g.coins+=3;g.xpAdd(8);g.hud();g.tip('打倒小搗蛋！+3 家鄉幣',1.6);try{C.confetti(null,10)}catch(e){}}});
   g.boxes.forEach(function(b){if(b.crate&&b.on&&Math.hypot(b.x-P.x,b.z-P.z)<R*.6){b.on=false;g.sc.remove(b.m)}});
   if(g.doors&&!g.solved.door){var best=null;g.doors.forEach(function(d){if(!d.on||d.locked)return;var dd=Math.hypot(d.x-P.x,d.z-P.z);if(dd<4.2&&(!best||dd<best.dd))best={d:d,dd:dd}});
     if(best){var d=best.d,q=g.Q.door;if(d.ans===q.a){g.solve('door',true);}else{d.locked=true;d.m.material.color.set(0x9a3a2a);g.hit(1,'吼錯門了！');g.wrongQ(q)}}}
@@ -310,7 +315,9 @@ Game.prototype.step=function(dt){var g=this,P=g.P,k=g.keys,t=performance.now()/1
   P.y=ny;
   if(P.y<-8){g.hit(1,'掉下去了！');g.respawn();return}
   /* 金幣 */
-  g.coinsL.forEach(function(c){if(!c.on)return;c.m.rotation.z+=dt*3;if(Math.abs(c.x-P.x)<.8&&Math.abs(c.z-P.z)<.8&&Math.abs(c.y-(P.y+.7))<1.1){c.on=false;g.sc.remove(c.m);g.coins++;g.xpAdd(2);C.sfx('pop');g.hud()}});
+  g.coinsL.forEach(function(c){if(!c.on)return;c.m.rotation.z+=dt*3;if(Math.abs(c.x-P.x)<.8&&Math.abs(c.z-P.z)<.8&&Math.abs(c.y-(P.y+.7))<1.1){c.on=false;g.sc.remove(c.m);g.coins++;g.xpAdd(2);C.sfx('pop');g.hud();g.burst(c.x,c.y,c.z,0xffd75e)}});
+  /* 碰到木箱就撞破 */
+  g.boxes.forEach(function(b){if(b.crate&&b.on&&Math.abs(P.x-b.x)<.95&&Math.abs(P.z-b.z)<.95&&P.y<b.y+.2){b.on=false;g.sc.remove(b.m);C.sfx('pop');g.coins++;g.hud();g.burst(b.x,b.y-.5,b.z,0xc98b4a)}});
   /* 檢查點 */
   g.cps.forEach(function(c){if(!c.on&&Math.abs(P.z-c.z)<1.5&&Math.abs(P.y-c.y)<2){c.on=true;c.f.material.color.set(0x46b37a);g.cp={x:c.x,y:c.y+.1,z:c.z};g.tip('存檔點！掉下去會從這裡重來',1.6)}});
   /* 題目觸發 */
@@ -327,7 +334,7 @@ Game.prototype.step=function(dt){var g=this,P=g.P,k=g.keys,t=performance.now()/1
   /* 平台題：掉落的平台 */
   g.boxes.forEach(function(b){if(b.fall){b.fv=(b.fv||0)-14*dt;b.y+=b.fv*dt;b.m.position.y=b.y-b.h/2;if(b.cardM)b.cardM.position.y+=b.fv*dt;if(b.y<-12){b.on=false;b.fall=false;b.m.visible=false;if(b.cardM)b.cardM.visible=false}}});
   /* 送東西 */
-  if(g.Q.send&&!g.solved.send&&g.pick){if(!P.carry&&g.pickXZ&&Math.hypot(P.x-g.pickXZ.x,P.z-g.pickXZ.z)<1.1){P.carry='scroll';g.tip('拿到卷軸了！送進正確的房子！',2)}
+  if(g.Q.send&&!g.solved.send&&g.pick){if(!P.carry&&g.pickXZ&&Math.hypot(P.x-g.pickXZ.x,P.z-g.pickXZ.z)<1.1){P.carry='scroll';g.tip('拿到信了！送進正確的房子！',2)}
     if(P.carry==='scroll'){g.pick.position.set(P.x,P.y+2.3,P.z);g.houses.forEach(function(h){if(Math.abs(P.x-h.x)<1.1&&P.z<h.z+.6&&P.z>h.z-.8){if(h.ans===g.Q.send.a){P.carry=null;g.sc.remove(g.pick);g.pick=null;g.solve('send',true)}else if(!h.no){h.no=1;g.wrongQ(g.Q.send);g.miss++;C.sfx('no');g.tip('不是這一間！再想一想。',2);P.z+=1.6}}})}}
   /* 分類 */
   var S=g.srt;if(S&&S.i<S.items.length&&g.srtCard){var Y=3.2;if(!S.held&&Math.hypot(P.x,P.z+147)<1.4&&Math.abs(P.y-Y)<1){S.held=true;C.sfx('pop')}
@@ -346,26 +353,26 @@ Game.prototype.smash=function(x,y,z){var g=this;g.boxes.forEach(function(b){if(b
 Game.prototype.land=function(b){var g=this;if(b.vanish&&b.vt<=0)b.vt=.7;
   if(b.qid==='plat'&&!g.solved.plat&&!b.tried){var q=g.Q.plat;if(b.ans===q.a){g.solve('plat',true)}else{b.tried=true;b.fall=true;b.fv=0;g.wrongQ(q);g.miss++;C.sfx('no');g.tip('不是這個！平台掉下去了……再試一次',2.2)}}};
 Game.prototype.respawn=function(){var P=this.P,c=this.cp;P.x=c.x;P.y=c.y+.5;P.z=c.z;P.vx=P.vy=P.vz=0;P.inv=1.2;if(P.carry==='scroll'&&this.pick){P.carry=null;this.pick.position.set(0,1.2,-97.5)}if(this.srt)this.srt.held=false};
-Game.prototype.hit=function(n,msg,src){var g=this,P=g.P;if(P.inv>0)return;g.hp-=n;g.hurt+=n;P.inv=1.3;C.sfx('no');g.tip(msg,1.8);if(src){var dx=P.x-src.x,dz=P.z-src.z,l=Math.hypot(dx,dz)||1;P.x+=dx/l*1.2;P.z+=dz/l*1.2}P.vy=6;
+Game.prototype.hit=function(n,msg,src){var g=this,P=g.P;if(P.inv>0)return;g.hp-=n;g.hurt+=n;P.inv=1.3;C.sfx('no');g.tip(msg,1.8);var fl=ROOT.querySelector('.sav-flash'),hp=ROOT.querySelector('.sav-hp');fl.classList.add('on');hp.classList.remove('shake');void hp.offsetWidth;hp.classList.add('shake');setTimeout(function(){fl.classList.remove('on')},60);try{navigator.vibrate&&navigator.vibrate(80)}catch(e){}if(src){var dx=P.x-src.x,dz=P.z-src.z,l=Math.hypot(dx,dz)||1;P.x+=dx/l*1.2;P.z+=dz/l*1.2}P.vy=6;
   if(g.hp<=0){g.hp=g.maxHp;g.tip('愛心用完了，從存檔點重新開始！',2.4);g.respawn()}g.hud()};
 Game.prototype.wrongQ=function(q){if(C.isKid()&&q)try{SOC.markQ(C.who(),q,false)}catch(e){}};
 Game.prototype.solve=function(kind,first,remote){var g=this;if(g.solved[kind])return;g.solved[kind]=1;var q=g.Q[kind];
   if(!remote){if(C.isKid()&&q&&first)try{SOC.markQ(C.who(),q,true)}catch(e){}C.award(first?2:1);g.xpAdd(20)}
   C.sfx('win');try{C.confetti(null,24)}catch(e){}g.tip(remote?'夥伴答對了！一起前進！':'答對了！路打開了！',2);ROOT.querySelector('.sav-q').hidden=true;
   if(kind==='plat'){g.bridge.on=true;g.bridge.m.visible=true;var cb=g.plat.filter(function(b){return b.ans===q.a})[0];if(cb){g.bridge.x=cb.x;g.bridge.m.position.x=cb.x;cb.m.material.color.set(0x46b37a)}g.plat.forEach(function(b){if(b.ans!==q.a&&!b.fall){b.fall=true;b.fv=0}})}
-  if(kind==='door'){g.doors.forEach(function(d){if(d.ans===q.a){d.on=false;d.m.visible=false;if(d.cardM)d.cardM.position.y+=3}})}
-  if(kind==='send'||remote&&kind==='send'){g.fence.on=false;g.fence.m.visible=false;if(g.pick){g.sc.remove(g.pick);g.pick=null;g.P.carry=null}}
-  if(kind==='sort'){g.gate2.on=false;g.gate2.m.visible=false;if(g.srtCard){g.sc.remove(g.srtCard);g.srtCard=null}if(g.srt)g.srt.i=g.srt.items.length}
+  if(kind==='door'){g.doors.forEach(function(d){if(d.ans===q.a){d.on=false;d.m.visible=false;if(d.cardM)d.cardM.visible=false}})}
+  if(kind==='send'){g.fence.on=false;g.fence.m.visible=false;if(g.fence.lk)g.fence.lk.visible=false;if(g.pick){g.sc.remove(g.pick);g.pick=null;g.P.carry=null}}
+  if(kind==='sort'){g.gate2.on=false;g.gate2.m.visible=false;if(g.gate2.lk)g.gate2.lk.visible=false;if(g.srtCard){g.sc.remove(g.srtCard);g.srtCard=null}if(g.srt)g.srt.i=g.srt.items.length}
   g.hud()};
 Game.prototype.showQ=function(tr){var el=ROOT.querySelector('.sav-q'),q=tr.q;el.hidden=false;el.innerHTML='<small>'+esc(tr.txt)+'</small>'+(q.p?'<img src="'+img(q.p)+'" alt="" style="display:block;margin:4px auto;max-height:22vh;max-width:70%;border-radius:12px">':'')+esc(q.q);C.say(q.q,'happy')};
 /* ---------- 魔王 ---------- */
-Game.prototype.spawnBoss=function(){var g=this,c=g.bossCfg,sp=g.sprite([c.k],3.6);sp.position.set(c.x,1.8,c.z);g.sc.add(sp);g.boss={sp:sp,x:c.x,z:c.z,hp:c.hp,max:c.hp,alive:true,t:0,shoot:2,stun:0,hits:0,qi:0};
+Game.prototype.spawnBoss=function(){var g=this,c=g.bossCfg,sp=g.sprite([c.k],3.6);sp.position.set(c.x,1.8,c.z);g.sc.add(sp);g.boss={sw:sp.scale.x,sh:sp.scale.y,sp:sp,x:c.x,z:c.z,hp:c.hp,max:c.hp,alive:true,t:0,shoot:2,stun:0,hits:0,qi:0};
   ROOT.querySelector('.sav-boss').hidden=false;ROOT.querySelector('.sav-q').hidden=true;g.tip(g.z.bn+'出現了！躲開攻擊，靠近牠按「吼！」',3);C.say(g.z.bn+'出現了！','oops');g.cp={x:0,y:.1,z:-176}};
 Game.prototype.bossStep=function(dt,P){var g=this,b=g.boss;if(!b.alive)return;b.t+=dt;
   var dx=P.x-b.x,dz=P.z-b.z,l=Math.hypot(dx,dz)||1;if(l>3.2&&!b.stun){b.x+=dx/l*dt*1.6;b.z+=dz/l*dt*1.6}var dr=Math.hypot(b.x-g.arena.x,b.z-g.arena.z);if(dr>10){b.x=g.arena.x+(b.x-g.arena.x)/dr*10;b.z=g.arena.z+(b.z-g.arena.z)/dr*10}
   b.sp.position.set(b.x,1.8+Math.abs(Math.sin(b.t*3))*.25,b.z);
   if(b.hurtT>0){b.hurtT-=dt;b.sp.material.color.setRGB(1,.5,.5)}else b.sp.material.color.setRGB(1,1,1);
-  b.shoot-=dt;if(b.shoot<=0&&!b.stun){b.shoot=Math.max(1.1,2.2-(b.max-b.hp)*.1);var n=b.hp<5?3:1;for(var i=0;i<n;i++){var a=Math.atan2(dz,dx)+(i-(n-1)/2)*.35,m=new T.Mesh(new T.SphereGeometry(.42,10,8),new T.MeshLambertMaterial({color:0x9b59d0,emissive:0x331144}));m.position.set(b.x,1.6,b.z);g.sc.add(m);g.shots.push({m:m,x:b.x,y:1.6,z:b.z,vx:Math.cos(a)*7,vz:Math.sin(a)*7,r:.42,life:3})}}
+  b.shoot-=dt;var sc0=b.shoot<.45&&!b.stun?1+(.45-b.shoot)*.5:1;b.sp.scale.set(b.sw*sc0,b.sh*sc0,1);if(b.shoot<=0&&!b.stun){b.shoot=Math.max(1.1,2.2-(b.max-b.hp)*.1);var n=b.hp<5?3:1;for(var i=0;i<n;i++){var a=Math.atan2(dz,dx)+(i-(n-1)/2)*.35,m=new T.Mesh(new T.SphereGeometry(.42,10,8),new T.MeshLambertMaterial({color:0x9b59d0,emissive:0x331144}));m.position.set(b.x,1.6,b.z);g.sc.add(m);g.shots.push({m:m,x:b.x,y:1.6,z:b.z,vx:Math.cos(a)*7,vz:Math.sin(a)*7,r:.42,life:3})}}
   if(P.inv<=0&&l<1.6&&Math.abs(P.y)<1.5)g.hit(1,'被'+g.z.bn+'撞到了！',b)};
 Game.prototype.bossHit=function(n,remote){var g=this,b=g.boss;if(!b||!b.alive)return;b.hp-=n;if(!remote)g.dmg+=n;b.hurtT=.25;b.hits+=n;C.sfx('pop');var dx=b.x-g.P.x,dz=b.z-g.P.z,l=Math.hypot(dx,dz)||1;b.x+=dx/l*1.5;b.z+=dz/l*1.5;g.bossBar();
   if(b.hp<=0){g.bossDie();return}
@@ -399,10 +406,18 @@ Game.prototype.draw=function(dt){var g=this,P=g.P,cam=g.cam;
   var pt=(ROOT.clientHeight>ROOT.clientWidth),k2=pt?1.3:1;var tx=P.x*.5,ty=P.y+4.6*k2,tz=P.z+8.2*k2;cam.position.x+=(tx-cam.position.x)*Math.min(1,dt*5);cam.position.y+=(ty-cam.position.y)*Math.min(1,dt*4);cam.position.z+=(tz-cam.position.z)*Math.min(1,dt*6);cam.lookAt(P.x*.8,P.y+1.2,P.z-4);
   if(g.pick&&!P.carry)g.pick.rotation.y+=dt*2;if(g.srtCard&&!(g.srt&&g.srt.held))g.srtCard.rotation.y=Math.sin(performance.now()/500)*.3;
   for(var c in g.peers){var o=g.peers[c];o.x+=(o.tx-o.x)*Math.min(1,dt*10);o.y+=(o.ty-o.y)*Math.min(1,dt*10);o.z+=(o.tz-o.z)*Math.min(1,dt*10);g.setSp(o.sp,o.run?'l_run':o.f==='side'?'l_side':o.f==='front'?'l_front':'l_back',o.fl);o.sp.position.set(o.x,o.y+.78,o.z);o.nm.position.set(o.x,o.y+2.3,o.z);o.nm.quaternion.copy(cam.quaternion)}
+  g.fc=(g.fc||0)+1;if(g.fc%2===0)g.fade();
+  if(g.parts)g.parts=g.parts.filter(function(p){p.l-=dt;p.vy-=18*dt;p.m.position.x+=p.vx*dt;p.m.position.y+=p.vy*dt;p.m.position.z+=p.vz*dt;p.m.rotation.x+=dt*6;if(p.l<=0){g.sc.remove(p.m);return false}return true});
   ROOT.querySelector('.sav-b.d').classList.toggle('cd',P.dcd>0);ROOT.querySelector('.sav-b.r').classList.toggle('cd',P.rcd>0);
   if(g.tipT>0){g.tipT-=dt;if(g.tipT<=0)ROOT.querySelector('.sav-tip').style.opacity=0}};
+Game.prototype.burst=function(x,y,z,col){var g=this;g.parts=g.parts||[];for(var i=0;i<7;i++){var m=new T.Mesh(new T.BoxGeometry(.22,.22,.22),new T.MeshLambertMaterial({color:col||0xffcf3f}));m.position.set(x,y,z);g.sc.add(m);var a=Math.random()*Math.PI*2;g.parts.push({m:m,vx:Math.cos(a)*3,vy:4+Math.random()*3,vz:Math.sin(a)*3,l:.7})}};
+Game.prototype.fade=function(){var g=this;if(!g.ray)g.ray=new T.Raycaster();var P=g.P,cam=g.cam,tgt=new T.Vector3(P.x,P.y+.8,P.z),dir=tgt.clone().sub(cam.position),dist=dir.length();dir.normalize();g.ray.set(cam.position,dir);g.ray.far=Math.max(.1,dist-.5);
+  var hit=g.ray.intersectObjects(g.occ,false).map(function(h){return h.object});
+  g.occ.forEach(function(m){if(m.userData.card&&m.visible&&hit.indexOf(m)<0){var wz=m.position.z;if(m.parent&&m.parent!==g.sc)return;if(wz>P.z+.6&&wz<cam.position.z+.5)hit.push(m)}});
+  g.faded.forEach(function(m){if(hit.indexOf(m)<0){m.material.opacity=m.userData.op!==undefined?m.userData.op:1;m.material.transparent=!!m.userData.tr;m.material.depthWrite=true;m.children.forEach(function(c){if(c.material&&c.type!=='LineSegments'){c.material.opacity=1;c.material.transparent=false}})}});
+  hit.forEach(function(m){if(!m.visible)return;if(m.userData.tr===undefined){m.userData.tr=m.material.transparent;m.userData.op=m.material.opacity}m.material.transparent=true;m.material.opacity=.25;m.material.depthWrite=false;m.children.forEach(function(c){if(c.material&&c.type!=='LineSegments'){c.material.transparent=true;c.material.opacity=.25}})});g.faded=hit};
 Game.prototype.tip=function(t,s){var el=ROOT&&ROOT.querySelector('.sav-tip');if(!el)return;el.textContent=t;el.style.opacity=1;this.tipT=s||2};
-Game.prototype.hud=function(){var g=this;if(!ROOT)return;var h='';for(var i=0;i<g.maxHp;i++)h+='<i class="'+(i<g.hp?'':'off')+'">♥</i>';ROOT.querySelector('.sav-hp').innerHTML=h;ROOT.querySelector('.sav-coin b').textContent=g.coins};
+Game.prototype.hud=function(){var g=this;if(!ROOT)return;var h='';for(var i=0;i<g.maxHp;i++)h+='<i class="'+(i<g.hp?'':'off')+'"><svg viewBox=\"0 0 24 22\" width=\"24\" height=\"22\"><path d=\"M12 21s-8.5-5.4-10.6-10.3C-.3 6.4 2.6 1.5 7 1.5c2.3 0 3.9 1.3 5 3 1.1-1.7 2.7-3 5-3 4.4 0 7.3 4.9 5.6 9.2C20.5 15.6 12 21 12 21z\"/></svg></i>';ROOT.querySelector('.sav-hp').innerHTML=h;ROOT.querySelector('.sav-coin b').textContent=g.coins};
 Game.prototype.prog=function(){var g=this,p=Math.max(0,Math.min(1,-g.P.z/190));if(Math.abs(p-(g.lp||0))>.01){g.lp=p;ROOT.querySelector('.sav-prog i').style.width=Math.round(p*100)+'%'}};
 Game.prototype.ask=function(t,btns){var g=this;g.paused=true;var m=document.createElement('div');m.className='sav-mod';m.innerHTML='<div class="sav-card"><h3>'+esc(t)+'</h3><div style="display:flex;gap:10px;justify-content:center">'+btns.map(function(b,i){return '<button class="sav-go'+(i?' s':'')+'" data-i="'+i+'">'+esc(b[0])+'</button>'}).join('')+'</div></div>';ROOT.appendChild(m);
   m.querySelectorAll('[data-i]').forEach(function(b){b.addEventListener('click',function(){m.remove();g.paused=false;var f=btns[+b.dataset.i][1];if(f)f()})})};
