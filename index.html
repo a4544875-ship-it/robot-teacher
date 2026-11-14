@@ -91,7 +91,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v16/expert-soc.js?v=16.3.0"></script>
 <script src="assets/v16/expert-en.js?v=16.3.0"></script>
 <script src="assets/v17/cover.js?v=17.0.0"></script>
-<script src="assets/v18/gate.js?v=18.1.0"></script>
+<script src="assets/v18/gate.js?v=18.2.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -1688,7 +1688,10 @@ var Store=(function(){
   function emit(){if(emitT)return;emitT=setTimeout(function(){emitT=0;subs.forEach(function(f){try{f()}catch(e){}})},40)}
   function warn(t){var n=$('#syncNote');n.textContent=t;n.hidden=false}
   function failWarn(){if(warned)return;warned=true;warn('⚠ 雲端同步出了點問題，紀錄暫時只存在這台裝置。')}
-  var slT=0;function saveNow(){if(slT){clearTimeout(slT);slT=0}ls.set('rt-data',{kids:kids,activity:activity.slice(0,200),pin:pin,clearedAt:clearedAt,roster:KIDS,accts:accts})}function saveLocal(){if(!slT)slT=setTimeout(saveNow,300)}try{addEventListener('pagehide',function(){if(slT)saveNow()});document.addEventListener('visibilitychange',function(){if(document.hidden&&slT)saveNow()})}catch(e){}
+  /* 存到手機的活動紀錄要精簡：以前每次資料一變就把 200 筆、每筆最長 4000 字的回答整包存一次，資料越多越慢、還可能塞爆手機儲存空間。
+     有連上雲端時，完整紀錄在雲端，手機只留最近 60 筆、回答截短；沒連雲端時手機是唯一的備份，保留 200 筆、回答最多 1500 字。 */
+  function localAct(){var n=db?60:200,qa=db?300:1500,aa=db?400:1500;return activity.slice(0,n).map(function(x){if(!x||((!x.q||x.q.length<=qa)&&(!x.a||x.a.length<=aa)))return x;var o=Object.assign({},x);if(o.q&&o.q.length>qa)o.q=o.q.slice(0,qa)+'…';if(o.a&&o.a.length>aa)o.a=o.a.slice(0,aa)+'…';return o})}
+  var slT=0;function saveNow(){if(slT){clearTimeout(slT);slT=0}ls.set('rt-data',{kids:kids,activity:localAct(),pin:pin,clearedAt:clearedAt,roster:KIDS,accts:accts})}function saveLocal(){if(!slT)slT=setTimeout(saveNow,300)}try{addEventListener('pagehide',function(){if(slT)saveNow()});document.addEventListener('visibilitychange',function(){if(document.hidden&&slT)saveNow()})}catch(e){}
   (function(){var d=ls.get('rt-data',null);if(d){applyRoster(d.roster);for(var kk in (d.kids||{}))if(kidOf(kk))kids[kk]=knorm(d.kids[kk]);activity=Array.isArray(d.activity)?d.activity:[];pin=d.pin||null;clearedAt=+d.clearedAt||0;accts=Array.isArray(d.accts)?d.accts:[]}})();
   function wireDb(d){
     db=d;
@@ -1872,7 +1875,8 @@ function showTab(t){
 document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click',function(){sfx('tap');showTab(b.dataset.tab)})});
 Store.onChange(function(){
   updatePill();
-  if(!gate.hidden&&gateMode==='pick')renderGate();
+  /* 選帳號畫面：只更新有變的卡片，不整頁重畫（整頁重畫會讓面板一直閃、一直跳） */
+  if(!gate.hidden&&gateMode==='pick'&&!(window.GateV18&&GateV18.ready()&&GateV18.refresh&&GateV18.refresh()))renderGate();
   /* 只有還停在「連線中」的時候才重畫，不然每次雲端資料更新都會把輸入框洗掉、手機鍵盤一直跳 */
   if(!gate.hidden&&gateMode==='pin'&&Store.pinLoaded()&&!$('#pinIn'))renderPin();
   if(!PANELS.rank.hidden)renderRank();
