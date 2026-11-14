@@ -3,6 +3,8 @@
    家鄉幣跟 3D 冒險共用 k.sa.c */
 (function(global){'use strict';
 global.TownFactory=function(C){
+/* 範例試玩：全部先打開，上線前改回 false */
+var DEMO=true;
 var SOC=C.SOC,N=12,TW=96,TH=48,PT=230,PB=90,SW=N*TW+40,SH=N*TH+PT+PB,OX=SW/2,OY=PT;
 function img(k){return SOC.img('tn_'+k)}
 var AR={"cloud_lock":0.645,"town_base":0.607,"home_1":0.965,"home_2":1.177,"home_3":1.197,"school_1":0.953,"school_2":0.762,"school_3":0.819,"shop_1":1.093,"shop_2":1.162,"shop_3":1.017,"library":1.036,"center":0.976,"radio":1.212,"paifang":0.825,"rd_dirt":0.75,"rd_gravel":0.781,"rd_stone":0.796,"rd_asphalt":0.772,"tile_water":0.745,"lamp_1":1.761,"lamp_2":2.909,"lamp_3":1.631,"tlight":2.22,"train_f":0.828,"train_b":0.911,"bridge":0.652,"wtower":1.422,"fountain":0.863,"wind_body":1.523,"wind_blade":1.039,"wstation":0.764,"tree_a":1.097,"tree_b":1.473,"flowerbed":0.794,"park":0.715,"ranch":0.768,"bfgarden":0.874,"clocktower":1.323,"observatory":1.0,"ic_coin":1.016,"ic_road":1.123,"ic_power":1.351,"ic_water":1.571,"ic_prosper":1.388,"ic_up":1.46,"ic_build":1.419,"ic_store":1.192,"pp_boy_f":1.925,"pp_boy_b":1.958,"pp_girl_f":1.389,"pp_girl_b":1.43,"pp_grandpa_f":1.763,"pp_grandpa_b":1.74,"pp_mom_f":1.661,"pp_mom_b":1.945,"car_f":0.861,"car_b":0.925,"bus_f":0.893,"bus_b":1.029,"scooter_f":1.575,"scooter_b":1.959,"bike_f":1.462,"bike_b":1.844,"stall":1.051,"bench":0.849,"mailbox":0.876,"recycle":0.744,"flags":0.725,"planter":0.967,"planter2":1.123,"l2_front":1.184,"l2_back":1.279,"l2_side":1.058,"l2_run":1.004,"plinth":0.64,"viewdeck":1.165,"sanheyuan":0.801,"temple_1":1.061,"oldstreet":0.807,"temple_2":0.966,"factory":0.86,"stage":0.713,"farm":0.716,"port":0.573,"tower":1.538,"st_bus":0.945,"st_train":0.777,"st_hsr":0.714,"museum":0.806,"lion_statue":1.015,"town_entry":0.733};
@@ -103,7 +105,8 @@ function famNeed(f,lv){var us=FAM[f],nm=us.map(function(u){return '「'+UN[u]+'�
   return '社會島'+nm+'每一課都拿到 3 顆星'}
 function sciLv(id){try{return C.sciLv(id)|0}catch(e){return 0}}
 function sciSt(id,k){try{return !!C.sciStamp(id,k)}catch(e){return false}}
-function unl(id,it){
+function unl(id,it){if(DEMO){var r=unl0(id,it);return {ok:true,why:r.why,demo:!r.ok}}return unl0(id,it)}
+function unl0(id,it){
   if(it.c==='soc'){var l=famLv(id,it.f);return {ok:l>=it.lv,why:famNeed(it.f,it.lv)}}
   if(it.c==='sci'){var ok=true,w=[];if(it.st){if(!sciSt(id,it.st))ok=false;w.push('自然島「'+STN[it.st]+'」3 關都過關')}if(it.sl){if(sciLv(id)<it.sl)ok=false;w.push('自然等級升到 Lv.'+(it.sl+1)+'「'+SLV[it.sl]+'」')}return {ok:ok,why:w.join('，而且')}}
   if(it.c==='mark'){if(!it.zone)return {ok:true,why:''};var t=((kid()||{}).sa||{}).t||{};return {ok:!!t[it.zone],why:'3D 冒險「'+ZT[it.zone][2]+'」守護成功'}}
@@ -116,9 +119,9 @@ function coins(){var k=kid()||{};return +((k.sa||{}).c)||0}
 function addCoins(n){C.Store.mut(C.who(),function(k){var o=k.sa&&typeof k.sa==='object'?k.sa:(k.sa={});o.z=o.z||{};o.t=o.t||{};o.c=Math.max(0,(+o.c||0)+n)})}
 function totPts(id){var a=0;try{a+=+SOC.pts(id)||0}catch(e){}try{a+=+C.sciPts(id)||0}catch(e){}return a}
 var LAND=[[0,6],[300,8],[900,10],[1800,12]];
-function landOf(id){var p=totPts(id),n=6,nx=null;LAND.forEach(function(l,i){if(p>=l[0])n=l[1];else if(!nx)nx=l});return {n:n,o:(N-n)/2,p:p,nx:nx}}
-function roadMax(id){return 10+6*sciLv(id)}
-function waterMax(id){return sciSt(id,'water')?6+2*sciLv(id):0}
+function landOf(id){var p=totPts(id),n=6,nx=null;if(DEMO)p=Math.max(p,900);LAND.forEach(function(l,i){if(p>=l[0])n=l[1];else if(!nx)nx=l});return {n:n,o:(N-n)/2,p:p,nx:nx}}
+function roadMax(id){return DEMO?40:10+6*sciLv(id)}
+function waterMax(id){return DEMO?14:sciSt(id,'water')?6+2*sciLv(id):0}
 function roadIm(id){var l=sciLv(id);return l>=4?'rd_asphalt':l>=3?'rd_stone':l>=2?'rd_gravel':'rd_dirt'}
 var PRL=[[0,'小小村落'],[15,'熱鬧小鎮'],[40,'繁榮城鎮'],[80,'家鄉大城'],[130,'夢想之都']];
 
@@ -322,7 +325,7 @@ function closeSheet(){var s=V&&V.el.querySelector('.tn-sheet');if(s)s.remove()}
 function catalog(){closeSheet();var id=V.id,T=V.T,sh=document.createElement('div');sh.className='tn-sheet';
   function body(){var h='';ORD.forEach(function(k){var it=IT[k];if(it.c!==tab)return;var u=unl(id,it),n=count(k),full=n>=it.mx,isNew=u.ok&&!T.seen[k]&&it.c!=='deco';
       if(it.zone&&!u.ok&&!(kid()&&((kid().sa||{}).n)))return;
-      var sub=!u.ok?'還沒解鎖':it.p?'<span class="pr"><img src="'+img('ic_coin')+'" alt="">'+it.p+'</span>':'已放 '+n+' / '+it.mx;
+      var sub=!u.ok?'還沒解鎖':u.demo?'試玩先打開':it.p?'<span class="pr"><img src="'+img('ic_coin')+'" alt="">'+it.p+'</span>':'已放 '+n+' / '+it.mx;
       if(u.ok&&it.p)sub+='<small>已放 '+n+' / '+it.mx+'</small>';
       h+='<button class="tn-it'+(u.ok?'':' lock')+(isNew?' new':'')+'" data-k="'+k+'"'+(u.ok&&full?' aria-disabled="true"':'')+'><img src="'+img(it.im)+'" alt=""><b>'+esc(it.n)+'</b><small>'+sub+'</small></button>'});
     return h||'<p style="grid-column:1/-1;color:#6a7a88;font-size:14px">完成 3D 冒險的關卡，就能把拿回來的寶物放進小鎮當地標！</p>'}
