@@ -2,3 +2,4 @@
 *.log
 node_modules/
 assets/v15/soc-img.js
+soc-preview.html
