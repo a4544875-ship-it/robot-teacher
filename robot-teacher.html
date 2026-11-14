@@ -48,6 +48,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v16/expert-sci.js?v=16.3.0"></script>
 <script src="assets/v16/expert-soc.js?v=16.3.0"></script>
 <script src="assets/v16/expert-en.js?v=16.3.0"></script>
+<script src="assets/v17/cover.js?v=17.0.0"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -1732,6 +1733,7 @@ function updatePill(){var pill=$('#starPill');if(!isKid()){pill.hidden=true;retu
     setTimeout(function(){sfx('win');confetti(null,big?60:30);rewardPop(big?'收成了「'+x.last[1]+'」！':x.G.name+'升級了！',big?'快去花園把新種子種下去吧！':'變成「'+x.lv[1]+'」了，繼續加油！');say(big?'哇！你收成了一'+x.G.cnt+'「'+x.last[1]+'」！快去花園把新種子種下去吧！':x.G.name+'升級了！變成「'+x.lv[1]+'」！','happy')},600)})}
 /* 封面：遊戲標題＋城堡主視覺＋「準備出發」大按鈕，按了才到選角色 */
 function renderCover(){gateMode='cover';gate.classList.add('cover');Music.play('cover');
+  if(window.CoverV3){CoverV3.render(gate,function(b){sfx('win');confetti(b,40);gate.classList.remove('cover');renderGate()});return}
   gate.innerHTML='<div class="cvbg" aria-hidden="true"></div><div class="cvin"><h1 class="cvtitle"><small>奇蹟知識島</small><span>魔法城堡</span></h1><div class="cvsp"></div><button class="cvgo" id="cvGo">🚀 準備出發！</button><p class="cvsub">小機老師在城堡裡等你</p></div>';
   $('#cvGo').addEventListener('click',function(){sfx('win');confetti($('#cvGo'),40);gate.classList.remove('cover');renderGate()})}
 function renderGate(){gate.classList.remove('cover');Music.play('cover');
@@ -2708,7 +2710,7 @@ function renderGameHome(){
     b.addEventListener('click',function(){sfx('tap');startGame(g)});gb.appendChild(b);});
   var mbo=document.querySelector('.mbk');if(mbo)mbo.remove();if(gsub==='math'&&!lobby)mbHome(gb);
   if(gsub==='sci'&&!lobby)sciHome();
-  var exo=document.querySelector('.enxk');if(exo)exo.remove();if(gsub==='en'&&!lobby)enXHome(gb);
+  var exo=document.querySelector('.enxk');if(exo)exo.remove();if(gOpen==='en'&&!lobby)enXHome(gb);
 }
 function backGameHome(){cleanupGame();document.body.dataset.tier='0';gPlay.hidden=true;gHome.hidden=false;PANELS.game.scrollTop=0;renderGameHome()}
 $('#gBack').addEventListener('click',function(){sfx('tap');backGameHome();say('換一個遊戲吧！','idle')});
