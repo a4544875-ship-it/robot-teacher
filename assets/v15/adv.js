@@ -154,19 +154,19 @@ Game.prototype.run=function(){var g=this,z=g.z,id=C.who(),s=sa(id),lv=lvOf(+s.xp
   var W=ROOT.clientWidth,H=ROOT.clientHeight;
   var ren=new T.WebGLRenderer({antialias:true});ren.setPixelRatio(Math.min(2,global.devicePixelRatio||1)*.85);ren.setSize(W,H);ROOT.insertBefore(ren.domElement,ROOT.firstChild);g.ren=ren;
   var sc=new T.Scene();sc.background=new T.Color(z.sky||0x9fd8ff);sc.fog=new T.Fog(z.sky||0x9fd8ff,40,95);g.sc=sc;
-  var cam=new T.PerspectiveCamera(58,W/H,.1,200);g.cam=cam;
+  var cam=new T.PerspectiveCamera(H>W?66:58,W/H,.1,220);g.cam=cam;
   sc.add(new T.HemisphereLight(0xffffff,0x88aa77,.85));var dl=new T.DirectionalLight(0xffffff,.65);dl.position.set(8,20,6);sc.add(dl);
   g.boxes=[];g.items=[];g.coinsL=[];g.foes=[];g.shots=[];g.cps=[];g.trig=[];g.tex={};
   g.build();
   /* 小石獅 */
   var P={x:0,y:0,z:0,vx:0,vy:0,vz:0,on:null,jumps:0,face:'back',flip:false,dash:0,dcd:0,rcd:0,inv:0,carry:null};g.P=P;g.cp={x:0,y:.1,z:-2};g.respawn();
-  g.me=g.sprite(['l_back','l_front','l_side','l_run'],1.8);sc.add(g.me);
+  g.me=g.sprite(['l_back','l_front','l_side','l_run'],1.55);sc.add(g.me);
   g.ring=new T.Mesh(new T.TorusGeometry(1,.12,6,28),new T.MeshBasicMaterial({color:0xffe066,transparent:true,opacity:0}));g.ring.rotation.x=Math.PI/2;sc.add(g.ring);
   g.shadow=new T.Mesh(new T.CircleGeometry(.55,16),new T.MeshBasicMaterial({color:0,transparent:true,opacity:.22}));g.shadow.rotation.x=-Math.PI/2;sc.add(g.shadow);
   g.peers={};g.input();g.hud();
   g.tip('用左邊搖桿移動，按「跳」可以跳兩段！',4);
   if(g.net){C.Net.set({on:1,gm:'socadv',zk:z.k,ph:'run',tok:g.net.tok,rd:0,go:null});g.unNet=C.Net.on(function(){g.netIn()})}
-  g.onResize=function(){var w=ROOT.clientWidth,h=ROOT.clientHeight;ren.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()};global.addEventListener('resize',g.onResize);
+  g.onResize=function(){var w=ROOT.clientWidth,h=ROOT.clientHeight;ren.setSize(w,h);cam.aspect=w/h;cam.fov=h>w?66:58;cam.updateProjectionMatrix()};global.addEventListener('resize',g.onResize);
   ROOT.querySelector('.sav-x').addEventListener('click',function(){g.ask('要離開冒險嗎？這一關的進度不會保存。',[['離開',function(){g.stop();lobby()}],['繼續玩',null]])});
   var last=performance.now();g.loop=function(t){if(!g.alive)return;var dt=Math.min(.05,(t-last)/1000);last=t;if(!g.paused)g.step(dt);g.draw(dt);ren.render(sc,cam);g.raf=requestAnimationFrame(g.loop)};g.raf=requestAnimationFrame(g.loop);
   C.say('出發！小石獅要守護「'+z.n+'」！','happy')};
@@ -203,19 +203,18 @@ Game.prototype.build=function(){var g=this,z=g.z,Q=g.Q,R=g.R,sc=g.sc;
   var sea=new T.Mesh(new T.PlaneGeometry(400,400),new T.MeshLambertMaterial({color:0x5fb8e8}));sea.rotation.x=-Math.PI/2;sea.position.y=-7;sc.add(sea);
   /* 0 起點廣場 */
   g.ground(0,0,-5,12,14);g.tree(-5,0,0);g.tree(5,0,-1);
-  var sign=g.card('守護'+z.n+'！',null,4.2);sign.position.set(0,2.6,-11.6);sc.add(sign);
   [-4,4].forEach(function(x){g.coin(x,0,-6)});g.coin(0,0,-9);
   ['sc_group','pf_school','sc_relay','sc_tug','sc_friends','sc_award'].forEach(function(k,i){var sd=i%2?1:-1;g.bld(k,sd*(10+(i%3)),-1,-14-i*30,5.5)});
   for(var cl=0;cl<10;cl++){var cm=new T.Mesh(new T.SphereGeometry(2+R()*1.5,8,6),new T.MeshLambertMaterial({color:0xffffff}));cm.scale.y=.45;cm.position.set((R()*2-1)*30,14+R()*6,-R()*200);sc.add(cm)}
   /* 1 跑酷 */
-  [[0,0,-15],[-2,.7,-19],[1.6,1.4,-23.2],[0,.7,-27.4]].forEach(function(p){g.ground(p[0],p[1],p[2],2.8,2.8);g.coin(p[0],p[1]+.6,p[2])});
-  var mv=g.ground(0,.7,-32,3,3);mv.mv={ax:'x',a:3,sp:1.6,ox:0,ph:0};g.coin(0,1.6,-32);
-  g.ground(0,0,-46,7,22,z.path);for(var i=0;i<6;i++)g.coin(0,0,-39-i*2.4);g.tree(-4.4,0,-40);g.tree(4.4,0,-50);
+  [[0,0,-15],[-1.2,.6,-19.6],[1,1.2,-24.2],[0,.6,-28.6]].forEach(function(p){g.ground(p[0],p[1],p[2],4,4);g.coin(p[0],p[1]+.6,p[2])});
+  var mv=g.ground(0,.6,-33,4.2,4.2);mv.mv={ax:'x',a:2.4,sp:1.3,ox:0,ph:0};g.coin(0,1.5,-33);
+  g.ground(0,0,-46.5,8,21,z.path);for(var i=0;i<6;i++)g.coin(0,0,-39-i*2.4);g.tree(-4.4,0,-40);g.tree(4.4,0,-50);
   g.basket={z0:-56.5,z1:-36,t:1.2};g.checkpoint(0,0,-37);
   /* 2 跳對的平台 */
   g.ground(0,0,-58.5,9,3,z.path);g.checkpoint(0,0,-58);
   var q=Q.plat,ops=q?opts(q,R,3):[];g.plat=[];
-  ops.forEach(function(v,i){var x=(i-(ops.length-1)/2)*4.2,b=g.ground(x,0,-64,3.2,3.2);b.ans=v;b.qid='plat';var c=g.card(optLabel(q,v),q.t==='mi'?v:null,2.6);c.position.set(x,1.8,-65.6);sc.add(c);b.cardM=c;g.plat.push(b)});
+  ops.forEach(function(v,i){var x=(i-(ops.length-1)/2)*4.6,b=g.ground(x,0,-63.8,3.8,3.8);b.ans=v;b.qid='plat';var c=g.card(optLabel(q,v),q.t==='mi'?v:null,2.6);c.position.set(x,1.8,-65.6);sc.add(c);b.cardM=c;g.plat.push(b)});
   g.trig.push({z:-57,q:q,kind:'plat',txt:'跳到正確的平台上！'});
   g.bridge=g.box(0,0,-68.2,2.4,.5,6,0xc98b4a,{on:false});g.bridge.m.visible=false;if(!q){g.bridge.on=true;g.bridge.m.visible=true}
   /* 3 箱子和小怪 */
@@ -239,8 +238,8 @@ Game.prototype.build=function(){var g=this,z=g.z,Q=g.Q,R=g.R,sc=g.sc;
   g.trig.push({z:-96,q:qs,kind:'send',txt:'撿起卷軸，送進正確的房子！'});
   /* 6 消失的磚塊和升降台 */
   g.ground(0,0,-118,6,6);g.checkpoint(0,0,-117);
-  [[-1.5,-122.5],[1.5,-126],[-1.5,-129.5],[1.5,-133]].forEach(function(p){var b=g.box(p[0],0,p[1],2.4,.6,2.4,0xf2c46b,{vanish:1,vt:0});g.coin(p[0],0,p[1])});
-  var lift=g.ground(0,0,-137.5,3,3);lift.mv={ax:'y',a:1.6,sp:1.4,oy:1.6,ph:0};
+  [[-1,-122.6],[1,-126.2],[-1,-129.8],[1,-133.4]].forEach(function(p){var b=g.box(p[0],0,p[1],3.2,.6,3.2,0xf2c46b,{vanish:1,vt:0});g.coin(p[0],0,p[1])});
+  var lift=g.ground(0,0,-137.6,4,4);lift.mv={ax:'y',a:1.6,sp:1.4,oy:1.6,ph:0};
   /* 7 分類 */
   var Y=3.2;g.ground(0,Y,-150,14,20);g.checkpoint(0,Y,-142);
   g.srt=null;var qq=Q.sort;if(qq){var items=shufR(qq.it,R).slice(0,4);g.srt={q:qq,items:items,i:0,miss:0,bins:[]};
@@ -358,7 +357,7 @@ Game.prototype.solve=function(kind,first,remote){var g=this;if(g.solved[kind])re
   if(kind==='send'||remote&&kind==='send'){g.fence.on=false;g.fence.m.visible=false;if(g.pick){g.sc.remove(g.pick);g.pick=null;g.P.carry=null}}
   if(kind==='sort'){g.gate2.on=false;g.gate2.m.visible=false;if(g.srtCard){g.sc.remove(g.srtCard);g.srtCard=null}if(g.srt)g.srt.i=g.srt.items.length}
   g.hud()};
-Game.prototype.showQ=function(tr){var el=ROOT.querySelector('.sav-q'),q=tr.q;el.hidden=false;el.innerHTML='<small>'+esc(tr.txt)+'</small>'+esc(q.t==='sort'?q.q:q.q);C.say(q.q,'happy')};
+Game.prototype.showQ=function(tr){var el=ROOT.querySelector('.sav-q'),q=tr.q;el.hidden=false;el.innerHTML='<small>'+esc(tr.txt)+'</small>'+(q.p?'<img src="'+img(q.p)+'" alt="" style="display:block;margin:4px auto;max-height:22vh;max-width:70%;border-radius:12px">':'')+esc(q.q);C.say(q.q,'happy')};
 /* ---------- 魔王 ---------- */
 Game.prototype.spawnBoss=function(){var g=this,c=g.bossCfg,sp=g.sprite([c.k],3.6);sp.position.set(c.x,1.8,c.z);g.sc.add(sp);g.boss={sp:sp,x:c.x,z:c.z,hp:c.hp,max:c.hp,alive:true,t:0,shoot:2,stun:0,hits:0,qi:0};
   ROOT.querySelector('.sav-boss').hidden=false;ROOT.querySelector('.sav-q').hidden=true;g.tip(g.z.bn+'出現了！躲開攻擊，靠近牠按「吼！」',3);C.say(g.z.bn+'出現了！','oops');g.cp={x:0,y:.1,z:-176}};
@@ -385,7 +384,7 @@ Game.prototype.bossDie=function(){var g=this,b=g.boss;b.alive=false;g.sc.remove(
   var cs=g.sprite(['chest'],1.8);cs.position.set(b.x,.9,b.z);g.sc.add(cs);g.chest={x:b.x,z:b.z,sp:cs}};
 /* ---------- 連線 ---------- */
 Game.prototype.netIn=function(){var g=this;if(!g.net)return;var ps=C.Net.peers();Object.keys(ps).forEach(function(c){var q=ps[c];if(q.tok!==g.net.tok)return;
-  var o=g.peers[c];if(!o){var sp=g.sprite(['l_back','l_front','l_side','l_run'],1.8);sp.material.color.setRGB(.85,.95,1.15);g.sc.add(sp);var nm=g.card(String(q.n||'夥伴'),null,1.6,null,'#dff0ff');g.sc.add(nm);o=g.peers[c]={sp:sp,nm:nm,x:+q.x||0,y:+q.y||0,z:+q.z||0,bd:0}}
+  var o=g.peers[c];if(!o){var sp=g.sprite(['l_back','l_front','l_side','l_run'],1.55);sp.material.color.setRGB(.85,.95,1.15);g.sc.add(sp);var nm=g.card(String(q.n||'夥伴'),null,1.6,null,'#dff0ff');g.sc.add(nm);o=g.peers[c]={sp:sp,nm:nm,x:+q.x||0,y:+q.y||0,z:+q.z||0,bd:0}}
   o.tx=+q.x||0;o.ty=+q.y||0;o.tz=+q.z||0;o.f=q.f||'back';o.fl=!!q.fl;o.run=!!q.run;
   String(q.gs||'').split(',').filter(Boolean).forEach(function(k){if(!g.solved[k])g.solve(k,false,true)});
   var bd=+q.bd||0;if(bd>o.bd){var d=bd-o.bd;o.bd=bd;if(g.boss&&g.boss.alive)g.bossHit(d,true)}else o.bd=Math.max(o.bd,bd)})};
@@ -393,13 +392,13 @@ Game.prototype.netIn=function(){var g=this;if(!g.net)return;var ps=C.Net.peers()
 Game.prototype.draw=function(dt){var g=this,P=g.P,cam=g.cam;
   var key=P.dash>0||(!P.on&&Math.abs(P.vy)>3)?'l_run':P.face==='side'?'l_side':P.face==='front'?'l_front':'l_back',fl=key==='l_run'?(P.vx<0):key==='l_side'?P.flip:false;
   if(key==='l_run'&&P.face==='back'&&Math.abs(P.vx)<1)fl=false;
-  g.setSp(g.me,key,fl);g.me.position.set(P.x,P.y+.9+(P.on&&Math.hypot(P.vx,P.vz)>1?Math.abs(Math.sin(performance.now()/90))*.08:0),P.z);g.me.material.opacity=P.inv>0&&Math.floor(P.inv*10)%2?.45:1;
+  g.setSp(g.me,key,fl);g.me.position.set(P.x,P.y+.78+(P.on&&Math.hypot(P.vx,P.vz)>1?Math.abs(Math.sin(performance.now()/90))*.08:0),P.z);g.me.material.opacity=P.inv>0&&Math.floor(P.inv*10)%2?.45:1;
   var sy=-99;g.boxes.forEach(function(b){if(!b.on||b.solid===false)return;var inside=b.round?Math.hypot(P.x-b.x,P.z-b.z)<b.round:(Math.abs(P.x-b.x)<b.w&&Math.abs(P.z-b.z)<b.d);if(inside&&b.y<=P.y+.05&&b.y>sy)sy=b.y});g.shadow.visible=sy>-90;g.shadow.position.set(P.x,sy+.03,P.z);
   if(g.ringT>0){g.ringT-=dt;var s=(1-g.ringT/.45)*g.roarR;g.ring.scale.set(Math.max(.1,s),Math.max(.1,s),1);g.ring.position.set(P.x,P.y+.4,P.z);g.ring.material.opacity=Math.max(0,g.ringT*2)}else g.ring.material.opacity=0;
   /* 鏡頭 */
-  var tx=P.x*.6,ty=P.y+4.6,tz=P.z+8.2;cam.position.x+=(tx-cam.position.x)*Math.min(1,dt*5);cam.position.y+=(ty-cam.position.y)*Math.min(1,dt*4);cam.position.z+=(tz-cam.position.z)*Math.min(1,dt*6);cam.lookAt(P.x*.8,P.y+1.2,P.z-4);
+  var pt=(ROOT.clientHeight>ROOT.clientWidth),k2=pt?1.3:1;var tx=P.x*.5,ty=P.y+4.6*k2,tz=P.z+8.2*k2;cam.position.x+=(tx-cam.position.x)*Math.min(1,dt*5);cam.position.y+=(ty-cam.position.y)*Math.min(1,dt*4);cam.position.z+=(tz-cam.position.z)*Math.min(1,dt*6);cam.lookAt(P.x*.8,P.y+1.2,P.z-4);
   if(g.pick&&!P.carry)g.pick.rotation.y+=dt*2;if(g.srtCard&&!(g.srt&&g.srt.held))g.srtCard.rotation.y=Math.sin(performance.now()/500)*.3;
-  for(var c in g.peers){var o=g.peers[c];o.x+=(o.tx-o.x)*Math.min(1,dt*10);o.y+=(o.ty-o.y)*Math.min(1,dt*10);o.z+=(o.tz-o.z)*Math.min(1,dt*10);g.setSp(o.sp,o.run?'l_run':o.f==='side'?'l_side':o.f==='front'?'l_front':'l_back',o.fl);o.sp.position.set(o.x,o.y+.9,o.z);o.nm.position.set(o.x,o.y+2.3,o.z);o.nm.quaternion.copy(cam.quaternion)}
+  for(var c in g.peers){var o=g.peers[c];o.x+=(o.tx-o.x)*Math.min(1,dt*10);o.y+=(o.ty-o.y)*Math.min(1,dt*10);o.z+=(o.tz-o.z)*Math.min(1,dt*10);g.setSp(o.sp,o.run?'l_run':o.f==='side'?'l_side':o.f==='front'?'l_front':'l_back',o.fl);o.sp.position.set(o.x,o.y+.78,o.z);o.nm.position.set(o.x,o.y+2.3,o.z);o.nm.quaternion.copy(cam.quaternion)}
   ROOT.querySelector('.sav-b.d').classList.toggle('cd',P.dcd>0);ROOT.querySelector('.sav-b.r').classList.toggle('cd',P.rcd>0);
   if(g.tipT>0){g.tipT-=dt;if(g.tipT<=0)ROOT.querySelector('.sav-tip').style.opacity=0}};
 Game.prototype.tip=function(t,s){var el=ROOT&&ROOT.querySelector('.sav-tip');if(!el)return;el.textContent=t;el.style.opacity=1;this.tipT=s||2};
