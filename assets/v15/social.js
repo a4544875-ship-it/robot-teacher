@@ -830,7 +830,7 @@ function curUnit(id){var g=mapGrade(id),c=null;MAP[g].units.forEach(function(u){
 var IV=[0,1,3,7,14];
 function dueList(id,units){var w=so(id).w||{},d=dayN(),out=[];for(var q in w){var r=w[q];if(!Array.isArray(r))continue;var lk=q.split(':')[0];if(units&&units.indexOf(lk.split('-')[0])<0)continue;if((+r[1]||0)<=d)out.push(q)}return out}
 function qById(qid){var lk=qid.split(':')[0],i=+qid.split(':')[1];return (BANK[lk]||[])[i]||null}
-function markQ(id,q,ok){mut(id,function(o){var r=o.w[q.id];if(ok){if(r){var b=(+r[0]||0)+1;if(b>=IV.length)delete o.w[q.id];else o.w[q.id]=[b,dayN()+IV[b]]}}else o.w[q.id]=[0,dayN()];var ks=Object.keys(o.w);if(ks.length>150)ks.slice(0,ks.length-150).forEach(function(x){delete o.w[x]})})}
+function markQ(id,q,ok){if(q&&q.xp)return;mut(id,function(o){var r=o.w[q.id];if(ok){if(r){var b=(+r[0]||0)+1;if(b>=IV.length)delete o.w[q.id];else o.w[q.id]=[b,dayN()+IV[b]]}}else o.w[q.id]=[0,dayN()];var ks=Object.keys(o.w);if(ks.length>150)ks.slice(0,ks.length-150).forEach(function(x){delete o.w[x]})})}
 
 /* ================= 樣式 ================= */
 function addCss(){if(css)return;css=true;var st=document.createElement('style');st.id='soc-css';st.textContent=[
@@ -988,7 +988,7 @@ function station(u){var id=C.who();C.shell('社會小鎮');C.title(u.n);var B=C.
   u.ls.forEach(function(l,i){var s=C.isKid()?lessonStar(id,l[0]):0,n=(BANK[l[0]]||[]).length;
     h+='<button class="soc-les" data-l="'+l[0]+'"><span class="n">'+(i+1)+'</span><span class="nm"><b>第 '+(i+1)+' 課：'+esc(l[1])+'</b><small>'+n+' 題題庫・每次 8 題</small></span><span class="s3">'+[0,1,2].map(function(j){return '<i class="'+(j<s?'on':'')+'">★</i>'}).join('')+'</span></button>'});
   if(u.ls.length){var xs=C.isKid()?+((so(id).X||{})[u.k])||0:0;
-    h+='<button class="soc-les soc-ex'+(bd?'':' lock')+'" data-ex="1"'+(bd?'':' disabled')+'><span class="n">'+(bd?'★':'🔒')+'</span><span class="nm"><b>單元大考驗</b><small>'+(bd?'整個單元混合 10 題・答對一題 20 分・全對拿金徽章':'拿到家鄉徽章後開放')+'</small></span><span class="s3 ex">'+[0,1,2].map(function(j){return '<i class="'+(j<xs?'on':'')+'">★</i>'}).join('')+'</span></button>'}
+    h+='<button class="soc-les soc-ex'+(bd?'':' lock')+'" data-ex="1"'+(bd?'':' disabled')+'><span class="n">'+(bd?'★':'🔒')+'</span><span class="nm"><b>單元大考驗</b><small>'+(bd?'高手難題 10 題（情境判斷、推理，和一般關卡不同）・答對一題 20 分・全對拿金徽章':'拿到家鄉徽章後開放')+'</small></span><span class="s3 ex">'+[0,1,2].map(function(j){return '<i class="'+(j<xs?'on':'')+'">★</i>'}).join('')+'</span></button>'}
   h+='<div class="soc-rw'+(bd?'':' off')+'"><img src="'+img('badge')+'" alt=""><div><b>'+(bd?'已得到「'+esc(u.n)+'」徽章':'過關獎勵：「'+esc(u.n)+'」家鄉徽章')+'</b><br>'+(bd?'收在家鄉護照裡了。':'集滿徽章，家鄉護照就會越來越豐富。')+'</div></div></div>';
   B.innerHTML=h;
   B.querySelectorAll('[data-l]').forEach(function(b){b.addEventListener('click',function(){C.sfx('tap');var lk=b.dataset.l;play(u,lk,buildRound(id,u,lk))})});
@@ -997,7 +997,8 @@ function station(u){var id=C.who();C.shell('社會小鎮');C.title(u.n);var B=C.
 }
 /* 單元大考驗（v16）：拿到徽章後開放，整個單元混合 10 題，答對一題 20 分；全對 3 顆紫星＋金徽章 */
 function exU(u){var o={};for(var k in u)o[k]=u[k];o.ex=1;o.base=u;return o}
-function buildExam(u){var pool=[];u.ls.forEach(function(l){(BANK[l[0]]||[]).forEach(function(q){pool.push(q)})});return shuf(pool).slice(0,10)}
+function buildExam(u){var X=(window.EXPERT&&EXPERT.soc&&EXPERT.soc[u.k])||[];if(X.length>=8)return shuf(X.map(function(r,i){var q=typeof r[1]==='boolean'?T(r[0],r[1],r[2]):M(r[0],r[1],r[2],r[3]);q.id='X'+u.k+':'+i;q.lk='X'+u.k;q.xp=1;return q})).slice(0,10);
+  var pool=[];u.ls.forEach(function(l){(BANK[l[0]]||[]).forEach(function(q){pool.push(q)})});return shuf(pool).slice(0,10)}
 function buildRound(id,u,lk){var pool=(BANK[lk]||[]).slice(),N=Math.min(8,pool.length),pick=[];
   if(C.isKid()){var due=dueList(id,[u.k]).map(qById).filter(function(q){return q&&q.lk===lk});shuf(due).slice(0,3).forEach(function(q){pick.push(q)})}
   shuf(pool).forEach(function(q){if(pick.length<N&&pick.indexOf(q)<0)pick.push(q)});return shuf(pick)}

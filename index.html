@@ -84,9 +84,12 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=16.2.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=16.2.0"></script>
+<script src="assets/v15/social.js?v=16.3.0"></script>
 <script src="assets/v15/adv.js?v=15.6.0"></script>
 <script src="assets/v15/town.js?v=15.6.0"></script>
+<script src="assets/v16/expert-sci.js?v=16.3.0"></script>
+<script src="assets/v16/expert-soc.js?v=16.3.0"></script>
+<script src="assets/v16/expert-en.js?v=16.3.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -1056,7 +1059,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 /* 結算 */
 .obres .card.sciend .big{display:none}
 .sest{display:flex;justify-content:center;gap:6px;font-size:46px;line-height:1}
-.sest i{font-style:normal;color:#d9dcea;animation:sciStar .5s ease-out both}.sest i.on{color:#ffc531;text-shadow:0 3px 0 #d99a00}body[data-tier="1"] .sest i.on,body[data-tier="1"] .v2result .v2stars,body[data-tier="1"] .obres .st,.tstar.t1,.gtier.t1,.obn small b.t1{color:#2f7bf0;text-shadow:0 3px 0 #1c4fa8}body[data-tier="2"] .sest i.on,body[data-tier="2"] .v2result .v2stars,body[data-tier="2"] .obres .st,.tstar.t2,.gtier.t2,.obn small b.t2{color:#a23ff0;text-shadow:0 3px 0 #6b1fb0,0 0 12px rgba(214,90,255,.7)}.tstar{font-style:normal;color:#ffc531}.sxexp{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:18px;padding:12px 14px;margin-top:10px;font:inherit;text-align:left;color:#fff;background:linear-gradient(135deg,#6b2bd9,#b13fd6);box-shadow:0 4px 0 #4a1a9c}.sxexp.lock{background:#d9d4e8;color:#6b6480;box-shadow:none}.sxexp .n{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:20px;flex:none}.sxexp .nm{flex:1;min-width:0;display:flex;flex-direction:column}.sxexp b{font-size:17px}.sxexp small{font-size:12.5px;opacity:.92}.sxexp .s3 i{font-style:normal;color:rgba(255,255,255,.35);font-size:20px}.sxexp .s3 i.on{color:#ffe9ff;text-shadow:0 0 8px #f0a8ff}.sxwrap{padding:0 2px 10px}.sxm{color:#a23ff0;text-shadow:0 0 6px rgba(214,90,255,.6)}.sxq{background:var(--card,#fff);border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(40,30,90,.12);display:flex;flex-direction:column;gap:12px}.sxtop{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px;color:#6b6480}.sxtop .tag{background:linear-gradient(135deg,#6b2bd9,#b13fd6);color:#fff;border-radius:99px;padding:3px 10px}.sxq h3{margin:0;font-size:20px;line-height:1.5}.sxo{display:grid;gap:8px}.sxo button{border:2px solid #e3def2;background:#faf8ff;border-radius:14px;padding:12px;font:inherit;font-size:16px;font-weight:700;text-align:left;color:#1f2a44}.sxo button.ok{border-color:#2fa86b;background:#e6f8ee}.sxo button.bad{border-color:#e05252;background:#fdecec}.sxf{background:#f4f0ff;border-radius:14px;padding:12px;line-height:1.6}.sxf p{margin:4px 0 8px;font-size:14px;color:#4a4260}.sxf button{border:0;border-radius:99px;padding:9px 18px;font:inherit;font-weight:900;background:#6b2bd9;color:#fff}.sxrw{color:#6b2bd9;font-weight:800}.gtier{position:absolute;left:10px;top:10px;background:#fff;border-radius:99px;padding:2px 8px;font-size:12px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.15)}.tierup{position:fixed;inset:0;z-index:9990;display:grid;place-items:center;background:rgba(20,24,60,.55);padding:20px}.tierup .bx{background:#fff;border-radius:26px;max-width:360px;width:100%;padding:22px 18px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:tuIn .45s cubic-bezier(.2,1.4,.4,1)}.tierup .big{font-size:84px;line-height:1}.tierup.t1 .big{color:#2f7bf0;text-shadow:0 5px 0 #1c4fa8}.tierup.t2 .big{color:#a23ff0;text-shadow:0 5px 0 #6b1fb0,0 0 22px rgba(214,90,255,.8)}.tierup h3{margin:8px 0 4px;font-size:24px;color:#1f2a44}.tierup p{margin:4px 0;color:#4a5672;line-height:1.55;font-size:15px}.tierup .rw{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}.tierup .rw span{background:#f3f6ff;border-radius:99px;padding:5px 12px;font-weight:900;color:#1f2a44}.tierup button{margin-top:8px;border:0;border-radius:99px;padding:11px 22px;font:inherit;font-weight:900;font-size:16px;background:#3f51d9;color:#fff}@keyframes tuIn{from{transform:scale(.6);opacity:0}}
+.sest i{font-style:normal;color:#d9dcea;animation:sciStar .5s ease-out both}.sest i.on{color:#ffc531;text-shadow:0 3px 0 #d99a00}body[data-tier="1"] .sest i.on,body[data-tier="1"] .v2result .v2stars,body[data-tier="1"] .obres .st,.tstar.t1,.gtier.t1,.obn small b.t1{color:#2f7bf0;text-shadow:0 3px 0 #1c4fa8}body[data-tier="2"] .sest i.on,body[data-tier="2"] .v2result .v2stars,body[data-tier="2"] .obres .st,.tstar.t2,.gtier.t2,.obn small b.t2{color:#a23ff0;text-shadow:0 3px 0 #6b1fb0,0 0 12px rgba(214,90,255,.7)}.tstar{font-style:normal;color:#ffc531}.sxexp{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:18px;padding:12px 14px;margin-top:10px;font:inherit;text-align:left;color:#fff;background:linear-gradient(135deg,#6b2bd9,#b13fd6);box-shadow:0 4px 0 #4a1a9c}.sxexp.lock{background:#d9d4e8;color:#6b6480;box-shadow:none}.sxexp .n{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:20px;flex:none}.sxexp .nm{flex:1;min-width:0;display:flex;flex-direction:column}.sxexp b{font-size:17px}.sxexp small{font-size:12.5px;opacity:.92}.sxexp .s3 i{font-style:normal;color:rgba(255,255,255,.35);font-size:20px}.sxexp .s3 i.on{color:#ffe9ff;text-shadow:0 0 8px #f0a8ff}.sxwrap{padding:0 2px 10px}.sxm{color:#a23ff0;text-shadow:0 0 6px rgba(214,90,255,.6)}.sxq{background:#fff;color:#1f2a44;border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(40,30,90,.12);display:flex;flex-direction:column;gap:12px}.sxtop{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px;color:#6b6480}.sxtop .tag{background:linear-gradient(135deg,#6b2bd9,#b13fd6);color:#fff;border-radius:99px;padding:3px 10px}.sxq h3{margin:0;font-size:20px;line-height:1.5}.sxo{display:grid;gap:8px}.sxo button{border:2px solid #e3def2;background:#faf8ff;border-radius:14px;padding:12px;font:inherit;font-size:16px;font-weight:700;text-align:left;color:#1f2a44}.sxo button.ok{border-color:#2fa86b;background:#e6f8ee}.sxo button.bad{border-color:#e05252;background:#fdecec}.sxf{background:#f4f0ff;color:#2a2340;border-radius:14px;padding:12px;line-height:1.6}.sxf p{margin:4px 0 8px;font-size:14px;color:#4a4260}.sxf button{border:0;border-radius:99px;padding:9px 18px;font:inherit;font-weight:900;background:#6b2bd9;color:#fff}.sxrw{color:#6b2bd9;font-weight:800}.gtier{position:absolute;left:10px;top:10px;background:#fff;border-radius:99px;padding:2px 8px;font-size:12px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.15)}.tierup{position:fixed;inset:0;z-index:9990;display:grid;place-items:center;background:rgba(20,24,60,.55);padding:20px}.tierup .bx{background:#fff;border-radius:26px;max-width:360px;width:100%;padding:22px 18px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:tuIn .45s cubic-bezier(.2,1.4,.4,1)}.tierup .big{font-size:84px;line-height:1}.tierup.t1 .big{color:#2f7bf0;text-shadow:0 5px 0 #1c4fa8}.tierup.t2 .big{color:#a23ff0;text-shadow:0 5px 0 #6b1fb0,0 0 22px rgba(214,90,255,.8)}.tierup h3{margin:8px 0 4px;font-size:24px;color:#1f2a44}.tierup p{margin:4px 0;color:#4a5672;line-height:1.55;font-size:15px}.tierup .rw{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}.tierup .rw span{background:#f3f6ff;border-radius:99px;padding:5px 12px;font-weight:900;color:#1f2a44}.tierup button{margin-top:8px;border:0;border-radius:99px;padding:11px 22px;font:inherit;font-weight:900;font-size:16px;background:#3f51d9;color:#fff}@keyframes tuIn{from{transform:scale(.6);opacity:0}}
 .setip{text-align:left;background:var(--surface-2);border-radius:16px;padding:10px 12px;margin:0 0 12px;display:flex;flex-direction:column;gap:6px}
 .setip b{font-size:15px}
 .setip p{margin:0;font-size:14px;line-height:1.55;color:var(--ink)}.setip p small{display:block;font-size:11.5px;color:var(--ink-soft)}
@@ -1444,14 +1447,20 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .plate i{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a8f,#e8443a);border:1.5px solid #14173a}
 .mbtog{width:100%;text-align:left;background:none;padding:0;color:inherit;font:inherit;cursor:pointer}.mbtog .mbar{grid-column:1/-1;justify-self:center;margin-top:6px;background:linear-gradient(135deg,#ff9a3c,#ff6a5c);color:#fff;font-weight:700;font-size:14px;border-radius:999px;padding:4px 16px;box-shadow:0 3px 0 rgba(0,0,0,.15)}.mbtog[aria-expanded="true"]{margin-bottom:8px}.mbk .mbh{margin-bottom:0}
 .ttrow{margin-top:-6px}.ttrow .chip{font-weight:700}
-.dpbox{background:#fff;border:2px solid #e3ecf3;border-radius:18px;padding:14px;margin:0 0 14px;box-shadow:0 4px 0 #e3ecf3}.dpbox h3{margin:0 0 10px;font-size:18px}.dpbox h3 small{font-size:12px;color:#6b7f8c;font-weight:700}.dptoday{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:10px}.dptoday div{background:linear-gradient(#fff8e6,#ffefc7);border:2px solid #f2cf7c;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px}.dptoday span{font-weight:800;font-size:14px}.dptoday b{font-size:26px;color:#c66a00;font-variant-numeric:tabular-nums}.dptoday small{font-size:12px;color:#7a6a45;font-weight:700}.dpscroll{overflow-x:auto}.dptab{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}.dptab th,.dptab td{padding:6px 8px;border-bottom:1px solid #edf1f4;text-align:right;white-space:nowrap}.dptab th:first-child,.dptab td:first-child{text-align:left}.dptab th{color:#5b6f7c;font-size:12px}.dptab .dpnow td{font-weight:900;background:#fffaf0}.dptab .dp0{color:#b7c2ca}.dptab .dpna{color:#cfd6db}.dpnote{margin:8px 0 0;font-size:12px;color:#7d8b95}
+.dpbox{background:#fff;color:#1a2250;border:2px solid #e3ecf3;border-radius:18px;padding:14px;margin:0 0 14px;box-shadow:0 4px 0 #e3ecf3}.dpbox h3{margin:0 0 10px;font-size:18px}.dpbox h3 small{font-size:12px;color:#6b7f8c;font-weight:700}.dptoday{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:10px}.dptoday div{background:linear-gradient(#fff8e6,#ffefc7);border:2px solid #f2cf7c;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px}.dptoday span{font-weight:800;font-size:14px}.dptoday b{font-size:26px;color:#c66a00;font-variant-numeric:tabular-nums}.dptoday small{font-size:12px;color:#7a6a45;font-weight:700}.dpscroll{overflow-x:auto}.dptab{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}.dptab th,.dptab td{padding:6px 8px;border-bottom:1px solid #edf1f4;text-align:right;white-space:nowrap}.dptab th:first-child,.dptab td:first-child{text-align:left}.dptab th{color:#5b6f7c;font-size:12px}.dptab .dpnow td{font-weight:900;background:#fffaf0}.dptab .dp0{color:#b7c2ca}.dptab .dpna{color:#cfd6db}.dpnote{margin:8px 0 0;font-size:12px;color:#7d8b95}
 .pgsci{display:flex;flex-direction:column;gap:3px;margin:8px 0;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.88);color:#18304a;box-shadow:0 2px 8px rgba(0,0,0,.08)}.pgsci small{opacity:.85;line-height:1.45}
 .sxmap .pglock{filter:grayscale(.85);opacity:.75}.sxmap .sxl.pgnowst{outline:3px solid #ffc531;outline-offset:1px}
-.egrow.pgrow{gap:6px;flex-wrap:wrap}.egrow.pgrow .lab{font-weight:800}.chip.pgchip.chl1{background:#e7f6ff;color:#0b6aa8}.pgchip.chl2{background:#fff1d6;color:#a35a00}.pgchip.chl3{background:#ffe2e2;color:#b3261e}.pgchip{cursor:default;pointer-events:none;background:var(--card,#fff);font-size:13px}
+.egrow.pgrow{gap:6px;flex-wrap:wrap}.egrow.pgrow .lab{font-weight:800}.chip.pgchip.chl1{background:#e7f1ff;color:#1c4fa8}.pgchip.chl2{background:#f3e6ff;color:#6b1fb0}.pgchip{cursor:default;pointer-events:none;background:var(--surface-2);color:var(--ink);font-size:13px}
 .pgp .pgset{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 10px}.pgp .pgset label{display:flex;gap:6px;align-items:center;font-size:14px}
 .pgp .pgr{display:flex;flex-direction:column;align-items:stretch;gap:6px}.pgp .pgl{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:12px;background:rgba(127,127,127,.08)}
 .pgp .pgl small{opacity:.85;line-height:1.45}.pgp .pgnow{font-weight:700}.pgp .pgnow em{font-style:normal;color:#e08a00}.pgp .pgl code{font-size:12px;padding:0 3px;border-radius:4px;background:rgba(127,127,127,.15)}
 #btnEngine,#photoBtn{display:none!important}.setup>.slab:first-child,#gradeRow{display:none!important}
+
+.mxs{color:#8a2be2;font-weight:700}:root[data-theme="dark"] .mxs{color:#d9a8ff}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mxs{color:#d9a8ff}}
+.sxq h3{white-space:pre-line}
+.enxk{margin:4px 0 12px}.enxh{display:flex;flex-direction:column;margin:0 2px 2px}.enxh b{font-size:17px}.enxh small{color:var(--ink-soft);font-size:12.5px}.enxg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.enxb{margin-top:6px;padding:10px;gap:8px}.enxb .n{width:34px;height:34px;font-size:17px}.enxb b{font-size:15px}.enxb small{font-size:11.5px;line-height:1.3}.enxb .s3 i{font-size:15px}@media (max-width:380px){.enxg{grid-template-columns:1fr}}.sxo.en button{font-family:var(--font-en);font-size:17px}
+/* 淺色底元件：深色模式下維持淺色主題的字色與變數，避免白底白字 */
+:where(.g2,.g3,.g7,.g8,.g9,.obplay,.obspk,.obflash,.pdq,.stars .gi,.subsw .swi,.dnbub,.dnbt button,.dnt,.gcard .ico .pic,#gate,.g23,.g24,.g25,.g26,.sti,.stag,.stgi.e,.sprog.dots i.cur,.qcard,.qdeco.e,.ql,.qo.right .ql,.ssheet,.ssheet.ok,.ssheet.bad,.sitem,.sbn.c0,.sbn.c1,.sbn.c2,.sbn.hint,.ots.cur,.ots.fill,.otl.done .ots,.oc.bad,.mb.r,.mb.sel,.mb.done,.mb.bad,.sxo button.ok,.sxo button.bad,.gtier,.tierup .bx,.sxmap,.obplay.pd.stp,.ptrack .goal,.wz.hov,.wdc.win,.wcy,.wcl span,.pneed span,.pneed span.good,.pchips button.on,.afb,.mbn.full .no,.mkp button.del,.vc,.vcg .ans,.vcg .ans.cur,.vcg .ans.ok,.pvb,.pvc,.bk1,.mbq,.mbvis,.dptab .dpnow td,.tn-pill,.tn-sheet,.tn-sh button,.tn-it.lock,.tn-needs div,.tn-toast,.soc-rw,.soc-bar,.soc-ask .bub,.soc-opt.ok,.soc-opt.no,.soc-qpic,.soc-stpic,.soc-bld,.soc-rhud,.soc-cell.cp,.soc-rdlg,.soc-ask img.npc,.soc-wallet,.soc-goods .soc-opt.sel,.soc-opt.pic,.soc-sort .cur,.soc-ord .soc-slot,.soc-ord .soc-slot.fill,.soc-pair .soc-opt.sel,.soc-pair .soc-opt.done,.soc-fb.ok,.soc-fb.no,.sav-help div,.sav-boss .bar,.sav-op.ok,.sav-op.no,.sav-me,.sav-xp,.sav-trs,.sav-peers div,.sav-end .rw span,.tut-say,.esk-op.ok,.esk-op.no,.esk-paper,.esk-paper .pp,.esk-btn,.esk-say .bb,.esk-say .bb.ok,.esk-say .bb.no){--bg:#e9f3ff;--surface:#ffffff;--surface-2:#f1f7ff;--ink:#1a2250;--ink-soft:#5a6494;--line:#d2e3f6;color:#1a2250}
 </style>
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
@@ -2211,10 +2220,11 @@ var SX_T={mag:'magnet',circ:'circuit',water:'water',plant:'plant',animal:'animal
     SX_LAB={mag:['mag2'],circ:['ckt2'],water:['temp','flow'],plant:['eco2'],animal:['eco2','pond'],moon:['moon2','time'],sound:['sun'],wind:['wx2'],weather:['wx2'],insect:['eco2']},SX_LABQ=null;
 function sxLab(){if(SX_LABQ)return SX_LABQ;SX_LABQ={};var cur='';String(window.LAB_BANK_TEXT||'').split('\n').forEach(function(L){L=L.trim();if(L[0]==='@'){cur=L.slice(1).split('|')[0];return}
     var p=L.split('|');if(p.length>=5&&p[1]==='c'&&cur){(SX_LABQ[cur]=SX_LABQ[cur]||[]).push({q:p[2],a:p[3],w:p[4].split('^').filter(Boolean).slice(0,3),x:p[5]||''})}});return SX_LABQ}
-function sxPool(k){var o=[],t=SX_T[k];(SCI.g['三'].mc||[]).forEach(function(q){if(q.t!==t)return;if(q.tf)o.push({q:'是非題：'+q.q,a:q.a?'對':'錯',w:[q.a?'錯':'對'],x:q.x||''});else o.push({q:q.q,a:q.a,w:(q.w||[]).slice(0,3),x:q.x||''})});
+function sxPool(k){var X=(window.EXPERT&&EXPERT.sci&&EXPERT.sci[k])||[];if(X.length>=10)return X.map(function(r){return {q:r[0],a:r[1],w:r[2].slice(0,3),x:r[3]||''}});
+  var o=[],t=SX_T[k];(SCI.g['三'].mc||[]).forEach(function(q){if(q.t!==t)return;if(q.tf)o.push({q:'是非題：'+q.q,a:q.a?'對':'錯',w:[q.a?'錯':'對'],x:q.x||''});else o.push({q:q.q,a:q.a,w:(q.w||[]).slice(0,3),x:q.x||''})});
   var lab=sxLab();(SX_LAB[k]||[]).forEach(function(id){(lab[id]||[]).forEach(function(q){o.push(q)})});return o}
 function sxRow(k){var d=isKid()&&Store.kid(who);return d&&d.sx&&typeof d.sx==='object'?+d.sx[k]||0:0}
-function sxBtn(k,stamp){var st=sxRow(k);return '<button class="sxexp'+(stamp?'':' lock')+'" data-sxexp="'+k+'"'+(stamp?'':' disabled')+'><span class="n">'+(stamp?'★':'🔒')+'</span><span class="nm"><b>高手關</b><small>'+(stamp?'10 題混合推理題・沒有提示・全對才有 3 顆紫星':'3 關都過關後開放')+'</small></span><span class="s3 t2">'+[0,1,2].map(function(j){return '<i class="'+(j<st?'on':'')+'">★</i>'}).join('')+'</span></button>'}
+function sxBtn(k,stamp){var st=sxRow(k);return '<button class="sxexp'+(stamp?'':' lock')+'" data-sxexp="'+k+'"'+(stamp?'':' disabled')+'><span class="n">'+(stamp?'★':'🔒')+'</span><span class="nm"><b>高手關</b><small>'+(stamp?'10 題高手難題（和一般關卡不一樣）・沒有提示・全對才有 3 顆紫星':'3 關都過關後開放')+'</small></span><span class="s3 t2">'+[0,1,2].map(function(j){return '<i class="'+(j<st?'on':'')+'">★</i>'}).join('')+'</span></button>'}
 function sxBind(root,k,back){var b=root.querySelector('[data-sxexp]');if(b)b.addEventListener('click',function(){if(b.disabled)return;sfx('win');sxRun(k,back)})}
 function sxRun(k,back){var pool=sxPool(k),qs=[],seen={};pool.slice().sort(function(){return Math.random()-.5}).forEach(function(q){if(qs.length<10&&!seen[q.q]){seen[q.q]=1;qs.push(q)}});
   var i=0,right=0;roundPts=0;document.body.dataset.tier='2';$('#gTitle').textContent=(STK[k]?STK[k].zh:k)+'・高手關';
@@ -2233,6 +2243,45 @@ function sxRun(k,back){var pool=sxPool(k),qs=[],seen={};pool.slice().sort(functi
     sfx('win');confetti(gBody.querySelector('.sest'),st*14+8);say(st===3?'全對！太厲害了！':st>=1?'高手關過關了！':'高手關很難，多練習幾次一定可以！','happy');
     $('#sxAgain').addEventListener('click',function(){sfx('tap');sxRun(k,back)});$('#sxBack').addEventListener('click',function(){sfx('tap');document.body.dataset.tier='0';back()})}
   say('高手關沒有提示，10 題全對才有 3 顆紫星，加油！','happy');show()}
+/* ---------- v16.3 英文「高手關」：拼字、文法、句子、閱讀 4 關，每關 10 題難題，沒有提示 ---------- */
+var ENX=[{k:'sp',ic:'🔤',n:'拼字高手',d:'選出正確拼字・長單字、易混淆字母'},{k:'gram',ic:'🧩',n:'文法高手',d:'a/an、is/are、單複數、動詞變化'},{k:'sent',ic:'💬',n:'句子高手',d:'中翻英、句子排列、對話回應'},{k:'read',ic:'📖',n:'閱讀高手',d:'讀短文回答問題，要推理和計算'}];
+function enxRow(){var d=isKid()&&Store.kid(who),r=d&&Array.isArray(d.xe)?d.xe:[];return [0,1,2,3].map(function(i){return +r[i]||0})}
+function enxMis(w,R){var s={},vow='aeiou',out=[],t=0;function add(x){if(x&&x!==w&&!s[x]&&/^[a-z]+$/.test(x)){s[x]=1;out.push(x)}}
+  while(out.length<3&&t++<80){var a=w.split(''),i=Math.floor(R()*a.length),m=Math.floor(R()*5);
+    if(m===0&&i<a.length-1){var c=a[i];a[i]=a[i+1];a[i+1]=c}
+    else if(m===1&&vow.indexOf(a[i])>=0){a[i]=vow[(vow.indexOf(a[i])+1+Math.floor(R()*4))%5]}
+    else if(m===2){a.splice(i,0,a[i])}
+    else if(m===3&&a.length>4){a.splice(i,1)}
+    else{var sw={c:'k',k:'c',s:'c',f:'ph',i:'y',y:'i',e:'a',a:'e',o:'u',u:'o',r:'l',l:'r',b:'d',d:'b'};if(sw[a[i]])a[i]=sw[a[i]]}
+    add(a.join(''))}
+  while(out.length<3)add(w+'e'.repeat(out.length+1));return out}
+function enxSpell(){var R=Math.random,ws=WORDS.filter(function(w){return w[0].length>=5&&/^[a-z]+$/.test(w[0])});ws.sort(function(){return R()-.5});
+  return ws.slice(0,12).map(function(w){return {q:'「'+w[2]+'」的英文，哪一個拼字正確？',a:w[0],w:enxMis(w[0],R),x:w[0]+' = '+w[2]+'。拼字時一個字母一個字母慢慢唸，最不容易錯。',en:1}})}
+function enxPool(i){var E=window.EXPERT&&EXPERT.en||{},k=ENX[i].k;if(k==='sp')return enxSpell();return (E[k]||[]).map(function(r){return {q:r[0],a:r[1],w:r[2].slice(0,3),x:r[3]||'',en:1}})}
+function enXHome(gb){if(!isKid())return;var r=enxRow(),box=document.createElement('div');box.className='enxk';
+  var h='<div class="enxh"><b>🏆 英文高手關</b><small>比一般遊戲更難！一關過了才開下一關，全對拿 3 顆紫星</small></div><div class="enxg">';
+  ENX.forEach(function(s,i){var open=i===0||r[i-1]>0;h+='<button class="sxexp enxb'+(open?'':' lock')+'" data-enx="'+i+'"'+(open?'':' disabled')+'><span class="n">'+(open?(r[i]===3?'👑':s.ic):'🔒')+'</span><span class="nm"><b>'+s.n+'</b><small>'+(open?s.d:'先過「'+ENX[i-1].n+'」')+'</small></span><span class="s3">'+[0,1,2].map(function(j){return '<i class="'+(j<r[i]?'on':'')+'">★</i>'}).join('')+'</span></button>'});
+  box.innerHTML=h+'</div>';gb.parentNode.insertBefore(box,gb);
+  box.querySelectorAll('[data-enx]').forEach(function(b){b.addEventListener('click',function(){if(b.disabled)return;sfx('win');enXRun(+b.dataset.enx)})})}
+function enXRun(si){var S=ENX[si],pool=enxPool(si),qs=[],seen={};stopGameOverlay();shell('英文高手關');
+  pool.slice().sort(function(){return Math.random()-.5}).forEach(function(q){if(qs.length<10&&!seen[q.q+q.a]){seen[q.q+q.a]=1;qs.push(q)}});
+  var i=0,right=0;roundPts=0;document.body.dataset.tier='2';$('#gTitle').textContent='英文高手關・'+S.n;
+  function back(){document.body.dataset.tier='0';backGameHome()}
+  function show(){if(i>=qs.length)return end();var q=qs[i],opts=[q.a].concat(q.w).sort(function(){return Math.random()-.5});$('#gProg').textContent=(i+1)+' / '+qs.length;
+    gBody.innerHTML='<div class="sxq enq"><div class="sxtop"><span class="tag">★ '+S.n+'</span><span>第 '+(i+1)+' / '+qs.length+' 題・答對 '+right+'</span></div><h3>'+esc(q.q)+'</h3><div class="sxo en">'+opts.map(function(o){return '<button data-o="'+esc(o)+'">'+esc(o)+'</button>'}).join('')+'</div><div class="sxf" hidden></div></div>';
+    gBody.querySelectorAll('[data-o]').forEach(function(b){b.addEventListener('click',function(){if(gBody.querySelector('.sxo.done'))return;var ok=b.dataset.o===q.a;gBody.querySelector('.sxo').classList.add('done');
+      gBody.querySelectorAll('[data-o]').forEach(function(x){if(x.dataset.o===q.a)x.classList.add('ok')});if(!ok)b.classList.add('bad');
+      if(ok){right++;award(2);sfx('ok')}else{sfx('no')}
+      var f=gBody.querySelector('.sxf');f.hidden=false;f.innerHTML='<b>'+(ok?'答對了！':'答案是「'+esc(q.a)+'」')+'</b>'+(q.x?'<p>'+esc(q.x)+'</p>':'')+'<button id="sxNext">'+(i+1<qs.length?'下一題':'看結果')+'</button>';
+      $('#sxNext').addEventListener('click',function(){sfx('tap');i++;show()})})})}
+  function end(){var n=qs.length,st=right>=n?3:right>=n-2?2:right>=n-4?1:0,first=false,first3=false;
+    if(isKid())Store.mut(who,function(d){var r=Array.isArray(d.xe)?d.xe.slice(0,4):[];while(r.length<4)r.push(0);var old=+r[si]||0;if(st>old)r[si]=st;d.xe=r;if(st>=1&&old<1){first=true;var sa=d.sa&&typeof d.sa==='object'?d.sa:(d.sa={});sa.c=(+sa.c||0)+30}if(st===3&&old<3){first3=true;d.water=(+d.water||0)+10}});
+    if(st>=1)award(5);if(st===3)award(10);try{Learn.play&&Learn.play('enx')}catch(e){}
+    gBody.innerHTML='<div class="obres"><div class="card"><div class="sest">'+[0,1,2].map(function(j){return '<i class="'+(j<st?'on':'')+'" style="animation-delay:'+(.15+j*.18)+'s">★</i>'}).join('')+'</div><h3>'+(st===3?S.n+'全對！你是真正的英文高手！':st>=1?S.n+'過關！':'再挑戰一次！')+'</h3><p>'+n+' 題答對 '+right+' 題（全對 3 星、錯 2 題內 2 星、錯 4 題內 1 星）</p>'+
+      (first?'<p class="sxrw">第一次過關：家鄉幣 +30'+(si<3?'，開放「'+ENX[si+1].n+'」':'')+'</p>':'')+(first3?'<p class="sxrw">第一次全對：💧 +10</p>':'')+'<div class="pts en">+'+roundPts+' 分</div><div class="row"><button class="btn alt" id="sxAgain">再挑戰（換新題目）</button>'+(si<3&&st>=1?'<button class="btn" id="sxNx">下一關 ▶</button>':'')+'<button class="btn ghost" id="sxBack">回英文樂園</button></div></div></div>';
+    sfx('win');confetti(gBody.querySelector('.sest'),st*14+8);say(st===3?'全對！太厲害了！':st>=1?'過關了！':'高手關很難，多練習幾次一定可以！','happy');
+    $('#sxAgain').addEventListener('click',function(){sfx('tap');enXRun(si)});var nx=$('#sxNx');if(nx)nx.addEventListener('click',function(){sfx('tap');enXRun(si+1)});$('#sxBack').addEventListener('click',function(){sfx('tap');back()})}
+  say(S.n+'：沒有提示，10 題全對才有 3 顆紫星，加油！','happy');show()}
 function stopGameOverlay(){if(typeof OB!=='undefined'&&OB)OB.stop()}
 
 /* 排行榜：社會（社會分、家鄉徽章、小石獅冒險、家鄉小鎮） */
@@ -2279,6 +2328,7 @@ function mbOff(id){var m=(Store.kid(id)||{}).mo;return m&&typeof m.o==='number'?
 function mbState(id){var g=mbGrade(id);if(!g)return null;var B=MB[g],w=mbWeek(),o=mbOff(id),ew=w+(o||0),cur=0;
   B.u.forEach(function(u,i){if(u[2]<=ew)cur=i});return {g:g,B:B,week:w,ew:ew,cur:cur,manual:o!==null}}
 function mbRow(id,k){var s=((Store.kid(id).mu)||{})[k];return Array.isArray(s)?[+s[0]||0,+s[1]||0,+s[2]||0,+s[3]||0]:[0,0,0,0]}
+function mbxRow(id,uk){var d=isKid()&&Store.kid(id);return d&&d.mx&&typeof d.mx==='object'?+d.mx[uk]||0:0}
 function mbCards(id){var S=mbState(id);if(!S)return 0;return S.B.u.filter(function(u){var r=mbRow(id,u[0]);return r[0]&&r[1]&&r[2]}).length}
 /* 數學樂園上方的課本地圖 */
 var mbOpen=false;function mbHome(gb){if(!isKid())return;var S=mbState(who),box=document.createElement('div');box.className='mbk';
@@ -2286,7 +2336,7 @@ var mbOpen=false;function mbHome(gb){if(!isKid())return;var S=mbState(who),box=d
   var h='<button class="mbh mbtog" id="mbTog" aria-expanded="'+mbOpen+'"><b>📘 康軒數學 '+esc(S.B.book)+'</b><small>'+(S.cal!=null&&S.cur>S.cal?'⚡ 已經超前！現在練：第 '+(S.cur+1)+' 單元「'+esc(S.B.u[S.cur][1])+'」':'學校現在大約教到：第 '+(S.cur+1)+' 單元「'+esc(S.B.u[S.cur][1])+'」'+(S.manual?'（家長設定）':''))+'</small><span class="mbc">🏅 '+mbCards(who)+' / '+S.B.u.length+'</span><span class="mbar">'+(mbOpen?'收起 ▲':'打開課本 ▼')+'</span></button><div class="mbpath"'+(mbOpen?'':' hidden')+'>';
   S.B.u.forEach(function(u,i){var open=i<=S.cur,r=mbRow(who,u[0]),st=r[0]+r[1]+r[2],full=r[0]&&r[1]&&r[2],ready=!!u[4];
     h+='<button class="mbn'+(i%2?' r':'')+(open?'':' lock')+(i===S.cur?' now':'')+(full?' full':'')+'" data-u="'+u[0]+'"><span class="no">'+(full?'🏅':open?i+1:'🔒')+'</span><span class="tx"><b>'+esc(u[1])+'</b><small>'+
-      (i===S.cur?(S.cal!=null&&S.cur>S.cal?'⚡ 學得很快，已經超前到這裡':'📍 學校現在教到這裡'):!open?'學校還沒教到':!ready?'🚧 小機老師準備中':'★ '+st+' / 9')+'</small></span></button>'});
+      (i===S.cur?(S.cal!=null&&S.cur>S.cal?'⚡ 學得很快，已經超前到這裡':'📍 學校現在教到這裡'):!open?'學校還沒教到':!ready?'🚧 小機老師準備中':'★ '+st+' / 9'+(full?(mbxRow(who,u[0])?'・<b class="mxs">高手 '+'★'.repeat(mbxRow(who,u[0]))+'</b>':'・<b class="mxs">高手關開放了</b>'):''))+'</small></span></button>'});
   box.innerHTML=h+'</div>';gb.parentNode.insertBefore(box,gb);$('#mbTog').addEventListener('click',function(){sfx('tap');mbOpen=!mbOpen;var p=box.querySelector('.mbpath');p.hidden=!mbOpen;this.setAttribute('aria-expanded',mbOpen);this.querySelector('.mbar').textContent=mbOpen?'收起 ▲':'打開課本 ▼';if(mbOpen)say('選一個單元開始練習！','happy')});
   box.querySelectorAll('[data-u]').forEach(function(b){b.addEventListener('click',function(){var i=S.B.u.map(function(u){return u[0]}).indexOf(b.dataset.u),u=S.B.u[i];
     if(i>S.cur){sfx('no');say('學校還沒教到「'+u[1]+'」，先把前面的練熟吧！','oops');return}
@@ -2297,8 +2347,9 @@ function mbMenu(u,i,S){var g=GAMES.filter(function(x){return x.id==='mbook'})[0]
   var h='<div class="mbu"><span class="no">'+(i+1)+'</span><div><small>康軒數學 '+esc(S.B.book)+'</small><b>'+esc(u[1])+'</b><span>'+(full?'🏅 拿到成就卡了！再玩可以拿更多分數':'3 關都過關就能拿到成就卡')+'</span></div></div><div class="stlv">';
   L.forEach(function(l,j){var open=j===0||r[j-1]>0;
     h+='<button class="stl'+(j===nxt?' next':'')+'" data-lv="'+j+'"'+(open?'':' disabled')+'><span class="n">'+(open?j+1:'🔒')+'</span><span class="nm"><b>第 '+(j+1)+' 關：'+esc(l[0])+'</b><small>'+esc(open?l[1]:'先過第 '+j+' 關才能玩')+'</small></span><span class="s3">'+[0,1,2].map(function(q){return '<i class="'+(q<r[j]?'on':'')+'">★</i>'}).join('')+'</span></button>'});
+  var xs=mbxRow(who,u[0]);h+='<button class="sxexp'+(full?'':' lock')+'" data-lv="3"'+(full?'':' disabled')+'><span class="n">'+(full?(xs===3?'👑':'★'):'🔒')+'</span><span class="nm"><b>第 4 關：高手關</b><small>'+(full?'10 題多步驟難題・每次題目都不一樣・全對才有 3 顆紫星':'3 關都過關後開放')+'</small></span><span class="s3">'+[0,1,2].map(function(j){return '<i class="'+(j<xs?'on':'')+'">★</i>'}).join('')+'</span></button>';
   gBody.innerHTML=h+'</div>';
-  gBody.querySelectorAll('[data-lv]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');OB.mb(g,u[0],+b.dataset.lv)})});
+  gBody.querySelectorAll('[data-lv]').forEach(function(b){b.addEventListener('click',function(){if(b.disabled)return;sfx('tap');OB.mb(g,u[0],+b.dataset.lv)})});
   say('第 '+(i+1)+' 單元「'+u[1]+'」，選一關開始！','happy')}
 /* 家長區：學校年級＋進度 */
 function mbParentHtml(){var h='<div class="rost mbp"><h3 class="h">📘 學校數學進度（康軒）</h3><p class="mbtip">App 會依開學後第幾週自動推算（現在是第 '+mbWeek()+' 週）。學校進度不一樣時，在這裡選「現在教到哪一單元」就好。</p>';
@@ -2658,6 +2709,7 @@ var GAMES=[
  {id:'meteor',cls:'g14 feat',ico:'☄️',tag:'對戰',zh:'字母隕石',en:'Letter Meteors',d:'照順序射下字母隕石拼出單字，可以連線比誰先拼完！',how:'看圖片和中文，照順序點字母隕石把單字拼出來。連線對戰時先拼完 6 個單字的人獲勝。'},
  {id:'diner',cls:'g22 feat',ico:'🍔',img:'diner',tag:'NEW',zh:'魔法星餐廳',en:'Magic Star Diner',d:'當餐廳大廚！聽客人用英文點餐，把對的食物送上去。',how:'客人會用英文點餐（按 🔊 可以再聽一次，按 ？ 看中文）。在餐檯上點對的食物；高年級要把正確的數量放到托盤，再按 🔔 上菜。連續答對 3 次會進入尖峰時刻，每道菜多拿小費；遇到自己陣營的客人分數兩倍。小心不要拿到魔法藥水！連線對戰是比 120 秒內誰的分數高。'},
  {id:'boss',cls:'g21 feat',ico:'🐲',img:'monster',tag:'合作',zh:'合作打魔王',en:'Boss Battle',d:'不比輸贏！兩個人一起答題，合力把魔王的血打完！',how:'魔王有很多血，90 秒內每答對一題就打魔王一下；答錯魔王會休息一下。可以跟小機合作，也可以兩台裝置連線，兩個人一起打。打贏了兩個人都加 30 分！',coop:1},
+ {id:'enx',sub:'en',hide:1,cls:'g11',ico:'🏆',zh:'英文高手關',en:'English Expert',d:'英文高手關'},
  {id:'mbook',sub:'math',hide:1,cls:'g17',ico:'📘',zh:'課本闖關',en:'Textbook',d:'照康軒課本單元一關一關練'},
  {id:'mbingo',sub:'math',cls:'g17 feat',ico:'🟦',tag:'對決',zh:'九九賓果搶地盤',en:'Times Table Bingo',d:'算對九九乘法就佔一格，先連成 4 格一條線的人贏！',how:'看上面的乘法題，在格子裡找到答案點下去，那一格就是你的。先把 4 格連成一條線（直、橫、斜都可以）的人獲勝；點錯會暫停一下。',duel:1},
  {id:'msnake',sub:'math',cls:'g18 feat',ico:'🐍',tag:'NEW',zh:'數字貪吃蛇',en:'Number Snake',d:'把蛇開去吃正確答案，越吃越長！',how:'場上有 3 個數字，只有一個是正確答案。手機手指往哪裡滑，小蛇就往哪裡走（也可以點小蛇要去的那一邊），電腦按方向鍵。吃到小光點會變長，吃錯或撞到自己會少一顆愛心，90 秒內吃越多越好。'},
@@ -2701,6 +2753,7 @@ function renderGameHome(){
     b.addEventListener('click',function(){sfx('tap');startGame(g)});gb.appendChild(b);});
   var mbo=document.querySelector('.mbk');if(mbo)mbo.remove();if(gsub==='math'&&!lobby)mbHome(gb);
   if(gsub==='sci'&&!lobby)sciHome();
+  var exo=document.querySelector('.enxk');if(exo)exo.remove();if(gsub==='en'&&!lobby)enXHome(gb);
 }
 function backGameHome(){cleanupGame();document.body.dataset.tier='0';gPlay.hidden=true;gHome.hidden=false;PANELS.game.scrollTop=0;renderGameHome()}
 $('#gBack').addEventListener('click',function(){sfx('tap');backGameHome();say('換一個遊戲吧！','idle')});
@@ -4755,21 +4808,85 @@ var OB=(function(){
 
   /* ---------- 數學：康軒課本闖關（共用外殼） ---------- */
   var MB_G={};
+  /* ---------- v16.3 數學課本「高手關」：每單元第 4 關，多步驟、逆向思考、找規則的難題（亂數出題，每次不同） ---------- */
+  var MB_X=['高手關','10 題混合難題：多步驟、反推、填數字；沒有提示，全對才有 3 顆紫星'];
+  function mbXItems(uk,R){var T=[],pk=function(a){return a[Math.floor(R()*a.length)]},sh=function(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(R()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a};
+    function cards(n){var d=[];while(d.length<n){var x=ri(R,0,9);if(d.indexOf(x)<0)d.push(x)}if(d.every(function(x){return x===0}))d[0]=5;return d}
+    function bigSmall(d){var s=d.slice().sort(function(a,b){return b-a}),big=+s.join(''),a=d.slice().sort(function(a,b){return a-b});if(a[0]===0){var k=1;while(a[k]===0)k++;var t=a[k];a.splice(k,1);a.unshift(t)}return [big,+a.join('')]}
+    function nearOpts(ans,step){var o=[ans];while(o.length<4){var v=ans+step*(ri(R,1,4))*(R()<.5?-1:1);if(v>0&&o.indexOf(v)<0)o.push(v)}return sh(o)}
+    var G={
+    r1:[function(){var h=ri(R,4,9),d=ri(R,1,3),t=h-d,o=t*2;if(o>9){o=t+1;return {q:'我是一個三位數：百位是 '+h+'，十位比百位少 '+d+'，個位比十位多 1。我是多少？',ans:h*100+t*10+o,why:'百位 '+h+'、十位 '+t+'、個位 '+o+'。'}}return {q:'我是一個三位數：百位是 '+h+'，十位比百位少 '+d+'，個位是十位的 2 倍。我是多少？',ans:h*100+t*10+o,why:'十位 '+h+'−'+d+'='+t+'，個位 '+t+'×2='+o+'。'}},
+      function(){var d=cards(3);while(d.indexOf(0)<0&&R()<.5)d[ri(R,0,2)]=0;d=cards(3);var bs=bigSmall(d);return {q:'用 '+d.join('、')+' 三張數字卡（每張用一次）排出最大的三位數和最小的三位數，兩個數相差多少？',ans:bs[0]-bs[1],why:'最大 '+bs[0]+'、最小 '+bs[1]+'（百位不能是 0），'+bs[0]+'−'+bs[1]+'='+(bs[0]-bs[1])+'。'}},
+      function(){var h=ri(R,1,6),t=ri(R,11,19),o=ri(R,1,9);return {q:h+' 個百、'+t+' 個十、'+o+' 個一，合起來是多少？',ans:h*100+t*10+o,why:t+' 個十是 '+(t*10)+'，所以是 '+(h*100)+'+'+(t*10)+'+'+o+'。'}},
+      function(){var x=ri(R,215,689),a=ri(R,2,3),b=ri(R,2,6);return {q:'比 '+x+' 多 '+a+' 個百，再少 '+b+' 個十，是多少？',ans:x+a*100-b*10,why:x+'+'+(a*100)+'−'+(b*10)+'。'}},
+      function(){var o=ri(R,0,4),h=o+ri(R,3,5);if(h>9)h=9;return {q:'一個三位數，十位是 0，百位和個位加起來是 '+(h+o)+'，百位比個位大 '+(h-o)+'。這個數是多少？',ans:h*100+o,why:'和是 '+(h+o)+'、差是 '+(h-o)+'，百位 '+h+'、個位 '+o+'。'}},
+      function(){var s=ri(R,103,480),n=ri(R,4,9),st=pk([10,100]);if(st===100&&s+n*100>999)n=3;return {q:'從 '+s+' 開始，每次加 '+st+'，加了 '+n+' 次後是多少？',ans:s+st*n,why:s+' + '+st+'×'+n+'。'}},
+      function(){var a=ri(R,2,8)*100+ri(R,0,9)*10+ri(R,0,9),b=a+ri(R,1,3)*10+ri(R,1,9);return {q:'比 '+a+' 大、比 '+b+' 小，而且個位是 0 的數裡面，最大的是多少？',ans:Math.floor((b-1)/10)*10>a?Math.floor((b-1)/10)*10:a,why:'找比 '+a+' 大、比 '+b+' 小，個位是 0 的數中最大的。'}}],
+    r2:[function(){var a=ri(R,112,489),b=ri(R,126,399),c=a+b,s=String(a),p=ri(R,1,2),dg=+s[p];return {q:s.slice(0,p)+'□'+s.slice(p+1)+' + '+b+' = '+c+'，□ 裡是多少？',ans:dg,why:'用 '+c+' − '+b+' = '+a+' 反推。'}},
+      function(){var m=pk([500,600,800,1000]),x=ri(R,128,m/2-20),y=ri(R,95,m/2-30);return {q:'小明有 '+m+' 元，買了 '+x+' 元的書和 '+y+' 元的筆，還剩多少元？',ans:m-x-y,unit:'元',why:m+'−'+x+'−'+y+'='+(m-x-y)+'。'}},
+      function(){var n=ri(R,120,480),a=ri(R,35,190),b=ri(R,26,150),c=n+a-b;return {q:'一個數先加上 '+a+'，再減掉 '+b+'，得到 '+c+'。這個數是多少？',ans:n,why:'倒著算：'+c+'+'+b+'−'+a+'='+n+'。'}},
+      function(){var a=ri(R,135,320),b=ri(R,18,95);return {q:'哥哥有 '+a+' 張卡片，弟弟比哥哥少 '+b+' 張。兩個人一共有幾張？',ans:2*a-b,unit:'張',why:'弟弟 '+(a-b)+' 張，合起來 '+a+'+'+(a-b)+'='+(2*a-b)+'。'}},
+      function(){var a=ri(R,180,420),b=ri(R,45,160),c=ri(R,30,140);return {q:'停車場原本有 '+a+' 輛車，開走 '+b+' 輛，又開進來 '+c+' 輛，現在有幾輛？',ans:a-b+c,unit:'輛',why:a+'−'+b+'+'+c+'。'}},
+      function(){var x=ri(R,312,689),y=ri(R,128,x-90);return {q:'□ − '+y+' = '+(x-y)+'，□ 是多少？',ans:x,why:'被減數 = 差 + 減數：'+(x-y)+'+'+y+'='+x+'。'}},
+      function(){var a=ri(R,105,280),b=ri(R,105,280),c=ri(R,105,280);return {q:'三天分別賣出 '+a+'、'+b+'、'+c+' 個麵包，最多的一天比最少的一天多賣幾個？',ans:Math.max(a,b,c)-Math.min(a,b,c),unit:'個',why:'先找最大和最小，再相減。'}}],
+    d1:[function(){var k=ri(R,2,6),h=ri(R,11,18),t=ri(R,2,9);return {q:k+' 個千、'+h+' 個百、'+t+' 個十，合起來是多少？',ans:k*1000+h*100+t*10,why:h+' 個百 = '+(h*100)+'。'}},
+      function(){var d=cards(4),bs=bigSmall(d);return {q:'用 '+d.join('、')+' 四張數字卡（每張用一次）排出最大和最小的四位數，相差多少？',ans:bs[0]-bs[1],why:'最大 '+bs[0]+'、最小 '+bs[1]+'（千位不能是 0）。'}},
+      function(){var x=ri(R,2105,6890),a=ri(R,1,3),b=ri(R,2,8);return {q:'比 '+x+' 多 '+a+' 個千，又少 '+b+' 個十，是多少？',ans:x+a*1000-b*10,why:x+'+'+(a*1000)+'−'+(b*10)+'。'}},
+      function(){var k=ri(R,2,8),h=ri(R,1,8),t=ri(R,0,9),o=ri(R,0,9),B=k*1000+h*100+t*10+o,o2=ri(R,0,9),t2=ri(R,0,9),best=-1;for(var x=0;x<=9;x++){if(k*1000+x*100+t2*10+o2<B)best=x}if(best<0)return {q:'4 個千、0 個百、12 個十是多少？',ans:4120,why:'12 個十 = 120。'};return {q:k+'□'+t2+o2+' < '+B+'，□ 裡最大可以填多少？',ans:best,why:'千位一樣，比百位，再比十位和個位。'}},
+      function(){var x=ri(R,1012,9480);return {q:x+' 最接近哪一個「整百」的數？',ans:Math.round(x/100)*100,why:'看十位：5 以上進位，4 以下捨去。'}},
+      function(){var k=ri(R,3,8),o=ri(R,1,9),h=k-ri(R,1,3),t=o;return {q:'一個四位數：千位是 '+k+'，百位比千位少 '+(k-h)+'，十位和個位都是 '+o+'。這個數是多少？',ans:k*1000+h*100+t*10+o,why:'依序排出每一位。'}},
+      function(){var a=ri(R,3,7)*1000,n=ri(R,3,6),s=pk([100,1000]);return {q:'從 '+(a+ri(R,1,9)*10)+' 開始，每次少 '+s+'，少了 '+n+' 次是多少？',ans:0,_f:1,a:a,n:n,s:s}}],
+    d2:[function(){var a=ri(R,1235,4890),b=ri(R,1386,4500),c=a+b,s=String(a),p=ri(R,1,3);return {q:s.slice(0,p)+'□'+s.slice(p+1)+' + '+b+' = '+c+'，□ 裡是多少？',ans:+s[p],why:'用 '+c+'−'+b+' 反推。'}},
+      function(){var a=ri(R,1245,2360),b=ri(R,1130,2240),c=ri(R,680,1500);return {q:'學校有男生 '+a+' 人、女生 '+b+' 人，其中 '+c+' 人去校外教學，留在學校的有幾人？',ans:a+b-c,unit:'人',why:'先加總 '+(a+b)+'，再減 '+c+'。'}},
+      function(){var n=ri(R,2100,5600),a=ri(R,350,1800),b=ri(R,260,1500);return {q:'一個數減掉 '+a+' 後，再加上 '+b+'，得到 '+(n-a+b)+'。這個數是多少？',ans:n,why:'倒著算：'+(n-a+b)+'−'+b+'+'+a+'。'}},
+      function(){var b=ri(R,1280,3400),a=ri(R,450,1600);return {q:'甲書店有 '+b+' 本書，乙書店比甲書店多 '+a+' 本。兩家書店一共有幾本？',ans:2*b+a,unit:'本',why:'乙有 '+(a+b)+' 本，共 '+b+'+'+(a+b)+'。'}},
+      function(){var x=ri(R,5012,9030),y=ri(R,1987,4800);return {q:'小美算 '+x+' − '+y+'，驗算時要把答案加上 '+y+'，驗算的結果應該是多少？',ans:x,why:'差 + 減數 = 被減數，所以會回到 '+x+'。'}},
+      function(){var t=ri(R,6,9)*1000,a=ri(R,1200,2500),b=ri(R,1100,2400);return {q:'一個水塔裝了 '+t+' 公升的水，早上用了 '+a+' 公升，下午用了 '+b+' 公升，還剩幾公升？',ans:t-a-b,unit:'公升',why:t+'−'+a+'−'+b+'。'}},
+      function(){var x=ri(R,3005,8009);x=Math.floor(x/1000)*1000+ri(R,0,9);var y=ri(R,1206,2899);return {q:x+' − '+y+' = ？（注意連續借位）',ans:x-y,why:'百位、十位是 0，要從千位一路借下來。'}}],
+    d3:[function(){var a=ri(R,2,6),b=ri(R,3,9),c=ri(R,2,5),d=ri(R,3,9);return {q:a+' 公分 '+b+' 毫米 + '+c+' 公分 '+d+' 毫米 = 幾毫米？',ans:(a+c)*10+b+d,unit:'毫米',why:'都換成毫米：'+(a*10+b)+'+'+(c*10+d)+'。'}},
+      function(){var A=ri(R,10,20),b=ri(R,3,7),c=ri(R,2,8);return {q:'緞帶長 '+A+' 公分，剪下 '+b+' 公分 '+c+' 毫米後，還剩幾毫米？',ans:A*10-b*10-c,unit:'毫米',why:A+' 公分 = '+(A*10)+' 毫米，再減 '+(b*10+c)+'。'}},
+      function(){var mm=ri(R,103,398);if(mm%10===0)mm+=7;return {q:mm+' 毫米 = □ 公分 '+(mm%10)+' 毫米，□ 是多少？',ans:Math.floor(mm/10),unit:'公分',why:'10 毫米 = 1 公分。'}},
+      function(){var a=ri(R,24,58),b=ri(R,24,58),c=ri(R,24,58);return {q:'三段繩子長 '+a+' 毫米、'+b+' 毫米、'+c+' 毫米，接起來一共幾毫米？',ans:a+b+c,unit:'毫米',why:'合起來 '+(a+b+c)+' 毫米 = '+Math.floor((a+b+c)/10)+' 公分 '+((a+b+c)%10)+' 毫米。'}},
+      function(){var x=ri(R,8,14),y=ri(R,1,9),p=ri(R,2,5),q=ri(R,1,9),L=x*10+y,D=p*10+q;return {q:'紅線長 '+x+' 公分 '+y+' 毫米，比藍線長 '+p+' 公分 '+q+' 毫米。藍線長幾毫米？',ans:L-D,unit:'毫米',why:'藍線 = 紅線 − 差 = '+L+'−'+D+'。'}},
+      function(){var a=ri(R,1,3),b=ri(R,2,8),n=ri(R,3,5);return {q:'每段長 '+a+' 公分 '+b+' 毫米，一樣長的 '+n+' 段接起來，共幾毫米？',ans:(a*10+b)*n,unit:'毫米',why:(a*10+b)+' 毫米 × '+n+'。'}},
+      function(){var v=[ri(R,31,69),0,0,0];v[1]=v[0]+ri(R,1,4);v[2]=v[0]-ri(R,1,4);v[3]=v[0]+ri(R,5,9);var lab=v.map(function(m){return Math.floor(m/10)+' 公分 '+(m%10)+' 毫米'});var mx=Math.max.apply(null,v);return {q:'下面哪一個最長？',opts:sh(lab.slice()),ans:Math.floor(mx/10)+' 公分 '+(mx%10)+' 毫米',why:'都換成毫米再比。'}}],
+    d4:[function(){var a=ri(R,12,89),b=ri(R,3,9),c=a*b,s=String(a),p=ri(R,0,1);return {q:s.slice(0,p)+'□'+s.slice(p+1)+' × '+b+' = '+c+'，□ 裡是多少？',ans:+s[p],why:c+' ÷ '+b+' = '+a+'。'}},
+      function(){var e=ri(R,12,36),n=ri(R,4,8),k=ri(R,9,e*2);return {q:'每盒有 '+e+' 顆糖，買了 '+n+' 盒，吃掉 '+k+' 顆，還剩幾顆？',ans:e*n-k,unit:'顆',why:e+'×'+n+'='+(e*n)+'，再減 '+k+'。'}},
+      function(){var a=ri(R,12,48),b=ri(R,3,9);return {q:'□ × '+b+' = '+(a*b)+'，□ 是多少？',ans:a,why:'想一想幾個 '+b+' 是 '+(a*b)+'。'}},
+      function(){var p=ri(R,25,65),a=ri(R,2,4),b=ri(R,2,5);return {q:'一張票 '+p+' 元，上午賣 '+a+' 張、下午賣 '+b+' 張，一共收多少元？',ans:p*(a+b),unit:'元',why:'共 '+(a+b)+' 張，'+p+'×'+(a+b)+'。'}},
+      function(){var a=ri(R,13,58),b=ri(R,3,8),c=ri(R,5,40);return {q:'比 '+a+' 的 '+b+' 倍多 '+c+' 的數是多少？',ans:a*b+c,why:a+'×'+b+'+'+c+'。'}},
+      function(){var a=ri(R,1,4)*100+ri(R,0,9),b=ri(R,3,9);if(a%100>=10)a=a-a%100+ri(R,1,9);return {q:a+' × '+b+' = ？（注意中間的 0）',ans:a*b,why:'十位是 0，乘完還要加上個位的進位。'}},
+      function(){var w=ri(R,6,9),h=ri(R,4,7),n=ri(R,2,4);return {q:'一排有 '+w+' 個座位，共 '+h+' 排；有 '+n+' 間一樣的教室，一共有幾個座位？',ans:w*h*n,unit:'個',why:'一間 '+(w*h)+' 個，'+n+' 間 '+(w*h*n)+' 個。'}}]};
+    var gs=G[uk]||G.d2,pool=sh(gs.slice()),items=[];
+    for(var i=0;items.length<10;i++){var q=pool[i%pool.length]();if(q._f){q={q:'從 '+(q.a)+' 開始，每次少 '+q.s+'，少了 '+q.n+' 次是多少？',ans:q.a-q.s*q.n,why:q.a+' − '+q.s+'×'+q.n+'。'};if(q.ans<0)continue}
+      if(typeof q.ans==='number'&&(q.ans<0||String(q.ans).length>6))continue;q.sub='★ 高手關・第 '+(items.length+1)+' 題';q.say='高手題！慢慢想，可以先在紙上算。';items.push(q)}
+    return items}
+  function mbXRun(C){C.x=1;mbQs(C,mbXItems(C.uk,C.R),'★ 高手關')}
   function mbPlay(g,uk,lv){launch(g,{uk:uk,lv:lv})}
-  IMPL.mbook=function(g,o){var uk=o.uk,lv=clamp(o.lv|0,0,2),fn=(MB_G[uk]||[])[lv];if(!fn)return;var S=mbState(who),U=S&&S.B.u.filter(function(u){return u[0]===uk})[0],ui=S?S.B.u.indexOf(U):0,L=MB_LV[uk][lv];
+  IMPL.mbook=function(g,o){var uk=o.uk,lv=clamp(o.lv|0,0,3),fn=lv===3?mbXRun:(MB_G[uk]||[])[lv];if(!fn||!MB_LV[uk])return;var S=mbState(who),U=S&&S.B.u.filter(function(u){return u[0]===uk})[0],ui=S?S.B.u.indexOf(U):0,L=lv===3?MB_X:MB_LV[uk][lv];if(lv===3)document.body.dataset.tier='2';
     pad(g,o,function(a){a.el.classList.add('mbp2');
       var ex=$('#obExit'),nx=ex.cloneNode(true);ex.parentNode.replaceChild(nx,ex);nx.addEventListener('click',function(){sfx('tap');stop();if(U)mbMenu(U,ui,S);else backGameHome()});
-      $('#pdQ').hidden=true;$('#arInfo').textContent='第 '+(lv+1)+' 關';
+      $('#pdQ').hidden=true;$('#arInfo').textContent=lv===3?'★ 高手關':'第 '+(lv+1)+' 關';
       $('#pdB').innerHTML='<div class="sc2" id="sc2"><div class="sbar"><span class="stag">📘 '+esc(L[0])+'</span><span class="scmbo" id="sCmb" hidden></span><div class="sprog" id="sProg"></div></div><div class="sbody" id="sBody"></div></div>';
       var C={a:a,g:g,uk:uk,lv:lv,U:U,ui:ui,S:S,gr:S?S.g:'三',R:rng(o.seed),B:$('#sBody'),right:0,wrong:0,streak:0,tips:[],fin:false,
         alive:function(){return A===a&&!C.fin&&!a.fin},
-        ok:function(el,txt){if(PGX)PGX.mbHook(C.uk,true);C.right++;C.streak++;a.my=C.right;award(1);sfx('ok');if(el)confetti(el,10);sciCombo(C.streak);if(el&&txt)stSpark(el,txt)},
+        ok:function(el,txt){if(PGX)PGX.mbHook(C.uk,true);C.right++;C.streak++;a.my=C.right;award(C.lv===3?3:1);sfx('ok');if(el)confetti(el,10);sciCombo(C.streak);if(el&&txt)stSpark(el,txt)},
         bad:function(tip){if(PGX)PGX.mbHook(C.uk,false);C.wrong++;C.streak=0;sciCombo(0);sfx('no');flash();if(tip&&C.tips.indexOf(tip)<0)C.tips.push(tip)},
         later:function(f,ms){setTimeout(function(){if(C.alive())f()},ms)},
         sheet:function(ok,t,b,btn,cb){sciSheet(ok,t,b,btn,function(){if(C.alive())cb&&cb()})},hide:sciHide,dots:function(N,cur,res){sciDots(N,cur,res)},
         done:function(force){mbFinish(C,force)}};
       a.dbg=function(){return C.dbg?C.dbg():{fin:C.fin}};fn(C)})};
-  function mbFinish(C,force){if(C.fin)return;C.fin=true;var acc=C.right+C.wrong?C.right/(C.right+C.wrong):1,st=force||(acc>=.9?3:acc>=.7?2:1),a=C.a,lv=C.lv,g=C.g,cardNew=false;
+  function mbXFinish(C){C.fin=true;var n=C.right+C.wrong,st=C.wrong===0?3:C.wrong<=2?2:C.wrong<=4?1:0,a=C.a,g=C.g,first=false,first3=false;C.a.step=null;sciHide();sciCombo(0);if(st>=1)award(5);if(st===3)award(10);
+    if(isKid())Store.mut(who,function(k){var mx=k.mx&&typeof k.mx==='object'?k.mx:(k.mx={}),old=+mx[C.uk]||0;if(st>old)mx[C.uk]=st;if(st>=1&&old<1){first=true;var sa=k.sa&&typeof k.sa==='object'?k.sa:(k.sa={});sa.c=(+sa.c||0)+30}if(st===3&&old<3){first3=true;k.water=(+k.water||0)+10}});
+    padEnd(a,{win:st>=1,score:C.right,total:n,icon:st===3?'👑':st?'💜':'💪',title:st===3?'高手關全對！':st?'高手關過關！':'高手關好難！',text:n+' 題答對 '+C.right+' 題（全對 3 星、錯 2 題內 2 星、錯 4 題內 1 星）',say:st===3?'你是真正的數學高手！':st?'過關了！挑戰全對拿 3 顆紫星！':'高手題本來就很難，再試一次一定更好！'});
+    var c=$('#obRes .card');if(!c)return;var h3=c.querySelector('h3');
+    if(h3)h3.insertAdjacentHTML('beforebegin','<div class="sest">'+[0,1,2].map(function(i){return '<i class="'+(i<st?'on':'')+'" style="animation-delay:'+(.15+i*.18)+'s">★</i>'}).join('')+'</div>');
+    var lines=(first?'<div class="hot">💜 第一次過高手關：家鄉幣 +30</div>':'')+(first3?'<div class="hot">👑 第一次全對：💧 +10，單元地圖會亮紫色皇冠</div>':'');
+    var p=c.querySelector('.pts');if(p&&lines)p.insertAdjacentHTML('afterend','<div class="stres">'+lines+'</div>');c.classList.add('sciend');if(st===3)setTimeout(function(){confetti(null,60);sfx('win')},600);
+    var row=c.querySelector('.row');if(row){row.innerHTML='<button class="btn alt" id="stAgain">再挑戰（換新題目）</button><button class="btn ghost" id="stBack">回單元</button>';
+      $('#stAgain').addEventListener('click',function(){sfx('tap');launch(g,{uk:C.uk,lv:3})});
+      $('#stBack').addEventListener('click',function(){sfx('tap');stop();if(C.U)mbMenu(C.U,C.ui,C.S);else backGameHome()})}}
+  function mbFinish(C,force){if(C.fin)return;if(C.lv===3)return mbXFinish(C);C.fin=true;var acc=C.right+C.wrong?C.right/(C.right+C.wrong):1,st=force||(acc>=.9?3:acc>=.7?2:1),a=C.a,lv=C.lv,g=C.g,cardNew=false;
     C.a.step=null;award(3);if(st===3)award(2);sciHide();sciCombo(0);
     if(isKid())Store.mut(who,function(k){var mu=k.mu&&typeof k.mu==='object'?k.mu:(k.mu={}),r=Array.isArray(mu[C.uk])?mu[C.uk].slice(0,4):[0,0,0,0];while(r.length<4)r.push(0);r[lv]=Math.max(+r[lv]||0,st);if(r[0]&&r[1]&&r[2]&&!r[3]){r[3]=1;cardNew=true}mu[C.uk]=r});
     if(cardNew)award(10);var L=MB_LV[C.uk];
