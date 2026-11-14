@@ -42,7 +42,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=14.0.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=15.5.1"></script>
+<script src="assets/v15/social.js?v=15.5.2"></script>
 <script src="assets/v15/adv.js?v=15.4.5"></script>
 <script src="assets/v15/town.js?v=15.5.1"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
@@ -565,7 +565,7 @@ body{position:fixed;top:0;bottom:0;left:0;right:0;height:auto;overscroll-behavio
 .dyq{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:15px}.dyq .tx{flex:1;min-width:0}.dyq .pg{font-weight:700;color:var(--ink-soft)}
 .dyq.ok .tx{text-decoration:line-through;opacity:.6}
 .dyt{margin:4px 0 8px;font-size:12px;color:var(--ink-soft)}
-.dyb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dyb .dytown{grid-column:1/-1;display:flex;align-items:center;gap:10px;text-align:left;padding:6px 12px 6px 8px}.dytown img{width:58px;height:44px;object-fit:contain;flex:none}.dytown span{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}.dytown b{font-size:15px}.dytown small{font-size:12px;opacity:.75;font-weight:700}.dytown i{font-style:normal;flex:none;background:#e53935;color:#fff;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:900}.dyb .btn{font-size:14px;padding:8px 6px;background:var(--surface-2)}
+.dyb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v2welcome{display:none!important}.dyb .dyhome{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;padding:8px 6px 10px}.dyhome img{width:84px;height:62px;object-fit:contain}.dyhome span{display:flex;flex-direction:column;line-height:1.3}.dyhome b{font-size:16px}.dyhome small{font-size:11.5px;opacity:.75;font-weight:700}.dyhome i{position:absolute;right:6px;top:6px;font-style:normal;background:#e53935;color:#fff;border-radius:99px;padding:2px 8px;font-size:11.5px;font-weight:900}.dyb .btn{font-size:14px;padding:8px 6px;background:var(--surface-2)}
 /* 圖鑑 */
 .book{background:linear-gradient(170deg,#1c2a52,#111a36)}
 .bkh{margin:8px 0 0;font-size:17px}
@@ -2845,11 +2845,11 @@ function renderDay(){var el=$('#dayBox');if(!el)return;if(!isKid()||gOpen){el.hi
   el.innerHTML='<div class="dyh"><b>'+ic('chest')+' 今日任務</b><span>'+ic('fire')+' 連續 '+I.streak+' 天</span><span>'+ic('can')+' '+I.water+'</span></div>'+
     I.q.map(function(q,i){var p=Math.min(I.p[i]||0,q.n),ok=p>=q.n;return '<div class="dyq'+(ok?' ok':'')+'"><span class="ck">'+(ok?ic('ok'):'⬜')+'</span><span class="tx">'+esc(q.txt)+'</span><span class="pg en">'+p+'/'+q.n+'</span></div>'}).join('')+
     '<p class="dyt">'+(I.done?'今天全部完成了，明天再來！💧 可以拿去花園澆水。':'每完成一個得 1 💧，三個都完成再送 2 💧，連續天數 +1。')+'</p>'+
-    '<div class="dyb"><button class="btn ghost" id="dyBook">'+ic('book')+' 圖鑑與錯題本</button><button class="btn ghost" id="dyGdn">🏡 我的花園</button>'+townBtn()+'</div>';
-  $('#dyBook').addEventListener('click',function(){sfx('tap');openBook(who)});$('#dyGdn').addEventListener('click',function(){sfx('tap');openGarden(who,'en')});var tb=$('#dyTown');if(tb)tb.addEventListener('click',function(){if(!window.__town)return;sfx('win');window.__town.open()})}
+    '<div class="dyb"><button class="btn ghost dyhome" id="dyGdn"><img src="'+ISL[0].img+'" alt=""><span><b>我的花園</b><small>英文種樹・數學種花</small></span></button>'+townBtn()+'</div>';
+  $('#dyGdn').addEventListener('click',function(){sfx('tap');openGarden(who,'en')});var tb=$('#dyTown');if(tb)tb.addEventListener('click',function(){if(!window.__town)return;sfx('win');window.__town.open()})}
 /* 家鄉小鎮入口（跟花園放在一起） */
 function townBtn(){var T=window.__town,s=window.__soc,nc=T&&T.newCount?T.newCount():0,src=s?s.img('tn_town_entry'):'';
-  return '<button class="btn ghost dytown" id="dyTown">'+(src?'<img src="'+src+'" alt="">':'')+'<span><b>我的家鄉小鎮</b><small>社會＋自然一起蓋</small></span>'+(nc&&(nc.n||nc.coins)?'<i>'+(nc.n?nc.n+' 個新東西':'')+(nc.n&&nc.coins?'・':'')+(nc.coins?'+'+nc.coins+' 幣':'')+'</i>':'')+'</button>'}
+  return '<button class="btn ghost dyhome" id="dyTown">'+(src?'<img src="'+src+'" alt="">':'')+'<span><b>家鄉小鎮</b><small>社會＋自然一起蓋</small></span>'+(nc&&(nc.n||nc.coins)?'<i>'+(nc.n?nc.n+' 新':'')+(nc.n&&nc.coins?'・':'')+(nc.coins?'+'+nc.coins+'幣':'')+'</i>':'')+'</button>'}
 
 /* ---- 圖鑑與錯題本 ---- */
 var bookEl=null,bookId='';
