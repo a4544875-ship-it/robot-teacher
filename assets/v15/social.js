@@ -1,7 +1,7 @@
 /* v15 社會島「家鄉小鎮」：三、四年級社會，跟著學校進度開站、五種題型、錯題複習、家鄉徽章 */
 (function(global){
 'use strict';
-var SOCI=/*SOCI*/{"lion_happy":"assets/img/soc-lion_happy-26720b11f9.webp","lion_think":"assets/img/soc-lion_think-23ac345968.webp","lion_cheer":"assets/img/soc-lion_cheer-860c44c8a3.webp","lion_wow":"assets/img/soc-lion_wow-c37cc54e80.webp","lion_wave":"assets/img/soc-lion_wave-81b666c7b0.webp","lion_sad":"assets/img/soc-lion_sad-efdf5b0a83.webp","badge":"assets/img/soc-badge-91139edba1.webp","compass":"assets/img/soc-compass-b6b3e512ee.webp","chest":"assets/img/soc-chest-11a8d277ef.webp","mt":"assets/img/soc-mt-4fe6200d5c.webp","hill":"assets/img/soc-hill-b517eb63d9.webp","plat":"assets/img/soc-plat-8e66da0896.webp","basin":"assets/img/soc-basin-30ccf2878d.webp","plain":"assets/img/soc-plain-a503c6f279.webp","h_min":"assets/img/soc-h_min-24ba016a36.webp","h_hak":"assets/img/soc-h_hak-0819c94776.webp","h_stone":"assets/img/soc-h_stone-134aab54e9.webp","h_mud":"assets/img/soc-h_mud-84d4cc510b.webp","f_cny":"assets/img/soc-f_cny-b45bf5f278.webp","f_lan":"assets/img/soc-f_lan-97375759ae.webp","f_tomb":"assets/img/soc-f_tomb-947a2cc5cf.webp","f_boat":"assets/img/soc-f_boat-29ce85c536.webp","f_ghost":"assets/img/soc-f_ghost-efa076323b.webp","f_moon":"assets/img/soc-f_moon-093cf02fc7.webp","gate":"assets/img/soc-gate-22737f3fa3.webp","map3":"assets/img/soc-map3-77efd18a1d.webp","map4":"assets/img/soc-map4-dbe2de67eb.webp","town":"assets/img/soc-town-1935bbb13d.webp"};
+var SOCI=/*SOCI*/{"lion_happy":"assets/img/soc-lion_happy-26720b11f9.webp","lion_think":"assets/img/soc-lion_think-23ac345968.webp","lion_cheer":"assets/img/soc-lion_cheer-860c44c8a3.webp","lion_wow":"assets/img/soc-lion_wow-c37cc54e80.webp","lion_wave":"assets/img/soc-lion_wave-81b666c7b0.webp","lion_sad":"assets/img/soc-lion_sad-efdf5b0a83.webp","badge":"assets/img/soc-badge-91139edba1.webp","compass":"assets/img/soc-compass-b6b3e512ee.webp","chest":"assets/img/soc-chest-11a8d277ef.webp","mt":"assets/img/soc-mt-4fe6200d5c.webp","hill":"assets/img/soc-hill-b517eb63d9.webp","plat":"assets/img/soc-plat-8e66da0896.webp","basin":"assets/img/soc-basin-30ccf2878d.webp","plain":"assets/img/soc-plain-a503c6f279.webp","h_min":"assets/img/soc-h_min-24ba016a36.webp","h_hak":"assets/img/soc-h_hak-0819c94776.webp","h_stone":"assets/img/soc-h_stone-134aab54e9.webp","h_mud":"assets/img/soc-h_mud-84d4cc510b.webp","f_cny":"assets/img/soc-f_cny-b45bf5f278.webp","f_lan":"assets/img/soc-f_lan-97375759ae.webp","f_tomb":"assets/img/soc-f_tomb-947a2cc5cf.webp","f_boat":"assets/img/soc-f_boat-29ce85c536.webp","f_ghost":"assets/img/soc-f_ghost-efa076323b.webp","f_moon":"assets/img/soc-f_moon-093cf02fc7.webp","gate":"assets/img/soc-gate-268663b1d2.webp","map3":"assets/img/soc-map3-77efd18a1d.webp","map4":"assets/img/soc-map4-dbe2de67eb.webp","town":"assets/img/soc-town-1935bbb13d.webp"};
 
 /* ================= 題庫 =================
    M 選擇題(題目,正解,[錯誤選項],解說)
@@ -312,7 +312,7 @@ var MAP={
   {k:'3b2',s:'b',wk:7,n:'消費與生活',x:78,y:64,ls:[]},
   {k:'3b3',s:'b',wk:11,n:'消費與選擇',x:24,y:81,ls:[]},
   {k:'3b4',s:'b',wk:14,n:'家鄉的地名與故事',x:78,y:81,ls:[]},
-  {k:'3bx',s:'b',wk:20,n:'家鄉特派員',x:50,y:91,ly:94.6,tag:'主題探究',ls:[]}],
+  {k:'3bx',s:'b',wk:20,n:'家鄉特派員',x:50,y:91,ly:88.2,tag:'主題探究',ls:[]}],
   hub:{x:50,y:44,ly:49.6}},
  4:{img:'map4',sign:[{t:'四年級上學期',x:50,y:3},{t:'四年級下學期',x:50,y:56.4}],units:[
   {k:'4a1',s:'a',wk:1,n:'家鄉的自然環境',x:25,y:13,ls:[['4a1-1','家鄉在哪裡'],['4a1-2','家鄉的地形'],['4a1-3','氣候、水資源與生活']]},

@@ -84,7 +84,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=14.0.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=15.0.0"></script>
+<script src="assets/v15/social.js?v=15.0.1"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -5272,7 +5272,7 @@ if(window.SocialFactory)try{(function(){
     goHome:function(){gOpen='soc';backGameHome()}});
   var rgh=renderGameHome;renderGameHome=function(){var soc=gOpen==='soc';rgh.apply(this,arguments);
     var gb0=$('#gatesBox');if(gb0&&!gb0.querySelector('[data-go="soc"]')){var sc=gb0.querySelector('[data-go="sci"]'),b=document.createElement('button');b.className='gatebtn so';b.dataset.go='soc';b.setAttribute('aria-label','進入社會遊戲樂園');
-      b.innerHTML='<img class="pic" src="'+SOCX.img('gate')+'" alt=""><b>🏘️ 社會遊戲樂園</b>';if(sc&&sc.nextSibling)gb0.insertBefore(b,sc.nextSibling);else gb0.appendChild(b);gb0.classList.add('has-soc');var gs=gb0.closest('.gates')||gb0;gs.classList.add('has-soc');
+      b.innerHTML='<img class="pic mul" src="'+SOCX.img('gate')+'" alt=""><b>🏘️ 社會遊戲樂園</b>';if(sc&&sc.nextSibling)gb0.insertBefore(b,sc.nextSibling);else gb0.appendChild(b);gb0.classList.add('has-soc');var gs=gb0.closest('.gates')||gb0;gs.classList.add('has-soc');
       b.addEventListener('click',function(){sfx('win');confetti(b,24);gOpen='soc';renderGameHome();PANELS.game.scrollTop=0;say('歡迎來到社會遊戲樂園！一起逛逛家鄉小鎮！','happy')})}
     if(!soc||!gOpen)return;
     var hb=$('#heroBox');hb.className='hero soc';$('#heroIco').textContent='🏘️';$('#heroT').textContent='社會遊戲樂園';$('#heroSub').textContent='題目跟著學校的社會進度';
