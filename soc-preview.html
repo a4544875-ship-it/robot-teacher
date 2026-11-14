@@ -42,7 +42,8 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=14.0.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=15.3.0"></script>
+<script src="assets/v15/social.js?v=15.4.0"></script>
+<script src="assets/v15/adv.js?v=15.4.0"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -1617,7 +1618,7 @@ var Store=(function(){
   function dayAdd(k,n){n=+n||0;if(!n)return;var o=k.dp&&typeof k.dp==='object'?k.dp:(k.dp={}),d=dayKey();o[d]=(+o[d]||0)+n;var ks=Object.keys(o).sort();while(ks.length>62)delete o[ks.shift()]}
   function kblank(){return {pts:0,byGame:{},qCount:0,lastDay:'',obby:{v:2},garden:{}}}
   function knorm(d){var b=kblank();/* 雲端資料可能是唯讀（凍結）物件，先深拷貝才能修改 */try{d=d?fsDec(JSON.parse(JSON.stringify(d))):{}}catch(e){d={}}b.pts=+d.pts||0;b.byGame=d.byGame||{};b.qCount=+d.qCount||0;b.lastDay=d.lastDay||'';b.obby=(d.obby&&typeof d.obby==='object')?d.obby:{v:2};b.garden=(d.garden&&typeof d.garden==='object')?d.garden:{};
-    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD','hv','sc','mu','mo','rd','hw','lab','dp','pg','ds','tm','rs','er','so'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq','scl','rev'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.gr==='string'&&d.gr)b.gr=d.gr;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
+    ['m','day','streak','wk','likes','likeD','pw','gf','lk','lkD','hv','sc','mu','mo','rd','hw','lab','dp','pg','ds','tm','rs','er','so','sa'].forEach(function(f){if(d[f]&&typeof d[f]==='object')b[f]=d[f]});['water','spent','gift','dn','conq','scl','rev'].forEach(function(f){if(+d[f]>0)b[f]=+d[f]});if(typeof d.fac==='string')b.fac=d.fac;if(typeof d.gr==='string'&&d.gr)b.gr=d.gr;if(typeof d.pin==='string'&&d.pin)b.pin=d.pin;if(typeof d.avd==='string'&&/^data:image\/(jpeg|png|webp);base64,/.test(d.avd)&&d.avd.length<60000)b.avd=d.avd;
     /* v2：關卡改成 20 關、順序重排，舊版的最快紀錄對不上新關卡，只保留已解鎖的進度 */
     if(b.obby.v!==2)b.obby={v:2,stage:Math.min(+b.obby.stage||0,4)};return b}
   function ensure(id){if(!kids[id]){kids[id]=kblank();dirty[id]=false;writing[id]=0}}
@@ -5226,6 +5227,9 @@ if(window.SocialFactory)try{(function(){
     finishBonus:function(score,total){return Store.finishGame(who,'soc',{score:score,total:total,roundPts:roundPts,eg:egrade})},
     goHome:function(){gOpen='soc';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}});
   window.__soc=SOCX;
+  if(window.AdvFactory){var ADV=window.AdvFactory({SOC:SOCX,Store:Store,Net:Net,isKid:isKid,who:function(){return who},esc:esc,sfx:sfx,say:say,confetti:confetti,kidName:function(){return nm()},
+    award:function(n){var g0=curGame;curGame='soc';try{award(n)}finally{curGame=g0}},finishBonus:function(score,total){return Store.finishGame(who,'soc',{score:score,total:total,roundPts:0,eg:egrade})},
+    refresh:function(){try{if(gOpen==='soc'&&!curGame)renderGameHome();updatePill()}catch(e){}}});ADV.css();window.__socAdv=ADV}
   var up0=updatePill;updatePill=function(){up0.apply(this,arguments);try{if(!isKid())return;var t=SOCX.town(who),el=$('#starNum');if(el&&!el.querySelector('.sp.so')){var sp=document.createElement('span');sp.className='sp so';sp.innerHTML='<img class="gi" src="'+SOCX.img(t.icon)+'" alt="" style="border-radius:50%;object-fit:cover"><i>'+t.pts+'</i>';el.appendChild(sp)}}catch(e){}};
   var rgh=renderGameHome;renderGameHome=function(){var soc=gOpen==='soc';rgh.apply(this,arguments);
     var gb0=$('#gatesBox');if(gb0&&!gb0.querySelector('[data-go="soc"]')){var sc=gb0.querySelector('[data-go="sci"]'),b=document.createElement('button');b.className='gatebtn so';b.dataset.go='soc';b.setAttribute('aria-label','進入社會遊戲樂園');
