@@ -1,6 +1,5 @@
-/* 奇蹟知識島 v18 — 城堡大廳：選帳號、輸入密碼、換頭像（含自訂髮色／帽子／眼鏡／臉飾／服裝）
-   頭像素材在 assets/v18/av/：<id>.webp（去背）、<id>-h.webp（頭髮遮罩）、<id>-c.webp（衣服遮罩）。
-   座標都用頭像畫布 480×468：e＝兩眼中心、t＝頭頂、hk/ck＝換色時的亮度補正、hc＝能不能換髮色。 */
+/* 奇蹟知識島 v18 — 城堡大廳：選帳號、輸入密碼、換頭像
+   頭像素材在 assets/v18/av/<id>.webp（去背，畫布 480×468）。 */
 (function(){
 var B='assets/v18/av/';
 var KIDS=[],Store=null,kidOf,growOf,subPts,scLevel,esc,sfx,confetti,hashPin,enter,renderPin,Music,PIC,gate,setMode,getMode;
@@ -23,57 +22,13 @@ var AV=[
  ['astro','太空探險家',{e:[[180,287],[285,287]],t:68,hc:0,hk:1.17,ck:2.22}],
  ['horn','魔角戰士',{e:[[172,279],[300,279]],t:80,hc:1,hk:2.34,ck:2.69}]];
 var AVM={};AV.forEach(function(a){AVM[a[0]]=a});
-/* 顏色：[名稱, 色碼, 亮度係數] */
-var HC=[['','原色'],['gold','金色','#f4c542',1.12],['red','紅色','#e8463c',.95],['pink','粉紅','#ff7fc0',1.12],['purple','紫色','#9a6bff',.92],['blue','藍色','#3f8cff',.95],['green','綠色','#2fc27a',.95],['silver','銀白','#cfd8ea',1.3],['black','黑色','#343a52',.42]];
-var CC=[['','原色'],['red','紅色','#e8463c',.95],['orange','橘色','#ff9a2e',1.05],['gold','金色','#f4c542',1.1],['green','綠色','#2fc27a',.95],['blue','藍色','#3f8cff',.95],['purple','紫色','#9a6bff',.92],['pink','粉紅','#ff7fc0',1.1],['white','白色','#eef2fb',1.35],['black','黑色','#343a52',.45]];
-var HAT=[['','不戴'],['crown','小皇冠'],['party','派對帽'],['halo','天使光環'],['flower','花圈'],['bow','蝴蝶結'],['bunny','兔耳朵'],['star','星星髮夾']];
-var GL=[['','不戴'],['round','圓框眼鏡'],['star','星星眼鏡'],['heart','愛心眼鏡'],['sun','酷炫墨鏡'],['mono','紳士單眼鏡']];
-var FC=[['','沒有'],['blush','可愛腮紅'],['stars','星星貼紙'],['heart','愛心貼紙'],['band','OK 繃'],['spark','閃亮亮'],['mus','小鬍子']];
-var CATS=[['hc','髮色',HC],['hat','帽子',HAT],['gl','眼鏡',GL],['fc','臉飾',FC],['cc','服裝',CC]];
-function pick(list,k){for(var i=0;i<list.length;i++)if(list[i][0]===k)return list[i];return list[0]}
-
 /* ---------- 頭像組合 ---------- */
-function geo(m){var L=m.e[0],R=m.e[1],dx=R[0]-L[0],dy=R[1]-L[1];return {L:L,R:R,mx:(L[0]+R[0])/2,my:(L[1]+R[1])/2,d:Math.hypot(dx,dy),a:Math.atan2(dy,dx)*180/Math.PI,t:m.t}}
-function star(cx,cy,r,fill,stroke,sw){var p=[];for(var i=0;i<10;i++){var rr=i%2?r*.45:r,an=-Math.PI/2+i*Math.PI/5;p.push((cx+rr*Math.cos(an)).toFixed(1)+','+(cy+rr*Math.sin(an)).toFixed(1))}return '<polygon points="'+p.join(' ')+'" fill="'+fill+'"'+(stroke?' stroke="'+stroke+'" stroke-width="'+(sw||3)+'" stroke-linejoin="round"':'')+'/>'}
-function heart(cx,cy,r,fill,stroke,sw){return '<path d="M'+cx+' '+(cy+r*.9)+' C'+(cx-r*1.6)+' '+(cy-r*.1)+' '+(cx-r*.9)+' '+(cy-r*1.25)+' '+cx+' '+(cy-r*.45)+' C'+(cx+r*.9)+' '+(cy-r*1.25)+' '+(cx+r*1.6)+' '+(cy-r*.1)+' '+cx+' '+(cy+r*.9)+'Z" fill="'+fill+'"'+(stroke?' stroke="'+stroke+'" stroke-width="'+(sw||3)+'" stroke-linejoin="round"':'')+'/>'}
-function hatSVG(k,g){if(!k)return '';var s=g.d/118,x=g.mx,y=g.t+6*s,o='';
-  if(k==='crown')o='<g class="o-bob" transform="translate('+x+','+(y-10*s)+') rotate(-8) scale('+s+')"><path d="M-46 18 L-52 -26 L-24 -4 L0 -40 L24 -4 L52 -26 L46 18 Z" fill="url(#g18gold)" stroke="#a86b00" stroke-width="4" stroke-linejoin="round"/><rect x="-48" y="12" width="96" height="16" rx="6" fill="url(#g18gold)" stroke="#a86b00" stroke-width="4"/><circle cx="0" cy="-40" r="7" fill="#ff5d8f" stroke="#fff" stroke-width="2"/><circle cx="-52" cy="-26" r="6" fill="#5ad1ff" stroke="#fff" stroke-width="2"/><circle cx="52" cy="-26" r="6" fill="#5ad1ff" stroke="#fff" stroke-width="2"/><circle cx="0" cy="20" r="6" fill="#b45cff"/></g>';
-  else if(k==='party')o='<g transform="translate('+(x+18*s)+','+(y-4*s)+') rotate(14) scale('+s+')"><path d="M-40 20 L0 -86 L40 20 Z" fill="#ff6fa8" stroke="#c2185b" stroke-width="4" stroke-linejoin="round"/><path d="M-27 -16 L27 -16 M-14 -50 L14 -50 M-36 6 L36 6" stroke="#ffe066" stroke-width="9" stroke-linecap="round"/><circle cx="0" cy="-90" r="13" fill="#ffe066" stroke="#e0a800" stroke-width="3" class="o-pulse"/><ellipse cx="0" cy="22" rx="44" ry="9" fill="#ffd1e3" stroke="#c2185b" stroke-width="3"/></g>';
-  else if(k==='halo')o='<g class="o-float" transform="translate('+x+','+(y-34*s)+') scale('+s+')"><ellipse cx="0" cy="0" rx="62" ry="17" fill="none" stroke="#fff6b0" stroke-width="16" opacity=".55"/><ellipse cx="0" cy="0" rx="62" ry="17" fill="none" stroke="url(#g18gold)" stroke-width="8"/></g>';
-  else if(k==='flower'){var fl='';[-70,-35,0,35,70].forEach(function(dx,i){var c=['#ff7eb6','#ffd23f','#7ad3ff','#ff9a5c','#b98cff'][i],cy=Math.abs(dx)*.28;fl+='<g transform="translate('+dx+','+cy+')">'+[0,72,144,216,288].map(function(an){return '<ellipse cx="0" cy="-10" rx="8" ry="11" fill="'+c+'" transform="rotate('+an+')"/>'}).join('')+'<circle r="7" fill="#fff3b0"/></g>'});
-    o='<g transform="translate('+x+','+(y+14*s)+') scale('+s+')"><path d="M-82 16 Q0 -16 82 16" fill="none" stroke="#4caf50" stroke-width="8" stroke-linecap="round"/>'+fl+'</g>'}
-  else if(k==='bow')o='<g class="o-wig" transform="translate('+(g.R[0]+30*s)+','+(y+16*s)+') rotate(18) scale('+s+')"><path d="M0 0 C-30 -34 -64 -22 -58 6 C-54 34 -22 26 0 0Z M0 0 C30 -34 64 -22 58 6 C54 34 22 26 0 0Z" fill="#ff4f8b" stroke="#b0144d" stroke-width="4" stroke-linejoin="round"/><circle r="12" fill="#ff86b1" stroke="#b0144d" stroke-width="4"/><circle cx="-30" cy="-6" r="4" fill="#fff" opacity=".8"/></g>';
-  else if(k==='bunny')o='<g transform="translate('+x+','+(y+8*s)+') scale('+s+')"><g class="o-earL"><ellipse cx="-34" cy="-62" rx="20" ry="58" fill="#fff" stroke="#c9c3d9" stroke-width="4" transform="rotate(-12 -34 -62)"/><ellipse cx="-34" cy="-58" rx="9" ry="40" fill="#ffb6cf" transform="rotate(-12 -34 -58)"/></g><g class="o-earR"><ellipse cx="34" cy="-62" rx="20" ry="58" fill="#fff" stroke="#c9c3d9" stroke-width="4" transform="rotate(14 34 -62)"/><ellipse cx="34" cy="-58" rx="9" ry="40" fill="#ffb6cf" transform="rotate(14 34 -58)"/></g><rect x="-52" y="-6" width="104" height="12" rx="6" fill="#ff86b1"/></g>';
-  else if(k==='star')o='<g class="o-spin" transform="translate('+(g.L[0]-14*s)+','+(y+40*s)+') scale('+s+')">'+star(0,0,24,'#ffd93b','#e09a00',4)+'<circle cx="-6" cy="-6" r="4" fill="#fff"/></g>';
-  return o}
-function glSVG(k,g){if(!k)return '';var s=g.d/118,r=36*s,L=g.L,R=g.R,o='';
-  var br='<path d="M'+(L[0]+r)+' '+L[1]+' Q'+g.mx+' '+(g.my-14*s)+' '+(R[0]-r)+' '+R[1]+'" fill="none" stroke="#2a2f45" stroke-width="'+(6*s)+'" stroke-linecap="round"/>';
-  if(k==='round')o=br+'<circle cx="'+L[0]+'" cy="'+L[1]+'" r="'+r+'" fill="rgba(200,230,255,.18)" stroke="#2a2f45" stroke-width="'+(7*s)+'"/><circle cx="'+R[0]+'" cy="'+R[1]+'" r="'+r+'" fill="rgba(200,230,255,.18)" stroke="#2a2f45" stroke-width="'+(7*s)+'"/><path d="M'+(L[0]-r*.5)+' '+(L[1]-r*.45)+' l'+(r*.35)+' '+(-r*.18)+' M'+(R[0]-r*.5)+' '+(R[1]-r*.45)+' l'+(r*.35)+' '+(-r*.18)+'" stroke="#fff" stroke-width="'+(5*s)+'" stroke-linecap="round" opacity=".8"/>';
-  else if(k==='star')o=br.replace('#2a2f45','#ff4fa0')+star(L[0],L[1],r*1.25,'rgba(255,240,150,.35)','#ff4fa0',7*s)+star(R[0],R[1],r*1.25,'rgba(255,240,150,.35)','#ff4fa0',7*s);
-  else if(k==='heart')o=br.replace('#2a2f45','#e0245e')+heart(L[0],L[1]+2*s,r*1.05,'rgba(255,120,160,.35)','#e0245e',7*s)+heart(R[0],R[1]+2*s,r*1.05,'rgba(255,120,160,.35)','#e0245e',7*s);
-  else if(k==='sun')o='<g transform="rotate('+g.a+' '+g.mx+' '+g.my+')"><path d="M'+(L[0]-r*1.15)+' '+(g.my-r*.7)+' H'+(R[0]+r*1.15)+' V'+(g.my-r*.2)+' Q'+(R[0]+r*1.05)+' '+(g.my+r*.95)+' '+(R[0])+' '+(g.my+r*.9)+' Q'+(g.mx+r*.35)+' '+(g.my+r*.9)+' '+(g.mx+r*.2)+' '+(g.my)+' Q'+g.mx+' '+(g.my-r*.15)+' '+(g.mx-r*.2)+' '+g.my+' Q'+(g.mx-r*.35)+' '+(g.my+r*.9)+' '+L[0]+' '+(g.my+r*.9)+' Q'+(L[0]-r*1.05)+' '+(g.my+r*.95)+' '+(L[0]-r*1.15)+' '+(g.my-r*.2)+'Z" fill="#1d2235" stroke="#0b0e18" stroke-width="'+(4*s)+'"/><path class="o-glint" d="M'+(L[0]-r*.7)+' '+(g.my-r*.35)+' l'+(r*.55)+' 0 M'+(R[0]-r*.7)+' '+(g.my-r*.35)+' l'+(r*.55)+' 0" stroke="#7fd6ff" stroke-width="'+(6*s)+'" stroke-linecap="round"/></g>';
-  else if(k==='mono')o='<circle cx="'+R[0]+'" cy="'+R[1]+'" r="'+(r*1.05)+'" fill="rgba(220,240,255,.22)" stroke="url(#g18gold)" stroke-width="'+(7*s)+'"/><path d="M'+(R[0]+r*.7)+' '+(R[1]+r*.75)+' q'+(r*.4)+' '+(r*1.2)+' '+(-r*.2)+' '+(r*2.4)+'" fill="none" stroke="#d6a72a" stroke-width="'+(3*s)+'"/>';
-  return o}
-function fcSVG(k,g){if(!k)return '';var s=g.d/118,L=g.L,R=g.R,cy=g.my+58*s,o='';
-  if(k==='blush')o='<ellipse cx="'+(L[0]-8*s)+'" cy="'+cy+'" rx="'+(24*s)+'" ry="'+(13*s)+'" fill="#ff7aa8" opacity=".5" filter="url(#g18blur)"/><ellipse cx="'+(R[0]+8*s)+'" cy="'+cy+'" rx="'+(24*s)+'" ry="'+(13*s)+'" fill="#ff7aa8" opacity=".5" filter="url(#g18blur)"/>';
-  else if(k==='stars')o='<g class="o-tw">'+star(R[0]+16*s,cy,15*s,'#ffd93b','#e09a00',3*s)+'</g><g class="o-tw d2">'+star(R[0]+40*s,cy-24*s,9*s,'#7fd6ff','#2b8af0',2*s)+'</g>';
-  else if(k==='heart')o='<g class="o-pulse" style="transform-origin:'+(L[0]-10*s)+'px '+cy+'px">'+heart(L[0]-10*s,cy,15*s,'#ff4f8b','#fff',3*s)+'</g>';
-  else if(k==='band')o='<g transform="rotate(-24 '+(R[0]+10*s)+' '+cy+')"><rect x="'+(R[0]-24*s)+'" y="'+(cy-10*s)+'" width="'+(68*s)+'" height="'+(20*s)+'" rx="'+(10*s)+'" fill="#f6c9a0" stroke="#d99a6a" stroke-width="'+(2.5*s)+'"/><rect x="'+(R[0]-2*s)+'" y="'+(cy-8*s)+'" width="'+(24*s)+'" height="'+(16*s)+'" rx="'+(3*s)+'" fill="#fbe2c8"/></g>';
-  else if(k==='spark')o=[[L[0]-48*s,L[1]-40*s,12],[R[0]+50*s,R[1]-46*s,15],[R[0]+30*s,cy+10*s,9]].map(function(p,i){return '<path class="o-tw d'+i+'" style="transform-origin:'+p[0]+'px '+p[1]+'px" d="M'+p[0]+' '+(p[1]-p[2]*s*1.6)+' Q'+p[0]+' '+p[1]+' '+(p[0]+p[2]*s*1.6)+' '+p[1]+' Q'+p[0]+' '+p[1]+' '+p[0]+' '+(p[1]+p[2]*s*1.6)+' Q'+p[0]+' '+p[1]+' '+(p[0]-p[2]*s*1.6)+' '+p[1]+' Q'+p[0]+' '+p[1]+' '+p[0]+' '+(p[1]-p[2]*s*1.6)+'Z" fill="#fff8c4" stroke="#ffd23f" stroke-width="'+(2*s)+'"/>'}).join('');
-  else if(k==='mus')o='<path transform="translate('+g.mx+','+(g.my+92*s)+') scale('+s+')" d="M0 -4 C-10 -14 -30 -14 -42 -2 C-34 -6 -24 4 -14 4 C-6 4 -2 0 0 -2 C2 0 6 4 14 4 C24 4 34 -6 42 -2 C30 -14 10 -14 0 -4Z" fill="#4a2c1a"/>';
-  return o}
 var DEFS='<defs><linearGradient id="g18gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1a8"/><stop offset=".5" stop-color="#ffc83a"/><stop offset="1" stop-color="#d9900a"/></linearGradient><filter id="g18blur"><feGaussianBlur stdDeviation="5"/></filter></defs>';
-function cfgOf(id){var d=Store&&Store.kid(id)||{},a=d.ava;if(a&&typeof a==='object'&&AVM[a.id])return a;if(d.avd)return null;
+function cfgOf(id){var d=Store&&Store.kid(id)||{},a=d.ava;if(a&&typeof a==='object'&&AVM[a.id])return {id:a.id};if(d.avd)return null;
   var used={},ks=KIDS||[];var dflt={de:'adv',ren:'blue'};if(dflt[id])return {id:dflt[id]};
   ks.forEach(function(k){var x=(Store.kid(k.id)||{}).ava;if(x&&x.id)used[x.id]=1});var i=ks.map(function(k){return k.id}).indexOf(id),pool=AV.filter(function(a){return !used[a[0]]&&a[0]!=='adv'&&a[0]!=='blue'});return {id:(pool[(i<0?0:i)%pool.length]||AV[2])[0]}}
-/* 頭像畫布（不含外框）：base＋換色層＋配件 SVG */
-function canvas(c,anim){var a=AVM[c.id]||AV[0],m=a[2],g=geo(m),h='<span class="g18cv'+(anim?' an':'')+'"><img src="'+B+a[0]+'.webp" alt="" draggable="false">';
-  var hc=c.hc&&m.hc?pick(HC,c.hc):null,cc=c.cc?pick(CC,c.cc):null;
-  if(hc&&hc[2])h+='<i class="g18rc" style="--m:url('+B+a[0]+'-h.webp);--src:url('+B+a[0]+'.webp);--k:'+(m.hk*hc[3]).toFixed(2)+';--c:'+hc[2]+'"></i>';
-  if(cc&&cc[2])h+='<i class="g18rc" style="--m:url('+B+a[0]+'-c.webp);--src:url('+B+a[0]+'.webp);--k:'+(m.ck*cc[3]).toFixed(2)+';--c:'+cc[2]+'"></i>';
-  var ov=fcSVG(c.fc,g)+glSVG(c.gl,g)+hatSVG(c.hat,g);
-  if(ov)h+='<svg viewBox="0 0 480 468" aria-hidden="true">'+DEFS+ov+'</svg>';
-  return h+'</span>'}
+/* 頭像畫布（不含外框） */
+function canvas(c,anim){var a=AVM[c.id]||AV[0];return '<span class="g18cv'+(anim?' an':'')+'"><img src="'+B+a[0]+'.webp" alt="" draggable="false"></span>'}
 /* 小頭像（圓形，給 App 各處用） */
 function face(k,cls){if(!k||!ready)return '';var c=cfgOf(k.id);if(!c)return '';return '<span class="kav kava'+(cls?' '+cls:'')+'" aria-hidden="true"><span class="g18in">'+canvas(c,false)+'</span></span>'}
 /* 大頭像：金色圓框、帽子可以超出框 */
@@ -138,39 +93,22 @@ function pinScreen(id,note){var k=kidOf(id);if(!k)return pickScreen();setMode('k
   gate.querySelector('#g18edit').addEventListener('click',function(){sfx('tap');document.removeEventListener('keydown',onKey);avScreen(id)});
   texts();draw()}
 
-/* ---------- 3. 選頭像＋自訂風格 ---------- */
+/* ---------- 3. 選頭像 ---------- */
 function avScreen(id){var k=kidOf(id);if(!k)return pickScreen();setMode('kav');gate.classList.add('g18');
-  var base=pend[id]||cfgOf(id)||{id:'adv'},c={};for(var x in base)c[x]=base[x];var cat='hc';
+  var c={id:(pend[id]||cfgOf(id)||{id:'adv'}).id};
   var h='<div class="g18av"><div class="g18head s">'+bot()+plaque('選擇你的頭像')+'</div>'+
     '<div class="g18prev"><div class="g18orbit"><i></i><i></i><i></i><i></i><i></i><i></i></div><div id="g18pv"></div><b id="g18pvn"></b></div>'+
     '<div class="g18panel"><div class="g18grid" id="g18grid">'+AV.map(function(a,i){return '<button data-av="'+a[0]+'" style="--i:'+i+'" aria-label="'+a[1]+'"><span class="g18tilebg"></span>'+canvas({id:a[0]},false)+'<i class="ck"><svg viewBox="0 0 24 24"><path d="m6 12.5 4 4 8-9" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i><small>'+a[1]+'</small></button>'}).join('')+'</div></div>'+
-    plaque('自訂你的風格 <small>（可以自由組合）</small>',true)+'<div class="g18panel cust"><div class="g18tabs" id="g18tabs">'+CATS.map(function(t){return '<button data-cat="'+t[0]+'">'+tabIco(t[0])+'<span>'+t[1]+'</span></button>'}).join('')+'</div><div class="g18opts" id="g18opts"></div><p class="g18note" id="g18note"></p></div>'+
-    '<div class="g18acts"><button class="g18dice" id="g18dice" aria-label="隨機搭配">🎲 隨機</button><button class="g18ok" id="g18ok"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>確認使用</button></div>'+
+    '<div class="g18acts"><button class="g18ok" id="g18ok"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>確認使用</button></div>'+
     '<button class="g18back" id="g18cancel"><svg viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>不換了，回去</button></div>';
-  gate.innerHTML=stage(h,'avw');
+  gate.innerHTML=stage(h,'avw');gate.scrollTop=0;
   var pv=gate.querySelector('#g18pv');
-  function prev(pop){pv.innerHTML=big(c,{cls:'xl'});gate.querySelector('#g18pvn').textContent=(AVM[c.id]||AV[0])[1];if(pop){var b=pv.firstChild;b.classList.add('pop')}}
+  function prev(pop){pv.innerHTML=big(c,{cls:'xl'});gate.querySelector('#g18pvn').textContent=(AVM[c.id]||AV[0])[1];if(pop)pv.firstChild.classList.add('pop')}
   function grid(){gate.querySelectorAll('#g18grid button').forEach(function(b){b.classList.toggle('sel',b.dataset.av===c.id)})}
-  function opts(){var t=CATS.filter(function(x){return x[0]===cat})[0],list=t[2],m=(AVM[c.id]||AV[0])[2],off=cat==='hc'&&!m.hc;
-    gate.querySelectorAll('#g18tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.cat===cat)});
-    gate.querySelector('#g18opts').innerHTML=list.map(function(o,i){var on=(c[cat]||'')===o[0],sw=(cat==='hc'||cat==='cc')?(o[2]?'<i class="sw" style="--c:'+o[2]+'"></i>':'<i class="sw none"></i>'):'<i class="ic">'+optIco(cat,o[0])+'</i>';
-      return '<button data-o="'+o[0]+'" class="'+(on?'on':'')+'" style="--i:'+i+'"'+(off&&o[0]?' disabled':'')+'>'+sw+'<span>'+o[1]+'</span></button>'}).join('');
-    gate.querySelector('#g18note').textContent=off?'這個頭像戴著頭盔或帽子，頭髮看不到，所以不能換髮色。':cat==='hc'?'頭髮會換成選的顏色，光影會保留。':cat==='cc'?'衣服會換成選的顏色。':''}
-  gate.querySelector('#g18grid').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;sfx('tap');c.id=b.dataset.av;if(!(AVM[c.id][2].hc))delete c.hc;grid();prev(true);opts()});
-  gate.querySelector('#g18tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;sfx('tap');cat=b.dataset.cat;opts()});
-  gate.querySelector('#g18opts').addEventListener('click',function(e){var b=e.target.closest('button');if(!b||b.disabled)return;sfx('ok');if(b.dataset.o)c[cat]=b.dataset.o;else delete c[cat];opts();prev(true)});
-  gate.querySelector('#g18dice').addEventListener('click',function(){sfx('win');function r(l){return l[Math.floor(Math.random()*l.length)][0]}c={id:r(AV)};['hat','gl','fc'].forEach(function(f){if(Math.random()<.6){var v=r(f==='hat'?HAT:f==='gl'?GL:FC);if(v)c[f]=v}});if(AVM[c.id][2].hc&&Math.random()<.5){var v=r(HC);if(v)c.hc=v}if(Math.random()<.4){var v2=r(CC);if(v2)c.cc=v2}grid();prev(true);opts()});
-  gate.querySelector('#g18ok').addEventListener('click',function(){sfx('win');var s={};for(var x in c)if(c[x])s[x]=c[x];pend[id]=s;try{confetti(pv,36)}catch(e){}setTimeout(function(){pinScreen(id,'✨ 新頭像選好了！輸入密碼就會換上')},420)});
+  gate.querySelector('#g18grid').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;sfx('tap');c.id=b.dataset.av;grid();prev(true)});
+  gate.querySelector('#g18ok').addEventListener('click',function(){sfx('win');pend[id]={id:c.id};try{confetti(pv,36)}catch(e){}setTimeout(function(){pinScreen(id,'✨ 新頭像選好了！輸入密碼就會換上')},420)});
   gate.querySelector('#g18cancel').addEventListener('click',function(){sfx('tap');pinScreen(id)});
-  grid();prev(false);opts()}
-function tabIco(k){var m={hc:'<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-1-1.6-1-2.6S14 15 15.5 15H18a3 3 0 0 0 3-3c0-5-4-9-9-9Z" fill="#ffd66b" stroke="#c98a00" stroke-width="1.5"/><circle cx="7.5" cy="11" r="1.6" fill="#ff5d8f"/><circle cx="10" cy="7" r="1.6" fill="#3f8cff"/><circle cx="14.5" cy="7" r="1.6" fill="#2fc27a"/></svg>',
-  hat:'<svg viewBox="0 0 24 24"><path d="M5 15c0-5 3-9 7-9s7 4 7 9Z" fill="#2a3a7a"/><rect x="2.5" y="14.5" width="19" height="3.5" rx="1.75" fill="#3b4f9e"/><rect x="6" y="12" width="12" height="2" fill="#ffc83a"/></svg>',
-  gl:'<svg viewBox="0 0 24 24"><circle cx="7" cy="13" r="4" fill="#cfe6ff" stroke="#22304f" stroke-width="2"/><circle cx="17" cy="13" r="4" fill="#cfe6ff" stroke="#22304f" stroke-width="2"/><path d="M11 12.5q1-1 2 0" stroke="#22304f" stroke-width="2" fill="none"/></svg>',
-  fc:'<svg viewBox="0 0 24 24"><path d="M12 2.5 14.6 9l6.9.5-5.3 4.4 1.7 6.7L12 16.9l-5.9 3.7 1.7-6.7L2.5 9.5 9.4 9Z" fill="#ffd23f" stroke="#e09a00" stroke-width="1.4" stroke-linejoin="round"/></svg>',
-  cc:'<svg viewBox="0 0 24 24"><path d="M8 3 4 6l-2 5 3 1.5V21h14v-8.5L22 11l-2-5-4-3c-.5 1.6-2 2.6-4 2.6S8.5 4.6 8 3Z" fill="#2f74e0" stroke="#1d4f9e" stroke-width="1.4" stroke-linejoin="round"/></svg>'};return m[k]||''}
-function optIco(cat,k){if(!k)return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="#a7b1cc" stroke-width="2.4"/><path d="m6.5 17.5 11-11" stroke="#a7b1cc" stroke-width="2.4"/></svg>';
-  var g={L:[70,118],R:[130,118],mx:100,my:118,d:60,a:0,t:96};var body=cat==='hat'?hatSVG(k,{L:[70,140],R:[130,140],mx:100,my:140,d:60,a:0,t:118}):cat==='gl'?glSVG(k,g):fcSVG(k,{L:[78,96],R:[122,96],mx:100,my:96,d:44,a:0,t:60});
-  var vb=cat==='hat'?'40 60 120 90':cat==='gl'?'40 88 120 60':'50 110 110 70';return '<svg viewBox="'+vb+'">'+DEFS+body+'</svg>'}
+  grid();prev(false)}
 
 /* ---------- 樣式 ---------- */
 var CSS=`
@@ -228,9 +166,6 @@ var CSS=`
 .g18pop .g18cv{bottom:-3%}
 .g18cv>img,.g18cv>svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;max-width:none!important;background:none!important;box-shadow:none!important}
 .g18cv>svg{overflow:visible}
-.g18rc{position:absolute;inset:0;-webkit-mask:var(--m) center/100% 100% no-repeat;mask:var(--m) center/100% 100% no-repeat}
-.g18rc::before{content:"";position:absolute;inset:0;background:var(--src) center/100% 100% no-repeat;filter:grayscale(1) brightness(var(--k)) contrast(1.08)}
-.g18rc::after{content:"";position:absolute;inset:0;background:var(--c);mix-blend-mode:color}
 .g18rim{position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 4px #fff3b8,inset 0 0 0 8px #e7a52a;-webkit-mask:linear-gradient(transparent 0 54%,#000 64%);mask:linear-gradient(transparent 0 54%,#000 64%);pointer-events:none}
 .g18crown{position:absolute;right:-6%;top:-14%;width:42%;transform:rotate(18deg);filter:drop-shadow(0 3px 3px rgba(0,0,0,.3));animation:g18crn 2.4s ease-in-out infinite}
 @keyframes g18crn{0%,100%{transform:rotate(18deg) translateY(0)}50%{transform:rotate(10deg) translateY(-12%)}}
@@ -278,10 +213,10 @@ var CSS=`
 /* 密碼 */
 .g18pin{display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:26px}
 .g18pav{position:relative;animation:g18in .6s cubic-bezier(.3,1.5,.5,1) both}
-.g18edit{position:absolute;right:-18px;bottom:10px;white-space:nowrap;display:flex;align-items:center;gap:4px;border:0;border-radius:999px;padding:6px 11px 6px 7px;font-weight:900;font-size:13px;color:#1d3b8c;cursor:pointer;background:linear-gradient(180deg,#fff,#dfe8ff);box-shadow:0 0 0 2.5px #e9b93f,0 4px 0 #8da2df,0 6px 12px rgba(0,0,0,.3);animation:g18wig 3s ease-in-out 1.2s infinite}
+.g18edit{position:absolute;left:calc(100% - 26px);top:46%;z-index:4;white-space:nowrap;display:flex;align-items:center;gap:4px;border:0;border-radius:999px;padding:6px 11px 6px 7px;font-weight:900;font-size:13px;color:#1d3b8c;cursor:pointer;background:linear-gradient(180deg,#fff,#dfe8ff);box-shadow:0 0 0 2.5px #e9b93f,0 4px 0 #8da2df,0 6px 12px rgba(0,0,0,.3);animation:g18wig 3s ease-in-out 1.2s infinite}
 .g18edit svg{width:20px;height:20px}
 @keyframes g18wig{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-8deg) scale(1.08)}95%{transform:rotate(6deg) scale(1.08)}}
-.g18pin .g18plq{margin-top:-30px;z-index:2;min-width:200px}
+.g18pin .g18plq{margin-top:-6px;z-index:2;min-width:200px}
 .g18panel.pinp{width:100%;max-width:400px;background:linear-gradient(180deg,#f7f9ff,#e3eafb);box-shadow:0 0 0 3px #f0bf45,0 0 0 7px #2a4296,0 0 0 9px rgba(240,191,69,.7),0 18px 40px rgba(5,10,40,.55);padding:18px 18px 14px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .g18q{margin:0;font-weight:900;font-size:17px;color:#1a2250;text-align:center}
 .g18boxes{display:flex;gap:12px}
@@ -311,7 +246,7 @@ var CSS=`
 .g18back:active{transform:translateY(4px);box-shadow:0 0 0 3px #e9b93f,0 1px 0 #8da2df}
 /* 換頭像 */
 .g18av{display:flex;flex-direction:column;gap:12px}
-.g18prev{position:sticky;top:0;z-index:6;display:flex;flex-direction:column;align-items:center;gap:4px;padding:30px 0 8px;margin:0 -16px;background:linear-gradient(180deg,rgba(20,34,100,.92),rgba(20,34,100,.75) 80%,rgba(20,34,100,0));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.g18prev{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:30px 0 4px}
 .g18prev .g18big.xl{width:min(34vw,140px)}
 .g18prev>b{color:#fff;font-size:17px;font-weight:900;text-shadow:0 2px 6px rgba(0,0,0,.5);padding:2px 14px;border-radius:999px;background:rgba(20,34,100,.55);box-shadow:0 0 0 2px #e9b93f}
 .g18orbit{position:absolute;left:50%;top:calc(30px + min(17vw,70px));width:min(50vw,200px);aspect-ratio:1;translate:-50% -50%;animation:o-sp 14s linear infinite;pointer-events:none}
@@ -329,26 +264,12 @@ var CSS=`
 .g18grid button.sel .g18tilebg{box-shadow:inset 0 0 0 2px #fff,0 0 0 3.5px #f2b52c,0 0 14px 2px rgba(255,210,80,.8),0 3px 0 #c98a00}
 .g18grid button.sel{transform:translateY(-3px)}
 .g18grid button:active{transform:scale(.94)}
-.g18panel.cust{padding:12px}
-.g18tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:8px}
-.g18tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;border-radius:14px;padding:7px 2px 6px;cursor:pointer;font-weight:900;font-size:13px;color:#1a2250;background:linear-gradient(180deg,#fff,#e4ebfb);box-shadow:0 3px 0 #9fb0e6;transition:transform .12s}
-.g18tabs button svg{width:28px;height:28px}
-.g18tabs button.on{color:#fff;background:linear-gradient(180deg,#4a8bff,#2457d6);box-shadow:inset 0 0 0 2px rgba(255,255,255,.5),0 3px 0 #163c9e;transform:translateY(-2px)}
-.g18opts{display:flex;gap:8px;overflow-x:auto;padding:14px 4px 8px;margin-top:4px;scroll-snap-type:x mandatory;scrollbar-width:thin}
-.g18opts button{flex:none;width:78px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;border-radius:16px;padding:8px 4px;cursor:pointer;background:#fff;box-shadow:inset 0 0 0 2px #d6dff5,0 3px 0 #b5c3e6;font-size:12px;font-weight:800;color:#1a2250;animation:g18card .35s ease-out calc(var(--i)*.03s) both;transition:transform .12s}
-.g18opts button.on{box-shadow:inset 0 0 0 3px #24b35a,0 0 0 3px rgba(36,179,90,.25),0 3px 0 #1e8f4a;transform:translateY(-2px)}
-.g18opts button:disabled{opacity:.35;cursor:not-allowed}
-.g18opts .sw{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 40%,#fff),var(--c) 60%,color-mix(in srgb,var(--c) 70%,#000));box-shadow:inset 0 0 0 2px rgba(255,255,255,.7),0 2px 4px rgba(0,0,0,.2)}
-.g18opts .sw.none{background:conic-gradient(#f4c542,#e8463c,#ff7fc0,#9a6bff,#3f8cff,#2fc27a,#f4c542)}
-.g18opts .ic{width:56px;height:40px;display:grid;place-items:center}.g18opts .ic svg{width:100%;height:100%;overflow:visible}
-.g18note{margin:2px 4px 0;font-size:12.5px;color:#cfe0ff;font-weight:700;min-height:1.2em}
-.g18acts{display:flex;gap:10px;justify-content:center;position:sticky;bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:5}
+.g18acts{display:flex;gap:10px;justify-content:center}
 .g18ok{flex:1;max-width:300px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:15px 18px;cursor:pointer;font-weight:900;font-size:19px;color:#5a3600;background:linear-gradient(180deg,#fff27a,#ffd23c 45%,#ffb300);box-shadow:inset 0 3px 0 rgba(255,255,255,.7),0 0 0 3px #fff,0 6px 0 #d98a00,0 12px 22px rgba(0,0,0,.35);position:relative;overflow:hidden;animation:g18beat 1.6s ease-in-out infinite}
 .g18ok svg{width:24px;height:24px}
 .g18ok::after{content:"";position:absolute;top:0;bottom:0;width:30%;left:-40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);animation:g18sh 2.6s ease-in-out infinite}
 @keyframes g18beat{0%,100%{transform:scale(1)}15%{transform:scale(1.05)}30%{transform:scale(1)}}
-.g18dice{border:0;border-radius:999px;padding:15px 16px;cursor:pointer;font-weight:900;font-size:16px;color:#1d3b8c;background:linear-gradient(180deg,#fff,#dde6fb);box-shadow:0 0 0 3px #e9b93f,0 6px 0 #8da2df,0 12px 22px rgba(0,0,0,.3)}
-.g18dice:active,.g18ok:active{transform:translateY(4px)}
+.g18ok:active{transform:translateY(4px)}
 @media (prefers-reduced-motion:reduce){#gate.g18 *,#gate.g18 *::before,#gate.g18 *::after{animation:none!important;transition:none!important}}
 /* App 各處的小頭像 */
 .kava{position:relative;display:inline-block;flex:none;border-radius:50%;overflow:hidden;vertical-align:middle;background:radial-gradient(circle at 50% 38%,#9dd6ff,#2d7fe0 60%,#1b4fae);box-shadow:inset 0 0 0 2px rgba(255,255,255,.85)}
