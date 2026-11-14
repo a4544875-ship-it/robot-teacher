@@ -180,10 +180,13 @@ global.ParentFactory=function(C){
     h+=sec('🕘 最近玩的',recentRows(id,'soc',12));return h}
 
   /* ---------- 分頁：各科 ---------- */
+  /* 挑戰等級（金星標準／藍星進階／紫星高手） */
+  function tierTile(id,ps){var P=C.PGX();if(!P||!P.chal||ps==='s')return '';var l=P.chal(id,ps),o=P.chObj(id,ps),hi=Math.max(+o.hi||0,l),N=['標準','進階','高手'],col=['#e0a800','#2f7bf0','#a23ff0'];
+    return tile('挑戰等級','<span style="color:'+col[l]+'">★</span> '+N[l],(o.au===0?'家長固定':'自動升降')+'・最高到過 '+N[hi]+'・答對 ×'+[1,1.5,2][l])}
   function subject(sub){var ks=kids();if(!ks.length)return overview();if(!kidSel||!ks.some(function(k){return k.id===kidSel}))kidSel=ks[0].id;var id=kidSel,d=S.kid(id)||{},c=SUBC[sub],ps=sub==='en'?'e':sub==='math'?'m':'s';
     var h=kidBtns(id),G=sub==='sci'?null:C.growOf(id,sub),pts=C.subPts(d,sub),acts=actsOf(id).filter(function(x){return x.type==='game'&&subOf(x.gid)===sub}),wk=acts.filter(function(x){return Date.now()-x.ts<7*864e5});
     h+=sec(c[0]+' '+c[1]+'概況','<div class="pd-tiles">'+subTile(sub,'累積分數',num(pts),G?'等級：'+esc(G.lv[1]):'等級：'+esc(C.scLevel(pts).name))+tile('近 7 天玩了',wk.length+' 局',wk.length?'平均正確率 '+Math.round(100*wk.reduce(function(a,x){return a+(x.total?x.score/x.total:0)},0)/Math.max(1,wk.filter(function(x){return x.total}).length))+'%':'')+
-      (sub==='en'?tile('學會的單字',C.Learn.stats(id).w+' 個','要加強 '+C.Learn.stats(id).wl+' 個'):sub==='math'?tile('九九乘法學會',C.Learn.stats(id).t+' / 64','要加強 '+C.Learn.stats(id).tl+' 題'):tile('第一島印章',C.scStampsAny(id)+' / 10',''))+'</div>');
+      (sub==='en'?tile('學會的單字',C.Learn.stats(id).w+' 個','要加強 '+C.Learn.stats(id).wl+' 個'):sub==='math'?tile('九九乘法學會',C.Learn.stats(id).t+' / 64','要加強 '+C.Learn.stats(id).tl+' 題'):tile('第一島印章',C.scStampsAny(id)+' / 10',''))+tierTile(id,ps)+'</div>');
     if(C.PGX()&&C.PGX().state(id,ps))h+=sec('📘 學校進度',progHead(id,ps)+'<div style="margin-top:12px">'+unitsBlock(id,ps)+'</div>',esc(C.PGX().state(id,ps).book));
     if(sub!=='sci')h+=sec('📕 錯題箱',rvBlock(id,ps));
     if(sub==='en'){var ww=weakWords(id);h+=sec('🔁 要加強的單字',ww.length?'<div class="pd-chips">'+ww.slice(0,30).map(function(w){return '<span class="pd-chip bad">'+w[1]+' '+esc(w[0])+' '+esc(w[2])+'</span>'}).join('')+'</div>':'<div class="pd-alert ok">✅ 目前沒有要加強的單字。</div>')}

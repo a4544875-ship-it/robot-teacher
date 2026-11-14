@@ -119,6 +119,40 @@ var SK={
   tm4:{f:function(R){if(R()<.3){var d=ri(R,1,3);return [d+' 天是幾小時',24*d]}var h1=ri(R,1,4),m1=5*ri(R,1,11),h2=ri(R,1,4),m2=5*ri(R,1,11),t=h1*60+m1+h2*60+m2;return [h1+' 時 '+m1+' 分 + '+h2+' 時 '+m2+' 分 = □ 時 '+(t%60)+' 分，□',Math.floor(t/60)]}},
   vol:{f:function(R){if(R()<.35){var s=ri(R,2,5);return ['邊長 '+s+' 公分的正方體，體積是幾立方公分',s*s*s]}var a=ri(R,2,6),b=ri(R,2,6),c=ri(R,2,6);return ['長 '+a+'、寬 '+b+'、高 '+c+' 公分的長方體，體積是幾立方公分',a*b*c]}}
 };
+/* ---- 進階／高手題庫（v16）：多步驟、找未知數、規律、應用題；g = 年級，回傳 [題目, 整數答案] ---- */
+var HB=[
+ {g:2,f:function(R,g){var a=ri(R,2,9),b=ri(R,2,9),r=ri(R,3,20);return ['□ × '+a+' = '+(a*b)+'，□ 再加上 '+r+' 是多少',b+r]}},
+ {g:2,f:function(R,g){var st=ri(R,1,20),d=ri(R,2,g>=4?13:7),n=ri(R,4,6),a=[];for(var i=0;i<n;i++)a.push(st+d*i);return ['找規律：'+a.join('、')+'、□',st+d*n]}},
+ {g:2,f:function(R,g){var st=ri(R,60,99),d=ri(R,3,g>=4?12:6),a=[];for(var i=0;i<5;i++)a.push(st-d*i);return ['找規律：'+a.join('、')+'、□',st-d*5]}},
+ {g:2,f:function(R,g){var p=ri(R,12,g>=4?95:45),n=ri(R,2,5),pay=Math.ceil((p*n+1)/100)*100;return ['一枝筆 '+p+' 元，買 '+n+' 枝，付 '+pay+' 元，要找回幾元',pay-p*n]}},
+ {g:2,f:function(R,g){var a=ri(R,8,30),d=ri(R,2,9);return ['哥哥比弟弟多 '+d+' 張卡片，兩人一共 '+(2*a+d)+' 張，哥哥有幾張',a+d]}},
+ {g:3,f:function(R,g){var a=ri(R,3,9),b=ri(R,3,9),x=ri(R,4,g>=4?40:15);return ['□ × '+a+' + '+b+' = '+(x*a+b)+'，□',x]}},
+ {g:3,f:function(R,g){var a=ri(R,12,g>=4?60:30),b=ri(R,2,9),c=ri(R,2,9);return [a+' + '+b+' × '+c+'（先乘再加）',a+b*c]}},
+ {g:3,f:function(R,g){var a=ri(R,20,90),b=ri(R,2,a-5),c=ri(R,2,9);return ['('+a+' − '+b+') × '+c,(a-b)*c]}},
+ {g:3,f:function(R,g){var a=ri(R,3,9),b=ri(R,3,9),c=ri(R,2,9),d=ri(R,2,9);if(a*b<c*d){var t=a;a=c;c=t;t=b;b=d;d=t}return [a+' × '+b+' − '+c+' × '+d,a*b-c*d]}},
+ {g:3,f:function(R,g){var a=ri(R,g>=4?21:11,g>=4?79:29),b=ri(R,g>=4?12:11,g>=4?39:19);return [a+' × '+b,a*b]}},
+ {g:3,f:function(R,g){var c=ri(R,3,9),q=ri(R,g>=4?52:21,g>=4?199:99);return [(c*q)+' ÷ '+c,q]}},
+ {g:3,f:function(R,g){var n=ri(R,g>=4?83:31,g>=4?250:79),k=ri(R,4,9);return [n+' 個人，每台車最多坐 '+k+' 人，至少要幾台車',Math.ceil(n/k)]}},
+ {g:3,f:function(R,g){var n=ri(R,g>=4?83:31,g>=4?250:79),k=ri(R,4,9);if(n%k===0)n++;return [n+' 顆糖，每袋裝 '+k+' 顆，裝完後剩下幾顆',n%k]}},
+ {g:3,f:function(R,g){var d=pk(R,[2,3,4,5,10]),L=d*ri(R,5,g>=4?30:12);return ['路長 '+L+' 公尺，每 '+d+' 公尺種一棵樹，兩頭都要種，一共種幾棵',L/d+1]}},
+ {g:3,f:function(R,g){var h1=ri(R,7,10),m1=5*ri(R,0,11),dur=5*ri(R,7,g>=4?40:20),e=h1*60+m1+dur;return ['從 '+h1+' 時 '+m1+' 分到 '+Math.floor(e/60)+' 時 '+(e%60)+' 分，經過幾分鐘',dur]}},
+ {g:3,f:function(R,g){var a=ri(R,1,4),b=ri(R,10,95),c=ri(R,1,3),d=ri(R,10,95);return [a+' 公尺 '+b+' 公分 + '+c+' 公尺 '+d+' 公分 = □ 公分，□',a*100+b+c*100+d]}},
+ {g:3,f:function(R,g){var a=ri(R,2,5),b=ri(R,100,900),c=ri(R,150,950);if(a*1000+b<=c)a++;return [a+' 公斤 '+b+' 公克 − '+c+' 公克 = □ 公克，□',a*1000+b-c]}},
+ {g:3,f:function(R,g){var a=ri(R,5,g>=4?40:20),b=ri(R,3,g>=4?30:15);return ['長方形長 '+a+' 公分、寬 '+b+' 公分，周長是幾公分',2*(a+b)]}},
+ {g:3,f:function(R,g){var a=ri(R,4,g>=4?25:12);return ['正方形周長 '+(4*a)+' 公分，一邊長幾公分',a]}},
+ {g:3,f:function(R,g){var n=pk(R,[3,4,5,6,8]),t=n*ri(R,3,g>=4?30:12),k=ri(R,1,n-1);return [t+' 顆彈珠的 '+k+'/'+n+' 是幾顆',t/n*k]}},
+ {g:3,f:function(R,g){var d=[];while(d.length<4){var x=ri(R,0,9);if(d.indexOf(x)<0)d.push(x)}if(d.every(function(x){return x===0}))d[0]=7;var big=d.slice().sort(function(a,b){return b-a}).join('');return ['用 '+d.join('、')+' 排成最大的四位數',+big]}},
+ {g:3,f:function(R,g){var d=[];while(d.length<4){var x=ri(R,0,9);if(d.indexOf(x)<0)d.push(x)}var s2=d.slice().sort(function(a,b){return a-b});if(s2[0]===0){s2[0]=s2[1];s2[1]=0}return ['用 '+d.join('、')+' 排成最小的四位數（0 不能放第一位）',+s2.join('')]}},
+ {g:3,f:function(R,g){var p=ri(R,15,g>=4?120:60),q=ri(R,10,g>=4?90:40),n=ri(R,2,4),m=ri(R,2,4),pay=Math.ceil((p*n+q*m+1)/100)*100;if(pay<500)pay=500;return ['買 '+n+' 本 '+p+' 元的書和 '+m+' 枝 '+q+' 元的筆，付 '+pay+' 元，找回幾元',pay-p*n-q*m]}},
+ {g:4,f:function(R,g){var r=ri(R,2,8),c=ri(R,2,8);return ['雞和兔共 '+(r+c)+' 隻，腳共 '+(4*r+2*c)+' 隻，兔子有幾隻',r]}},
+ {g:4,f:function(R,g){var a=ri(R,101,999),b=ri(R,11,49);return [a+' × '+b,a*b]}},
+ {g:4,f:function(R,g){var c=ri(R,11,29),q=ri(R,12,60);return [(c*q)+' ÷ '+c,q]}},
+ {g:4,f:function(R,g){var n=ri(R,10000,99999),u=pk(R,[[10,'十'],[100,'百'],[1000,'千']]);return [n+' 四捨五入到'+u[1]+'位',Math.round(n/u[0])*u[0]]}},
+ {g:4,f:function(R,g){var a=ri(R,10,40),k=ri(R,2,5),b=ri(R,3,12);return ['媽媽的年紀是我的 '+k+' 倍，媽媽比我大 '+(a*(k-1))+' 歲，我幾歲',a]}},
+ {g:4,f:function(R,g){var n=pk(R,[3,4,5,6]),m=pk(R,[2,3,4]),d=n*m,k=ri(R,1,n-1);return [k+'/'+n+' = □/'+d+'，□',k*m]}},
+ {g:4,f:function(R,g){var a=ri(R,12,40),b=ri(R,12,40),c=ri(R,2,9);return ['('+a+' + '+b+') × '+c+' − '+(c*5),(a+b)*c-c*5]}}
+];
+function hardQ(R,g){var c=HB.filter(function(h){return h.g<=Math.max(2,g)});var h=c[Math.floor(R()*c.length)];return h.f(R,g)}
 
 /* ---------------- 課程：康軒數學（二～四年級，上 a／下 b）[代號, 名稱, 開始週, 結束週, 題型] ---------------- */
 var MATH={
@@ -172,7 +206,8 @@ var NEWW=[['one','1️⃣','一',1],['two','2️⃣','二',1],['three','3️⃣'
   ['cloudy','🌥️','多雲的',3],['rainy','☔','下雨的',3],['sunny','🌞','晴朗的',3],['windy','🌬️','颳風的',3],['cold','🥶','冷的',3],['hot','🥵','熱的',3],['time','⏰','時間',3],
   ['eraser','🧽','橡皮擦',3],['marker','🖍️','彩色筆',3],['ruler','📏','尺',3],['in','📥','在裡面',3],['on','🔝','在上面',3],['under','⬇️','在下面',3],['desk','🗃️','書桌',3],
   ['bathroom','🛁','浴室',3],['bedroom','😴','臥室',3],['kitchen','🥘','廚房',3],['cooking','🍲','正在煮飯',3],['eating','😋','正在吃',3],['sleeping','💤','正在睡覺',3],['writing','✍️','正在寫字',3],['running','🏃','正在跑步',3],['reading','👓','正在閱讀',3],
-  ['hamburger','🍔','漢堡',3],['lunch','🍱','午餐',3],['bear','🐻','熊',3],['lion','🦁','獅子',3],['zebra','🦓','斑馬',3],['eye','👁️','眼睛',1],['ear','👂','耳朵',1],['mouth','👄','嘴巴',1],['head','🙂','頭',1]];
+  ['hamburger','🍔','漢堡',3],['lunch','🍱','午餐',3],['bear','🐻','熊',3],['lion','🦁','獅子',3],['zebra','🦓','斑馬',3],['eye','👁️','眼睛',1],['ear','👂','耳朵',1],['mouth','👄','嘴巴',1],['head','🙂','頭',1],
+/* v16 進階／高手加的單字 */['turtle','🐢','烏龜',3],['peacock','🦚','孔雀',5],['squirrel','🐿️','松鼠',4],['camel','🐫','駱駝',4],['sandwich','🥪','三明治',4],['noodles','🍜','麵',3],['dumpling','🥟','餃子',4],['chocolate','🍫','巧克力',4],['popcorn','🍿','爆米花',3],['tomato','🍅','番茄',3],['museum','🏛️','博物館',5],['station','🚉','車站',4],['airport','🛫','機場',4],['playground','🛝','遊樂場',4],['bakery','🥐','麵包店',5],['farmer','🧑‍🌾','農夫',3],['pilot','🧑‍✈️','飛行員',4],['artist','🧑‍🎨','畫家',4],['thunder','⛈️','雷雨',4],['snowy','❄️','下雪的',4],['piano','🎹','鋼琴',4],['violin','🎻','小提琴',5],['trumpet','🎺','小喇叭',5],['bicycle','🚲','腳踏車',3],['subway','🚇','地鐵',4],['ambulance','🚑','救護車',5],['motorcycle','🏍️','機車',5],['rocket','🚀','火箭',3],['sailboat','⛵','帆船',4],['tractor','🚜','拖拉機',5],['surprised','😲','驚訝的',4],['tired','😴','累的',3],['scared','😨','害怕的',4],['excited','🤩','興奮的',5],['worried','😟','擔心的',5],['read','📖','閱讀',3],['write','✍️','寫字',3],['island','🏝️','島',4],['desert','🏜️','沙漠',5],['forest','🌲','森林',4],['ocean','🌊','海洋',4],['planet','🪐','行星',5]];
 
 var GN=['一','二','三','四','五','六'];
 function pkM(a){return a[Math.floor(Math.random()*a.length)]}
@@ -185,9 +220,9 @@ global.ProgressFactory=function(C){
   var RS;function r0(){RS={m:{n:0,c:0},e:{n:0,c:0},all:{m:{n:0,c:0},e:{n:0,c:0}},seen:{},used:{},done:0}}r0();
   /* ---- 挑戰等級（v16）：0 標準 1 進階 2 挑戰 3 高手；P.ch[sub]={l:等級, au:1 自動(0 家長固定), up:連續高分輪數, dn:連續低分輪數}
      一輪第一次作答 ≥ 90%（至少 6 題）連續 2 輪 → 升一級；低於 60% 連續 2 輪 → 降一級。 */
-  var CHN=['標準','進階','挑戰','高手'];
+  var CHN=['標準','進階','高手'],tierCB=[];
   function chObj(id,sub){var P=kidP(Store.kid(id)),c=P.ch&&P.ch[sub];return c&&typeof c==='object'?c:{l:0,au:1}}
-  function chal(id,sub){if(!id)return 0;var l=+chObj(id,sub).l||0;return Math.max(0,Math.min(3,l))}
+  function chal(id,sub){if(!id)return 0;var l=+chObj(id,sub).l||0;return Math.max(0,Math.min(2,l))}
   function aheadSk(S,L){var o=[];S.units.slice(S.cur+1,S.cur+2+L).forEach(function(u){u[4].forEach(function(s){if(o.indexOf(s)<0)o.push(s)})});return o}
   function wrapQ(r,R,L){if(!/^[0-9 +−×÷()]+$/.test(String(r[0]))||!isInt(r[1]))return r;var a=+r[1],k=Math.floor(R()*3);
     if(k===0&&a<=(L>=3?300:120)){var m=2+Math.floor(R()*(L>=3?8:4));return ['('+r[0]+') × '+m,a*m,null]}
@@ -225,8 +260,10 @@ global.ProgressFactory=function(C){
       if(due.length&&R()<.3){var key=due[Math.floor(R()*due.length)];RS.used['m'+key]=1;var it=rvList(id,'m')[key],ans=isInt(it[3])?+it[3]:it[3];return [key,ans,Array.isArray(it[4])&&it[4].length?it[4].slice():null,{u:it[5]||'old',s:it[6]||'',rk:key,rv:1}]}}
     var cu=S.U[4].filter(function(s){return okKind(s,kind)}),le=learned(S).filter(function(s){return okKind(s,kind)}),pv=prevSk(S).filter(function(s){return okKind(s,kind)}),x=R(),pool;
     if(cu.length&&(x<.6||!le.length&&!pv.length))pool=cu;else if(le.length&&(x<.85||!pv.length))pool=le;else if(pv.length)pool=pv;else pool=cu;
-    var L=chal(id,'m'),ahd=false;if(L){var ah=aheadSk(S,L).filter(function(s){return okKind(s,kind)});if(ah.length&&R()<[0,.4,.55,.7][L]){pool=ah;ahd=true}}
-    if(!pool.length)return null;var s=pool[Math.floor(R()*pool.length)],r=SK[s].f(R);if(L&&R()<[0,.25,.4,.55][L])r=wrapQ(r,R,L);
+    var L=chal(id,'m'),ahd=false;
+    if(L&&kind!=='cmp'&&R()<[0,.25,.5][L]){var hq=hardQ(R,S.g+L-1);return [hq[0],hq[1],null,{u:'ch',s:'hard'}]}
+    if(L){var ah=aheadSk(S,L).filter(function(s){return okKind(s,kind)});if(ah.length&&R()<[0,.45,.6][L]){pool=ah;ahd=true}}
+    if(!pool.length)return null;var s=pool[Math.floor(R()*pool.length)],r=SK[s].f(R);if(L&&R()<[0,.3,.6][L])r=wrapQ(r,R,L+1);
     return [r[0],r[1],r[2]||null,{u:ahd?'ch':pool===pv?'old':unitOf(S,s),s:s}]}
 
   /* ---- 英文 ---- */
@@ -238,9 +275,11 @@ global.ProgressFactory=function(C){
     shufM(sem0).forEach(function(w){if(out.length<12&&out.indexOf(w)<0)out.push(w)});
     shufM(eAll(S)).forEach(function(w){if(out.length<14&&out.indexOf(w)<0)out.push(w)});
     if(out.length<12)shufM(WORDS.filter(function(w){return w[3]<=Math.max(1,S.g-1)})).forEach(function(w){if(out.length<14&&out.indexOf(w[0])<0)out.push(w[0])});
-    var L=chal(id,'e');if(L){var ah=[];S.units.slice(S.cur+1,S.cur+1+L).forEach(function(u){u[4].forEach(function(w){if(WI[w]&&ah.indexOf(w)<0)ah.push(w)})});
-      shufM(ah).slice(0,2+2*L).forEach(function(w){if(out.indexOf(w)<0)out.push(w)});
-      shufM(WORDS.filter(function(w){return w[3]>=Math.min(5,S.g-1+L)&&w[3]<=Math.min(5,S.g+L)})).slice(0,2*L).forEach(function(w){if(out.indexOf(w[0])<0)out.push(w[0])})}
+    var L=chal(id,'e');if(L){var ah=[];S.units.slice(S.cur+1,S.cur+1+2*L).forEach(function(u){u[4].forEach(function(w){if(WI[w]&&ah.indexOf(w)<0)ah.push(w)})});
+      /* 進階：後面單元的字＋高一級單字；高手：更多後面單元＋高兩級的難字，目前單元只剩一部分 */
+      if(L>=2)out=shufM(out).slice(0,7);
+      shufM(ah).slice(0,L===1?4:8).forEach(function(w){if(out.indexOf(w)<0)out.push(w)});
+      shufM(WORDS.filter(function(w){return w[3]>=Math.min(5,S.g-1+L)&&w[3]<=Math.min(6,S.g+L)})).slice(0,L===1?3:9).forEach(function(w){if(out.indexOf(w[0])<0)out.push(w[0])})}
     return out.map(function(w){return WI[w]}).filter(Boolean)}
   function others(w,n){var id=C.who(),S=C.isKid()&&state(id,'e');if(!S)return null;var cand=[];S.units.slice(0,S.cur+1).forEach(function(u){cand=cand.concat(u[4])});cand=cand.concat(eAll(S));
     var o=[];shufM(cand).forEach(function(x){if(WI[x]&&x!==w[0]&&o.indexOf(WI[x])<0)o.push(WI[x])});
@@ -263,9 +302,12 @@ global.ProgressFactory=function(C){
   /* 一輪結束：正確率 ≥ 90%（至少 4 題目前單元）＋單元累計 ≥ 20 題 → 前進 */
   function finish(id){if(!C.isKid()||RS.done)return;RS.done=1;var msg=[];
     ['m','e'].forEach(function(sub){var r=RS.all[sub];if(r.n<6)return;var c=chObj(id,sub);if(c.au===0)return;var acc=r.c/r.n,l=chal(id,sub),nl=l,up=+c.up||0,dn=+c.dn||0;
-      if(acc>=.9){up++;dn=0;if(up>=2&&l<3){nl=l+1;up=0}}else if(acc<.6){dn++;up=0;if(dn>=2&&l>0){nl=l-1;dn=0}}else{up=0;dn=0}
-      mutP(id,function(P){if(!P.ch||typeof P.ch!=='object')P.ch={};P.ch[sub]={l:nl,au:1,up:up,dn:dn}});
-      if(nl>l)msg.push((sub==='m'?'數學':'英文')+'挑戰升到「'+CHN[nl]+'」，題目會更難喔');else if(nl<l)msg.push((sub==='m'?'數學':'英文')+'先回到「'+CHN[nl]+'」多練習一下')});
+      /* 標準→進階：連續 2 輪 9 成；進階→高手：連續 3 輪 9 成；連續 2 輪低於 6 成（高手是 5 成）降一級 */
+      if(acc>=.9){up++;dn=0;if(l<2&&up>=(l===0?2:3)){nl=l+1;up=0}}else if(acc<(l===2?.5:.6)){dn++;up=0;if(dn>=2&&l>0){nl=l-1;dn=0}}else{up=0;dn=0}
+      var hi=Math.max(+c.hi||0,l),first=nl>hi;
+      mutP(id,function(P){if(!P.ch||typeof P.ch!=='object')P.ch={};P.ch[sub]={l:nl,au:1,up:up,dn:dn,hi:Math.max(hi,nl),t:nl!==l?Date.now():(+c.t||0)}});
+      if(nl!==l)tierCB.forEach(function(f){try{f(id,sub,nl,l,first)}catch(e){}});
+      if(nl<l)msg.push((sub==='m'?'數學':'英文')+'先回到「'+CHN[nl]+'」多練習一下')});
     ['m','e'].forEach(function(sub){var r=RS[sub];if(r.n<4||r.c/r.n<.9)return;var S=state(id,sub);if(!S||S.cur>=S.units.length-1||S.cur+1>S.cal+S.cap)return;
       var st=S.D&&S.D.st&&S.D.st[S.uid];if(!Array.isArray(st)||+st[0]<20)return;var nx=S.units[S.cur+1];
       mutP(id,function(P){var D=subD(P,sub,S.sk);D.a=S.cur+1});msg.push((sub==='m'?'數學':'英文')+'「'+S.U[1]+'」已經很熟了！前進到「'+nx[1]+'」')});
@@ -313,7 +355,7 @@ global.ProgressFactory=function(C){
       '<small>錯題箱 '+R.n+' 題（今天該複習 '+R.due+' 題）'+(R.hard.length?'　頑固錯題：'+R.hard.slice(0,5).map(function(x){return '<code>'+esc(x[0])+'</code>×'+x[1]}).join('、'):'')+'</small>'+
       '<label>學校教到 <select data-pgu="'+sub+':'+id+'"><option value="auto"'+(S.manual?'':' selected')+'>自動（依行事曆）</option>'+S.units.map(function(u,i){return '<option value="'+i+'"'+(S.manual&&i===S.cal?' selected':'')+'>第 '+(i+1)+' 單元 '+esc(u[1])+'</option>'}).join('')+'</select></label></div>';return h}
   function parentHtml(KIDS,kface,esc){var k0=Store.kid(KIDS[0].id)||{},P0=kidP(k0),sm=sem(new Date(),P0.s2),cap=P0.cap==null?3:+P0.cap;
-    var h='<div class="rost mbp pgp"><h3 class="h">📘 學校進度（英文・數學・自然自動跟進）</h3><p class="mbtip">孩子不用選年級或單元：App 依學校行事曆自動換單元（現在是'+sm.ay+' 學年'+(sm.s==='a'?'上':'下')+'學期第 '+sm.wk+' 週）。一輪答對 90% 以上、單元累計滿 20 題就自動前進；另外有「挑戰等級」：一輪答對 9 成以上連續 2 次自動升級（題目會混入後面單元、兩步驟計算、更多單字），連續 2 次低於 6 成就降一級，也可以在下面固定。答錯的題目會在之後的單元隔 1、3、7、14 天再出現。每年 8 月底自動升一個年級。</p>'+
+    var h='<div class="rost mbp pgp"><h3 class="h">📘 學校進度（英文・數學・自然自動跟進）</h3><p class="mbtip">孩子不用選年級或單元：App 依學校行事曆自動換單元（現在是'+sm.ay+' 學年'+(sm.s==='a'?'上':'下')+'學期第 '+sm.wk+' 週）。一輪答對 90% 以上、單元累計滿 20 題就自動前進；另外有三級「挑戰等級」（金星標準、藍星進階、紫星高手）：一局答對 9 成以上，連續 2 局升進階、再連續 3 局升高手；連續 2 局太低就降一級，也可以在下面固定。等級越高題目越難（後面單元、多步驟、應用題、更難的單字），答對分數 ×1／×1.5／×2。答錯的題目會在之後的單元隔 1、3、7、14 天再出現。每年 8 月底自動升一個年級。</p>'+
       '<div class="pgset"><label>下學期開學日 <input type="date" id="pgS2" value="'+(okDate(P0.s2)?P0.s2:'')+'" placeholder="2027-02-15"></label><label>最多超前學校 <select id="pgCap">'+[0,1,2,3,4,5].map(function(n){return '<option value="'+n+'"'+(n===cap?' selected':'')+'>'+n+' 個單元</option>'}).join('')+'</select></label></div>';
     KIDS.forEach(function(k){var kk=Store.kid(k.id)||{},g=gradeStr(k.id);
       h+='<div class="mbpr pgr"><b>'+kface(k)+' '+esc(k.short)+'</b><label>現在年級 <select data-gr="'+k.id+'">'+['','二','三','四','五','六'].map(function(x){return '<option value="'+x+'"'+(x&&x===g&&kk.gr?' selected':'')+'>'+(x?x+'年級':'（預設 '+(g||C.MB_DEF[k.id]||'—')+'年級）')+'</option>'}).join('')+'</select></label>'+line(k.id,'m',esc)+line(k.id,'e',esc)+line(k.id,'s',esc)+chSel(k.id,'m')+chSel(k.id,'e')+'</div>'});
@@ -322,7 +364,7 @@ global.ProgressFactory=function(C){
     return '<label>'+(sub==='m'?'數學':'英文')+'挑戰 <select data-ch="'+sub+':'+id+'"><option value="auto"'+(v==='auto'?' selected':'')+'>自動（現在：'+CHN[chal(id,sub)]+'）</option>'+CHN.map(function(n,i){return '<option value="'+i+'"'+(v===String(i)?' selected':'')+'>固定：'+n+'</option>'}).join('')+'</select></label>'}
   function parentWire(el,KIDS){var all=KIDS.map(function(k){return k.id});
     el.querySelectorAll('[data-ch]').forEach(function(s){s.addEventListener('change',function(){var p=s.dataset.ch.split(':'),sub=p[0],id=p[1],v=s.value;
-      mutP(id,function(P){if(!P.ch||typeof P.ch!=='object')P.ch={};var c=P.ch[sub]||{l:0};P.ch[sub]=v==='auto'?{l:+c.l||0,au:1,up:0,dn:0}:{l:+v,au:0,up:0,dn:0}});C.sfx('ok');C.say('挑戰等級改好了！','happy')})});
+      mutP(id,function(P){if(!P.ch||typeof P.ch!=='object')P.ch={};var c=P.ch[sub]||{l:0};P.ch[sub]=v==='auto'?{l:Math.min(2,+c.l||0),au:1,up:0,dn:0,hi:+c.hi||0}:{l:+v,au:0,up:0,dn:0,hi:Math.max(+c.hi||0,+v)}});C.sfx('ok');C.say('挑戰等級改好了！','happy')})});
     el.querySelectorAll('[data-gr]').forEach(function(s){s.addEventListener('change',function(){var v=s.value,id=s.dataset.gr;mutP(id,function(P,k){if(v){k.gr=v;P.gy=sem(new Date(),P.s2).ay}else{delete k.gr;delete P.gy}delete k.mo;delete P.mo;delete P.eo});C.sfx('ok');C.say('年級改好了！','happy')})});
     el.querySelectorAll('[data-pgu]').forEach(function(s){s.addEventListener('change',function(){var p=s.dataset.pgu.split(':'),sub=p[0],id=p[1],v=s.value,S=state(id,sub);if(!S)return;
       mutP(id,function(P,k){var f={m:'mo',e:'eo',s:'so'}[sub];if(v==='auto'){delete P[f];if(sub==='m')delete k.mo}else{P[f]={k:S.sk,o:S.units[+v][2]-S.sem.wk};if(sub==='m')delete k.mo;var D=subD(P,sub,S.sk);D.a=-1}});C.sfx('ok');C.say('學校進度改好了！','happy')})});
@@ -333,9 +375,9 @@ global.ProgressFactory=function(C){
     if(where==='sci')return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(n?'<span class="chip pgchip">🔬 '+esc(n.U[1])+'</span>':'<span class="chip pgchip">🔬 自然島全部開放</span>');
     var cm=chal(id,'m'),ce=chal(id,'e'),cl=where==='math'?cm:ce;
     return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(m?'<span class="chip pgchip">🔢 '+esc(m.U[1])+'</span>':'')+(e?'<span class="chip pgchip">🔤 '+esc(e.U[1].replace(/^Unit \d+ /,''))+'</span>':'')+
-      '<span class="chip pgchip chl'+cl+'" title="一輪答對 9 成以上連續 2 次會升級">⚡ 挑戰：'+CHN[cl]+'</span>'}
+      '<span class="chip pgchip chl'+cl+'" title="答對 9 成以上連續幾局就會升級"><i class="tstar t'+cl+'">★</i> '+CHN[cl]+'・答對 '+[10,15,20][cl]+' 分</span>'}
 
-  return {chal:chal,CHN:CHN,sciOpen:sciOpen,sciWhen:sciWhen,sciCur:sciCur,sciCheck:sciCheck,sciBanner:sciBanner,sciTopics:sciTopics,setStars:function(f){starsFn=f},setNames:function(f){nameFn=f},sem:sem,grade:grade,gradeStr:gradeStr,state:state,skills:skillsAll,gen:gen,pool:pool,others:others,hook:hook,mbHook:mbHook,round0:r0,finish:finish,
+  return {chal:chal,CHN:CHN,chObj:chObj,onTier:function(f){tierCB.push(f)},hardQ:hardQ,sciOpen:sciOpen,sciWhen:sciWhen,sciCur:sciCur,sciCheck:sciCheck,sciBanner:sciBanner,sciTopics:sciTopics,setStars:function(f){starsFn=f},setNames:function(f){nameFn=f},sem:sem,grade:grade,gradeStr:gradeStr,state:state,skills:skillsAll,gen:gen,pool:pool,others:others,hook:hook,mbHook:mbHook,round0:r0,finish:finish,
     mbLV:mbLV,mbGenLv:mbGenLv,mbState:mbState,unitById:unitById,parentHtml:parentHtml,parentWire:parentWire,kidChip:kidChip,
     _SK:SK,_MATH:MATH,_EN:EN,_dayN:dayN};
 };
