@@ -91,6 +91,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v16/expert-soc.js?v=16.3.0"></script>
 <script src="assets/v16/expert-en.js?v=16.3.0"></script>
 <script src="assets/v17/cover.js?v=17.0.0"></script>
+<script src="assets/v18/gate.js?v=18.0.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -1641,7 +1642,7 @@ var KIDS=[{id:'de',name:'Dave',short:'Dave',emo:'🐔',c:'--coral',av:'av_de'},{
 /* 角色名單可以由家長新增／刪除，存在 settings/parent 的 rosterJ（和這台裝置的 localStorage）。KIDS 陣列會原地更新。 */
 var KCOLS=['--coral','--sky','--mint','--grape','--sun'],KHEX={'--coral':0xff6a5c,'--sky':0x2b8af0,'--mint':0x18c795,'--grape':0x8d6cf2,'--sun':0xf0a800},KEMOS=['🐶','🐱','🐰','🐻','🐼','🦊','🐯','🦁','🐵','🐸','🐧','🦄','🐲','🐔','🐷','🐮'];
 function kidHex(id){var k=kidOf(id);return (k&&KHEX[k.c])||0x2b8af0}
-function kface(k,cls){var ph=k&&Store.kid(k.id).avd;if(ph)return '<img class="kav ph'+(cls?' '+cls:'')+'" src="'+ph+'" alt="">';return k&&k.av&&PIC[k.av]?'<img class="kav'+(cls?' '+cls:'')+'" src="'+PIC[k.av]+'" alt="">':'<span class="kemo'+(cls?' '+cls:'')+'">'+(k?k.emo:'🙂')+'</span>'}
+function kface(k,cls){if(window.GateV18&&k){var g18=GateV18.face(k,cls);if(g18)return g18}var ph=k&&Store.kid(k.id).avd;if(ph)return '<img class="kav ph'+(cls?' '+cls:'')+'" src="'+ph+'" alt="">';return k&&k.av&&PIC[k.av]?'<img class="kav'+(cls?' '+cls:'')+'" src="'+PIC[k.av]+'" alt="">':'<span class="kemo'+(cls?' '+cls:'')+'">'+(k?k.emo:'🙂')+'</span>'}
 function kbg(k){return 'background:color-mix(in srgb,var('+k.c+') 55%,#fff)'}
 /* 成長等級：英文種樹、數學種花，兩邊分開算。每 10000 分長成一棵大樹（或一朵花王），然後從種子重新開始。
    分數本身沒有分開存：數學分數＝所有數學遊戲的分數加總，其餘都算英文。 */
@@ -1781,7 +1782,7 @@ function renderCover(){gateMode='cover';gate.classList.add('cover');Music.play('
   if(window.CoverV3){CoverV3.render(gate,function(b){sfx('win');confetti(b,40);gate.classList.remove('cover');renderGate()});return}
   gate.innerHTML='<div class="cvbg" aria-hidden="true"></div><div class="cvin"><h1 class="cvtitle"><small>奇蹟知識島</small><span>魔法城堡</span></h1><div class="cvsp"></div><button class="cvgo" id="cvGo">🚀 準備出發！</button><p class="cvsub">小機老師在城堡裡等你</p></div>';
   $('#cvGo').addEventListener('click',function(){sfx('win');confetti($('#cvGo'),40);gate.classList.remove('cover');renderGate()})}
-function renderGate(){gate.classList.remove('cover');Music.play('cover');
+function renderGate(){if(window.GateV18&&GateV18.ready())return GateV18.pick();gate.classList.remove('cover');Music.play('cover');
   gateMode='pick';
   var h='<div class="gate-in"><div class="gmas">'+botSVG('')+'</div><h1>你是誰呢？</h1><p class="sub">選自己的帳號，分數和問題都會記在自己名下。</p>';
   KIDS.forEach(function(k){var e=growOf(k.id,'en'),m=growOf(k.id,'math'),d=Store.kid(k.id),sp=subPts(d,'sci'),L=scLevel(sp);
@@ -1796,7 +1797,7 @@ function renderGate(){gate.classList.remove('cover');Music.play('cover');
   $('#toParent').addEventListener('click',function(){sfx('tap');renderPin()});
 }
 /* 每個角色自己的 4 位數密碼（存在角色資料的 pin）。第一次進入時自己設定；忘記了請家長在家長區重設。 */
-function renderKidPin(id){var k=kidOf(id);if(!k)return renderGate();gateMode='kpin';var p=Store.kid(id).pin,first=!p;
+function renderKidPin(id){if(window.GateV18&&GateV18.ready())return GateV18.pin(id);var k=kidOf(id);if(!k)return renderGate();gateMode='kpin';var p=Store.kid(id).pin,first=!p;
   gate.innerHTML='<div class="gate-in"><div class="kpface">'+kface(k)+'</div><h1>'+esc(k.name)+'</h1><div class="pinbox"><p>'+(first?'第一次進來，請幫自己設定 4 位數密碼：':'請輸入你的 4 位數密碼：')+'</p><input id="kpIn" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="密碼">'+(first?'<input id="kpIn2" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="再輸入一次">':'')+
     '<div id="pinMsg" role="alert"></div><button class="btn" id="kpOk">'+(first?'設定並進入':'進入')+'</button><small>'+(first?'要記住喔！':'忘記密碼的話，請爸爸媽媽到家長區幫你重設。')+'</small><button class="btn ghost" id="pinBack">← 回去選帳號</button></div></div>';
   function go(){var v=$('#kpIn').value.trim(),msg=$('#pinMsg');if(!/^\d{4}$/.test(v)){msg.textContent='請輸入 4 個數字。';return}
@@ -1804,7 +1805,7 @@ function renderKidPin(id){var k=kidOf(id);if(!k)return renderGate();gateMode='kp
     else if(hashPin(v)===Store.kid(id).pin)enter(id);else{sfx('no');msg.textContent='密碼不對喔。';$('#kpIn').value='';$('#kpIn').focus()}}
   $('#pinBack').addEventListener('click',function(){sfx('tap');renderGate()});$('#kpOk').addEventListener('click',go);gate.querySelectorAll('input').forEach(function(i){i.addEventListener('keydown',function(e){if(e.key==='Enter')go()})});$('#kpIn').focus()}
 function renderPin(){
-  gateMode='pin';var p=Store.getPin(),first=p==null;
+  gate.classList.remove('g18');gateMode='pin';var p=Store.getPin(),first=p==null;
   var h='<div class="gate-in"><div class="gmas">'+botSVG('')+'</div><h1>家長區</h1><div class="pinbox">';
   if(!Store.pinLoaded())h+='<p>連線中，請稍等……</p>';
   else{h+='<p>'+(first?'第一次使用，請設定 4 位數密碼：':'請輸入 4 位數密碼：')+'</p><input id="pinIn" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="密碼">';
@@ -5562,6 +5563,7 @@ if(window.SocialFactory)try{(function(){
 /* ========== boot ========== */
 Store.connect();
 renderGameHome();
+if(window.GateV18)GateV18.init({KIDS:KIDS,Store:Store,kidOf:kidOf,growOf:growOf,subPts:subPts,scLevel:scLevel,esc:esc,sfx:sfx,confetti:confetti,hashPin:hashPin,enter:enter,renderPin:renderPin,Music:Music,PIC:PIC,gate:gate,setMode:function(m){gateMode=m},getMode:function(){return gateMode}});
 renderCover();
 })();
 </script>
