@@ -656,6 +656,12 @@ var UK={};[3,4].forEach(function(g){MAP[g].units.forEach(function(u){u.g=g;UK[u.
 
 var C=null,css=false;
 function img(k){return SOCI[k]||''}
+/* Artifact 版：圖片打包成一個檔，進社會島時才載入 */
+var BST=0,BQ=[];
+function ready(cb){var u=global.__SOC_BUNDLE_URL;if(!u||BST===2)return cb();BQ.push(cb);if(BST===1)return;BST=1;
+  var sc=document.createElement('script');sc.src=u;sc.async=true;
+  sc.onload=function(){var D=global.__SOC_IMG||{};for(var k in D)SOCI[k]=D[k];BST=2;var q=BQ;BQ=[];q.forEach(function(f){try{f()}catch(e){console.error(e)}})};
+  sc.onerror=function(){BST=0;var q=BQ;BQ=[];q.forEach(function(f){try{f()}catch(e){}})};document.head.appendChild(sc)}
 function esc(s){return C.esc(String(s))}
 function shuf(a,R){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor((R||Math.random)()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function dayN(){try{return C.PGX()?C.PGX()._dayN():Math.floor(Date.now()/864e5)}catch(e){return Math.floor(Date.now()/864e5)}}
@@ -777,7 +783,7 @@ function addCss(){if(css)return;css=true;var st=document.createElement('style');
 ].join('\n').replace('BADGE',img('badge'));document.head.appendChild(st)}
 
 /* ================= 社會島首頁 ================= */
-function home(gb){addCss();var id=C.who(),kid=C.isKid(),g=kid?mapGrade(id):3,m=MAP[g],now=kid?curUnit(id):null,sem=kid?semNow(id):{s:'a',wk:1};
+function home(gb){if(global.__SOC_BUNDLE_URL&&BST!==2){gb.className='games one';gb.innerHTML='<div class="soc"><p class="soc-note" style="text-align:center;padding:40px 0">家鄉小鎮載入中…</p></div>';return ready(function(){home(gb)})}addCss();var id=C.who(),kid=C.isKid(),g=kid?mapGrade(id):3,m=MAP[g],now=kid?curUnit(id):null,sem=kid?semNow(id):{s:'a',wk:1};
   var nb=0,tot=0;[3,4].forEach(function(gg){MAP[gg].units.forEach(function(u){if(u.ls.length){tot++;if(kid&&unitBadge(id,u))nb++}})});
   var due=kid?dueList(id).length:0;
   var h='<div class="soc">';

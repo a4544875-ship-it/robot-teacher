@@ -13,9 +13,22 @@ def find(t,start=0):
 t=find('<title>奇蹟知識島</title>'); he=find('</head>',t); bo=find('<body>',he); end=find('</body>',bo)
 body_start=bo+1
 if src[body_start].strip().startswith('<title>'): body_start+=1
-out=['<title>機器人老師</title>']+src[t+1:he]+src[body_start:end]
+out=['<title>機器人老師</title>',"<script>window.__SOC_BUNDLE_URL='assets/v15/soc-img.js'</script>"]+src[t+1:he]+src[body_start:end]
 txt='\n'.join(out)+'\n'
 for bad in ['serviceWorker','firebase-app-compat','firebaseConfig','manifest.webmanifest']:
     if bad in txt: sys.exit('產生的 Artifact 版還含有 GitHub 專用內容：'+bad)
 open(os.path.join(ROOT,'robot-teacher.html'),'w',encoding='utf-8').write(txt)
 print('robot-teacher.html',len(txt.encode()),'bytes（index.html 第',t+2,'～',he,'行＋第',body_start+1,'～',end,'行）')
+
+# 社會島的圖片很多，Artifact 一個版本最多只能放 511 個檔案，所以打包成一個檔（進社會島時才載入）
+import re, json, base64
+s=open(os.path.join(ROOT,'assets/v15/social.js'),encoding='utf-8').read()
+m=re.search(r'var SOCI=/\*SOCI\*/(\{[^;]*\});',s)
+if m:
+    soci=json.loads(m.group(1)); D={}
+    for k,p in soci.items():
+        if k=='gate': continue
+        D[k]='data:image/webp;base64,'+base64.b64encode(open(os.path.join(ROOT,p),'rb').read()).decode()
+    js='window.__SOC_IMG='+json.dumps(D,separators=(',',':'))+';\n'
+    open(os.path.join(ROOT,'assets/v15/soc-img.js'),'w').write(js)
+    print('assets/v15/soc-img.js',len(D),'張',len(js),'bytes')

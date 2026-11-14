@@ -1,3 +1,4 @@
 .DS_Store
 *.log
 node_modules/
+assets/v15/soc-img.js
