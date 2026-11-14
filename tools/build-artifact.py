@@ -27,7 +27,7 @@ m=re.search(r'var SOCI=/\*SOCI\*/(\{[^;]*\});',s)
 if m:
     soci=json.loads(m.group(1)); D={}
     for k,p in soci.items():
-        if k=='gate': continue
+        if k in ('gate','h_mud','h_min','t_tudi','sh_market','pf_school','t_mazu','pf_station','pf_post','pf_hosp','pf_park','h_apt','v_hsr'): continue
         D[k]='data:image/webp;base64,'+base64.b64encode(open(os.path.join(ROOT,p),'rb').read()).decode()
     js='window.__SOC_IMG='+json.dumps(D,separators=(',',':'))+';\n'
     open(os.path.join(ROOT,'assets/v15/soc-img.js'),'w').write(js)

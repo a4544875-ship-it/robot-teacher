@@ -42,7 +42,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=14.0.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=15.2.0"></script>
+<script src="assets/v15/social.js?v=15.3.0"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -5224,14 +5224,15 @@ if(window.SocialFactory)try{(function(){
   SOCX=window.SocialFactory({Store:Store,PGX:function(){return PGX},isKid:isKid,who:function(){return who},esc:esc,sfx:sfx,say:say,confetti:confetti,kidName:function(){return nm()},egrade:function(){return egrade},
     shell:shell,body:function(){return gBody},title:function(t){$('#gTitle').textContent=t},prog:function(t){$('#gProg').textContent=t},award:award,
     finishBonus:function(score,total){return Store.finishGame(who,'soc',{score:score,total:total,roundPts:roundPts,eg:egrade})},
-    goHome:function(){gOpen='soc';backGameHome()}});
+    goHome:function(){gOpen='soc';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}});
   window.__soc=SOCX;
+  var up0=updatePill;updatePill=function(){up0.apply(this,arguments);try{if(!isKid())return;var t=SOCX.town(who),el=$('#starNum');if(el&&!el.querySelector('.sp.so')){var sp=document.createElement('span');sp.className='sp so';sp.innerHTML='<img class="gi" src="'+SOCX.img(t.icon)+'" alt="" style="border-radius:50%;object-fit:cover"><i>'+t.pts+'</i>';el.appendChild(sp)}}catch(e){}};
   var rgh=renderGameHome;renderGameHome=function(){var soc=gOpen==='soc';rgh.apply(this,arguments);
     var gb0=$('#gatesBox');if(gb0&&!gb0.querySelector('[data-go="soc"]')){var sc=gb0.querySelector('[data-go="sci"]'),b=document.createElement('button');b.className='gatebtn so';b.dataset.go='soc';b.setAttribute('aria-label','進入社會遊戲樂園');
       b.innerHTML='<img class="pic mul" src="'+SOCX.img('gate')+'" alt=""><b>🏘️ 社會遊戲樂園</b>';if(sc&&sc.nextSibling)gb0.insertBefore(b,sc.nextSibling);else gb0.appendChild(b);gb0.classList.add('has-soc');var gs=gb0.closest('.gates')||gb0;gs.classList.add('has-soc');
       b.addEventListener('click',function(){sfx('win');confetti(b,24);gOpen='soc';renderGameHome();PANELS.game.scrollTop=0;say('歡迎來到社會遊戲樂園！一起逛逛家鄉小鎮！','happy')})}
     if(!soc||!gOpen)return;
-    var hb=$('#heroBox');hb.className='hero soc';$('#heroIco').textContent='🏘️';$('#heroT').textContent='社會遊戲樂園';$('#heroSub').textContent='題目跟著學校的社會進度';
+    $('#heroBox').hidden=true;
     var er=$('#egRow');if(er)er.hidden=true;var tt=$('#ttRow');if(tt)tt.hidden=true;var mb=document.querySelector('.mbk');if(mb)mb.remove();
     SOCX.home($('#games'))};
 })()}catch(e){console.error('social',e)}
