@@ -225,7 +225,7 @@ Game.prototype.bld=function(k,x,y,z,s){var g=this;var m=new T.Mesh(new T.PlaneGe
 Game.prototype.build=function(){var g=this,z=g.z,Q=g.Q,R=g.R,sc=g.sc;
   var sea=new T.Mesh(new T.PlaneGeometry(400,400),new T.MeshLambertMaterial({color:0x5fb8e8}));sea.rotation.x=-Math.PI/2;sea.position.y=-7;sc.add(sea);
   /* 0 起點廣場 */
-  g.ground(0,0,-5,12,14);g.tree(-5,0,0);g.tree(5,0,-1);
+  g.ground(0,0,-5.4,12,14.8);g.tree(-5,0,0);g.tree(5,0,-1);
   [-4,4].forEach(function(x){g.coin(x,0,-6)});g.coin(0,0,-9);
   ['sc_group','pf_school','sc_relay','sc_tug','sc_friends','sc_award'].forEach(function(k,i){var sd=i%2?1:-1;g.bld(k,sd*(10+(i%3)),-1,-14-i*30,5.5)});
   for(var cl=0;cl<10;cl++){var cm=new T.Mesh(new T.SphereGeometry(2+R()*1.5,8,6),new T.MeshLambertMaterial({color:0xffffff}));cm.scale.y=.45;cm.position.set((R()*2-1)*30,14+R()*6,-R()*200);sc.add(cm)}
@@ -266,7 +266,7 @@ Game.prototype.build=function(){var g=this,z=g.z,Q=g.Q,R=g.R,sc=g.sc;
   /* 7 分類 */
   var Y=3.2;g.ground(0,Y,-150,14,20);g.checkpoint(0,Y,-142);
   g.srt=null;var qq=Q.sort;if(qq){var items=shufR(qq.it,R).slice(0,4);g.srt={q:qq,items:items,i:0,miss:0,bins:[]};
-    qq.b.forEach(function(lb,i){var x=i?5:-5,fr=new T.Mesh(new T.BoxGeometry(3,1,3),new T.MeshLambertMaterial({color:i?0xf39a6b:0x5cb3e8,transparent:true,opacity:.75}));fr.position.set(x,Y+.5,-154);sc.add(fr);var c=g.card(lb,null,3.4,null,i?'#ffe4d6':'#dceefc');c.position.set(x,Y+2.2,-155.6);sc.add(c);g.srt.bins.push({x:x,z:-154})});
+    qq.b.forEach(function(lb,i){var x=i?5:-5,fr=new T.Mesh(new T.BoxGeometry(3,1,3),new T.MeshLambertMaterial({color:i?0xffc4a8:0xbfe0ff,map:g.ptex('wood',2,.7)}));fr.position.set(x,Y+.5,-154);sc.add(fr);var c=g.card(lb,null,3.4,null,i?'#ffe4d6':'#dceefc');c.position.set(x,Y+2.2,-155.6);sc.add(c);g.srt.bins.push({x:x,z:-154})});
     g.ped=new T.Mesh(new T.CylinderGeometry(.9,1,.6,12),new T.MeshLambertMaterial({color:0xd9b48a}));g.ped.position.set(0,Y+.3,-147);sc.add(g.ped);g.srtCard=null;g.srtNext();
     g.trig.push({z:-141,q:qq,kind:'sort',txt:'把東西撿起來，搬進正確的籃子！'})}
   g.gate2=g.box(0,Y+4.2,-159.6,14,4.2,.5,0xffffff,{});g.gate2.lk=g.card('🔒 東西都分對就會打開',null,4,null,'#fff6c9');g.gate2.lk.position.set(0,Y+2.4,-159.2);sc.add(g.gate2.lk);g.gate2.m.material.transparent=true;g.gate2.m.material.opacity=.55;if(!qq){g.gate2.on=false;g.gate2.m.visible=false}
