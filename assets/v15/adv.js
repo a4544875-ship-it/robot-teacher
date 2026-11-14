@@ -89,6 +89,7 @@ function addCss(){if(css)return;css=true;var st=document.createElement('style');
 '.sav-note{color:#3d4f61;font-size:13.5px;line-height:1.6;margin:0}',
 '.sav-pick{display:flex;flex-direction:column;gap:10px}.sav-pick .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}',
 '.sav-peers{display:flex;flex-direction:column;gap:6px}.sav-peers div{display:flex;align-items:center;gap:8px;background:#f4f8fb;border-radius:12px;padding:6px 10px;font-weight:700}.sav-peers em{margin-left:auto;font-style:normal;font-size:13px;color:#2f8f5b}',
+'.sav-fail .fx{text-align:center}.sav-fail .fx img{width:80px;height:80px;object-fit:contain;filter:grayscale(.6);transform:rotate(-12deg);animation:savSad 1.6s ease-in-out infinite}@keyframes savSad{50%{transform:rotate(-12deg) translateY(4px)}}.sav-fail h3{color:#c0392b!important;font-size:26px}.sav-fail .why{text-align:center;font-weight:800;color:#5a4636;margin:4px 0 8px;line-height:1.6}.sav-hearts{display:flex;gap:6px;justify-content:center;margin:0 0 10px}.sav-hearts i{width:26px;height:24px;background:#cfcfcf;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 22%27%3E%3Cpath d=%27M12 21s-9-5.6-9-12A5 5 0 0 1 12 6a5 5 0 0 1 9 3c0 6.4-9 12-9 12z%27/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 22%27%3E%3Cpath d=%27M12 21s-9-5.6-9-12A5 5 0 0 1 12 6a5 5 0 0 1 9 3c0 6.4-9 12-9 12z%27/%3E%3C/svg%3E") center/contain no-repeat}'+
 '.sav-end .sav-stars{font-size:44px;text-align:center;color:#ddd;letter-spacing:4px}.sav-end .sav-stars i{font-style:normal}.sav-end .sav-stars i.on{color:#f2b632}',
 '.sav-end .rw{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.sav-end .rw span{background:#fff7e0;border-radius:12px;padding:6px 10px;font-weight:800}',
 '.sav-end .tr{display:flex;align-items:center;gap:10px;justify-content:center;font-weight:900;color:#8a5a2b}.sav-end .tr img{width:70px;height:70px;object-fit:cover;border-radius:14px}',
@@ -372,7 +373,18 @@ Game.prototype.land=function(b){var g=this;if(b.vanish&&b.vt<=0)b.vt=.7;
   if(b.qid==='plat'&&!g.solved.plat&&!b.tried){var q=g.Q.plat;if(b.ans===q.a){g.solve('plat',true)}else{b.tried=true;b.fall=true;b.fv=0;g.wrongQ(q);g.miss++;C.sfx('no');g.tip('不是這個！平台掉下去了……再試一次',2.2)}}};
 Game.prototype.respawn=function(){var P=this.P,c=this.cp;P.x=c.x;P.y=c.y+.5;P.z=c.z;P.vx=P.vy=P.vz=0;P.inv=1.2;if(P.carry==='scroll'&&this.pick){P.carry=null;this.pick.position.set(0,1.2,-97.5)}if(this.srt)this.srt.held=false};
 Game.prototype.hit=function(n,msg,src){var g=this,P=g.P;if(P.inv>0)return;g.hp-=n;g.hurt+=n;P.inv=1.3;C.sfx('no');g.tip(msg,1.8);var fl=ROOT.querySelector('.sav-flash'),hp=ROOT.querySelector('.sav-hp');fl.classList.add('on');hp.classList.remove('shake');void hp.offsetWidth;hp.classList.add('shake');setTimeout(function(){fl.classList.remove('on')},60);try{navigator.vibrate&&navigator.vibrate(80)}catch(e){}if(src){var dx=P.x-src.x,dz=P.z-src.z,l=Math.hypot(dx,dz)||1;P.x+=dx/l*1.2;P.z+=dz/l*1.2}P.vy=6;
-  if(g.hp<=0){g.hp=g.maxHp;g.tip('愛心用完了，從存檔點重新開始！',2.4);g.respawn()}g.hud()};
+  if(g.hp<=0){g.hp=0;g.hud();g.fail(msg);return}g.hud()};
+/* ---------- 挑戰失敗 ---------- */
+Game.prototype.fail=function(why){var g=this;if(g.ended)return;g.ended=true;g.paused=true;var z=g.z,ks=['plat','door','send','sort'],done=ks.filter(function(k){return g.solved[k]}).length+(g.dmg>=9?1:0),sec=Math.round((Date.now()-g.t0)/1000);
+  try{C.sfx('no')}catch(e){}
+  var m=document.createElement('div');m.className='sav-mod';m.innerHTML='<div class="sav-card sav-end sav-fail"><div class="fx"><img src="'+img('l_front')+'" alt=""></div><h3 style="text-align:center">挑戰失敗！</h3>'+
+    '<p class="why">'+esc(why||'')+'<br>愛心全部用完了，小石獅需要休息一下。</p>'+
+    '<div class="sav-hearts">'+Array(g.maxHp+1).join('<i></i>')+'</div>'+
+    '<div class="rw"><span>完成任務 '+done+' / 5</span><span>受傷 '+g.hurt+' 次</span><span>答錯 '+g.miss+' 次</span><span>用時 '+sec+' 秒</span></div>'+
+    '<p class="sav-note" style="text-align:center">小提醒：看到小搗蛋可以按「吼！」或衝撞打倒它；跳台前先看準再跳！<br>這次的寶物和經驗不會保存，再試一次一定可以！</p>'+
+    '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="sav-go" data-a="1">重新再來一次</button><button class="sav-go s" data-a="0">回冒險大廳</button></div></div>';
+  ROOT.appendChild(m);try{C.say('愛心用完了，挑戰失敗！別灰心，重新再來一次吧！','sad')}catch(e){}
+  m.querySelectorAll('[data-a]').forEach(function(b){b.addEventListener('click',function(){C.sfx('tap');var again=b.dataset.a==='1',zz=g.z;g.stop();G=null;if(again)start(zz,null);else lobby()})})};
 Game.prototype.wrongQ=function(q){if(C.isKid()&&q)try{SOC.markQ(C.who(),q,false)}catch(e){}};
 Game.prototype.solve=function(kind,first,remote){var g=this;if(g.solved[kind])return;g.solved[kind]=1;var q=g.Q[kind];
   if(!remote){if(C.isKid()&&q&&first)try{SOC.markQ(C.who(),q,true)}catch(e){}C.award(first?2:1);g.xpAdd(20)}
