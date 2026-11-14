@@ -35,7 +35,7 @@ global.CareFactory=function(C){
     S.mut(id,function(k){var a=Array.isArray(k.er)?k.er:[];items.forEach(function(o){var x={t:o.t,k:o.k,m:o.m,s:o.s||'',d:o.d,v:o.v,tab:o.tab,g:o.g,o:o.o,c:o.c||1};if(o.st)x.st=o.st;a.unshift(x)});if(a.length>20)a.length=20;k.er=a})}
 
   /* ---------- ② 每日學習紀錄 ---------- */
-  function subOf(gid){return C.MATH_IDS()[gid]?'m':C.SCI_IDS()[gid]||gid==='lab'?'s':'e'}
+  function subOf(gid){return gid==='soc'?'o':C.MATH_IDS()[gid]?'m':C.SCI_IDS()[gid]||gid==='lab'?'s':'e'}
   function dayRec(k){var o=k.ds&&typeof k.ds==='object'?k.ds:(k.ds={}),d=dkey(),r=o[d]||(o[d]={});var ks=Object.keys(o).sort();while(ks.length>90)delete o[ks.shift()];return r}
   function inc(r,f,n){r[f]=(+r[f]||0)+(n||0)}
   var aw=S.award;S.award=function(id,pts,gid){var x=aw.apply(S,arguments);try{if(pts)S.mut(id,function(k){inc(dayRec(k),subOf(gid),+pts||0)})}catch(e){}return x};
@@ -48,7 +48,7 @@ global.CareFactory=function(C){
   function rs(id){var r=(S.kid(id)||{}).rs;return r&&typeof r==='object'?r:{}}
   function saveRs(id,o){S.mut(id,function(k){k.rs=o})}
   function inGame(){try{return C.inGame()}catch(e){return false}}
-  function subNow(){var o=C.open(),t=C.tab();return t==='chat'?'tq':o==='math'?'tm':o==='sci'?'ts':'te'}
+  function subNow(){var o=C.open(),t=C.tab();return t==='chat'?'tq':o==='math'?'tm':o==='sci'?'ts':o==='soc'?'to':'te'}
   function tick(){var id=C.who();if(!C.isKid()){curKid=null;return}
     if(curKid!==id){curKid=id;var r=rs(id);acc=+r.a||0;warned=false;due=false;if(r.l&&Date.now()-r.l>cfg(id).r*60000)acc=0;if(r.u&&Date.now()<r.u)return showRest()}
     if(ov)return;var now=Date.now(),active=document.visibilityState==='visible'&&now-lastInput<90000;
