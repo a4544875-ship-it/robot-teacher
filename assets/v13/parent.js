@@ -10,6 +10,18 @@ var THEMES=[['indigo','星空紫',['#3f51d9','#7b5cff','#b05cff']],['ocean','海
 function theme(k){for(var i=0;i<THEMES.length;i++)if(THEMES[i][0]===k)return THEMES[i][2];return THEMES[0][2]}
 var PS2={e:'en',m:'math',s:'sci'};var SUBC={en:['🔤','英文','#2f7bf6','#e7f0ff'],math:['🔢','數學','#f07d16','#fff1e2'],sci:['🔬','自然','#1f9e6a','#e3f7ee'],soc:['🏙️','社會','#d2553f','#ffece6']};
 var CSS=[
+'.pd-acc{background:var(--pd-card);border-radius:20px;box-shadow:0 6px 18px rgba(31,42,68,.07);overflow:hidden}',
+'.pd-acc>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;min-height:56px}.pd-acc>summary::-webkit-details-marker{display:none}',
+'.pd-acc>summary .hd{flex:1;min-width:0;display:flex;flex-direction:column}.pd-acc>summary b{font-size:16px}.pd-acc>summary small{font-size:12.5px;color:var(--pd-soft);line-height:1.45}',
+'.pd-acc>summary .ar{flex:none;font-size:22px;color:var(--pd-soft);transition:transform .2s}.pd-acc[open]>summary .ar{transform:rotate(90deg)}',
+'.pd-accb{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}.pd-accb .pd-sec{box-shadow:none;background:none;padding:10px 0 0;border-radius:0;border-top:1px solid var(--pd-line)}.pd-accb .pd-sec h3{font-size:15px}',
+'.pd-info>summary{list-style:none;display:inline-block;font-size:12.5px;font-weight:700;color:var(--pd-soft);cursor:pointer;padding:2px 0}.pd-info>summary::-webkit-details-marker{display:none}.pd-info .pd-note,.pd-info .mbtip{margin-top:4px}',
+'.pd-today{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pd-today .big{border-radius:16px;padding:12px;background:var(--pd-bg2);min-width:0}.pd-today small{display:block;font-size:12.5px;color:var(--pd-soft);font-weight:700}.pd-today b{display:block;font-size:24px;line-height:1.25}.pd-today i{display:block;font-style:normal;font-size:12px;color:var(--pd-soft)}',
+'.pd-qs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:14px}.pd-qs li{padding:6px 10px;border-radius:12px;background:var(--pd-bg2)}.pd-qs li.ok{opacity:.7;text-decoration:line-through}.pd-qs small{color:var(--pd-soft);font-weight:700}',
+'.pd-more{border:0;border-radius:14px;padding:11px;font-weight:800;font-size:14.5px;background:color-mix(in srgb,var(--pt1) 12%,var(--pd-card));color:var(--pt1)}',
+'.pd-mini{font-size:13.5px;color:var(--pd-soft);background:var(--pd-card);border-radius:16px;padding:10px 14px;box-shadow:0 4px 12px rgba(31,42,68,.06)}.pd-mini b{color:var(--pd-ink)}',
+'.pd-px{color:#a23ff0;font-weight:700}',
+'.pd-accb .pgp>h3.h{display:none}.pd-accb .rost{margin:0;padding:0;box-shadow:none;background:none}',
 '.pd{--pd-ink:var(--ink,#1f2a44);--pd-soft:var(--ink-soft,#66728c);--pd-card:var(--surface,#fff);--pd-bg2:var(--surface-2,#f3f5fa);--pd-line:rgba(31,42,68,.09);display:flex;flex-direction:column;gap:14px;color:var(--pd-ink);padding-bottom:20px}',
 '.pd *{box-sizing:border-box}.pd button{font-family:inherit;color:inherit;cursor:pointer}',
 '.pd{--pt1:#3f51d9;--pt2:#7b5cff;--pt3:#b05cff}.pd-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:22px;color:#fff;background:linear-gradient(135deg,var(--pt1),var(--pt2) 60%,var(--pt3));box-shadow:0 10px 26px color-mix(in srgb,var(--pt1) 30%,transparent)}',
@@ -17,11 +29,11 @@ var CSS=[
 '.pd-head .t{flex:1;min-width:0}.pd-head b{display:block;font-size:19px;line-height:1.2}.pd-head small{opacity:.88;font-size:12.5px}',
 '.pd-head .role{display:inline-block;font-size:11px;font-weight:800;background:rgba(255,255,255,.25);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}',
 '.pd-head .out{flex:none;border:0;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:800;background:rgba(255,255,255,.2);color:#fff}',
-'.pd-nav{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:6px;border-radius:18px;background:var(--pd-card);box-shadow:0 4px 14px rgba(31,42,68,.08);scrollbar-width:none}.pd-nav::-webkit-scrollbar{display:none}',
-'.pd-nav button{border:0;border-radius:13px;padding:8px 4px;font-size:13.5px;font-weight:800;background:transparent;color:var(--pd-soft);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}',
+'.pd-nav{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:6px;border-radius:18px;background:var(--pd-card);box-shadow:0 4px 14px rgba(31,42,68,.08);scrollbar-width:none}.pd-nav::-webkit-scrollbar{display:none}',
+'.pd-nav button{border:0;border-radius:13px;padding:10px 4px;font-size:15px;font-weight:800;background:transparent;color:var(--pd-soft);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}',
 '.pd-nav button[aria-pressed="true"]{background:var(--pt1);color:#fff}',
 '.pd-kids{display:flex;gap:8px;flex-wrap:wrap}.pd-kids button{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:5px 12px 5px 5px;font-weight:800;font-size:14px;background:var(--pd-card);box-shadow:inset 0 0 0 1.5px var(--pd-line)}',
-'.pd-kids button .kav,.pd-kids button .kemo{width:28px;height:28px;font-size:20px;border-radius:50%}.pd-kids button[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--pt1);background:color-mix(in srgb,var(--pt1) 10%,#fff)}',
+'.pd-kids button .kav,.pd-kids button .kemo{width:28px;height:28px;font-size:20px;border-radius:50%}.pd-kids button[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--pt1);background:color-mix(in srgb,var(--pt1) 14%,var(--pd-card))}',
 '.pd-sec{background:var(--pd-card);border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(31,42,68,.07)}',
 '.pd-sec>h3{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:17px}.pd-sec>h3 small{margin-left:auto;font-size:12px;font-weight:600;color:var(--pd-soft)}',
 '.pd-note{font-size:12.5px;color:var(--pd-soft);line-height:1.55;margin:8px 0 0}',
@@ -124,6 +136,10 @@ global.ParentFactory=function(C){
   function weakWords(id){var k=S.kid(id)||{},m=k.m||{},o=[];C.WORDS.forEach(function(w){var e=m[w[0]];if(e&&C.Learn.st(k,w[0])===1)o.push(w)});return o}
 
   /* ---------- 共用元件 ---------- */
+  var OPEN={};
+  function acc(key,head,sub,body,open){var o=OPEN[key]!=null?OPEN[key]:!!open;return '<details class="pd-acc" data-acc="'+key+'"'+(o?' open':'')+'><summary><span class="hd"><b>'+head+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</span><span class="ar">›</span></summary><div class="pd-accb">'+body+'</div></details>'}
+  function tierTxt(id,ps){var P=C.PGX();if(!P||!P.chal)return '';var l=P.chal(id,ps);return '<span style="color:'+['#e0a800','#2f7bf0','#a23ff0'][l]+'">★</span>'+['標準','進階','高手'][l]}
+  function xeRow(id){var r=(S.kid(id)||{}).xe;return Array.isArray(r)?[0,1,2,3].map(function(i){return +r[i]||0}):[0,0,0,0]}
   function kidBtns(sel){var ks=kids();return '<div class="pd-kids">'+ks.map(function(k){return '<button data-kid="'+k.id+'" aria-pressed="'+(k.id===sel)+'">'+C.kface(k)+esc(k.short)+'</button>'}).join('')+'</div>'}
   function subTile(sub,label,val,sub2){var c=SUBC[sub]||SUBC[PS2[sub]];return '<div class="pd-tile c" style="--sb:'+c[3]+';--sc:'+c[2]+'"><small>'+c[0]+' '+label+'</small><b'+(String(val).replace(/<[^>]+>/g,'').length>7?' class="l"':'')+'>'+val+'</b>'+(sub2?'<i>'+sub2+'</i>':'')+'</div>'}
   function tile(label,val,sub2){return '<div class="pd-tile"><small>'+label+'</small><b>'+val+'</b>'+(sub2?'<i>'+sub2+'</i>':'')+'</div>'}
@@ -144,28 +160,38 @@ global.ParentFactory=function(C){
 
   /* ---------- 分頁：總覽 ---------- */
   function overview(){var ks=kids();if(!ks.length)return sec('👋 歡迎','<p>這個帳號還沒有被指派孩子。請總管理員到「設定 › 家長帳號」幫你勾選孩子。</p>');
-    var h='';var today=days(1)[0].k;
-    ks.forEach(function(k){var d=S.kid(k.id)||{},e=C.growOf(k.id,'en'),m=C.growOf(k.id,'math'),sp=C.subPts(d,'sci'),L=C.scLevel(sp),info=C.Learn.info(k.id),ls=lastSeen(k.id),t0=+dp(k.id)[today]||0,w7=sumDays(k.id,7);
-      var pe=progLine(k.id,'e'),pm=progLine(k.id,'m'),ps=progLine(k.id,'s'),alerts=[];
-      var rvm=rvInfo(k.id,'m'),rve=rvInfo(k.id,'e');
+    var h='<div id="pdFam"></div>';var today=days(1)[0].k;
+    ks.forEach(function(k){var d=S.kid(k.id)||{},info=C.Learn.info(k.id),ls=lastSeen(k.id),t0=+dp(k.id)[today]||0,tm=+((dsDay(k.id,today)||{}).t)||0,done=info.p.filter(function(x,i){return x>=info.q[i].n}).length;
+      var pe=progLine(k.id,'e'),pm=progLine(k.id,'m'),alerts=[],rvm=rvInfo(k.id,'m'),rve=rvInfo(k.id,'e');
       if(!ls||Date.now()-ls>3*864e5)alerts.push('⏰ '+(ls?'已經 '+ago(ls)+'沒來練習了':'還沒有開始玩'));
-      if(rvm.hard.length+rve.hard.length>=5)alerts.push('📕 有 '+(rvm.hard.length+rve.hard.length)+' 題常錯的題目，可以到英文／數學分頁看看');
-      if(pm&&pm.acc!==null&&pm.ans>=10&&pm.acc<60)alerts.push('🔢 數學「'+pm.S.U[1]+'」正確率只有 '+pm.acc+'%');
-      if(pe&&pe.acc!==null&&pe.ans>=10&&pe.acc<60)alerts.push('🔤 英文「'+pe.S.U[1]+'」正確率只有 '+pe.acc+'%');
-      h+='<div class="pd-kc"><div class="top">'+C.kface(k)+'<div><b>'+esc(k.name)+'</b><small>'+(C.PGX()&&C.PGX().gradeStr(k.id)?C.PGX().gradeStr(k.id)+'年級・':'')+'最近一次：'+ago(ls)+'・連續 '+info.streak+' 天 🔥</small></div><button class="go" data-goto="'+k.id+'">詳細 ›</button></div>'+
-        '<div class="pd-tiles">'+tile('今天',num(t0)+' 分','今日任務 '+info.p.filter(function(x,i){return x>=info.q[i].n}).length+' / 3'+(info.done?' ✅':''))+tile('今天玩了',mins((dsDay(k.id,today)||{}).t),restNow(k.id))+tile('近 7 天',num(w7)+' 分')+tile('總分',num(d.pts)+' 分')+'</div>'+
-        '<div class="pd-subs">'+
-          '<button class="pd-sub" data-jump="en:'+k.id+'" style="--sb:'+SUBC.en[3]+';--sc:'+SUBC.en[2]+'"><small>🔤 英文</small><b>'+num(C.subPts(d,'en'))+'</b><i>'+(pe?esc(pe.S.U[1].replace(/^Unit \d+ /,'')):esc(e.lv[1]))+'</i></button>'+
-          '<button class="pd-sub" data-jump="math:'+k.id+'" style="--sb:'+SUBC.math[3]+';--sc:'+SUBC.math[2]+'"><small>🔢 數學</small><b>'+num(C.subPts(d,'math'))+'</b><i>'+(pm?esc(pm.S.U[1]):esc(m.lv[1]))+'</i></button>'+
-          '<button class="pd-sub" data-jump="sci:'+k.id+'" style="--sb:'+SUBC.sci[3]+';--sc:'+SUBC.sci[2]+'"><small>🔬 自然</small><b>'+num(sp)+'</b><i>'+(ps?esc(ps.S.U[1]):esc(L.name))+'</i></button>'+socSub(k.id)+'</div>'+
-        (alerts.length?alerts.map(function(a){return '<div class="pd-alert">'+esc(a)+'</div>'}).join(''):'<div class="pd-alert ok">✅ 一切順利，繼續保持！</div>')+'</div>'});
-    if(ks.length>1){var rk=ks.slice().sort(function(a,b){return sumDays(b.id,7)-sumDays(a.id,7)});h+=sec('🏆 近 7 天練習排行',rk.map(function(k,i){return '<div class="pd-row"><div class="n"><b>'+(['🥇','🥈','🥉'][i]||(i+1)+'.')+' '+esc(k.name)+'</b></div><div class="v">'+num(sumDays(k.id,7))+'<small>分</small></div></div>'}).join(''))}
-    h+='<div id="pdFam"></div>';return h}
+      if(rvm.hard.length+rve.hard.length>=5)alerts.push('📕 有 '+(rvm.hard.length+rve.hard.length)+' 題常錯的題目');
+      if(pm&&pm.acc!==null&&pm.ans>=10&&pm.acc<60)alerts.push('🔢 數學「'+pm.S.U[1]+'」正確率 '+pm.acc+'%');
+      if(pe&&pe.acc!==null&&pe.ans>=10&&pe.acc<60)alerts.push('🔤 英文「'+pe.S.U[1]+'」正確率 '+pe.acc+'%');
+      h+='<div class="pd-kc"><div class="top">'+C.kface(k)+'<div><b>'+esc(k.name)+'</b><small>最近一次：'+ago(ls)+(info.streak?'・連續 '+info.streak+' 天 🔥':'')+'</small></div></div>'+
+        '<div class="pd-today"><div class="big"><small>⏱️ 今天玩了</small><b>'+mins(tm)+'</b><i>'+esc(restNow(k.id))+'</i></div><div class="big"><small>✅ 今日任務</small><b>'+done+' / 3'+(info.done?' 🎉':'')+'</b><i>今天得 '+num(t0)+' 分</i></div></div>'+
+        '<ul class="pd-qs">'+info.q.map(function(q,i){var ok=info.p[i]>=q.n;return '<li class="'+(ok?'ok':'')+'">'+(ok?'✅ ':'⬜ ')+esc(q.txt)+(!ok&&q.n>1&&info.p[i]?' <small>'+Math.min(info.p[i],q.n)+'/'+q.n+'</small>':'')+'</li>'}).join('')+'</ul>'+
+        alerts.map(function(a){return '<div class="pd-alert">'+esc(a)+'</div>'}).join('')+
+        '<button class="pd-more" data-goto="'+k.id+'">看 '+esc(k.short)+' 的學習狀況 ›</button></div>'});
+    if(ks.length>1){var rk=ks.slice().sort(function(a,b){return sumDays(b.id,7)-sumDays(a.id,7)});h+='<div class="pd-mini">🏆 近 7 天：'+rk.map(function(k){return '<b>'+esc(k.short)+'</b> '+num(sumDays(k.id,7))+' 分'}).join('・')+'</div>'}
+    return h}
+
+  /* ---------- 分頁：孩子（各科一行，點開看細節） ---------- */
+  function kidTab(){var ks=kids();if(!ks.length)return overview();if(!kidSel||!ks.some(function(k){return k.id===kidSel}))kidSel=ks[0].id;var id=kidSel,d=S.kid(id)||{},today=days(1)[0].k;
+    var h=(ks.length>1?kidBtns(id):'')+'<div class="pd-mini">今天 <b>'+num(+dp(id)[today]||0)+'</b> 分・近 7 天 <b>'+num(sumDays(id,7))+'</b> 分・總分 <b>'+num(d.pts)+'</b> 分</div>';
+    var pe=progLine(id,'e'),pm=progLine(id,'m'),ps=progLine(id,'s'),xe=xeRow(id),xn=xe.filter(function(x){return x>0}).length,mx=d.mx&&typeof d.mx==='object'?d.mx:{},mxn=Object.keys(mx).filter(function(k){return +mx[k]>0}).length,sx=d.sx&&typeof d.sx==='object'?d.sx:{},sxn=Object.keys(sx).filter(function(k){return +sx[k]>0}).length;
+    var re=rvInfo(id,'e').n,rm=rvInfo(id,'m').n;
+    h+=acc('en:'+id,'🔤 英文',[pe?esc(pe.S.U[1].replace(/^Unit \d+ /,'')):'',tierTxt(id,'e'),re?'錯題 '+re:'',xn?'<span class="pd-px">高手關 '+xn+'/4</span>':''].filter(Boolean).join('・'),subject('en'));
+    h+=acc('math:'+id,'🔢 數學',[pm?esc(pm.S.U[1]):'',tierTxt(id,'m'),rm?'錯題 '+rm:'',mxn?'<span class="pd-px">高手關 '+mxn+' 單元</span>':''].filter(Boolean).join('・'),subject('math'));
+    h+=acc('sci:'+id,'🔬 自然',[ps?esc(ps.S.U[1]):'',sxn?'<span class="pd-px">高手關 '+sxn+' 站</span>':''].filter(Boolean).join('・')||'自然探險島',subject('sci'));
+    var S2=SO();if(S2){var R=S2.report(id),X=(d.so&&d.so.X)||{},exn=Object.keys(X).filter(function(k){return +X[k]>0}).length;h+=acc('soc:'+id,'🏙️ 社會','徽章 '+R.badges+' / '+R.total+(exn?'・<span class="pd-px">大考驗 '+exn+' 單元</span>':''),socTab())}
+    var o=dp(id),played=days(14).filter(function(x){return +o[x.k]>0}).length;h+=acc('daily:'+id,'📅 每天紀錄','近 14 天有玩 '+played+' 天',daily());
+    var qn=actsOf(id).filter(function(a){return a.type==='q'}).length;h+=acc('qa:'+id,'💬 問小機老師的問題',qn?qn+' 題':'還沒有問過',qa());
+    return h}
 
   /* ---------- 社會（社會島、小石獅冒險、家鄉小鎮） ---------- */
   function SO(){return global.__soc||null}
   function socSub(id){var S2=SO();if(!S2)return '';var R=S2.report(id);return '<button class="pd-sub" data-jump="soc:'+id+'" style="--sb:'+SUBC.soc[3]+';--sc:'+SUBC.soc[2]+'"><small>🏙️ 社會</small><b>'+num(R.pts)+'</b><i>徽章 '+R.badges+' / '+R.total+'</i></button>'}
-  function socTab(){var ks=kids();if(!ks.length)return overview();if(!kidSel||!ks.some(function(k){return k.id===kidSel}))kidSel=ks[0].id;var id=kidSel,S2=SO(),h=kidBtns(id);
+  function socTab(){var ks=kids();if(!ks.length)return overview();if(!kidSel||!ks.some(function(k){return k.id===kidSel}))kidSel=ks[0].id;var id=kidSel,S2=SO(),h='';
     if(!S2)return h+sec('🏙️ 社會','<p class="pd-note">社會島還在載入，等一下再切換一次。</p>');
     var R=S2.report(id),d=S.kid(id)||{},sa=d.sa||{},xp=+sa.xp||0,LV=[0,120,300,550,900,1350,1900,2600,3400,4300],lv=1;LV.forEach(function(v,i){if(xp>=v)lv=i+1});
     var acts=actsOf(id).filter(function(x){return x.type==='game'&&x.gid==='soc'}),wk=acts.filter(function(x){return Date.now()-x.ts<7*864e5}),T=global.__town,ts=T?T.stat(id):null;
@@ -174,37 +200,37 @@ global.ParentFactory=function(C){
       (R.real<3?'<p class="pd-note">社會課從三年級開始，現在是預習三年級的內容。</p>':''),R.grade+' 年級題庫');
     h+=sec('📘 單元進度',R.units.map(function(u){return '<div class="pd-row"><div class="n"><b>'+esc(u.n)+'</b><small>'+u.ls.map(function(l){return esc(l.n)+' '+stars(l.star)}).join('　')+'</small></div><div class="v">'+(u.ex?'<span style="color:#a23ff0;font-size:13px">大考驗 '+'★'.repeat(u.ex)+'</span> ':'')+(u.master?'🏆':u.badge?'🏅':'')+'</div></div>'}).join('')+'<p class="pd-note">🏅 家鄉徽章（每一課都 2 顆星）・🏆 全部 3 顆星・紫色星星是「單元大考驗」（拿到徽章後開放，10 題全對 3 星）。</p>');
     var wr=R.wrong.slice().sort(function(a,b){return (b.due?1:0)-(a.due?1:0)});
-    h+=sec('📕 社會錯題',wr.length?'<div class="pd-alert">有 '+wr.length+' 題答錯過，今天該複習的有 '+R.due+' 題（在社會島「錯題複習站」）。</div>'+wr.slice(0,20).map(function(w){return '<div class="pd-row"><div class="n"><b>'+esc(w.q)+'</b><small>'+(w.a?'答案：'+esc(w.a)+'・':'')+(w.due?'今天要複習':'複習排程第 '+(w.lv+1)+' 次')+'</small></div></div>'}).join(''):'<div class="pd-alert ok">✅ 目前沒有答錯要複習的題目。</div>');
+    if(wr.length)h+=sec('📕 社會錯題',wr.length?'<div class="pd-alert">有 '+wr.length+' 題答錯過，今天該複習的有 '+R.due+' 題（在社會島「錯題複習站」）。</div>'+wr.slice(0,20).map(function(w){return '<div class="pd-row"><div class="n"><b>'+esc(w.q)+'</b><small>'+(w.a?'答案：'+esc(w.a)+'・':'')+(w.due?'今天要複習':'複習排程第 '+(w.lv+1)+' 次')+'</small></div></div>'}).join(''):'<div class="pd-alert ok">✅ 目前沒有答錯要複習的題目。</div>');
     h+=sec('🦁 小石獅守護家鄉（3D 冒險）','<div class="pd-tiles">'+tile('冒險等級','Lv.'+lv,'經驗 '+num(xp))+tile('拿回的寶物',Object.keys(sa.t||{}).length+' 個','')+tile('家鄉幣',num(+sa.c||0)+' 個','冒險撿的＋星星換的')+'</div><p class="pd-note">外面的單元拿到家鄉徽章，冒險裡那一區才會開放。</p>');
     if(ts)h+=sec('🏡 家鄉小鎮','<div class="pd-tiles">'+tile('繁榮度',ts.pros+' 分',esc(ts.name))+tile('社會建築',ts.soc+' 棟','')+tile('自然設施',ts.sci+' 個','')+tile('土地',ts.land+'×'+ts.land,'社會分＋自然分越多越大')+'</div><p class="pd-note">社會破關解鎖建築、星星越多房子越大；自然破關可以鋪路、裝路燈、接水。</p>');
-    h+=sec('🕘 最近玩的',recentRows(id,'soc',12));return h}
+    if(acts.length)h+=sec('🕘 最近玩的',recentRows(id,'soc',8));return h}
 
   /* ---------- 分頁：各科 ---------- */
   /* 挑戰等級（金星標準／藍星進階／紫星高手） */
   function tierTile(id,ps){var P=C.PGX();if(!P||!P.chal||ps==='s')return '';var l=P.chal(id,ps),o=P.chObj(id,ps),hi=Math.max(+o.hi||0,l),N=['標準','進階','高手'],col=['#e0a800','#2f7bf0','#a23ff0'];
     return tile('挑戰等級','<span style="color:'+col[l]+'">★</span> '+N[l],(o.au===0?'家長固定':'自動升降')+'・最高到過 '+N[hi]+'・答對 ×'+[1,1.5,2][l])}
   function subject(sub){var ks=kids();if(!ks.length)return overview();if(!kidSel||!ks.some(function(k){return k.id===kidSel}))kidSel=ks[0].id;var id=kidSel,d=S.kid(id)||{},c=SUBC[sub],ps=sub==='en'?'e':sub==='math'?'m':'s';
-    var h=kidBtns(id),G=sub==='sci'?null:C.growOf(id,sub),pts=C.subPts(d,sub),acts=actsOf(id).filter(function(x){return x.type==='game'&&subOf(x.gid)===sub}),wk=acts.filter(function(x){return Date.now()-x.ts<7*864e5});
+    var h='',G=sub==='sci'?null:C.growOf(id,sub),pts=C.subPts(d,sub),acts=actsOf(id).filter(function(x){return x.type==='game'&&subOf(x.gid)===sub}),wk=acts.filter(function(x){return Date.now()-x.ts<7*864e5});
     h+=sec(c[0]+' '+c[1]+'概況','<div class="pd-tiles">'+subTile(sub,'累積分數',num(pts),G?'等級：'+esc(G.lv[1]):'等級：'+esc(C.scLevel(pts).name))+tile('近 7 天玩了',wk.length+' 局',wk.length?'平均正確率 '+Math.round(100*wk.reduce(function(a,x){return a+(x.total?x.score/x.total:0)},0)/Math.max(1,wk.filter(function(x){return x.total}).length))+'%':'')+
       (sub==='en'?tile('學會的單字',C.Learn.stats(id).w+' 個','要加強 '+C.Learn.stats(id).wl+' 個'):sub==='math'?tile('九九乘法學會',C.Learn.stats(id).t+' / 64','要加強 '+C.Learn.stats(id).tl+' 題'):tile('第一島印章',C.scStampsAny(id)+' / 10',''))+tierTile(id,ps)+'</div>');
-    if(C.PGX()&&C.PGX().state(id,ps))h+=sec('📘 學校進度',progHead(id,ps)+'<div style="margin-top:12px">'+unitsBlock(id,ps)+'</div>',esc(C.PGX().state(id,ps).book));
-    if(sub!=='sci')h+=sec('📕 錯題箱',rvBlock(id,ps));
-    if(sub==='en'){var ww=weakWords(id);h+=sec('🔁 要加強的單字',ww.length?'<div class="pd-chips">'+ww.slice(0,30).map(function(w){return '<span class="pd-chip bad">'+w[1]+' '+esc(w[0])+' '+esc(w[2])+'</span>'}).join('')+'</div>':'<div class="pd-alert ok">✅ 目前沒有要加強的單字。</div>')}
-    if(sub==='math'){var mu=d.mu||{},P=C.PGX(),Sx=P&&P.state(id,'m');if(Sx){var rows=Sx.units.map(function(u){var r=Array.isArray(mu[u[0]])?mu[u[0]]:[0,0,0,0];return '<div class="pd-row"><div class="n"><b>'+esc(u[1])+'</b><small>第 1 關 '+stars(r[0])+'　第 2 關 '+stars(r[1])+'　第 3 關 '+stars(r[2])+'</small></div><div class="v">'+(r[3]?'🏅':'')+'</div></div>'}).join('');h+=sec('📘 課本闖關星星',rows,'🏅 = 拿到成就卡')}}
+    if(C.PGX()&&C.PGX().state(id,ps))h+=sec('📘 學校進度',progHead(id,ps)+'<details class="pd-info" style="margin-top:10px"><summary>📋 看全部單元</summary><div style="margin-top:8px">'+unitsBlock(id,ps)+'</div></details>',esc(C.PGX().state(id,ps).book));
+    if(sub!=='sci'&&rvInfo(id,ps).n)h+=sec('📕 錯題箱',rvBlock(id,ps));
+    if(sub==='en'){var ww=weakWords(id);if(ww.length)h+=sec('🔁 要加強的單字','<div class="pd-chips">'+ww.slice(0,30).map(function(w){return '<span class="pd-chip bad">'+w[1]+' '+esc(w[0])+' '+esc(w[2])+'</span>'}).join('')+'</div>');var xe=xeRow(id),XN=['拼字','文法','句子','閱讀'];h+=sec('🏆 英文高手關','<div class="pd-chips">'+XN.map(function(n,i){return '<span class="pd-chip">'+n+' '+(xe[i]?'<span class="pd-px">'+'★'.repeat(xe[i])+'</span>':'—')+'</span>'}).join('')+'</div>')}
+    if(sub==='math'){var mu=d.mu||{},P=C.PGX(),Sx=P&&P.state(id,'m');if(Sx){var MX=d.mx||{},rows=Sx.units.filter(function(u,i){var r=mu[u[0]];return i===Sx.cur||(Array.isArray(r)&&(+r[0]||+r[1]||+r[2]))}).map(function(u){var r=Array.isArray(mu[u[0]])?mu[u[0]]:[0,0,0,0],x=+MX[u[0]]||0;return '<div class="pd-row"><div class="n"><b>'+esc(u[1])+'</b><small>'+stars(r[0])+' '+stars(r[1])+' '+stars(r[2])+(r[0]&&r[1]&&r[2]?'　高手關 '+(x?'<span class="pd-px">'+'★'.repeat(x)+'</span>':'還沒挑戰'):'')+'</small></div><div class="v">'+(r[3]?'🏅':'')+'</div></div>'}).join('');h+=sec('📘 課本闖關',rows,'玩過的單元')}}
     if(sub==='sci'){var stn=C.STN().map(function(s2){var r=C.scRowG(id,s2.k,C.scOwnG(id));return '<div class="pd-row"><div class="n"><b>'+esc(s2.zh)+'</b><small>'+stars(r[0])+' '+stars(r[1])+' '+stars(r[2])+(+((d.sx||{})[s2.k])?' <span style="color:#a23ff0">高手關 '+'★'.repeat(+d.sx[s2.k])+'</span>':'')+'</small></div><div class="v">'+(r[0]&&r[1]&&r[2]?'✅':'')+'</div></div>'}).join('');
       var L=(d.lab&&d.lab.st)||{},g=C.scOwnG(id),lab=Object.keys(C.LABN).map(function(k2){var r=L[k2+'@'+g];r=Array.isArray(r)?r:[0,0,0,0];return '<div class="pd-row"><div class="n"><b>'+esc(C.LABN[k2])+'</b><small>'+stars(r[0])+' '+stars(r[1])+' '+stars(r[2])+'</small></div><div class="v">'+(r[3]?'✅':'')+'</div></div>'}).join('');
-      h+=sec('🏝️ 第一島：自然探險島',stn,g+' 年級題庫')+sec('🔬 第二島：奇蹟研究所',lab,g+' 年級題庫')}
-    h+=sec('🎮 各遊戲累積',gameRows(id,sub))+sec('🕘 最近玩的',recentRows(id,sub,12));return h}
+      h+=sec('🏝️ 第一島：自然探險島',stn,g+' 年級題庫')+sec('🔬 第二島：奇蹟研究所','<details class="pd-info"><summary>📋 看各實驗室星星</summary>'+lab+'</details>',g+' 年級題庫')}
+    if(gamesOf(id,sub).length)h+=sec('🎮 各遊戲累積','<details class="pd-info"><summary>📋 看每個遊戲</summary>'+gameRows(id,sub)+'</details>');if(actsOf(id).some(function(x){return x.type==='game'&&subOf(x.gid)===sub}))h+=sec('🕘 最近玩的',recentRows(id,sub,8));return h}
 
   /* ---------- 分頁：問答 ---------- */
   function qa(){var ks=kids();if(!ks.length)return overview();if(!kidSel||!ks.some(function(k){return k.id===kidSel}))kidSel=ks[0].id;var qs=actsOf(kidSel).filter(function(a){return a.type==='q'});
-    var h=kidBtns(kidSel)+sec('💬 問小機老師的問題',qs.length?qs.slice(0,60).map(function(q){return '<details class="pd-q"><summary><b>'+esc(q.q)+'</b><small>'+esc(C.fmtTime(q.ts))+'・'+esc(q.subject||'全部')+'</small></summary><div class="ans">'+(q.a?esc(q.a).replace(/\n/g,'<br>'):'（沒有回答）')+'</div></details>'}).join(''):'<p class="pd-note">還沒有問過問題。</p>',qs.length+' 題');return h}
+    var h=sec('💬 問小機老師的問題',qs.length?qs.slice(0,60).map(function(q){return '<details class="pd-q"><summary><b>'+esc(q.q)+'</b><small>'+esc(C.fmtTime(q.ts))+'・'+esc(q.subject||'全部')+'</small></summary><div class="ans">'+(q.a?esc(q.a).replace(/\n/g,'<br>'):'（沒有回答）')+'</div></details>'}).join(''):'<p class="pd-note">還沒有問過問題。</p>',qs.length+' 題');return h}
 
   /* ---------- 分頁：每日 ---------- */
   function daily(){var ks=kids();if(!ks.length)return overview();if(!kidSel||!ks.some(function(k){return k.id===kidSel}))kidSel=ks[0].id;var id=kidSel,o=dp(id),ds=days(14).reverse(),max=1,W=['日','一','二','三','四','五','六'];
     ds.forEach(function(x){max=Math.max(max,+o[x.k]||0)});var played=ds.filter(function(x){return +o[x.k]>0}).length;
     var chart='<div class="pd-chart">'+ds.map(function(x,i){var v=+o[x.k]||0;return '<div class="c'+(i===ds.length-1?' today':'')+'"><span>'+(v?num(v):'')+'</span><i class="'+(v?'':'z')+'" style="height:'+(v?Math.max(6,Math.round(100*v/max)):4)+'%"></i><em>'+(i===0||x.d.getDate()===1?(x.d.getMonth()+1)+'/':'')+x.d.getDate()+'</em></div>'}).join('')+'</div>';
-    var h=kidBtns(id)+sec('📅 近 14 天每天的分數',chart+'<div class="pd-tiles" style="margin-top:10px">'+tile('今天',num(+o[days(1)[0].k]||0)+' 分')+tile('近 7 天',num(sumDays(id,7))+' 分')+tile('14 天裡有玩',played+' 天')+tile('每天平均',num(Math.round(sumDays(id,14)/14))+' 分')+'</div><p class="pd-note">只算玩遊戲得到的分數（英文＋數學＋自然＋社會），家長加減分不算在內。</p>');
+    var h=sec('📅 近 14 天每天的分數',chart+'<div class="pd-tiles" style="margin-top:10px">'+tile('今天',num(+o[days(1)[0].k]||0)+' 分')+tile('近 7 天',num(sumDays(id,7))+' 分')+tile('14 天裡有玩',played+' 天')+tile('每天平均',num(Math.round(sumDays(id,14)/14))+' 分')+'</div><p class="pd-note">只算玩遊戲得到的分數（英文＋數學＋自然＋社會），家長加減分不算在內。</p>');
     var rows=days(14).map(function(x,i){var r=dsDay(id,x.k);return {x:x,i:i,r:r}}),any=rows.some(function(z){return z.r});
     h+=sec('📊 每天各科紀錄','<div class="pd-scroll"><table class="pd-tbl"><thead><tr><th>日期</th><th>🔤 英文</th><th>🔢 數學</th><th>🔬 自然</th><th>🏙️ 社會</th><th>局數</th><th>正確率</th><th>時間</th></tr></thead><tbody>'+rows.map(function(z){var r=z.r,x=z.x;return '<tr><td>'+(z.i===0?'今天 ':'')+(x.d.getMonth()+1)+'/'+x.d.getDate()+'（'+W[x.d.getDay()]+'）</td>'+(r?'<td>'+num(r.e)+'</td><td>'+num(r.m)+'</td><td>'+num(r.s)+'</td><td>'+num(r.o)+'</td><td>'+(+r.g||0)+'</td><td>'+(+r.n?Math.round(100*(+r.r||0)/(+r.n))+'%':'—')+'</td><td>'+(+r.t||0)+' 分</td>':'<td colspan="7" style="text-align:center;color:var(--pd-soft)">'+(+o[x.k]?'（這天還沒有分科紀錄）':'沒有玩')+'</td>')+'</tr>'}).join('')+'</tbody></table></div><p class="pd-note">'+(any?'每天的分科紀錄存在孩子自己的資料裡，保留 90 天。時間是「有在操作」的分鐘數，放著不動不算。':'分科紀錄從這次更新後開始累積，之後每天都會有英文、數學、自然、社會的分數、局數、正確率和遊玩時間。')+'</p>');
     var wk=days(7).map(function(x){return dsDay(id,x.k)||{}}),tot=function(f){return wk.reduce(function(a,r){return a+(+r[f]||0)},0)};
@@ -212,24 +238,28 @@ global.ParentFactory=function(C){
     return h}
 
   /* ---------- 分頁：設定 ---------- */
-  function settings(){var ks=kids(),h='',a=acct();
-    var P=C.PGX(),pgH=P&&ks.length?sec('📘 學校進度設定','<div id="pdProg">'+P.parentHtml(ks,C.kface,esc)+'</div>'):'';
-    h+=sec('🎨 主題顏色','<div class="pd-sw">'+THEMES.map(function(t){return '<button data-color="'+t[0]+'" aria-pressed="'+(colorOf(cur)===t[0])+'"><i style="background:linear-gradient(135deg,'+t[2][0]+','+t[2][1]+' 55%,'+t[2][2]+')"></i>'+t[1]+'</button>'}).join('')+'</div><p class="pd-note">每個家長帳號可以選自己的顏色，登入畫面的頭像也會一起換。</p>');
-    h+=sec('🔑 我的帳號','<div class="pd-acct"><div class="h"><span class="av"'+avStyle(cur)+'>'+initial(a.name)+'</span><div><b>'+esc(a.name)+'</b><small>'+(isAdmin()?'總管理員':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div></div>'+
+  function settings(){var ks=kids(),h='',a=acct(),P=C.PGX();
+    var thName=(THEMES.filter(function(t){return t[0]===colorOf(cur)})[0]||THEMES[0])[1];
+    h+=acc('s-rest','⏰ 休息提醒',ks.map(function(k){var t=(S.kid(k.id)||{}).tm||{};return esc(k.short)+' '+(t.off?'關閉':'玩 '+(+t.p||30)+' 分休 '+(+t.r||10)+' 分')}).join('・'),restSec(ks));
+    if(P&&ks.length)h+=acc('s-prog','📘 學校進度與挑戰等級',ks.map(function(k){var g=P.gradeStr(k.id);return esc(k.short)+(g?' '+g+'年級':'')}).join('・')+'・依行事曆自動跟進','<div id="pdProg">'+P.parentHtml(ks,C.kface,esc)+'</div>');
+    h+=acc('s-fam','🎁 獎勵兌換','審核申請、兌換規則、調整分數','<div id="pdFam"></div>');
+    h+=acc('s-theme','🎨 主題顏色',esc(thName),'<div class="pd-sw">'+THEMES.map(function(t){return '<button data-color="'+t[0]+'" aria-pressed="'+(colorOf(cur)===t[0])+'"><i style="background:linear-gradient(135deg,'+t[2][0]+','+t[2][1]+' 55%,'+t[2][2]+')"></i>'+t[1]+'</button>'}).join('')+'</div>');
+    h+=acc('s-me','🔑 我的帳號',esc(a.name)+(isAdmin()?'・總管理員':''),'<div class="pd-acct" style="border:0;padding:0">'+
       (ui.me?'<div class="pd-form"><label>新名字（可不改）</label><input type="text" id="pdMeName" maxlength="12" value="'+esc(a.name)+'"><label>目前密碼</label><input type="password" id="pdMeOld" inputmode="numeric" maxlength="4"><label>新密碼（4 個數字，不改就留空）</label><input type="password" id="pdMeNew" inputmode="numeric" maxlength="4"><div class="pd-msg" id="pdMeMsg"></div><div class="act" style="display:flex;gap:8px"><button class="pd-btn pri" data-act="meSave">儲存</button><button class="pd-btn" data-act="meX">取消</button></div></div>':
-      '<div class="act"><button class="pd-btn" data-act="me">✏️ 改名字或密碼</button></div>')+'</div>');h+=restSec(ks)+pgH;
-    if(!isAdmin()){h+=sec('🔒 孩子的登入密碼',ks.map(function(k){var has=!!(S.kid(k.id)||{}).pin;return '<div class="pd-row"><div class="n"><b>'+C.kface(k)+' '+esc(k.name)+'</b><small>'+(has?'已設定密碼':'還沒設密碼')+'</small></div>'+(has?'<button class="pd-btn sm" data-kpin="'+k.id+'">重設密碼</button>':'')+'</div>'}).join('')+'<p class="pd-note">重設後，孩子下次進來會重新設定自己的密碼。</p>');return h}
-    /* 總管理員才有：家長帳號、角色管理、歸零 */
+      '<div class="act"><button class="pd-btn" data-act="me">✏️ 改名字或密碼</button></div>')+'</div>',!!ui.me);
+    var kpin=ks.map(function(k){var has=!!(S.kid(k.id)||{}).pin;return '<div class="pd-row"><div class="n"><b>'+C.kface(k)+' '+esc(k.name)+'</b><small>'+(has?'已設定密碼':'還沒設密碼')+'</small></div>'+(has?'<button class="pd-btn sm" data-kpin="'+k.id+'">重設密碼</button>':'')+'</div>'}).join('')+'<p class="pd-note">重設後，孩子下次進來會重新設定自己的密碼。</p>';
+    if(!isAdmin()){h+=acc('s-kpin','🔒 孩子的登入密碼','忘記密碼時可以重設',kpin);return h}
+    /* 總管理員才有：家長帳號、角色管理、進階 */
     var ps=parents(),body='';
-    body+='<div class="pd-acct"><div class="h"><span class="av"'+avStyle('admin')+'>'+initial(adminName())+'</span><div><b>'+esc(adminName())+'</b><small>總管理員</small></div></div></div>';
+    body+='<div class="pd-acct" style="border:0"><div class="h"><span class="av"'+avStyle('admin')+'>'+initial(adminName())+'</span><div><b>'+esc(adminName())+'</b><small>總管理員</small></div></div></div>';
     ps.forEach(function(p){var ed=ui.edit===p.id;body+='<div class="pd-acct"><div class="h"><span class="av"'+avStyle(p.id)+'>'+initial(p.name)+'</span><div><b>'+esc(p.name)+'</b><small>看得到：'+esc(kidNames(p.kids||[]))+'・'+(p.pin?'已設定密碼':'第一次登入時設定密碼')+'</small></div></div>'+
       (ed?acctForm(p):'<div class="act"><button class="pd-btn sm" data-edit="'+p.id+'">✏️ 修改</button>'+(p.pin?'<button class="pd-btn sm" data-reset="'+p.id+'">🔑 重設密碼</button>':'')+'<button class="pd-btn sm dg" data-del="'+p.id+'">'+(ui.del===p.id?'⚠️ 再按一次確定刪除':'🗑 刪除')+'</button></div>')+'</div>'});
     body+=ui.edit==='new'?'<div class="pd-acct">'+acctForm(null)+'</div>':'<button class="pd-btn pri" data-act="new" style="margin-top:8px">＋ 新增家長帳號</button>';
     body+='<p class="pd-note">每個家長帳號只看得到勾選的孩子。同一個孩子可以給好幾個帳號（例如爸爸、媽媽）。密碼可以先留空，對方第一次登入時自己設定。</p>';
-    h+=sec('👨‍👩‍👧 家長帳號',body,(ps.length+1)+' 個帳號');
-    h+=errSec();
-    h+=sec('👥 孩子角色','<div id="pdRoster">'+C.rosterHtml()+'</div>');
-    h+=sec('🗑 全部歸零',(ui.clr?'<button class="pd-btn dg" data-act="clr2">⚠️ 再按一次「確定全部歸零」</button> <button class="pd-btn" data-act="clrX">取消</button>':'<button class="pd-btn dg" data-act="clr">全部歸零（分數、等級、紀錄）</button>')+'<p class="pd-note">會把「所有孩子」的分數、等級、問過的問題和遊戲紀錄全部清空，沒辦法復原。</p>');
+    h+=acc('s-acct','👨‍👩‍👧 家長帳號',(ps.length+1)+' 個帳號',body,!!ui.edit);
+    h+=acc('s-roster','👥 孩子角色與密碼',C.KIDS().map(function(k){return esc(k.short)}).join('、'),'<div id="pdRoster">'+C.rosterHtml()+'</div><h4 style="margin:6px 0 0;font-size:14px">🔒 孩子的登入密碼</h4>'+kpin);
+    var er=errSec();
+    h+=acc('s-adv','🛠 進階','當機紀錄'+(er.n?' '+er.n+' 筆':'')+'・全部歸零',er.h+'<h4 style="margin:10px 0 0;font-size:14px;color:#c43c2a">🗑 全部歸零</h4>'+(ui.clr?'<div><button class="pd-btn dg" data-act="clr2">⚠️ 再按一次「確定全部歸零」</button> <button class="pd-btn" data-act="clrX">取消</button></div>':'<div><button class="pd-btn dg" data-act="clr">全部歸零（分數、等級、紀錄）</button></div>')+'<p class="pd-note">會把「所有孩子」的分數、等級、問過的問題和遊戲紀錄全部清空，沒辦法復原。</p>',!!ui.clr);
     return h}
   function acctForm(p){var sel=ui.kids||[];return '<div class="pd-form"><label>家長名字</label><input type="text" id="pdAName" maxlength="12" placeholder="例如：Leon 媽媽" value="'+esc(ui.name!=null?ui.name:(p?p.name:''))+'">'+
     '<label>看得到哪些孩子</label><div class="pd-pick">'+C.KIDS().map(function(k){return '<button data-pk="'+k.id+'" aria-pressed="'+(sel.indexOf(k.id)>=0)+'">'+C.kface(k)+esc(k.short)+'</button>'}).join('')+'</div>'+
@@ -237,7 +267,7 @@ global.ParentFactory=function(C){
     '<div class="pd-msg" id="pdAMsg"></div><div style="display:flex;gap:8px"><button class="pd-btn pri" data-act="aSave">'+(p?'儲存':'建立帳號')+'</button><button class="pd-btn" data-act="aX">取消</button></div></div>'}
 
   function restSec(ks){if(!ks.length)return '';var O=function(v,list,suf){return list.map(function(n){return '<option value="'+n+'"'+(n===v?' selected':'')+'>'+n+suf+'</option>'}).join('')};
-    return sec('⏰ 休息提醒',ks.map(function(k){var t=(S.kid(k.id)||{}).tm||{},p=+t.p||30,r=+t.r||10,rs=(S.kid(k.id)||{}).rs||{},resting=rs.u&&rs.u>Date.now();
+    return (ks.map(function(k){var t=(S.kid(k.id)||{}).tm||{},p=+t.p||30,r=+t.r||10,rs=(S.kid(k.id)||{}).rs||{},resting=rs.u&&rs.u>Date.now();
       return '<div class="pd-row" style="flex-wrap:wrap"><div class="n" style="min-width:140px"><b>'+C.kface(k)+' '+esc(k.name)+'</b><small>'+esc(restNow(k.id))+'</small></div>'+
         '<label class="pd-chip" style="gap:6px"><input type="checkbox" data-rest-on="'+k.id+'"'+(t.off?'':' checked')+'> 開啟</label>'+
         '<select class="pd-chip" data-rest-p="'+k.id+'">'+O(p,[20,30,40,45,60],' 分鐘休息')+'</select><select class="pd-chip" data-rest-r="'+k.id+'">'+O(r,[5,10,15,20],' 分鐘')+'</select>'+
@@ -246,23 +276,25 @@ global.ParentFactory=function(C){
   function errSec(){var ks=C.KIDS(),rows=[];ks.forEach(function(k){var a=(S.kid(k.id)||{}).er;if(Array.isArray(a))a.forEach(function(e){rows.push({k:k,e:e})})});
     var mine=global.__rtErrs?global.__rtErrs.all():[];rows.sort(function(a,b){return b.e.t-a.e.t});
     function line(e,who){return '<details class="pd-q"><summary><b>'+(e.k==='stall'?'🐢 ':'⚠️ ')+esc(e.m)+(e.c>1?' ×'+e.c:'')+'</b><small>'+esc(C.fmtTime(e.t))+'・'+esc(who)+'・'+esc(e.d||'')+(e.g?'・遊戲 '+esc(C.gInfo(e.g)):e.tab?'・'+esc(e.tab):'')+'</small></summary><div class="ans">'+(e.s?'位置：'+esc(e.s)+'<br>':'')+(e.st?esc(e.st)+'<br>':'')+'版本：'+esc(e.v||'—')+(e.o?'・樂園：'+esc(e.o):'')+'</div></details>'}
-    return sec('🛠 當機與卡頓紀錄',(rows.length?rows.slice(0,30).map(function(x){return line(x.e,x.k.short)}).join(''):'<div class="pd-alert ok">✅ 孩子們的裝置目前沒有回報錯誤。</div>')+
+    return {n:rows.length,h:(rows.length?rows.slice(0,30).map(function(x){return line(x.e,x.k.short)}).join(''):'<div class="pd-alert ok">✅ 孩子們的裝置目前沒有回報錯誤。</div>')+
       '<h4 style="margin:14px 0 6px;font-size:14px">這台裝置</h4>'+(mine.length?mine.slice(0,10).map(function(e){return line(e,e.w||'家長')}).join(''):'<p class="pd-note">這台裝置沒有紀錄。</p>')+
-      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="pd-btn sm" data-act="errClr">清除全部紀錄</button></div><p class="pd-note">「⚠️」是程式出錯，「🐢」是畫面卡住超過 2.5 秒。孩子說當機時，看這裡的時間、裝置和遊戲，就能知道是哪裡出問題，可以直接截圖給 Claude 看。</p>',rows.length+' 筆')}
+      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="pd-btn sm" data-act="errClr">清除全部紀錄</button></div><p class="pd-note">「⚠️」是程式出錯，「🐢」是畫面卡住超過 2.5 秒。孩子說當機時，看這裡的時間、裝置和遊戲，就能知道是哪裡出問題，可以直接截圖給 Claude 看。</p>'}}
   /* ---------- 主畫面 ---------- */
-  var TABS=[['overview','🏠 總覽'],['en','🔤 英文'],['math','🔢 數學'],['sci','🔬 自然'],['soc','🏙️ 社會'],['qa','💬 問答'],['daily','📅 每日'],['settings','⚙️ 設定']];
+  var TABS=[['overview','🏠 今天'],['kid','🧒 孩子'],['settings','⚙️ 設定']];
   function render(force){var el=C.PANELS.rec;if(!el)return;var ae=document.activeElement;if(!force&&ae&&el.contains(ae)&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;var a=acct();if(!a){cur='admin';a=acct()}
-    var fam=null;if(tab==='overview'){try{C.renderPrev();fam=el.querySelector('.fm-parent');if(fam)fam.remove()}catch(e){}}
-    var body=tab==='overview'?overview():tab==='soc'?socTab():tab==='en'||tab==='math'||tab==='sci'?subject(tab):tab==='qa'?qa():tab==='daily'?daily():settings();
+    var fam=null;if(tab==='overview'||tab==='settings'){try{C.renderPrev();fam=el.querySelector('.fm-parent');if(fam)fam.remove()}catch(e){}}
+    if(['overview','kid','settings'].indexOf(tab)<0)tab='kid';var body=tab==='overview'?overview():tab==='kid'?kidTab():settings();
     var tc=theme(colorOf(cur));el.innerHTML='<div class="pd" style="--pt1:'+tc[0]+';--pt2:'+tc[1]+';--pt3:'+tc[2]+'"><div class="pd-head"><span class="av">'+initial(a.name)+'</span><div class="t"><b>'+esc(a.name)+(isAdmin()?'<span class="role">總管理員</span>':'')+'</b><small>'+(isAdmin()?'家長後台':'看得到：'+esc(kidNames(a.kids||[])))+'</small></div><button class="out" data-act="out">登出</button></div>'+
       '<nav class="pd-nav" aria-label="家長後台分頁">'+TABS.map(function(t){return '<button data-tab2="'+t[0]+'" aria-pressed="'+(t[0]===tab)+'">'+t[1]+'</button>'}).join('')+'</nav>'+body+'</div>';
-    if(fam){var slot=el.querySelector('#pdFam');if(slot){var s2=document.createElement('section');s2.className='pd-sec';s2.innerHTML='<h3>🎁 獎勵兌換</h3>';s2.appendChild(fam);slot.replaceWith(s2)}}
+    var slot=el.querySelector('#pdFam');if(slot){if(fam&&tab==='settings')slot.replaceWith(fam);else if(fam&&tab==='overview'&&!/目前沒有等待同意的申請/.test(fam.textContent)){var s2=document.createElement('section');s2.className='pd-sec';s2.innerHTML='<h3>🎁 有兌換申請等你同意</h3>';s2.appendChild(fam);slot.replaceWith(s2)}else slot.remove()}
+    el.querySelectorAll('.pd-accb p.pd-note,.pd-accb .mbtip').forEach(function(p){if(p.closest('.pd-info')||p.textContent.length<46)return;var dd=document.createElement('details');dd.className='pd-info';dd.innerHTML='<summary>ⓘ 說明</summary>';p.parentNode.insertBefore(dd,p);dd.appendChild(p)});
     wire(el)}
   function wire(el){
     el.querySelectorAll('[data-tab2]').forEach(function(b){b.onclick=function(){C.sfx('tap');tab=b.dataset.tab2;ui={};render(true);try{C.PANELS.rec.scrollTop=0}catch(e){}}});
     el.querySelectorAll('[data-kid]').forEach(function(b){b.onclick=function(){C.sfx('tap');kidSel=b.dataset.kid;render(true)}});
-    el.querySelectorAll('[data-goto]').forEach(function(b){b.onclick=function(){C.sfx('tap');kidSel=b.dataset.goto;tab='en';render(true)}});
-    el.querySelectorAll('[data-jump]').forEach(function(b){b.onclick=function(){C.sfx('tap');var p=b.dataset.jump.split(':');tab=p[0];kidSel=p[1];render(true);try{C.PANELS.rec.scrollTop=0}catch(e){}}});
+    el.querySelectorAll('[data-goto]').forEach(function(b){b.onclick=function(){C.sfx('tap');kidSel=b.dataset.goto;tab='kid';render(true);try{C.PANELS.rec.scrollTop=0}catch(e){}}});
+    el.querySelectorAll('[data-acc]').forEach(function(d){d.addEventListener('toggle',function(){OPEN[d.dataset.acc]=d.open})});
+    el.querySelectorAll('[data-jump]').forEach(function(b){b.onclick=function(){C.sfx('tap');var p=b.dataset.jump.split(':');tab='kid';kidSel=p[1];OPEN[p[0]+':'+p[1]]=true;render(true);try{C.PANELS.rec.scrollTop=0}catch(e){}}});
     function on(sel,f){var x=el.querySelector(sel);if(x)x.onclick=f}
     on('[data-act="out"]',function(){C.sfx('tap');logout()});
     if(tab!=='settings')return;
