@@ -41,7 +41,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=14.0.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=15.0.1"></script>
+<script src="assets/v15/social.js?v=15.1.0"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -5224,6 +5224,7 @@ if(window.SocialFactory)try{(function(){
     shell:shell,body:function(){return gBody},title:function(t){$('#gTitle').textContent=t},prog:function(t){$('#gProg').textContent=t},award:award,
     finishBonus:function(score,total){return Store.finishGame(who,'soc',{score:score,total:total,roundPts:roundPts,eg:egrade})},
     goHome:function(){gOpen='soc';backGameHome()}});
+  window.__soc=SOCX;
   var rgh=renderGameHome;renderGameHome=function(){var soc=gOpen==='soc';rgh.apply(this,arguments);
     var gb0=$('#gatesBox');if(gb0&&!gb0.querySelector('[data-go="soc"]')){var sc=gb0.querySelector('[data-go="sci"]'),b=document.createElement('button');b.className='gatebtn so';b.dataset.go='soc';b.setAttribute('aria-label','進入社會遊戲樂園');
       b.innerHTML='<img class="pic mul" src="'+SOCX.img('gate')+'" alt=""><b>🏘️ 社會遊戲樂園</b>';if(sc&&sc.nextSibling)gb0.insertBefore(b,sc.nextSibling);else gb0.appendChild(b);gb0.classList.add('has-soc');var gs=gb0.closest('.gates')||gb0;gs.classList.add('has-soc');

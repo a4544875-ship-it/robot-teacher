@@ -1,7 +1,7 @@
 /* v15 社會島「家鄉小鎮」：三、四年級社會，跟著學校進度開站、五種題型、錯題複習、家鄉徽章 */
 (function(global){
 'use strict';
-var SOCI=/*SOCI*/{"lion_happy":"assets/img/soc-lion_happy-26720b11f9.webp","lion_think":"assets/img/soc-lion_think-23ac345968.webp","lion_cheer":"assets/img/soc-lion_cheer-860c44c8a3.webp","lion_wow":"assets/img/soc-lion_wow-c37cc54e80.webp","lion_wave":"assets/img/soc-lion_wave-81b666c7b0.webp","lion_sad":"assets/img/soc-lion_sad-efdf5b0a83.webp","badge":"assets/img/soc-badge-91139edba1.webp","compass":"assets/img/soc-compass-b6b3e512ee.webp","chest":"assets/img/soc-chest-11a8d277ef.webp","mt":"assets/img/soc-mt-4fe6200d5c.webp","hill":"assets/img/soc-hill-b517eb63d9.webp","plat":"assets/img/soc-plat-8e66da0896.webp","basin":"assets/img/soc-basin-30ccf2878d.webp","plain":"assets/img/soc-plain-a503c6f279.webp","h_min":"assets/img/soc-h_min-24ba016a36.webp","h_hak":"assets/img/soc-h_hak-0819c94776.webp","h_stone":"assets/img/soc-h_stone-134aab54e9.webp","h_mud":"assets/img/soc-h_mud-84d4cc510b.webp","f_cny":"assets/img/soc-f_cny-b45bf5f278.webp","f_lan":"assets/img/soc-f_lan-97375759ae.webp","f_tomb":"assets/img/soc-f_tomb-947a2cc5cf.webp","f_boat":"assets/img/soc-f_boat-29ce85c536.webp","f_ghost":"assets/img/soc-f_ghost-efa076323b.webp","f_moon":"assets/img/soc-f_moon-093cf02fc7.webp","gate":"assets/img/soc-gate-268663b1d2.webp","map3":"assets/img/soc-map3-77efd18a1d.webp","map4":"assets/img/soc-map4-dbe2de67eb.webp","town":"assets/img/soc-town-1935bbb13d.webp"};
+var SOCI=/*SOCI*/{"lion_happy":"assets/img/soc-lion_happy-c2a7f1f4f8.webp","lion_think":"assets/img/soc-lion_think-1996204adf.webp","lion_cheer":"assets/img/soc-lion_cheer-cb1be585de.webp","lion_wow":"assets/img/soc-lion_wow-d545234ea5.webp","lion_wave":"assets/img/soc-lion_wave-38ec812ce7.webp","lion_sad":"assets/img/soc-lion_sad-60c7fd8461.webp","badge":"assets/img/soc-badge-11504690d7.webp","compass":"assets/img/soc-compass-12c5bb8ec9.webp","chest":"assets/img/soc-chest-268dae370f.webp","h_min":"assets/img/soc-h_min-d9a0d8fa7d.webp","h_hak":"assets/img/soc-h_hak-3fb26a0928.webp","h_stone":"assets/img/soc-h_stone-d048a0c2e0.webp","h_mud":"assets/img/soc-h_mud-28d6309c61.webp","f_cny":"assets/img/soc-f_cny-b45bf5f278.webp","f_lan":"assets/img/soc-f_lan-97375759ae.webp","f_tomb":"assets/img/soc-f_tomb-947a2cc5cf.webp","f_boat":"assets/img/soc-f_boat-29ce85c536.webp","f_ghost":"assets/img/soc-f_ghost-efa076323b.webp","f_moon":"assets/img/soc-f_moon-093cf02fc7.webp","gate":"assets/img/soc-gate-268663b1d2.webp","map3":"assets/img/soc-map3-77efd18a1d.webp","map4":"assets/img/soc-map4-dbe2de67eb.webp","a_basket":"assets/img/soc-a_basket-d91c54ac4a.webp","a_cupb":"assets/img/soc-a_cupb-44e03ba50d.webp","a_lamp":"assets/img/soc-a_lamp-aaa7cab237.webp","a_mill":"assets/img/soc-a_mill-f1466f6c34.webp","a_pole":"assets/img/soc-a_pole-ba7e4c0e59.webp","a_radio":"assets/img/soc-a_radio-fcc38ad1f8.webp","a_rain":"assets/img/soc-a_rain-5924d7b003.webp","a_stove":"assets/img/soc-a_stove-4c760ea9a7.webp","a_washb":"assets/img/soc-a_washb-311336f328.webp","ck_date":"assets/img/soc-ck_date-9c897a7e1d.webp","ck_receipt":"assets/img/soc-ck_receipt-469042f472.webp","ck_return":"assets/img/soc-ck_return-cb6e93cd3c.webp","cs_choose":"assets/img/soc-cs_choose-a7019312ac.webp","cs_deliver":"assets/img/soc-cs_deliver-70d89ef56f.webp","cs_list":"assets/img/soc-cs_list-58400e02bd.webp","cs_mpay":"assets/img/soc-cs_mpay-319a221b5b.webp","cs_post":"assets/img/soc-cs_post-c4aee03233.webp","cs_price":"assets/img/soc-cs_price-1e46875724.webp","cs_save":"assets/img/soc-cs_save-adaff2f623.webp","cs_scale":"assets/img/soc-cs_scale-ccd56a54e0.webp","d_dad":"assets/img/soc-d_dad-b017e7cada.webp","d_harvest":"assets/img/soc-d_harvest-7cec5e43a7.webp","d_kids":"assets/img/soc-d_kids-6f8ec71515.webp","d_mom":"assets/img/soc-d_mom-02839ccf8b.webp","d_national":"assets/img/soc-d_national-d2a359e84d.webp","d_newyear":"assets/img/soc-d_newyear-924257cb28.webp","d_teacher":"assets/img/soc-d_teacher-fbde60c30d.webp","d_tung":"assets/img/soc-d_tung-b0866b0dc8.webp","d_water":"assets/img/soc-d_water-ff7acfa6fa.webp","ex_map":"assets/img/soc-ex_map-bdca010d87.webp","ex_story":"assets/img/soc-ex_story-9b940475d2.webp","fam_big":"assets/img/soc-fam_big-d66c51662a.webp","fam_core":"assets/img/soc-fam_core-e6a1fe76e6.webp","fam_grand":"assets/img/soc-fam_grand-77119d2de4.webp","fam_new":"assets/img/soc-fam_new-f7938b4e15.webp","fam_single":"assets/img/soc-fam_single-62375377ba.webp","fam_three":"assets/img/soc-fam_three-b27d16783c.webp","fi_boat":"assets/img/soc-fi_boat-5fbe3c0fb0.webp","fi_cny":"assets/img/soc-fi_cny-8b5788c84f.webp","fi_moon":"assets/img/soc-fi_moon-c18b823ad5.webp","fi_tomb":"assets/img/soc-fi_tomb-6aa8ffcaf8.webp","fn_picnic":"assets/img/soc-fn_picnic-fc42ac0bd2.webp","fn_work":"assets/img/soc-fn_work-6015d0e9e3.webp","g_basin":"assets/img/soc-g_basin-7c8e0923d1.webp","g_beach":"assets/img/soc-g_beach-3d28a85698.webp","g_estuary":"assets/img/soc-g_estuary-4842749fc4.webp","g_hill":"assets/img/soc-g_hill-1e21f065da.webp","g_mt":"assets/img/soc-g_mt-ad9d6f9dec.webp","g_plain":"assets/img/soc-g_plain-4c8db47486.webp","g_plat":"assets/img/soc-g_plat-612e6b0835.webp","g_river":"assets/img/soc-g_river-b6629903c2.webp","g_rock":"assets/img/soc-g_rock-e5d212f952.webp","h_apt":"assets/img/soc-h_apt-ad51351cb7.webp","h_town":"assets/img/soc-h_town-ef56e93800.webp","hm_beach":"assets/img/soc-hm_beach-0c27d94b98.webp","hm_bike":"assets/img/soc-hm_bike-5bef7bb336.webp","hm_court1":"assets/img/soc-hm_court1-800060dbe0.webp","hm_guide":"assets/img/soc-hm_guide-3042b82056.webp","hm_market":"assets/img/soc-hm_market-d2509cb7ef.webp","hm_river":"assets/img/soc-hm_river-7824a3395a.webp","hm_sun":"assets/img/soc-hm_sun-3f0e19e332.webp","i_bento":"assets/img/soc-i_bento-0683bdf257.webp","i_ecobag":"assets/img/soc-i_ecobag-a8bb6a9172.webp","i_fridge":"assets/img/soc-i_fridge-913dbc048e.webp","i_lamp":"assets/img/soc-i_lamp-54281db026.webp","i_mooncake":"assets/img/soc-i_mooncake-43473c9bb6.webp","i_mpay":"assets/img/soc-i_mpay-464ab3c03e.webp","i_niangao":"assets/img/soc-i_niangao-705d4df03d.webp","i_piggy":"assets/img/soc-i_piggy-3e8ec06f90.webp","i_raincoat":"assets/img/soc-i_raincoat-8e8762c90c.webp","i_ricecooker":"assets/img/soc-i_ricecooker-43224b4278.webp","i_ricemill":"assets/img/soc-i_ricemill-47c6c7eb5d.webp","i_runbing":"assets/img/soc-i_runbing-8255c4ebee.webp","i_tangyuan":"assets/img/soc-i_tangyuan-ba85e9dcff.webp","i_washer":"assets/img/soc-i_washer-e0916709d4.webp","i_zongzi":"assets/img/soc-i_zongzi-c113d93eed.webp","ih_berry":"assets/img/soc-ih_berry-ba981506bb.webp","ih_chef":"assets/img/soc-ih_chef-832d91530a.webp","ih_corn":"assets/img/soc-ih_corn-94810a0a2f.webp","ih_crab":"assets/img/soc-ih_crab-7268631b20.webp","ih_fish":"assets/img/soc-ih_fish-738ed3fda1.webp","ih_globe":"assets/img/soc-ih_globe-7b610fd294.webp","ih_helmet":"assets/img/soc-ih_helmet-6ff607aca8.webp","ih_shrimp":"assets/img/soc-ih_shrimp-fc3ee71a19.webp","ih_squid":"assets/img/soc-ih_squid-1e42976c5c.webp","ih_steth":"assets/img/soc-ih_steth-6da5cda8f3.webp","ih_veg":"assets/img/soc-ih_veg-a480c15efa.webp","ii_fruit":"assets/img/soc-ii_fruit-ffc7bfd21e.webp","iv_beacon":"assets/img/soc-iv_beacon-c98c1e5fea.webp","iv_letter":"assets/img/soc-iv_letter-cc6e4e481d.webp","iv_mobile":"assets/img/soc-iv_mobile-d035f98b26.webp","iv_phone":"assets/img/soc-iv_phone-6e18aaad6c.webp","iv_radio":"assets/img/soc-iv_radio-5961ae271d.webp","iv_telegraph":"assets/img/soc-iv_telegraph-3c64d46542.webp","iv_tv":"assets/img/soc-iv_tv-ac3e4086a4.webp","j_busdriver":"assets/img/soc-j_busdriver-cf9bb7ee45.webp","j_cashier":"assets/img/soc-j_cashier-b2e1f64049.webp","j_chef":"assets/img/soc-j_chef-00c8baa67e.webp","j_doctor":"assets/img/soc-j_doctor-55ce3cac7b.webp","j_driver":"assets/img/soc-j_driver-203bbb18ee.webp","j_guide":"assets/img/soc-j_guide-4fd6fc5bf4.webp","j_hotel":"assets/img/soc-j_hotel-a8d0e51e09.webp","j_nurse":"assets/img/soc-j_nurse-cf0e8b654e.webp","j_teacher":"assets/img/soc-j_teacher-a7eb1107b2.webp","k_bag":"assets/img/soc-k_bag-acf60dd776.webp","k_dish":"assets/img/soc-k_dish-f10b6d18fa.webp","k_flower":"assets/img/soc-k_flower-7740be3ef9.webp","k_fold":"assets/img/soc-k_fold-ffdc667030.webp","k_hug":"assets/img/soc-k_hug-7f5a01290c.webp","k_pet":"assets/img/soc-k_pet-95fea9bafa.webp","k_read":"assets/img/soc-k_read-0a2794e881.webp","k_sick":"assets/img/soc-k_sick-84ab25d90f.webp","k_sweep":"assets/img/soc-k_sweep-3d22bc8b31.webp","k_trash":"assets/img/soc-k_trash-c9db75e502.webp","l_ask":"assets/img/soc-l_ask-f740a8bb30.webp","l_baby":"assets/img/soc-l_baby-30aee1c259.webp","l_ball":"assets/img/soc-l_ball-96caff3103.webp","l_dict":"assets/img/soc-l_dict-80a5b131e5.webp","l_flute":"assets/img/soc-l_flute-491931aaa1.webp","l_garden":"assets/img/soc-l_garden-1c7c70083b.webp","l_kinder":"assets/img/soc-l_kinder-6db32329f2.webp","l_lib":"assets/img/soc-l_lib-e9685e2cfc.webp","l_mind":"assets/img/soc-l_mind-04870f26c6.webp","l_museum":"assets/img/soc-l_museum-584d3f8252.webp","l_note":"assets/img/soc-l_note-89bca680f8.webp","l_paint":"assets/img/soc-l_paint-6896f40a66.webp","l_review":"assets/img/soc-l_review-a4db5b3610.webp","l_school":"assets/img/soc-l_school-fe4ea72bb1.webp","l_swim":"assets/img/soc-l_swim-483dee5589.webp","l_web":"assets/img/soc-l_web-bcc8e3be5a.webp","m_1":"assets/img/soc-m_1-13abb82d85.webp","m_10":"assets/img/soc-m_10-275b8a4c93.webp","m_100":"assets/img/soc-m_100-71231890e0.webp","m_1000":"assets/img/soc-m_1000-68ad148e17.webp","m_5":"assets/img/soc-m_5-1a5e9d4e5d.webp","m_50":"assets/img/soc-m_50-639df70852.webp","m_500":"assets/img/soc-m_500-8d7656d95b.webp","n_bike":"assets/img/soc-n_bike-9059e47df1.webp","n_boat":"assets/img/soc-n_boat-c4624fa963.webp","n_can":"assets/img/soc-n_can-e3ba623160.webp","n_chicken":"assets/img/soc-n_chicken-45c24d965f.webp","n_grape":"assets/img/soc-n_grape-702b585dcd.webp","n_pond":"assets/img/soc-n_pond-57f086b9f2.webp","n_rice":"assets/img/soc-n_rice-abc109dd80.webp","n_robot":"assets/img/soc-n_robot-f0bcc4be38.webp","n_tea":"assets/img/soc-n_tea-3539732c81.webp","n_zone":"assets/img/soc-n_zone-7e031868fc.webp","nm_album":"assets/img/soc-nm_album-3b2d542a32.webp","nm_animal":"assets/img/soc-nm_animal-858a436564.webp","nm_change":"assets/img/soc-nm_change-030efa2a09.webp","nm_plant":"assets/img/soc-nm_plant-998f356c0c.webp","nm_shop":"assets/img/soc-nm_shop-2c2cd1bf58.webp","nm_stone":"assets/img/soc-nm_stone-eac604d5b5.webp","nm_story":"assets/img/soc-nm_story-8bf9d6f6f6.webp","nm_terrain":"assets/img/soc-nm_terrain-9b8019939e.webp","nm_tribe":"assets/img/soc-nm_tribe-0db37a9a38.webp","nm_water":"assets/img/soc-nm_water-e55b3e0a73.webp","nw_books":"assets/img/soc-nw_books-477ab078e3.webp","nw_brush":"assets/img/soc-nw_brush-ecb9b5cc0e.webp","nw_clothes":"assets/img/soc-nw_clothes-1866926366.webp","nw_rice":"assets/img/soc-nw_rice-c5ebd180e7.webp","nw_water":"assets/img/soc-nw_water-a56cb42ee7.webp","o_ox":"assets/img/soc-o_ox-526e128fbb.webp","o_raft":"assets/img/soc-o_raft-e7ac21a563.webp","o_rick":"assets/img/soc-o_rick-17457b5279.webp","o_sedan":"assets/img/soc-o_sedan-387344a4ff.webp","p_class":"assets/img/soc-p_class-706e5ec04d.webp","p_elder":"assets/img/soc-p_elder-2946c02831.webp","p_move":"assets/img/soc-p_move-0cf31b1e24.webp","p_new":"assets/img/soc-p_new-98409f8f9e.webp","pf_center":"assets/img/soc-pf_center-9ff602c271.webp","pf_fire":"assets/img/soc-pf_fire-5cc04f7528.webp","pf_hosp":"assets/img/soc-pf_hosp-96fe782cea.webp","pf_lib":"assets/img/soc-pf_lib-09fe5c11b0.webp","pf_market":"assets/img/soc-pf_market-5f7b84dd5b.webp","pf_office":"assets/img/soc-pf_office-75fb8a1769.webp","pf_park":"assets/img/soc-pf_park-aa25387b01.webp","pf_police":"assets/img/soc-pf_police-78d7a6e611.webp","pf_post":"assets/img/soc-pf_post-5c18525f20.webp","pf_station":"assets/img/soc-pf_station-ad009f43e2.webp","pl_city":"assets/img/soc-pl_city-dc86e66804.webp","pl_farm":"assets/img/soc-pl_farm-b8b4beff8a.webp","pl_fish":"assets/img/soc-pl_fish-1c31371087.webp","pl_mount":"assets/img/soc-pl_mount-2299006e25.webp","r_bo":"assets/img/soc-r_bo-32561f6600.webp","r_gu":"assets/img/soc-r_gu-e9bcc08b80.webp","r_jiu":"assets/img/soc-r_jiu-48b1cb13e3.webp","r_nai":"assets/img/soc-r_nai-fb75404f2b.webp","r_shu":"assets/img/soc-r_shu-91bd7e7b31.webp","r_wgong":"assets/img/soc-r_wgong-2e3a41f51b.webp","r_wpo":"assets/img/soc-r_wpo-501ec94daa.webp","r_ye":"assets/img/soc-r_ye-0b9298ec13.webp","r_yi":"assets/img/soc-r_yi-5f5f199d8c.webp","ra_clean":"assets/img/soc-ra_clean-fde50b130c.webp","ra_fair":"assets/img/soc-ra_fair-c8e75e42e0.webp","ra_night":"assets/img/soc-ra_night-fd8d8ae67f.webp","ra_sport":"assets/img/soc-ra_sport-afb302b2d9.webp","ra_volunteer":"assets/img/soc-ra_volunteer-85171c0282.webp","s_cross":"assets/img/soc-s_cross-840ff87166.webp","s_helmet":"assets/img/soc-s_helmet-e6432f671f.webp","s_light":"assets/img/soc-s_light-675eba2afb.webp","sc_award":"assets/img/soc-sc_award-99bb9c510d.webp","sc_body":"assets/img/soc-sc_body-a4d1ecb3b8.webp","sc_friends":"assets/img/soc-sc_friends-1cf7c1da7d.webp","sc_gender":"assets/img/soc-sc_gender-3fe4b3f737.webp","sc_group":"assets/img/soc-sc_group-a2cfe6b325.webp","sc_help":"assets/img/soc-sc_help-3117f8618e.webp","sc_janitor":"assets/img/soc-sc_janitor-f018e85d99.webp","sc_learn":"assets/img/soc-sc_learn-b7a10eff36.webp","sc_privacy":"assets/img/soc-sc_privacy-98a331962c.webp","sc_relay":"assets/img/soc-sc_relay-988d8c42f1.webp","sc_speak":"assets/img/soc-sc_speak-580db4f47e.webp","sc_tug":"assets/img/soc-sc_tug-7747ba7d9b.webp","sc_wheel":"assets/img/soc-sc_wheel-dd4e1b8d29.webp","sh_market":"assets/img/soc-sh_market-9fd74a7858.webp","sh_online":"assets/img/soc-sh_online-a2a824848e.webp","sh_super":"assets/img/soc-sh_super-18ad925cc3.webp","t_censer":"assets/img/soc-t_censer-d60cdcb436.webp","t_church":"assets/img/soc-t_church-54cc64b714.webp","t_door":"assets/img/soc-t_door-d17c051757.webp","t_jian":"assets/img/soc-t_jian-ed48c89c12.webp","t_jiao":"assets/img/soc-t_jiao-86d0f93bec.webp","t_mazu":"assets/img/soc-t_mazu-391cdba1f9.webp","t_tudi":"assets/img/soc-t_tudi-d816526d94.webp","v_bike":"assets/img/soc-v_bike-b2179ffb1a.webp","v_bus":"assets/img/soc-v_bus-f74db6c0fc.webp","v_car":"assets/img/soc-v_car-a9492e8a99.webp","v_hsr":"assets/img/soc-v_hsr-7e3ae276fe.webp","v_mrt":"assets/img/soc-v_mrt-22cfebb158.webp","v_plane":"assets/img/soc-v_plane-cf7cf7939d.webp","v_scooter":"assets/img/soc-v_scooter-16e3eb3e2f.webp","v_ship":"assets/img/soc-v_ship-fa344ed949.webp","v_train":"assets/img/soc-v_train-713cab5eb0.webp","vv_card":"assets/img/soc-vv_card-fe67f074eb.webp","vv_home":"assets/img/soc-vv_home-98a46f2c3e.webp","vv_red":"assets/img/soc-vv_red-86ca7c7969.webp","vv_video":"assets/img/soc-vv_video-bb18c52db2.webp","vv_wedding":"assets/img/soc-vv_wedding-5a26849c80.webp","w_dam":"assets/img/soc-w_dam-45a560a76b.webp","w_drought":"assets/img/soc-w_drought-640206c0f2.webp","w_meiyu":"assets/img/soc-w_meiyu-40cba86753.webp","w_rain":"assets/img/soc-w_rain-ee1f7d7c70.webp","w_tap":"assets/img/soc-w_tap-335b06e7a4.webp","w_typhoon":"assets/img/soc-w_typhoon-74af1df209.webp","ww_bear":"assets/img/soc-ww_bear-0fc88d704b.webp","ww_candy":"assets/img/soc-ww_candy-f729850b76.webp","ww_cards":"assets/img/soc-ww_cards-c5a8dfdf1c.webp","ww_game":"assets/img/soc-ww_game-22e6942d8f.webp","ww_robot":"assets/img/soc-ww_robot-30cf34bfad.webp","ww_shoes":"assets/img/soc-ww_shoes-add3feebb3.webp","cs_check":"assets/img/soc-cs_check-642818c8b5.webp"};
 
 /* ================= 題庫 =================
    M 選擇題(題目,正解,[錯誤選項],解說)
@@ -299,30 +299,357 @@ var BANK={
 ]
 };
 
+/* ===== v15.1 有圖的題目：看圖回答（MP/TP）、看圖選（I）；三下、四下新單元 ===== */
+function MP(q,p,a,o,e){var x=M(q,a,o,e);x.p=p;return x}
+function TP(q,p,a,e){var x=T(q,a,e);x.p=p;return x}
+(function(){var C2={g_mt:'山地',g_hill:'丘陵',g_plat:'台地',g_basin:'盆地',g_plain:'平原',g_river:'河流',g_estuary:'河口',g_beach:'沙灘海岸',g_rock:'岩岸',
+ fam_core:'小家庭',fam_three:'三代同堂',fam_single:'單親家庭',fam_grand:'祖孫家庭',fam_new:'新住民家庭',fam_big:'大家族團圓',
+ r_ye:'爺爺',r_nai:'奶奶',r_wgong:'外公',r_wpo:'外婆',r_ba:'爸爸',r_ma:'媽媽',r_ge:'哥哥',r_jie:'姊姊',r_di:'弟弟',r_mei:'妹妹',r_bo:'伯伯',r_shu:'叔叔',r_gu:'姑姑',r_yi:'阿姨',r_jiu:'舅舅',
+ k_dish:'洗碗',k_sweep:'掃地',k_fold:'摺衣服',k_trash:'倒垃圾',k_flower:'澆花',k_pet:'餵寵物',k_bag:'整理書包',k_lunch:'準備便當',k_shoe:'綁鞋帶',
+ l_note:'做筆記',l_dict:'查字典',l_web:'和大人上網查資料',l_ask:'舉手問老師',l_review:'回家複習',l_mind:'畫心智圖',l_flute:'學樂器',l_ball:'球隊練習',l_paint:'畫畫',l_museum:'參觀博物館',l_lib:'圖書館借書',l_garden:'種菜觀察',l_swim:'學游泳',l_baby:'嬰兒',l_kinder:'幼兒園',l_school:'小學生',
+ sc_tug:'拔河',sc_relay:'大隊接力',sc_group:'小組報告',sc_award:'比賽頒獎',sc_learn:'學習權',sc_speak:'表意權',sc_privacy:'隱私權',sc_body:'身體自主權',sc_help:'向信任的大人求助',
+ pl_city:'城市',pl_farm:'農村',pl_fish:'漁村',pl_mount:'山村',pf_park:'公園',pf_lib:'圖書館',pf_hosp:'醫院',pf_police:'警察局',pf_fire:'消防局',pf_post:'郵局',pf_office:'區公所',pf_market:'市場',pf_station:'火車站',pf_school:'學校',pf_center:'活動中心',pf_garbage:'垃圾車',
+ ra_fair:'廟會',ra_sport:'社區運動會',ra_clean:'社區大掃除',ra_night:'夜市',ra_volunteer:'社區志工',
+ nw_rice:'白飯',nw_water:'飲用水',nw_clothes:'衣服',nw_shoes:'鞋子',nw_brush:'牙刷牙膏',nw_books:'課本',ww_robot:'玩具機器人',ww_game:'遊戲機',ww_candy:'一大堆糖果',ww_shoes:'第五雙球鞋',ww_cards:'收集卡牌',ww_bear:'大玩偶',
+ m_1:'1 元',m_5:'5 元',m_10:'10 元',m_50:'50 元',m_100:'100 元',m_500:'500 元',m_1000:'1000 元',
+ sh_market:'傳統市場',sh_super:'超市',sh_online:'網路購物',sh_night:'夜市小吃',sh_cvs:'便利商店',
+ h_apt:'現代公寓',h_town:'現代透天厝',a_lamp:'煤油燈',a_stove:'灶',a_washb:'洗衣板',a_hat:'斗笠',a_rain:'蓑衣和斗笠',a_mill:'石磨',a_pole:'扁擔',a_radio:'古早收音機',a_cradle:'竹搖籃',a_cupb:'菜櫥',a_well:'水井',a_basket:'竹籃',a_sieve:'竹篩',a_mortar:'石臼',
+ i_lamp:'檯燈',i_washer:'洗衣機',i_ricecooker:'電鍋',i_raincoat:'雨衣',i_fridge:'冰箱',e_rice:'電子鍋',
+ i_niangao:'年糕',i_tangyuan:'湯圓',i_runbing:'潤餅',i_zongzi:'粽子',i_mooncake:'月餅柚子',
+ fi_cny:'春節',fi_boat:'端午節',fi_moon:'中秋節',fi_tomb:'清明節',d_harvest:'豐年祭',d_tung:'客家桐花祭',d_water:'潑水節',d_mom:'母親節',d_dad:'父親節',d_kids:'兒童節',d_teacher:'教師節',d_national:'國慶日',d_newyear:'跨年元旦',
+ t_mazu:'媽祖廟',t_tudi:'土地公廟',t_censer:'香爐',t_jiao:'筊杯',t_door:'門神',t_jian:'剪黏',t_church:'教堂',
+ n_rice:'種稻',n_grape:'種葡萄',n_boat:'漁船捕魚',n_pond:'養殖魚塭',n_chicken:'養雞',n_tea:'採茶',n_robot:'機器手臂生產線',n_bike:'組裝腳踏車',n_can:'食品加工',n_zone:'工業區',
+ j_cashier:'店員',j_chef:'廚師',j_doctor:'醫生',j_teacher:'老師',j_guide:'導遊',j_busdriver:'公車司機',j_nurse:'護理師',j_hotel:'飯店服務員',j_driver:'貨運司機',
+ c_farm:'農夫採草莓',c_pack:'工廠包裝',c_truck:'冷藏車運送',c_store:'商店販賣',c_eat:'買來吃',
+ p_move:'搬家',p_class:'學生變少',p_elder:'長輩變多',p_new:'新社區',
+ o_ox:'牛車',o_sedan:'轎子',o_raft:'竹筏',o_rick:'人力車',v_bike:'腳踏車',v_scooter:'機車',v_car:'汽車',v_bus:'公車',v_train:'火車',v_hsr:'高鐵',v_mrt:'捷運',v_plane:'飛機',v_ship:'輪船',
+ iv_beacon:'烽火台',iv_letter:'寫信',iv_telegraph:'電報',iv_phone:'轉盤電話',iv_radio:'收音機',iv_tv:'電視新聞',iv_mobile:'手機',
+ s_light:'紅綠燈',s_cross:'走斑馬線',s_helmet:'戴安全帽',
+ hm_river:'大甲溪',hm_sun:'太陽餅',hm_bike:'自行車道',hm_market:'在地市集',hm_beach:'淨灘',hm_guide:'小小導覽員',hm_court1:'古厝',
+ nm_terrain:'依地形取名',nm_plant:'依植物取名',nm_animal:'依動物取名',nm_water:'依水利取名',nm_tribe:'依古時聚落取名',nm_shop:'依古時商店取名',
+ ii_rice:'稻米',ii_fruit:'水果',ii_fish:'魚',ii_cow:'乳牛',ii_pig:'豬',ii_chicken:'雞',ii_tea:'茶',ii_factory:'工廠',ii_bike:'腳踏車',ii_hospital:'醫院',ii_school:'學校',ii_bus:'公車',ii_postman:'郵差',ii_chef:'廚師',ii_hair:'美髮師',ii_guide:'導遊',ii_stall:'商店',
+ ih_conical:'斗笠',ih_helmet:'工地安全帽',ih_chef:'廚師帽',ih_police:'警察帽',ih_steth:'聽診器',ih_laptop:'筆記型電腦',ih_micro:'顯微鏡',ih_globe:'地球儀',ih_rice:'稻米',ih_corn:'玉米',ih_veg:'青菜',ih_berry:'草莓',ih_fish:'魚',ih_shrimp:'蝦子',ih_crab:'螃蟹',ih_clam:'蛤蜊',ih_squid:'花枝',w_tap:'刷牙時關水龍頭',w_typhoon:'颱風',w_drought:'乾旱',w_meiyu:'梅雨',i_piggy:'撲滿',i_ecobag:'環保購物袋',i_mpay:'行動支付',i_bento:'便當',i_ricemill:'碾米機'};
+for(var k in C2)CAP[k]=C2[k];})();
+function add(k,a){BANK[k]=(BANK[k]||[]).concat(a)}
+
+/* ----- 三上加圖 ----- */
+add('3a1-1',[
+ I('哪一張是「三代同堂」？','fam_three',['fam_core','fam_single','fam_grand'],'爺爺奶奶、爸爸媽媽和孩子三代住在一起。'),
+ I('哪一張是「祖孫家庭」？','fam_grand',['fam_three','fam_core','fam_new'],'由祖父母照顧孫子女。'),
+ I('哪一張是「單親家庭」？','fam_single',['fam_big','fam_core','fam_three'],'由爸爸或媽媽其中一位照顧孩子。'),
+ I('媽媽的媽媽是誰？選出她的照片。','r_wpo',['r_nai','r_gu','r_yi'],'媽媽的媽媽叫外婆。'),
+ I('爸爸的爸爸是誰？選出他的照片。','r_ye',['r_wgong','r_bo','r_shu'],'爸爸的爸爸叫爺爺。'),
+ MP('照片裡是媽媽的兄弟，你要叫他什麼？','r_jiu','舅舅',['叔叔','伯伯','爺爺'],'媽媽的兄弟叫舅舅。'),
+ MP('照片裡是爸爸的姊妹，你要叫她什麼？','r_gu','姑姑',['阿姨','外婆','媽媽'],'爸爸的姊妹叫姑姑。')]);
+add('3a1-2',[
+ MP('媽媽在照顧發燒的孩子，這是家庭的哪一種功能？','k_sick','照顧與保護',['休閒娛樂','賺錢生活','教育學習']),
+ MP('爸爸陪孩子一起看書，這是家庭的哪一種功能？','k_read','教育學習',['賺錢生活','照顧與保護','休閒娛樂']),
+ MP('全家一起到草地野餐，這是家庭的哪一種功能？','fn_picnic','休閒娛樂',['賺錢生活','教育學習','照顧與保護']),
+ MP('爸爸媽媽提著公事包出門，這是家庭的哪一種功能？','fn_work','賺錢生活',['休閒娛樂','教育學習','情感支持']),
+ MP('媽媽和孩子開心地抱在一起，這是家庭的哪一種功能？','k_hug','情感支持',['賺錢生活','教育學習','休閒娛樂']),
+ I('哪一張是在幫忙「摺衣服」？','k_fold',['k_sweep','k_dish','k_flower']),
+ I('哪一張是在幫忙「倒垃圾」？','k_trash',['k_pet','k_bag','k_sweep']),
+ TP('照片裡的小朋友主動幫忙洗碗，這是分擔家事的好行為。','k_dish',true,'做得到的家事主動幫忙，家人會很開心。')]);
+add('3a1-3',[
+ MP('照片裡，一家人提著禮物回到鄉下的家，這是在做什麼？','vv_home','過年回老家團圓',['去上學','去搬家','去買菜']),
+ MP('照片裡的小朋友正在用平板做什麼？','vv_video','和外婆視訊聊天',['玩遊戲','看卡通','寫功課']),
+ MP('照片裡的小朋友向奶奶鞠躬、拿紅包，這時應該說什麼？','vv_red','謝謝奶奶，新年快樂',['怎麼這麼少','我還要','不用說話']),
+ TP('照片裡的小朋友畫卡片送給長輩，也是一種親人往來。','vv_card',true),
+ MP('照片裡大家在吃喜宴，參加喜宴要注意什麼？','vv_wedding','有禮貌地祝福新人',['在餐廳裡跑來跑去','一直玩手機','大聲吵鬧'])]);
+add('3a2-1',[
+ I('哪一張是在「查字典」？','l_dict',['l_note','l_review','l_mind']),
+ I('哪一張是在「畫心智圖」？','l_mind',['l_note','l_dict','l_web']),
+ MP('照片裡的小朋友在做什麼學習方法？','l_ask','舉手問老師',['查字典','畫心智圖','上網查資料']),
+ MP('照片裡的小朋友和媽媽一起用電腦，是在做什麼？','l_web','和大人一起上網查資料',['玩遊戲','看影片','網路購物']),
+ TP('照片裡的小朋友晚上在檯燈下複習功課，是好的學習習慣。','l_review',true)]);
+add('3a2-2',[
+ I('哪一張是在「參觀博物館」？','l_museum',['l_lib','l_garden','l_paint']),
+ I('哪一張是在「學樂器」？','l_flute',['l_ball','l_swim','l_paint']),
+ MP('照片裡的小朋友在觀察菜苗，這是哪一種學習？','l_garden','動手做、觀察大自然',['只在教室裡讀書','看電視','玩手機']),
+ I('哪一張是「幼兒園」時期？','l_kinder',['l_baby','l_school','l_swim'],'嬰兒→幼兒園→小學生，一步一步長大。')]);
+add('3a3-1',[
+ MP('照片裡的同學在做什麼？','sc_friends','手牽手一起開心玩',['在吵架','在排擠別人','在搶東西'],'不同樣子的朋友，一樣可以玩在一起。'),
+ MP('小組一起畫海報做報告，這需要什麼？','sc_group','分工合作',['一個人做完','誰都不做','互相吵架'])]);
+add('3a4-1',[
+ I('哪一張是「拔河比賽」？','sc_tug',['sc_relay','sc_group','sc_award']),
+ I('哪一張是「大隊接力」？','sc_relay',['sc_tug','sc_award','sc_group']),
+ MP('同學上台領獎盃，台下的同學應該怎麼做？','sc_award','為他鼓掌',['噓他','說他作弊','不理他'])]);
+add('3a4-2',[
+ MP('照片裡坐輪椅的同學和大家一起傳球，這表現了什麼？','sc_wheel','平等與尊重',['不公平','排擠','歧視']),
+ MP('照片裡男生女生都在踢足球，這代表什麼？','sc_gender','興趣不分男生女生',['女生不能踢球','只有男生能玩','運動很危險']),
+ I('「日記不被偷看」是哪一種權利？','sc_privacy',['sc_learn','sc_speak','sc_body'],'隱私權保護我們的私人空間。'),
+ I('「勇敢說不」是保護哪一種權利？','sc_body',['sc_privacy','sc_learn','sc_speak'],'你的身體是你自己的。'),
+ MP('照片裡的小朋友遇到困難，正在做什麼？','sc_help','向信任的大人求助',['自己忍耐','誰都不說','去欺負別人'])]);
+add('3a4-3',[
+ MP('照片裡的伯伯在修理桌椅，他是學校裡的誰？','sc_janitor','工友',['校長','廚工','護理師'],'工友伯伯讓學校的設備保持好用。')]);
+
+/* ----- 四上加圖 ----- */
+add('4a1-2',[
+ I('哪一張是「河口」？','g_estuary',['g_river','g_beach','g_rock'],'河流流進大海的地方叫河口，常有水鳥。'),
+ I('哪一張是「岩岸」？','g_rock',['g_beach','g_estuary','g_plat'],'岩岸的海邊有很多岩石，浪花很大。'),
+ I('哪一張是「沙灘海岸」？','g_beach',['g_rock','g_river','g_plain']),
+ MP('照片裡四周有山圍繞、中間平坦有城鎮，是哪一種地形？','g_basin','盆地',['平原','台地','丘陵']),
+ MP('照片裡山坡上種滿了茶，是哪一種地形？','g_hill','丘陵',['平原','盆地','山地'],'丘陵起伏不大，很適合種茶。')]);
+add('4a1-3',[
+ MP('照片裡是什麼天氣？','w_typhoon','颱風',['梅雨','寒流','乾旱']),
+ MP('照片裡五、六月連續下雨、繡球花盛開，是什麼季節的雨？','w_meiyu','梅雨',['颱風','寒流','西北雨']),
+ MP('照片裡土地乾裂、作物枯黃，是發生了什麼？','w_drought','乾旱',['颱風','水災','寒流']),
+ MP('照片裡的建築把水存起來，叫做什麼？','w_dam','水庫',['自來水廠','游泳池','魚塭']),
+ TP('照片裡的小朋友用水桶接雨水，可以拿來澆花、沖廁所。','w_rain',true,'雨水回收是很好的省水方法。'),
+ I('哪一張是在「節約用水」？','w_tap',['w_typhoon','w_drought','w_meiyu'],'刷牙時關水龍頭，就能省很多水。')]);
+add('4a2-1',[
+ I('哪一張是「現代公寓」？','h_apt',['h_town','h_min','h_mud']),
+ I('哪一張是「現代透天厝」？','h_town',['h_apt','h_hak','h_stone']),
+ MP('客家伙房前面常有一個半月形的水池，叫做什麼？','h_hak','半月池',['游泳池','魚塭','水庫'],'半月池可以防火、養魚，也有風水的意義。')]);
+add('4a2-2',[
+ I('以前晚上用來照明的是哪一個？','a_lamp',['i_lamp','i_washer','i_fridge'],'以前用煤油燈，現在用電燈。'),
+ I('以前洗衣服用的是哪一個？','a_washb',['i_washer','a_mill','a_stove'],'以前用洗衣板搓洗，現在用洗衣機。'),
+ I('以前煮飯用的是哪一個？','a_stove',['i_ricecooker','a_lamp','a_washb'],'以前燒柴煮飯，現在用電鍋。'),
+ I('以前下雨天農夫穿的是哪一個？','a_rain',['i_raincoat','a_basket','a_radio']),
+ I('現在洗衣服常用的是哪一個？','i_washer',['a_washb','a_mill','a_pole']),
+ MP('照片裡的老器物叫什麼？','a_mill','石磨',['灶','扁擔','菜櫥'],'石磨用來把米或豆子磨成漿。'),
+ MP('照片裡的老器物叫什麼？','a_pole','扁擔',['石磨','搖籃','菜櫥'],'扁擔挑在肩上，兩頭掛著東西。'),
+ MP('照片裡有紗網的櫃子，以前用來做什麼？','a_cupb','放飯菜，防蒼蠅',['放衣服','放書','放鞋子'],'以前沒有冰箱，用菜櫥收飯菜。'),
+ MP('照片裡的老器物叫什麼？','a_radio','收音機',['電視','手機','電腦'],'以前很多人用收音機聽新聞和歌曲。')]);
+add('4a3-1',[
+ I('哪一張是「土地公廟」？','t_tudi',['t_mazu','t_church','t_censer']),
+ I('哪一張是「教堂」？','t_church',['t_mazu','t_tudi','t_door']),
+ MP('照片裡的一對紅色東西叫什麼？','t_jiao','筊杯',['骰子','碗','鞋子'],'擲筊是信徒向神明詢問的方式。'),
+ MP('照片裡廟門上畫的是什麼？','t_door','門神',['卡通人物','老師','警察'],'門神守護廟宇和家門。'),
+ MP('照片裡廟頂上用碎瓷片拼成的龍，叫做什麼工藝？','t_jian','剪黏',['油漆','貼紙','剪紙']),
+ MP('照片裡的大銅爐是做什麼用的？','t_censer','插香祭拜',['煮飯','裝水','放垃圾'])]);
+add('4a4-2',[
+ I('哪一張是「中秋節」？','fi_moon',['fi_boat','fi_cny','fi_tomb']),
+ I('哪一張是「端午節」？','fi_boat',['fi_moon','fi_tomb','fi_cny']),
+ I('哪一張是「清明節」？','fi_tomb',['fi_cny','fi_moon','fi_boat']),
+ I('元宵節要吃哪一個？','i_tangyuan',['i_zongzi','i_mooncake','i_niangao']),
+ I('端午節要吃哪一個？','i_zongzi',['i_tangyuan','i_niangao','i_runbing']),
+ I('春節常吃的是哪一個？','i_niangao',['i_zongzi','i_mooncake','i_tangyuan'],'年糕象徵「年年高升」。'),
+ I('清明節常吃的是哪一個？','i_runbing',['i_mooncake','i_zongzi','i_niangao'],'清明節有吃潤餅的習俗。')]);
+add('4a4-3',[
+ I('哪一張是「母親節」？','d_mom',['d_dad','d_teacher','d_kids']),
+ I('哪一張是「父親節」？','d_dad',['d_mom','d_kids','d_teacher']),
+ I('哪一張是「教師節」？','d_teacher',['d_mom','d_dad','d_kids']),
+ I('哪一張是原住民的「豐年祭」？','d_harvest',['d_water','d_tung','d_kids']),
+ I('哪一張是「潑水節」？','d_water',['d_harvest','d_tung','d_newyear']),
+ MP('照片裡白色的花落滿步道，是哪一個活動？','d_tung','客家桐花祭',['豐年祭','潑水節','中秋節']),
+ MP('照片裡有國旗和煙火，是哪一個節日？','d_national','國慶日',['兒童節','元宵節','母親節'])]);
+
+/* ----- 三下一 我們居住的地方 ----- */
+add('3b1-1',[
+ I('哪一張是「城市」？','pl_city',['pl_farm','pl_fish','pl_mount'],'城市高樓多、人多、車多。'),
+ I('哪一張是「農村」？','pl_farm',['pl_city','pl_fish','pl_mount'],'農村有很多稻田。'),
+ I('哪一張是「漁村」？','pl_fish',['pl_farm','pl_city','pl_mount'],'漁村靠海，有港口和漁船。'),
+ I('哪一張是「山村」？','pl_mount',['pl_fish','pl_city','pl_farm'],'山村在山上，常種茶或水果。'),
+ M('住在海邊的居民，很多人從事什麼工作？','捕魚',['種茶','開礦','滑雪'],'住的地方的環境，會影響居民的工作和生活。'),
+ M('城市和鄉村比起來，城市通常有什麼特色？','人多、車多、高樓多',['田很多','人很少','沒有商店']),
+ T('居住地方的自然環境，會影響居民的生活方式。',true),
+ M('介紹自己居住的地方，可以說什麼？','附近有哪些重要的地方和特色',['我昨天吃什麼','我喜歡的卡通','我的考試分數']),
+ S('這些景色比較常出現在城市還是鄉村？',['城市','鄉村'],[['捷運',0],['百貨公司',0],['高樓大廈',0],['稻田',1],['果園',1],['三合院',1]])]);
+add('3b1-2',[
+ P('把需要和要去的地方配對起來',[['想借書','圖書館'],['生病了','醫院'],['寄信','郵局'],['搭火車','火車站']]),
+ I('東西掉了或遇到危險，可以去哪裡求助？','pf_police',['pf_post','pf_park','pf_lib'],'警察局可以幫助我們維護安全。'),
+ I('想寄信、寄包裹，要去哪裡？','pf_post',['pf_hosp','pf_lib','pf_office']),
+ I('發生火災時，誰會來幫忙？','pf_fire',['pf_police','pf_post','pf_market']),
+ I('想溜滑梯、散步，可以去哪裡？','pf_park',['pf_office','pf_hosp','pf_station']),
+ MP('照片裡是辦理各種地方事務的地方，叫做什麼？','pf_office','區公所',['醫院','郵局','車站']),
+ MP('照片裡的長輩在哪裡跳舞運動？','pf_center','社區活動中心',['醫院','警察局','郵局']),
+ TP('公共設施是大家一起用的，要愛惜。','pf_park',true),
+ M('倒垃圾時，可以怎麼做讓社區更乾淨？','做好垃圾分類、資源回收',['把垃圾丟在路邊','把垃圾丟進河裡','亂丟就好'])]);
+add('3b1-3',[
+ I('哪一張是「廟會」？','ra_fair',['ra_sport','ra_night','ra_clean']),
+ I('哪一張是「社區大掃除」？','ra_clean',['ra_fair','ra_volunteer','ra_sport']),
+ I('哪一張是「夜市」？','ra_night',['ra_fair','ra_sport','ra_clean']),
+ MP('照片裡的志工在幫長輩做什麼？','ra_volunteer','量血壓、關心健康',['打掃廁所','賣東西','教數學']),
+ MP('社區舉辦運動會，有什麼好處？','ra_sport','讓鄰居認識彼此、感情更好',['讓大家吵架','製造垃圾','沒有好處']),
+ T('參加社區活動，可以認識鄰居、關心居住的地方。',true),
+ M('社區要變得更好，需要誰一起努力？','每一位居民',['只有里長','只有警察','不用管'])]);
+/* ----- 三下二 消費與生活 ----- */
+add('3b2-1',[
+ S('這些是「需要」還是「想要」？',['需要','想要'],[['白飯',0],['飲用水',0],['牙刷',0],['遊戲機',1],['一大堆糖果',1],['第五雙球鞋',1]],'需要是生活一定要有的；想要是有了會開心，但沒有也能生活。'),
+ I('哪一個是生活中的「需要」？','nw_water',['ww_candy','ww_game','ww_cards']),
+ I('哪一個是生活中的「需要」？','nw_clothes',['ww_robot','ww_bear','ww_shoes']),
+ I('哪一個是「想要」，不是必需的？','ww_robot',['nw_rice','nw_brush','nw_books']),
+ I('哪一個是「100 元」？','m_100',['m_500','m_1000','m_50']),
+ I('哪一個是「50 元」硬幣？','m_50',['m_10','m_1','m_5']),
+ M('買一個 35 元的麵包，給店員 50 元，要找回多少錢？','15 元',['25 元','5 元','85 元']),
+ M('1 張 100 元可以換成幾個 10 元？','10 個',['5 個','100 個','2 個']),
+ MP('照片裡是哪一種買東西的地方？','sh_market','傳統市場',['超市','網路購物','便利商店']),
+ MP('照片裡的小朋友和爸爸在做什麼？','sh_online','網路購物',['寫功課','看卡通','玩遊戲']),
+ M('人們為什麼要消費？','買需要的東西來滿足生活',['因為無聊','為了把錢花光','為了炫耀'])]);
+add('3b2-2',[
+ MP('照片裡的小朋友把錢存進撲滿，這是在做什麼？','cs_save','儲蓄',['浪費','借錢','消費']),
+ MP('照片裡的小朋友在猜要買球還是買書，這時候要想什麼？','cs_choose','自己真正需要什麼',['哪一個比較貴','同學有什麼','隨便選一個']),
+ MP('照片裡同樣的洋芋片，一包 35 元、一包 29 元，聰明的做法是？','cs_price','比較價格和份量再決定',['買比較貴的','兩包都買','不看就買']),
+ MP('出門買東西前和媽媽列清單，有什麼好處？','cs_list','只買需要的，不亂花錢',['可以買更多','比較好玩','沒有好處']),
+ MP('照片裡的天平，一邊是錢、一邊是愛心，代表什麼？','cs_scale','花錢前要衡量值不值得',['錢最重要','愛心可以買','天平壞了']),
+ I('想把零用錢存起來，可以用哪一個？','i_piggy',['i_ecobag','i_mpay','i_bento']),
+ M('收到 100 元零用錢，下面哪一個是好的使用方法？','先存一部分，再買需要的東西',['馬上全部買糖果','借給陌生人','丟掉']),
+ T('想要的東西很多，要先想一想再決定，不用每樣都買。',true),
+ O('聰明消費的順序，排排看',['想想需不需要','比較價格和品質','付錢並拿發票','好好使用'])]);
+/* ----- 三下三 消費與選擇 ----- */
+add('3b3-1',[
+ MP('照片裡的媽媽在看牛奶盒的哪裡？','ck_date','有效期限',['顏色','圖案','重量']),
+ MP('照片裡店員遞給小朋友的是什麼？','ck_receipt','發票',['紅包','車票','卡片'],'拿發票可以證明買過東西，壞了也比較好換。'),
+ MP('買到壞掉的玩具，可以怎麼做？','ck_return','帶著發票去店裡換',['自己丟掉','罵店員','什麼都不做']),
+ MP('照片裡的小朋友拿放大鏡看包裝，是在看什麼？','cs_check','成分和期限標示',['包裝顏色','有沒有中獎','卡通圖案']),
+ M('買食物前要先看什麼，才不會吃壞肚子？','有效期限',['包裝顏色','廣告明星','盒子大小']),
+ T('只要包裝漂亮，就一定是好東西。',false,'要看內容、品質和標示，不要只看包裝。'),
+ M('看到廣告說「吃了會變超強」，應該怎麼想？','想一想是不是真的，不要全部相信',['馬上去買','叫爸媽全部買','告訴同學一定是真的'])]);
+add('3b3-2',[
+ I('出門買東西，帶哪一個比較環保？','i_ecobag',['ww_candy','ww_cards','i_mpay'],'自備購物袋，少用塑膠袋。'),
+ I('哪一個是「行動支付」？','i_mpay',['i_piggy','i_ecobag','m_100']),
+ MP('照片裡外送員把餐點送到家，這是哪一種新的消費方式？','cs_deliver','外送',['擺地攤','以物易物','種菜']),
+ MP('照片裡的小朋友用手機掃碼，是在做什麼？','cs_mpay','用手機付款',['打電話','拍照','玩遊戲']),
+ MP('照片裡的小朋友在郵局櫃台做什麼？','cs_post','存錢',['寄信','買菜','看醫生']),
+ M('網路購物很方便，要注意什麼？','和大人一起，選可靠的商店',['把密碼告訴別人','看到便宜就買','一次買很多']),
+ T('現在可以用手機付錢，所以就可以一直買東西。',false,'付錢的方法變方便，更要想清楚再買。'),
+ S('這些是以前就有，還是現在才有的消費方式？',['以前就有','現在才有'],[['傳統市場',0],['擺攤叫賣',0],['用現金付錢',0],['網路購物',1],['手機付款',1],['外送平台',1]])]);
+/* ----- 三下四 家鄉的地名與故事 ----- */
+add('3b4-1',[
+ MP('地名裡有「坑」「崁」「埔」，大多和什麼有關？','nm_terrain','地形',['動物','人名','節日'],'很多地名來自當地的地形，例如山腳、溪邊、平地。'),
+ MP('地名裡有「莿桐」「茄苳」「林」，大多和什麼有關？','nm_plant','植物',['商店','節日','地形']),
+ MP('「鹿港」「鹿谷」這些地名，可能和什麼有關？','nm_animal','以前那裡有很多鹿',['那裡賣鹿肉','鹿是市長','和鹿無關']),
+ MP('地名裡有「圳」「陂」，大多和什麼有關？','nm_water','水利設施',['商店','動物','節日'],'圳是灌溉用的水道，陂是蓄水池。'),
+ MP('照片裡古早的聚落，有些地名就來自以前住在那裡的什麼人？','nm_tribe','原住民族或早期移民',['外星人','卡通人物','沒有人']),
+ MP('有些地名來自古時候的商店或行業，例如「店仔」。照片可能是哪一種由來？','nm_shop','依古時商店取名',['依動物取名','依植物取名','依地形取名']),
+ S('這些地名的由來是什麼？',['和地形有關','和植物有關'],[['山腳',0],['坑口',0],['頂埔',0],['莿桐',1],['茄苳腳',1],['竹林',1]]),
+ T('很多地名都藏著以前的故事。',true)]);
+add('3b4-2',[
+ MP('想知道家鄉地名的由來，可以怎麼做？','nm_story','問長輩、查書或上網',['亂猜一個','不用知道','問外國人']),
+ MP('照片裡的同一條街，以前和現在有什麼不同？','nm_change','以前是泥土路，現在是柏油路和樓房',['完全一樣','以前比較熱鬧','現在沒有房子']),
+ MP('照片裡的老石碑，可以讓我們知道什麼？','nm_stone','家鄉以前發生的事',['今天的天氣','明天的考試','超市的價格']),
+ M('「社口」這個地名，常被說是和什麼有關？','以前原住民聚落（社）的出入口',['那裡有很多蛇','那裡賣口罩','沒有原因'],'很多地方的「社」，和以前平埔族聚落有關。'),
+ M('探索家鄉地名，可以先準備什麼？','要問的問題和紀錄本',['零食','玩具','遊戲機']),
+ O('探索家鄉地名的順序，排排看',['決定想查的地名','訪問長輩、查資料','整理資料','分享給同學'])]);
+add('3b4-3',[
+ MP('照片裡的阿公在說以前的故事，你可以怎麼做？','nm_story','專心聽，還可以發問',['一直插嘴','走開去玩','說好無聊']),
+ MP('照片裡祖孫一起看老相簿，可以了解什麼？','nm_album','家鄉和家族以前的樣子',['今天的新聞','明天的天氣','卡通劇情']),
+ MP('照片裡古早的商店街，可以讓我們知道什麼？','nm_shop','以前人們怎麼做生意',['未來的科技','外國的國王','恐龍的生活']),
+ T('家鄉的故事可以從長輩、老照片、古蹟裡找到。',true),
+ M('家鄉的老故事為什麼值得保存？','讓後代認識家鄉、愛護家鄉',['可以賣錢','因為很無聊','沒有原因'])]);
+add('3bx-1',[
+ MP('照片裡的小記者在做什麼？','ex_story','訪問長輩、記錄家鄉的故事',['在吵架','在買東西','在打電動']),
+ MP('當家鄉特派員，照片裡的地圖可以幫我們做什麼？','ex_map','找到要去探訪的地方',['畫畫','包東西','當扇子']),
+ O('當家鄉特派員的順序，排排看',['決定採訪主題','準備問題','去採訪、拍照記錄','整理成報告分享'],'先計畫，再行動，最後分享。'),
+ M('訪問長輩時，好的禮貌是什麼？','先打招呼、說明來意，最後說謝謝',['直接問不打招呼','邊玩手機邊問','問完就走']),
+ M('拍攝別人的照片前，應該怎麼做？','先問對方同不同意',['偷偷拍','拍完再說','不用問']),
+ T('分享報告時，要說清楚資料是從哪裡來的。',true)]);
+
+/* ----- 四下一 家鄉的產業 ----- */
+add('4b1-1',[
+ I('哪一張是「農業」？','n_rice',['n_robot','j_cashier','n_zone'],'種稻、種水果、種茶都是農業。'),
+ I('哪一張是「漁業」？','n_boat',['n_chicken','n_tea','n_bike']),
+ I('哪一張是「畜牧業」？','n_chicken',['n_pond','n_grape','n_can'],'養雞、養豬、養牛是畜牧業。'),
+ MP('照片裡用打水車養魚的地方叫做什麼？','n_pond','養殖魚塭',['水庫','游泳池','水井']),
+ MP('台中大甲、后里一帶有名的水果，照片裡是哪一種？','n_grape','葡萄',['西瓜','香蕉','鳳梨']),
+ S('這些是農業、漁業還是畜牧業？',['農業或漁業','畜牧業'],[['種稻',0],['採茶',0],['捕魚',0],['養雞',1],['養豬',1],['養乳牛',1]]),
+ I('哪一個是漁業的產品？','ih_crab',['ih_corn','ih_veg','ih_berry']),
+ I('哪一個是農業的產品？','ih_corn',['ih_fish','ih_shrimp','ih_squid']),
+ M('農業、漁業、畜牧業的共同點是什麼？','直接從大自然取得產品',['在工廠製造','提供服務','在網路上賣']),
+ T('農漁畜牧業會受到天氣很大的影響。',true,'颱風、乾旱都會影響收成。')]);
+add('4b1-2',[
+ MP('照片裡的機器手臂在做什麼？','n_robot','在工廠自動化生產',['在種田','在捕魚','在煮飯']),
+ MP('照片裡的工人在組裝什麼？','n_bike','腳踏車',['汽車','電視','衣服'],'台中有很多腳踏車和精密機械工廠。'),
+ MP('照片裡把番茄做成罐頭，是哪一種工業？','n_can','食品加工',['紡織','鋼鐵','電子']),
+ MP('很多工廠集中在一起的地方，叫做什麼？','n_zone','工業區',['住宅區','風景區','學區']),
+ M('工業和農業最大的不同是什麼？','工業把原料加工成產品',['工業在田裡工作','工業不用機器','工業只賣水果']),
+ T('工廠排放廢水、廢氣，可能汙染環境，所以要好好處理。',true),
+ O('從稻子到便當，排排看',['農夫種稻','碾米廠把稻穀變白米','做成便當','我們買來吃'],'農業的產品，經過加工，再透過商店賣給我們。'),
+ I('把稻穀變成白米，要用哪一台機器？','i_ricemill',['i_washer','i_ricecooker','i_fridge'])]);
+add('4b1-3',[
+ I('照片裡的人在醫院照顧病人，他是？','j_nurse',['j_chef','j_cashier','j_guide']),
+ I('哪一張是「導遊」？','j_guide',['j_teacher','j_busdriver','j_hotel']),
+ I('哪一張是「公車司機」？','j_busdriver',['j_driver','j_chef','j_doctor']),
+ P('把職業和用品配對起來',[['醫生','聽診器'],['廚師','廚師帽'],['警察','警察帽'],['工地工人','安全帽']]),
+ I('醫生看病會用到哪一個？','ih_steth',['ih_chef','ih_helmet','ih_globe']),
+ M('提供服務來滿足別人需要的工作，叫做什麼？','服務業',['農業','工業','漁業'],'店員、老師、醫生、司機都是服務業。'),
+ S('這些工作是工業還是服務業？',['工業','服務業'],[['組裝腳踏車',0],['工廠生產線',0],['食品加工',0],['店員',1],['老師',1],['導遊',1]]),
+ O('草莓從果園到我們手上，排排看',['農夫採草莓','工廠包裝','冷藏車運送','商店販賣'],'一樣東西要經過很多人的分工合作，才到我們手上。'),
+ T('各行各業的人分工合作，讓生活更方便。',true)]);
+/* ----- 四下二 家鄉的人口 ----- */
+add('4b2-1',[
+ M('人口比較多的地方，通常有什麼條件？','地勢平坦、交通方便、工作機會多',['很高的山上','沒有路','沒有水']),
+ I('哪一張的人口通常比較多？','pl_city',['pl_mount','pl_farm','pl_fish'],'城市工作機會多，人口比較集中。'),
+ M('台灣人口最多的地方，大多分布在哪裡？','西部平原',['中央山脈','東部海岸山脈','離島'],'西部平原地勢平坦、交通方便。'),
+ T('高山地區因為交通不方便，人口比較少。',true),
+ M('人口太集中在城市，可能會造成什麼問題？','交通擁擠、房價變高',['人變少','沒有商店','空氣變乾淨'])]);
+add('4b2-2',[
+ MP('照片裡的一家人在搬家，人口移到別的地方叫做什麼？','p_move','人口遷移',['人口增加','出生','觀光'],'很多人為了工作或讀書，搬到城市。'),
+ MP('照片裡教室只剩很少學生，是什麼現象？','p_class','少子化',['高齡化','人口增加','觀光'],'出生的小孩變少，叫少子化。'),
+ MP('照片裡公園裡很多長輩在運動，是什麼現象？','p_elder','高齡化',['少子化','都市化','工業化'],'老年人的比例越來越高，叫高齡化。'),
+ MP('照片裡新蓋的社區，搬家公司忙進忙出，代表什麼？','p_new','人口移入，人變多',['人口變少','沒有人住','學校關門']),
+ M('為什麼很多年輕人從鄉村搬到城市？','城市工作機會比較多',['城市空氣比較好','鄉村沒有學校','城市比較安靜']),
+ M('面對高齡化，社區可以做什麼？','設立長輩關懷據點、活動中心',['不理長輩','關掉醫院','把長輩送走']),
+ S('這些是少子化還是高齡化帶來的現象？',['少子化','高齡化'],[['學校班級變少',0],['玩具店客人變少',0],['新生兒變少',0],['長照中心變多',1],['老人活動中心變多',1],['需要更多看護',1]])]);
+/* ----- 四下三 家鄉的交通 ----- */
+add('4b3-1',[
+ O('這些交通工具，從以前到現在排排看',['牛車','人力車','汽車','高鐵'],'交通工具越來越快、越來越方便。'),
+ I('以前的人搭什麼過河？','o_raft',['v_ship','v_plane','v_mrt']),
+ I('哪一個是以前的交通工具？','o_sedan',['v_hsr','v_mrt','v_scooter']),
+ I('哪一個跑得最快、最適合長距離旅行？','v_plane',['v_bike','o_ox','v_scooter']),
+ I('哪一張是「高鐵」？','v_hsr',['v_train','v_mrt','v_bus']),
+ I('哪一張是「捷運」？','v_mrt',['v_hsr','v_train','v_bus']),
+ MP('照片裡是什麼交通工具？','o_rick','人力車',['牛車','轎子','腳踏車']),
+ M('交通變方便以後，生活有什麼改變？','去遠的地方更快，貨物運送也更方便',['大家都不出門','東西變少','沒有改變']),
+ S('這些交通工具，是以前的還是現在的？',['以前的','現在的'],[['牛車',0],['轎子',0],['竹筏',0],['捷運',1],['高鐵',1],['飛機',1]]),
+ I('過馬路要走哪裡？','s_cross',['s_light','s_helmet','v_car'],'過馬路要走斑馬線，看清楚紅綠燈。'),
+ MP('照片裡的小朋友坐機車前在做什麼？','s_helmet','戴好安全帽',['戴帽子遮太陽','玩遊戲','吃東西']),
+ MP('紅綠燈亮紅燈時，行人應該怎麼做？','s_light','停下來等',['趕快跑過去','邊看手機邊走','跟著別人闖'])]);
+add('4b3-2',[
+ O('傳遞訊息的方法，從以前到現在排排看',['烽火台','寫信','轉盤電話','手機'],'訊息傳遞越來越快。'),
+ I('古時候用點火冒煙來傳遞消息的是哪一個？','iv_beacon',['iv_letter','iv_mobile','iv_tv']),
+ I('哪一個是以前打電話用的？','iv_phone',['iv_mobile','iv_radio','iv_telegraph']),
+ I('哪一個是「電報機」？','iv_telegraph',['iv_phone','iv_radio','iv_tv'],'電報用長短的訊號傳遞文字。'),
+ I('哪一個可以同時打電話、傳訊息、上網？','iv_mobile',['iv_phone','iv_radio','iv_letter']),
+ MP('照片裡的主播在報新聞，這是哪一種傳遞訊息的方式？','iv_tv','電視',['寫信','烽火','電報']),
+ M('現在有了網路，傳遞訊息有什麼改變？','可以馬上把訊息傳到世界各地',['變得很慢','只能寫信','不能傳照片']),
+ T('網路上的訊息不一定都是真的，要查證。',true),
+ M('在網路上看到可怕的謠言，應該怎麼做？','先查證，不要隨便轉傳',['馬上轉傳給所有人','全部相信','加油添醋再傳'])]);
+/* ----- 四下四 家鄉風情畫 ----- */
+add('4b4-1',[
+ MP('台中有一條從山上流下來的大河，照片裡是哪一條？','hm_river','大甲溪',['淡水河','高屏溪','濁水溪'],'大甲溪流經台中，提供灌溉和發電用水。'),
+ MP('照片裡的老房子是古早的合院，叫做什麼？','hm_court1','古厝',['公寓','百貨公司','車站'],'古厝記錄了家鄉以前的生活。'),
+ MP('照片裡一家人騎著腳踏車，是在哪裡？','hm_bike','自行車道',['高速公路','鐵軌','機場']),
+ M('介紹家鄉的風貌，可以介紹什麼？','山、河、老街、古蹟和景點',['我的考試分數','卡通人物','電動遊戲']),
+ T('家鄉的風貌，會隨著時間慢慢改變。',true)]);
+add('4b4-2',[
+ MP('照片裡是台中很有名的特產，叫做什麼？','hm_sun','太陽餅',['鳳梨酥','月餅','麻糬'],'太陽餅是台中有名的伴手禮。'),
+ MP('照片裡的市集賣的是什麼？','hm_market','在地的蔬菜水果',['手機','衣服','汽車']),
+ M('特產為什麼常常和當地的環境有關？','因為氣候、土壤適合種出那種作物',['因為廣告很多','因為價格便宜','沒有關係']),
+ I('台中大甲、后里一帶有名的水果是哪一個？','n_grape',['ii_fruit','ih_corn','ih_berry']),
+ M('買家鄉特產當禮物，有什麼好處？','支持在地農民和店家',['讓別人生氣','浪費錢','沒有好處'])]);
+add('4b4-3',[
+ MP('照片裡的小朋友在海邊做什麼？','hm_beach','淨灘，撿垃圾',['挖沙玩','游泳','釣魚']),
+ MP('照片裡的小朋友在古厝前做什麼？','hm_guide','當小小導覽員介紹家鄉',['在吵架','在吃東西','在睡覺']),
+ M('愛護家鄉，我們可以做什麼？','不亂丟垃圾、愛護古蹟、參加社區活動',['在古蹟上塗鴉','把垃圾丟進河裡','什麼都不做']),
+ T('愛護家鄉只是大人的事，小朋友不用管。',false,'每個人都可以為家鄉出一份力。'),
+ O('想讓家鄉更美好，做事的順序排排看',['發現家鄉的問題','想想能做什麼','和大家一起行動','分享成果'])]);
+(function(){var AL={mt:'g_mt',hill:'g_hill',plat:'g_plat',basin:'g_basin',plain:'g_plain'};for(var k in BANK)BANK[k].forEach(function(q){if(q.t==='mi'){if(AL[q.a])q.a=AL[q.a];q.o=q.o.map(function(x){return AL[x]||x})}})})();
 /* ================= 站點與單元 =================
    wk：學校第幾週開始教；x,y：地圖上島的位置（百分比）；ls：課 */
 var MAP={
  3:{img:'map3',sign:[{t:'三年級上學期',x:50,y:4.6},{t:'三年級下學期',x:50,y:53.6}],units:[
-  {k:'3a1',s:'a',wk:1,n:'我的家庭',x:25,y:16,ls:[['3a1-1','家庭的組成'],['3a1-2','家庭的功能'],['3a1-3','親人的往來']]},
-  {k:'3a2',s:'a',wk:7,n:'學習與成長',x:80,y:16,ls:[['3a2-1','學習的方法'],['3a2-2','多元的學習']]},
-  {k:'3a3',s:'a',wk:11,n:'班級與我',x:24,y:35,ls:[['3a3-1','班級裡的人際關係'],['3a3-2','班級的自治活動']]},
-  {k:'3a4',s:'a',wk:14,n:'學校與我',x:76,y:35,ls:[['3a4-1','合作與競爭'],['3a4-2','平等與尊重'],['3a4-3','學校是個小社會']]},
-  {k:'3ax',s:'a',wk:20,n:'讓班級更美好',x:50,y:13,ly:19.5,tag:'主題探究',ls:[['3ax-1','讓班級更美好']]},
-  {k:'3b1',s:'b',wk:1,n:'我們居住的地方',x:24,y:64,ls:[]},
-  {k:'3b2',s:'b',wk:7,n:'消費與生活',x:78,y:64,ls:[]},
-  {k:'3b3',s:'b',wk:11,n:'消費與選擇',x:24,y:81,ls:[]},
-  {k:'3b4',s:'b',wk:14,n:'家鄉的地名與故事',x:78,y:81,ls:[]},
-  {k:'3bx',s:'b',wk:20,n:'家鄉特派員',x:50,y:91,ly:88.2,tag:'主題探究',ls:[]}],
+  {k:'3a1',s:'a',wk:1,n:'我的家庭',pic:'fam_three',x:25,y:16,ls:[['3a1-1','家庭的組成'],['3a1-2','家庭的功能'],['3a1-3','親人的往來']]},
+  {k:'3a2',s:'a',wk:7,n:'學習與成長',pic:'l_lib',x:80,y:16,ls:[['3a2-1','學習的方法'],['3a2-2','多元的學習']]},
+  {k:'3a3',s:'a',wk:11,n:'班級與我',pic:'sc_group',x:24,y:35,ls:[['3a3-1','班級裡的人際關係'],['3a3-2','班級的自治活動']]},
+  {k:'3a4',s:'a',wk:14,n:'學校與我',pic:'sc_tug',x:76,y:35,ls:[['3a4-1','合作與競爭'],['3a4-2','平等與尊重'],['3a4-3','學校是個小社會']]},
+  {k:'3ax',s:'a',wk:20,n:'讓班級更美好',pic:'sc_friends',x:50,y:13,ly:19.5,tag:'主題探究',ls:[['3ax-1','讓班級更美好']]},
+  {k:'3b1',s:'b',wk:1,n:'我們居住的地方',pic:'pl_city',x:24,y:64,ls:[['3b1-1','認識居住的地方'],['3b1-2','居住地方的生活'],['3b1-3','地方的居民活動']]},
+  {k:'3b2',s:'b',wk:7,n:'消費與生活',pic:'sh_market',x:78,y:64,ls:[['3b2-1','人人有消費'],['3b2-2','聰明的消費']]},
+  {k:'3b3',s:'b',wk:11,n:'消費與選擇',pic:'sh_super',x:24,y:81,ls:[['3b3-1','消費停看聽'],['3b3-2','消費改變生活']]},
+  {k:'3b4',s:'b',wk:14,n:'家鄉的地名與故事',pic:'nm_change',x:78,y:81,ls:[['3b4-1','地名的由來'],['3b4-2','探索家鄉地名'],['3b4-3','家鄉的故事']]},
+  {k:'3bx',s:'b',wk:20,n:'家鄉特派員',x:50,y:91,ly:88.2,pic:'ex_story',tag:'主題探究',ls:[['3bx-1','家鄉特派員']]}],
   hub:{x:50,y:44,ly:49.6}},
  4:{img:'map4',sign:[{t:'四年級上學期',x:50,y:3},{t:'四年級下學期',x:50,y:56.4}],units:[
-  {k:'4a1',s:'a',wk:1,n:'家鄉的自然環境',x:25,y:13,ls:[['4a1-1','家鄉在哪裡'],['4a1-2','家鄉的地形'],['4a1-3','氣候、水資源與生活']]},
-  {k:'4a2',s:'a',wk:7,n:'傳統住屋與器物',x:76,y:14,ls:[['4a2-1','傳統住屋與生活'],['4a2-2','器物與生活']]},
-  {k:'4a3',s:'a',wk:11,n:'傳統信仰與老街',x:26,y:33,ls:[['4a3-1','信仰與生活'],['4a3-2','老街與生活']]},
-  {k:'4a4',s:'a',wk:15,n:'作息、節慶與節日',x:78,y:33,ls:[['4a4-1','生活的作息'],['4a4-2','傳統的節慶'],['4a4-3','現代的節日']]},
-  {k:'4b1',s:'b',wk:1,n:'家鄉的產業',x:25,y:64,ls:[]},
-  {k:'4b2',s:'b',wk:7,n:'家鄉的人口',x:75,y:64,ls:[]},
-  {k:'4b3',s:'b',wk:11,n:'家鄉的交通',x:27,y:84,ls:[]},
-  {k:'4b4',s:'b',wk:14,n:'家鄉風情畫',x:75,y:84,ls:[]}],
+  {k:'4a1',s:'a',wk:1,n:'家鄉的自然環境',pic:'g_basin',x:25,y:13,ls:[['4a1-1','家鄉在哪裡'],['4a1-2','家鄉的地形'],['4a1-3','氣候、水資源與生活']]},
+  {k:'4a2',s:'a',wk:7,n:'傳統住屋與器物',pic:'h_min',x:76,y:14,ls:[['4a2-1','傳統住屋與生活'],['4a2-2','器物與生活']]},
+  {k:'4a3',s:'a',wk:11,n:'傳統信仰與老街',pic:'t_mazu',x:26,y:33,ls:[['4a3-1','信仰與生活'],['4a3-2','老街與生活']]},
+  {k:'4a4',s:'a',wk:15,n:'作息、節慶與節日',pic:'fi_cny',x:78,y:33,ls:[['4a4-1','生活的作息'],['4a4-2','傳統的節慶'],['4a4-3','現代的節日']]},
+  {k:'4b1',s:'b',wk:1,n:'家鄉的產業',pic:'n_rice',x:25,y:64,ls:[['4b1-1','農、漁、畜牧業'],['4b1-2','工業'],['4b1-3','服務業']]},
+  {k:'4b2',s:'b',wk:7,n:'家鄉的人口',pic:'p_move',x:75,y:64,ls:[['4b2-1','人口的分布'],['4b2-2','人口的變化']]},
+  {k:'4b3',s:'b',wk:11,n:'家鄉的交通',pic:'v_train',x:27,y:84,ls:[['4b3-1','家鄉的運輸'],['4b3-2','訊息的傳遞']]},
+  {k:'4b4',s:'b',wk:14,n:'家鄉風情畫',pic:'hm_river',x:75,y:84,ls:[['4b4-1','家鄉的風貌'],['4b4-2','家鄉的特產'],['4b4-3','愛我家鄉']]}],
   hub:{x:50,y:46,ly:51.4}}
 };
 var UK={};[3,4].forEach(function(g){MAP[g].units.forEach(function(u){u.g=g;UK[u.k]=u;u.ls.forEach(function(l){(BANK[l[0]]||[]).forEach(function(q,i){q.id=l[0]+':'+i;q.lk=l[0]})})})});
@@ -418,7 +745,9 @@ function addCss(){if(css)return;css=true;var st=document.createElement('style');
 '.soc-opt:active{transform:translateY(3px);box-shadow:0 1px 0 #d8c9ad}',
 '.soc-opt.ok{background:#dff6e6;box-shadow:0 4px 0 #57b47a}.soc-opt.no{background:#ffe3df;box-shadow:0 4px 0 #e0705f;animation:socshake .35s}',
 '.soc-opt[disabled]{cursor:default}',
-'.soc-opt.pic{padding:8px;display:flex;flex-direction:column;align-items:center;gap:4px}.soc-opt.pic img{width:100%;aspect-ratio:1.45;object-fit:contain}.soc-opt.pic span{font-size:14px;min-height:20px}',
+'.soc-qpic{align-self:center;width:min(100%,360px);border-radius:18px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.12);background:#fff}.soc-qpic img{display:block;width:100%;max-height:34vh;object-fit:contain;background:#fff}',
+'.soc-stpic{border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.12)}.soc-stpic img{display:block;width:100%;height:210px;object-fit:contain}',
+'.soc-opt.pic{padding:8px;display:flex;flex-direction:column;align-items:center;gap:4px;background:#fff}.soc-opt.pic img{width:100%;aspect-ratio:1.2;object-fit:contain;border-radius:10px}.soc-opt.pic span{font-size:14px;min-height:20px}',
 '.soc-tf{display:grid;grid-template-columns:1fr 1fr;gap:12px}.soc-tf .soc-opt{font-size:22px;min-height:84px}.soc-tf .soc-opt b{display:block;font-size:34px;line-height:1}',
 '@keyframes socshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}',
 '.soc-sort .cur{align-self:center;background:#fff;border-radius:16px;padding:14px 22px;font-size:22px;font-weight:800;box-shadow:0 4px 0 #d8c9ad;min-width:60%;text-align:center}',
@@ -478,7 +807,7 @@ function home(gb){addCss();var id=C.who(),kid=C.isKid(),g=kid?mapGrade(id):3,m=M
 /* ================= 站點頁 ================= */
 function station(u){var id=C.who();C.shell('社會小鎮');C.title(u.n);var B=C.body();
   var bd=C.isKid()&&unitBadge(id,u);
-  var h='<div class="soc soc-st"><div class="soc-sth"><img src="'+img(bd?'lion_cheer':'lion_happy')+'" alt=""><div><small>'+(u.g===3?'三':'四')+'年級'+(u.s==='a'?'上':'下')+'學期'+(u.tag?'・'+esc(u.tag):'')+'</small><b>'+esc(u.n)+'</b><span>'+(bd?'已經拿到家鄉徽章！再玩可以拿更多分數。':'每一課都拿到 2 顆星，就能拿到家鄉徽章。')+'</span></div></div>';
+  var h='<div class="soc soc-st">'+(u.pic?'<div class="soc-stpic"><img src="'+img(u.pic)+'" alt=""></div>':'')+'<div class="soc-sth"><img src="'+img(bd?'lion_cheer':'lion_happy')+'" alt=""><div><small>'+(u.g===3?'三':'四')+'年級'+(u.s==='a'?'上':'下')+'學期'+(u.tag?'・'+esc(u.tag):'')+'</small><b>'+esc(u.n)+'</b><span>'+(bd?'已經拿到家鄉徽章！再玩可以拿更多分數。':'每一課都拿到 2 顆星，就能拿到家鄉徽章。')+'</span></div></div>';
   u.ls.forEach(function(l,i){var s=C.isKid()?lessonStar(id,l[0]):0,n=(BANK[l[0]]||[]).length;
     h+='<button class="soc-les" data-l="'+l[0]+'"><span class="n">'+(i+1)+'</span><span class="nm"><b>第 '+(i+1)+' 課：'+esc(l[1])+'</b><small>'+n+' 題題庫・每次 8 題</small></span><span class="s3">'+[0,1,2].map(function(j){return '<i class="'+(j<s?'on':'')+'">★</i>'}).join('')+'</span></button>'});
   h+='<div class="soc-rw'+(bd?'':' off')+'"><img src="'+img('badge')+'" alt=""><div><b>'+(bd?'已得到「'+esc(u.n)+'」徽章':'過關獎勵：「'+esc(u.n)+'」家鄉徽章')+'</b><br>'+(bd?'收在家鄉護照裡了。':'集滿徽章，家鄉護照就會越來越豐富。')+'</div></div></div>';
@@ -501,8 +830,8 @@ function play(u,lk,qs){var id=C.who(),B=C.body(),i=0,right=0,pts=0,cur=null;C.sh
   if(!qs.length){B.innerHTML='<div class="soc"><p class="soc-note">這裡還沒有題目。</p></div>';return}
   function lion(k){return '<img src="'+img(k)+'" alt="">'}
   function next(){if(i>=qs.length)return result();cur=qs[i];C.prog((i+1)+' / '+qs.length);
-    var q=cur,h='<div class="soc soc-q"><div class="soc-bar"><i style="width:'+(i/qs.length*100)+'%"></i></div>';
-    h+='<div class="soc-ask">'+lion('lion_think')+'<div class="bub"><span class="ty">'+TY[q.t]+'</span><br>'+esc(q.q)+'</div></div><div class="soc-area"></div><div class="soc-out"></div></div>';
+    var q=cur,h='<div class="soc soc-q'+(q.p?' haspic':'')+'"><div class="soc-bar"><i style="width:'+(i/qs.length*100)+'%"></i></div>';
+    h+='<div class="soc-ask">'+lion('lion_think')+'<div class="bub"><span class="ty">'+TY[q.t]+'</span><br>'+esc(q.q)+'</div></div>'+(q.p?'<div class="soc-qpic"><img src="'+img(q.p)+'" alt=""></div>':'')+'<div class="soc-area"></div><div class="soc-out"></div></div>';
     B.innerHTML=h;var A=B.querySelector('.soc-area');
     ({mc:mc,mi:mi,tf:tf,sort:sort,ord:ord,pair:pair})[q.t](q,A);
   }
@@ -561,6 +890,6 @@ function play(u,lk,qs){var id=C.who(),B=C.body(),i=0,right=0,pts=0,cur=null;C.sh
 global.SocialFactory=function(ctx){C=ctx;addCss();
   return {home:home,station:station,review:review,img:img,version:'15.0.0',
     stats:function(){var n=0;for(var k in BANK)n+=BANK[k].length;return {lessons:Object.keys(BANK).length,questions:n}},
-    _bank:BANK,_map:MAP,_open:openState,_units:UK};
+    _bank:BANK,_cap:CAP,_map:MAP,_open:openState,_units:UK};
 };
 })(window);
