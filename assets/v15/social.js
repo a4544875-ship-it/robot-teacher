@@ -1163,7 +1163,12 @@ function rpg(u){var id=C.who(),cfg=CH[u.k];if(!cfg)return station(u);C.shell('�
 }
 /* ================= 對外 ================= */
 global.SocialFactory=function(ctx){C=ctx;addCss();
-  return {home:home,station:station,review:review,img:img,rpg:rpg,badge:unitBadge,markQ:markQ,ready:ready,pts:socPts,stars:function(id){var L=so(id).L||{},n=0;for(var k in L)n+=+(L[k]&&L[k][0])||0;return n},ustar:function(id,uk){var u=UK[uk];if(!u||!u.ls.length)return 0;return Math.min.apply(null,u.ls.map(function(l){return lessonStar(id,l[0])}))},town:function(id){return townOf(socPts(id))},version:'15.0.0',
+  return {home:home,station:station,review:review,img:img,rpg:rpg,badge:unitBadge,markQ:markQ,ready:ready,pts:socPts,stars:function(id){var L=so(id).L||{},n=0;for(var k in L)n+=+(L[k]&&L[k][0])||0;return n},ustar:function(id,uk){var u=UK[uk];if(!u||!u.ls.length)return 0;return Math.min.apply(null,u.ls.map(function(l){return lessonStar(id,l[0])}))},town:function(id){return townOf(socPts(id))},
+    /* 家長後台用：一個孩子的社會整體狀況 */
+    report:function(id){var g=gradeOf(id)>=4?4:3,o=so(id),w=o.w||{},L=o.L||{},units=MAP[g].units.map(function(u){return {k:u.k,n:u.n,s:u.s,badge:unitBadge(id,u),master:unitMaster(id,u),ls:u.ls.map(function(l){var r=L[l[0]];return {k:l[0],n:l[1],star:r?+r[0]||0:0,best:r&&r.length>1?+r[1]||0:0}})}}),
+      wrong=Object.keys(w).filter(function(q){return Array.isArray(w[q])}).map(function(qid){var q=qById(qid),r=w[qid];return q?{q:q.q,a:q.t==='mi'?(CAP[q.a]||''):q.t==='mc'?q.a:q.t==='tf'?(q.a?'對':'錯'):'',lv:+r[0]||0,due:(+r[1]||0)<=dayN(),u:qid.split('-')[0]}:null}).filter(Boolean),
+      nb=units.filter(function(u){return u.badge}).length,st=0;units.forEach(function(u){u.ls.forEach(function(l){st+=l.star})});
+      return {grade:g,real:gradeOf(id),pts:socPts(id),town:townOf(socPts(id)),units:units,badges:nb,total:units.length,stars:st,maxStars:units.reduce(function(a,u){return a+u.ls.length*3},0),wrong:wrong,due:wrong.filter(function(x){return x.due}).length}},version:'15.0.0',
     stats:function(){var n=0;for(var k in BANK)n+=BANK[k].length;return {lessons:Object.keys(BANK).length,questions:n}},
     _bank:BANK,_cap:CAP,_map:MAP,_open:openState,_units:UK};
 };

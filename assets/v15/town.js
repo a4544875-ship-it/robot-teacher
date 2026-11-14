@@ -4,7 +4,7 @@
 (function(global){'use strict';
 global.TownFactory=function(C){
 /* 範例試玩：全部先打開，上線前改回 false */
-var DEMO=true;
+var DEMO=false;
 var SOC=C.SOC,N=12,TW=96,TH=48,PT=230,PB=90,SW=N*TW+40,SH=N*TH+PT+PB,OX=SW/2,OY=PT;
 function img(k){return SOC.img('tn_'+k)}
 var AR={"cloud_lock":0.645,"town_base":0.607,"home_1":0.965,"home_2":1.177,"home_3":1.197,"school_1":0.953,"school_2":0.762,"school_3":0.819,"shop_1":1.093,"shop_2":1.162,"shop_3":1.017,"library":1.036,"center":0.976,"radio":1.212,"paifang":0.825,"rd_dirt":0.75,"rd_gravel":0.781,"rd_stone":0.796,"rd_asphalt":0.772,"tile_water":0.745,"lamp_1":1.761,"lamp_2":2.909,"lamp_3":1.631,"tlight":2.22,"train_f":0.828,"train_b":0.911,"bridge":0.652,"wtower":1.422,"fountain":0.863,"wind_body":1.523,"wind_blade":1.039,"wstation":0.764,"tree_a":1.097,"tree_b":1.473,"flowerbed":0.794,"park":0.715,"ranch":0.768,"bfgarden":0.874,"clocktower":1.323,"observatory":1.0,"ic_coin":1.016,"ic_road":1.123,"ic_power":1.351,"ic_water":1.571,"ic_prosper":1.388,"ic_up":1.46,"ic_build":1.419,"ic_store":1.192,"pp_boy_f":1.925,"pp_boy_b":1.958,"pp_girl_f":1.389,"pp_girl_b":1.43,"pp_grandpa_f":1.763,"pp_grandpa_b":1.74,"pp_mom_f":1.661,"pp_mom_b":1.945,"car_f":0.861,"car_b":0.925,"bus_f":0.893,"bus_b":1.029,"scooter_f":1.575,"scooter_b":1.959,"bike_f":1.462,"bike_b":1.844,"stall":1.051,"bench":0.849,"mailbox":0.876,"recycle":0.744,"flags":0.725,"planter":0.967,"planter2":1.123,"l2_front":1.184,"l2_back":1.279,"l2_side":1.058,"l2_run":1.004,"plinth":0.64,"viewdeck":1.165,"sanheyuan":0.801,"temple_1":1.061,"oldstreet":0.807,"temple_2":0.966,"factory":0.86,"stage":0.713,"farm":0.716,"port":0.573,"tower":1.538,"st_bus":0.945,"st_train":0.777,"st_hsr":0.714,"museum":0.806,"lion_statue":1.015,"town_entry":0.733,"paifang_1":0.907,"paifang_2":0.912,"paifang_3":0.839};
@@ -113,7 +113,7 @@ function unl0(id,it){
   if(it.c==='sci'){var ok=true,w=[];if(it.st){if(!sciSt(id,it.st))ok=false;w.push('自然島「'+STN[it.st]+'」3 關都過關')}if(it.sl){if(sciLv(id)<it.sl)ok=false;w.push('自然等級升到 Lv.'+(it.sl+1)+'「'+SLV[it.sl]+'」')}return {ok:ok,why:w.join('，而且')}}
   if(it.c==='mark'){if(!it.zone)return {ok:true,why:''};var t=((kid()||{}).sa||{}).t||{};return {ok:!!t[it.zone],why:'3D 冒險「'+ZT[it.zone][2]+'」守護成功'}}
   return {ok:true,why:''}}
-function tn(){var k=kid()||{},t=k.tn&&typeof k.tn==='object'?k.tn:{};
+function tn(id){var k=(id?C.Store.kid(id):kid())||{},t=k.tn&&typeof k.tn==='object'?k.tn:{};
   return {o:(Array.isArray(t.o)?t.o:[]).map(function(s){var a=String(s).split(',');return {k:a[0],x:+a[1]|0,y:+a[2]|0,f:+a[3]|0}}).filter(function(o){return IT[o.k]}),
     r:Array.isArray(t.r)?t.r.slice():[],w:Array.isArray(t.w)?t.w.slice():[],seen:t.seen&&typeof t.seen==='object'?t.seen:{},g:t.g|0,sc:t.sc==null?null:+t.sc||0}}
 function save(T){if(!C.isKid())return;C.Store.mut(C.who(),function(k){k.tn={o:T.o.map(function(o){return o.k+','+o.x+','+o.y+','+(o.f?1:0)}),r:T.r,w:T.w,seen:T.seen,g:T.g,sc:T.sc==null?0:T.sc}})}
@@ -356,6 +356,7 @@ function place(){var g=V.ghost,it=IT[g.k];if(!g||!g.ok)return;var T=V.T;
   if(V.pick.move!=null){var o=T.o[V.pick.move];o.x=g.x;o.y=g.y}
   else{if(it.p){if(coins()<it.p){toast('家鄉幣不夠。');return}addCoins(-it.p)}T.o.push({k:g.k,x:g.x,y:g.y,f:g.f})}
   T.seen[g.k]=1;save(T);C.sfx('win');try{C.confetti(null,30)}catch(e){}
+  if(V.pick.move==null&&(it.c==='soc'||it.c==='sci'))try{C.onBuild&&C.onBuild()}catch(e){}
   var nm=it.n;V.pick=null;V.ghost=null;render();var e=V.el.querySelector('.tn-hint');if(e)e.remove();
   if(it.c==='soc'){var o2=T.o[T.o.length-1],n=needs(o2);toast('蓋好「'+nm+'」了！'+(!n.road?'記得在旁邊鋪一條路，才會有人住進來。':'旁邊有路，居民搬進來了！'))}
   else toast('放好「'+nm+'」了！')}
@@ -382,9 +383,9 @@ function info(i){var T=V.T,o=T.o[i],it=IT[o.k],id=V.id;V.sel=i;render();closeShe
     if(a==='mv'){closeSheet();V.sel=-1;V.pick={k:o.k,move:i,f:o.f};V.ghost=null;render();hint();return}
     if(a==='up'&&upOk){if(count(up.k)>=up.mx){toast('「'+up.n+'」已經蓋滿 '+up.mx+' 個了。');return}
       var x=Math.min(o.x,N-up.fp),y=Math.min(o.y,N-up.fp);if(!canPlace(up,x,y,i)){C.sfx('no');toast('「'+up.n+'」比較大，要 '+up.fp+'×'+up.fp+' 格。先把旁邊空出來，或移到空地再升級。');return}
-      o.k=up.k;o.x=x;o.y=y;T.seen[up.k]=1;save(T);C.sfx('win');try{C.confetti(null,60)}catch(e){}C.say('升級成「'+up.n+'」了！','happy');info(i)}})})}
+      o.k=up.k;o.x=x;o.y=y;T.seen[up.k]=1;save(T);C.sfx('win');try{C.onBuild&&C.onBuild()}catch(e){}try{C.confetti(null,60)}catch(e){}C.say('升級成「'+up.n+'」了！','happy');info(i)}})})}
 function toast(t){if(!V||!t)return;var o=V.el.querySelector('.tn-toast');if(o)o.remove();var d=document.createElement('div');d.className='tn-toast';d.textContent=t;V.el.appendChild(d);V.tm.push(setTimeout(function(){d.remove()},3200))}
 
-return {newCount:function(){if(!C.isKid()||!kid())return 0;var id=C.who(),T=tn(),n=newUnl(id,T).length,sn=starsNow(id);return {n:n,coins:Math.max(0,(sn-(T.sc==null?0:T.sc)))*PER_STAR+(T.g?0:30)}},entry:entry,open:open,close:close,css:css,_items:IT,_V:function(){return V},_C:function(){return C},version:'1.0.0'};
+return {stat:function(id){var T=tn(id),keep=V;V={T:T,id:id};try{var s=prosper(),nb=T.o.filter(function(o){return IT[o.k].c==='soc'}).length,ns=T.o.filter(function(o){return IT[o.k].c==='sci'}).length;return {pros:s,name:prName(s),soc:nb,sci:ns,all:T.o.length,roads:T.r.length,coins:+(((C.Store.kid(id)||{}).sa||{}).c)||0,land:landOf(id).n}}finally{V=keep}},newCount:function(){if(!C.isKid()||!kid())return 0;var id=C.who(),T=tn(),n=newUnl(id,T).length,sn=starsNow(id);return {n:n,coins:Math.max(0,(sn-(T.sc==null?0:T.sc)))*PER_STAR+(T.g?0:30)}},entry:entry,open:open,close:close,css:css,_items:IT,_V:function(){return V},_C:function(){return C},version:'1.0.0'};
 };
 })(window);

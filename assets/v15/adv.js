@@ -7,7 +7,7 @@
 (function(global){
 'use strict';
 var C=null,SOC=null,T=null,G=null,css=false;
-var DEMO=true; /* 測試版：還沒通過的區也先開放試玩 */
+var DEMO=false; /* 測試版時設 true：還沒通過的區也先開放試玩 */
 var ZONES=[
  {k:'3a3',n:'班級廣場',g:3,boss:'m_purple',bn:'吵架怪',tr:['sc_award','班級榮譽獎盃'],sky:0x9fd8ff,top:0x7fd06f,side:0xb07a4a,path:0xf1d9a6,built:1},
  {k:'3a1',n:'溫馨家園',g:3,boss:'m_bucket',bn:'懶惰怪',tr:['fam_three','全家福相框']},

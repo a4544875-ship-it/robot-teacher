@@ -82,11 +82,11 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v10/progress.js?v=10.1.0"></script>
 <script src="assets/v11/esk.js?v=11.2.0"></script>
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
-<script src="assets/v13/parent.js?v=14.0.0"></script>
+<script src="assets/v13/parent.js?v=15.6.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=15.5.2"></script>
-<script src="assets/v15/adv.js?v=15.4.5"></script>
-<script src="assets/v15/town.js?v=15.5.1"></script>
+<script src="assets/v15/social.js?v=15.6.0"></script>
+<script src="assets/v15/adv.js?v=15.6.0"></script>
+<script src="assets/v15/town.js?v=15.6.0"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -1365,8 +1365,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 .azd{position:absolute;right:4px;bottom:4px;height:62%;max-width:34%;object-fit:contain;opacity:.9;pointer-events:none}
 
 /* 排行榜科目切換 */
-.subsw.rks{grid-template-columns:repeat(3,minmax(0,1fr));margin:4px 0 6px;position:sticky;top:0;z-index:3}
-.subsw.rks button{font-size:16px;padding:10px 4px}
+.subsw.rks{grid-template-columns:repeat(4,minmax(0,1fr));margin:4px 0 6px;position:sticky;top:0;z-index:3}
+.subsw.rks button{font-size:15px;padding:10px 2px}
 /* 選角色：三科一起看 */
 .kidcard.kc3{align-items:center}
 .kc3 .kh{display:flex;align-items:baseline;gap:8px;justify-content:space-between}
@@ -2207,6 +2207,19 @@ function stMenu(g){
 }
 function stopGameOverlay(){if(typeof OB!=='undefined'&&OB)OB.stop()}
 
+/* 排行榜：社會（社會分、家鄉徽章、小石獅冒險、家鄉小鎮） */
+var ADV_LV=[0,120,300,550,900,1350,1900,2600,3400,4300];
+function advLv(id){var x=+(((Store.kid(id)||{}).sa||{}).xp)||0,l=1;ADV_LV.forEach(function(v,i){if(x>=v)l=i+1});return l}
+function socRank(){var S=window.__soc,T=window.__town;if(!S)return '<p class="gap">社會島還在載入，等一下再看看。</p>';
+  var arr=KIDS.map(function(k){var R=S.report(k.id);return {k:k,R:R,p:R.pts,lv:advLv(k.id),tr:Object.keys((((Store.kid(k.id)||{}).sa||{}).t)||{}).length,ts:T?T.stat(k.id):null}}).sort(function(a,b){return b.p-a.p});
+  var h='<h2 class="h">🏙️ 社會排行榜</h2><div class="podium">'+arr.map(function(r,i){var t=r.R.town,rank=(i>0&&r.p===arr[0].p)?0:i;
+    return '<div class="rk '+r.k.id+(i===0&&r.p>0?' lead':'')+'" style="'+kbg(r.k)+'"><div class="medal">'+(r.p>0?(['🥇','🥈','🥉'][rank]||''):'')+'</div><div class="face">'+kface(r.k)+'</div><b>'+esc(r.k.name)+'</b>'+
+      '<div class="lv"><img src="'+S.img(t.icon)+'" alt="" style="width:56px;height:56px;border-radius:12px;object-fit:cover;display:block;margin:2px auto">'+esc(t.name)+'</div><div class="pt en">'+r.p+'<small> 分</small></div>'+
+      '<div class="sm">家鄉徽章 '+r.R.badges+' / '+r.R.total+'・星星 '+r.R.stars+'</div><div class="big"><small>冒險 Lv.'+r.lv+'・寶物 '+r.tr+(r.ts?'・小鎮 '+esc(r.ts.name):'')+'</small></div></div>'}).join('')+'</div>';
+  function bars(title,f,unit){var v=arr.map(function(r){return {k:r.k,v:f(r)}}),top=Math.max.apply(null,v.map(function(r){return r.v})),mx=Math.max(1,top);
+    return '<div class="grow"><div class="gname">'+title+'</div>'+v.map(function(r){return '<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.v===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.v/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.v+(unit||'')+'</span></div>'}).join('')+'</div>'}
+  h+=bars('🏙️ 社會總積分',function(r){return r.p})+bars('🏅 家鄉徽章',function(r){return r.R.badges})+bars('⭐ 社會星星',function(r){return r.R.stars})+bars('🦁 小石獅冒險等級',function(r){return r.lv})+(T?bars('🏡 家鄉小鎮繁榮度',function(r){return r.ts?r.ts.pros:0}):'');
+  return h}
 /* 排行榜：自然等級頒獎台（跟英文樹、數學花一樣） */
 function sciPodium(){var arr=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}).sort(function(a,b){return b.p-a.p});
   var h='<div class="podium">'+arr.map(function(r,i){var L=scLevel(r.p),rank=(i>0&&r.p===arr[0].p)?0:i,pc=L.to?Math.round((r.p-L.from)/(L.to-L.from)*100):100;
@@ -2585,7 +2598,7 @@ $('#gBack').addEventListener('click',function(){sfx('tap');backGameHome();say('�
 function shell(title){curGame=GAMES.filter(function(x){return x.zh===title})[0].id;roundPts=0;gHome.hidden=true;gPlay.hidden=false;PANELS.game.scrollTop=0;$('#gTitle').textContent=title+'・'+egrade+'年級';$('#gProg').textContent='';gBody.innerHTML=''}
 function prog(t){$('#gProg').textContent=t}
 function startGame(g){cleanupGame();GAME_FN[g.id](g)}
-function award(n){if(!isKid())return;if(MATH_IDS[curGame]&&curGame!=='mbingo'&&(n===1||n===2))Learn.mathok();roundPts+=n*10;Store.award(who,n*10,curGame);plusFx(n*10)}
+function award(n){if(!isKid())return;if(MATH_IDS[curGame]&&curGame!=='mbingo'&&(n===1||n===2))Learn.mathok();if(curGame==='soc'&&(n===1||n===2))Learn.pt('soc');roundPts+=n*10;Store.award(who,n*10,curGame);plusFx(n*10)}
 function finish(o){
   var bonus=isKid()?Store.finishGame(who,curGame,{score:o.score||0,total:o.total||0,roundPts:roundPts,eg:egrade}):0;
   var total=roundPts+bonus;
@@ -2622,11 +2635,11 @@ function rosterWire(){var el=PANELS.rec;function re(){renderRec()}
 /* ========== 9. leaderboard ========== */
 var rankSub={s:'',g:null};
 function renderRank(){
-  var el=PANELS.rank,RS=(rankSub.g===gOpen&&rankSub.s)||(gOpen==='math'?'math':gOpen==='sci'?'sci':'en');
+  var el=PANELS.rank,RS=(rankSub.g===gOpen&&rankSub.s)||(gOpen==='math'?'math':gOpen==='sci'?'sci':gOpen==='soc'?'soc':'en');
   var wg=KIDS.map(function(k){return {k:k,g:Learn.gain(k.id),s:Learn.info(k.id).streak}}),wmx=Math.max.apply(null,wg.map(function(r){return r.g}).concat([1]));
   var h='<div class="wkbox grow"><b>'+ic('trophy')+' 本週進步王</b><small>跟自己比！這個星期多拿最多分的人就是進步王，每週一重新開始。</small>'+wg.map(function(r){return '<div class="bar"><span>'+esc(r.k.short)+(r.g>0&&r.g===wmx?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.g/wmx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">+'+r.g+(r.s?'・🔥'+r.s:'')+'</span></div>'}).join('')+'</div>';
   h+='<div class="gdbtn"><button class="btn alt" data-gd="en">🌳 進入樹園</button><button class="btn alt" data-gd="math">🌻 進入花園</button></div>';
-  h+='<div class="subsw rks">'+[['en','🔤 英文'],['math','🔢 數學'],['sci','🔬 自然']].map(function(x){return '<button data-rs="'+x[0]+'" aria-pressed="'+(RS===x[0])+'">'+x[1]+'</button>'}).join('')+'</div>';
+  h+='<div class="subsw rks">'+[['en','🔤 英文'],['math','🔢 數學'],['sci','🔬 自然'],['soc','🏙️ 社會']].map(function(x){return '<button data-rs="'+x[0]+'" aria-pressed="'+(RS===x[0])+'">'+x[1]+'</button>'}).join('')+'</div>';
   ['en','math'].filter(function(s){return s===RS}).forEach(function(sub){var G=GROW[sub],arr=KIDS.map(function(k){return {k:k,g:growOf(k.id,sub)}}).sort(function(a,b){return b.g.tot-a.g.tot});
     h+='<h2 class="h">'+G.ico+' '+G.name+'排行榜</h2><div class="podium">';
     arr.forEach(function(r,i){var x=r.g,rank=(i>0&&x.tot===arr[0].g.tot)?0:i,span=x.nx[0]-x.lv[0],pc=Math.round((x.cur-x.lv[0])/span*100);
@@ -2645,9 +2658,10 @@ function renderRank(){
     GAMES.filter(function(g){return g.sub==='sci'}).forEach(function(g){var w=KIDS.map(function(k){return {k:k,x:Store.kid(k.id).byGame[g.id]||{pts:0,plays:0,best:0}}}),t2=Math.max.apply(null,w.map(function(r){return r.x.pts})),m2=Math.max(1,t2);
       o+='<div class="grow"><div class="gname">'+g.ico+' '+esc(g.zh)+'</div>';w.forEach(function(r){o+='<div class="bar"><span>'+esc(r.k.short)+(t2>0&&r.x.pts===t2?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/m2*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>'});o+='</div>'});
     return o})();
+  if(RS==='soc')h+=socRank();
   if(RS==='en')h+='<h2 class="h">🏝️ 闖關島最快紀錄</h2><div class="obrk">'+OB.STG.map(function(s,i){var a=KIDS.map(function(k){return ((Store.kid(k.id).obby||{}).best||{})[i]||0}),mn=Math.min.apply(null,a.filter(Boolean));
     return '<div><span>'+s.ico+' '+(i+1)+'. '+esc(s.n)+'</span>'+KIDS.map(function(k,j){return '<b class="'+(a[j]&&a[j]===mn?'w':'')+'">'+esc(k.short)+' '+(a[j]?OB.ft(a[j]):'—')+'</b>'}).join('')+'</div>'}).join('')+'</div>';
-  h+='<details class="rule"><summary>積分怎麼算？</summary><ul><li>單字闖關島：踩對圖 10 分、拼對字 20 分、過關 30 分（魔王關 50 分）、連線對戰獲勝再加 30 分</li><li>單字飛車：開對車道 10 分，跑完全程 20 分</li><li>單字拔河、單字爬塔：答對一題 10 分</li><li>九九賓果：佔一格 10 分；數字貪吃蛇：吃對一個 10 分；泡泡湊數：湊對一組 10 分；鱷魚比大小：答對一題 5 分</li><li>單字射擊場：射中 10 分；字母隕石：拼對一個單字 20 分</li><li>任何遊戲連線對戰（或跟小機對決）獲勝：再加 30 分</li><li>英文遊戲每一局：過關再加 50 分，連續答對還有連擊加成（最多 50 分）；這些分數同時變成陣營的能量</li><li>探險家段位（看英文總分）：1000 分白銀勇士、3000 分黃金守衛、6000 分鑽石法師、10000 分星耀大英雄</li><li>魔法星餐廳：一次就上對一道菜 10 分（自己陣營的客人和貓頭鷹校長兩倍）、今日特餐再加 10 分、尖峰時刻每道菜多 5 分小費</li><li>餐廳招牌：累積接待 50 位客人換上「閃耀霓虹快餐車」招牌、100 位升級「星空玻璃屋餐廳」、200 位升級「漂浮魔法大飯店」，每一級都有新客人</li><li>合作打魔王：打一下 10 分，打贏兩個人都再加 30 分</li><li>每天第一次玩完一局：再加 20 分</li><li>每日任務：每完成一個得 1 💧，三個都完成再送 2 💧。💧 可以在花園澆水（+50 分）、買裝飾，或送給對方</li><li>答錯的題目會記在「圖鑑與錯題本」，之後玩遊戲會多出幾次，連續答對 3 次就畢業</li><li>英文和數學的分數分開算：玩英文遊戲長「樹」，玩數學遊戲長「花」</li><li>拿到種子後，到排行榜上面的「樹園／花園」把它種在喜歡的格子裡，分數越高它長得越大；也可以去參觀對方的花園</li><li>每 10000 分就收成一棵大樹（或一束花王），收進收藏，然後從種子開始再長一次。每一輪收成的品種都不一樣，各有 8 種可以收集</li></ul><b>🌳 英文成長</b><ul class="lvtab">'+GROW.en.st.map(function(x){return '<li>'+gimg(x[2])+' '+x[1]+'：'+x[0]+' 分</li>'}).join('')+'<li>'+gimg('e8')+' 大樹：10000 分</li></ul><b>🌻 數學成長</b><ul class="lvtab">'+GROW.math.st.map(function(x){return '<li>'+gimg(x[2])+' '+x[1]+'：'+x[0]+' 分</li>'}).join('')+'<li>'+gimg('m8')+' 花王：10000 分</li></ul></details>';
+  h+='<details class="rule"><summary>積分怎麼算？</summary><ul><li>社會遊戲樂園：答對一題 10 分（看圖、排順序、配對全對 20 分），一課玩完 30 分；小石獅冒險答對也會加社會分</li><li>單字闖關島：踩對圖 10 分、拼對字 20 分、過關 30 分（魔王關 50 分）、連線對戰獲勝再加 30 分</li><li>單字飛車：開對車道 10 分，跑完全程 20 分</li><li>單字拔河、單字爬塔：答對一題 10 分</li><li>九九賓果：佔一格 10 分；數字貪吃蛇：吃對一個 10 分；泡泡湊數：湊對一組 10 分；鱷魚比大小：答對一題 5 分</li><li>單字射擊場：射中 10 分；字母隕石：拼對一個單字 20 分</li><li>任何遊戲連線對戰（或跟小機對決）獲勝：再加 30 分</li><li>英文遊戲每一局：過關再加 50 分，連續答對還有連擊加成（最多 50 分）；這些分數同時變成陣營的能量</li><li>探險家段位（看英文總分）：1000 分白銀勇士、3000 分黃金守衛、6000 分鑽石法師、10000 分星耀大英雄</li><li>魔法星餐廳：一次就上對一道菜 10 分（自己陣營的客人和貓頭鷹校長兩倍）、今日特餐再加 10 分、尖峰時刻每道菜多 5 分小費</li><li>餐廳招牌：累積接待 50 位客人換上「閃耀霓虹快餐車」招牌、100 位升級「星空玻璃屋餐廳」、200 位升級「漂浮魔法大飯店」，每一級都有新客人</li><li>合作打魔王：打一下 10 分，打贏兩個人都再加 30 分</li><li>每天第一次玩完一局：再加 20 分</li><li>每日任務：每完成一個得 1 💧，三個都完成再送 2 💧。💧 可以在花園澆水（+50 分）、買裝飾，或送給對方</li><li>答錯的題目會記在「圖鑑與錯題本」，之後玩遊戲會多出幾次，連續答對 3 次就畢業</li><li>英文和數學的分數分開算：玩英文遊戲長「樹」，玩數學遊戲長「花」</li><li>拿到種子後，到排行榜上面的「樹園／花園」把它種在喜歡的格子裡，分數越高它長得越大；也可以去參觀對方的花園</li><li>每 10000 分就收成一棵大樹（或一束花王），收進收藏，然後從種子開始再長一次。每一輪收成的品種都不一樣，各有 8 種可以收集</li></ul><b>🌳 英文成長</b><ul class="lvtab">'+GROW.en.st.map(function(x){return '<li>'+gimg(x[2])+' '+x[1]+'：'+x[0]+' 分</li>'}).join('')+'<li>'+gimg('e8')+' 大樹：10000 分</li></ul><b>🌻 數學成長</b><ul class="lvtab">'+GROW.math.st.map(function(x){return '<li>'+gimg(x[2])+' '+x[1]+'：'+x[0]+' 分</li>'}).join('')+'<li>'+gimg('m8')+' 花王：10000 分</li></ul></details>';
   el.innerHTML=h;
   el.querySelectorAll('[data-gd]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');openGarden(isKid()?who:KIDS[0].id,b.dataset.gd)})});
   el.querySelectorAll('[data-rs]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');rankSub={s:b.dataset.rs,g:gOpen};var y=el.scrollTop;renderRank();el.scrollTop=y})});
@@ -2837,7 +2851,18 @@ var Learn=(function(){
   function week(){var d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return dstr(d)}
   function hash(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)}
   function gname(id){var g=GAMES.filter(function(x){return x.id===id})[0];return g?g.ico+' '+g.zh:id}
-  function quests(id,d){var h=hash(id+d),SC_G=STN.filter(function(s){return s.on}).map(function(s){return s.id}),all=EN_G.concat(MA_G,SC_G),g1=all[h%all.length],u1=MA_G.indexOf(g1)>=0?'math':SC_G.indexOf(g1)>=0?'sci':'en',s2=['en','math','sci'][(h>>3)%3],
+  /* 2026-11-15 起每日任務加入社會島、小石獅冒險、家鄉小鎮（三年級以上才出社會題） */
+  var SO_N={soc:'🏙️ 社會遊戲樂園的一課',socadv:'🦁 小石獅守護家鄉'};
+  function socOK(id){try{return PGX&&PGX.grade(id)>=3}catch(e){return false}}
+  function mix(x){x^=x>>>16;x=Math.imul(x,0x45d9f3b);x^=x>>>16;x=Math.imul(x,0x45d9f3b);x^=x>>>16;return x>>>0}
+  function quests(id,d){if(d<'2026-11-15')return questsV1(id,d);var h=mix(hash(id+d)),soc=socOK(id),SC_G=STN.filter(function(s){return s.on}).map(function(s){return s.id}),SO_G=soc?['soc','socadv']:[],all=EN_G.concat(MA_G,SC_G,SO_G),g1=all[h%all.length],
+      u1=MA_G.indexOf(g1)>=0?'math':SC_G.indexOf(g1)>=0?'sci':SO_G.indexOf(g1)>=0?'soc':'en',subs=soc?['en','math','sci','soc']:['en','math','sci'],s2=subs[(h>>>3)%subs.length];
+    if(s2===u1)s2=subs[((h>>>3)+1)%subs.length];
+    var oth=all.filter(function(g){return g!==g1&&(u1==='en'?EN_G:u1==='math'?MA_G:u1==='sci'?SC_G:SO_G).indexOf(g)<0}),g3=oth[(h>>>5)%oth.length],q3=(h>>>7)%4;
+    function pl(g){return {t:'play',g:g,n:1,txt:SO_N[g]?'玩一局 '+SO_N[g]:'玩一局 '+gname(g)}}
+    var okT={en:'答對 10 題英文',math:'答對 10 題數學',sci:'在自然探險島做對 10 次',soc:'在社會遊戲樂園答對 10 題'};
+    return [pl(g1),{t:'ok',s:s2,n:10,txt:okT[s2]},q3===0?{t:'vs',n:1,txt:'跟人連線或跟小機對決一場'}:q3===1&&u1!=='sci'?{t:'star',n:2,txt:'在自然探險島拿到 2 顆星'}:q3===2?{t:'town',n:1,txt:'到家鄉小鎮蓋或升級一棟建築'}:pl(g3)]}
+  function questsV1(id,d){var h=hash(id+d),SC_G=STN.filter(function(s){return s.on}).map(function(s){return s.id}),all=EN_G.concat(MA_G,SC_G),g1=all[h%all.length],u1=MA_G.indexOf(g1)>=0?'math':SC_G.indexOf(g1)>=0?'sci':'en',s2=['en','math','sci'][(h>>3)%3],
       oth=u1==='math'?EN_G.concat(SC_G):u1==='sci'?EN_G.concat(MA_G):MA_G.concat(SC_G),g3=oth[(h>>5)%oth.length],q3=(h>>7)%3;
     return [{t:'play',g:g1,n:1,txt:'玩一局 '+gname(g1)},{t:'ok',s:s2,n:10,txt:s2==='sci'?'在自然探險島做對 10 次':'答對 10 題'+(s2==='en'?'英文':'數學')},q3===0?{t:'vs',n:1,txt:'跟人連線或跟小機對決一場'}:q3===1&&u1!=='sci'?{t:'star',n:2,txt:'在自然探險島拿到 2 顆星'}:{t:'play',g:g3,n:1,txt:'玩一局 '+gname(g3)}]}
   function ensure(k){var d=day();if(!k.day||k.day.d!==d)k.day={d:d,p:[0,0,0],done:0};if(!Array.isArray(k.day.p))k.day.p=[0,0,0];
@@ -2847,7 +2872,7 @@ var Learn=(function(){
     if(!isKid())return;var msgs=[];
     Store.mut(who,function(k){ensure(k);if(pre)pre(k);
       quests(who,k.day.d).forEach(function(q,i){if(k.day.p[i]>=q.n)return;
-        if((q.t==='play'&&type==='play'&&arg===q.g)||(q.t==='ok'&&type==='ok'&&arg===q.s)||(q.t==='vs'&&type==='vs')||(q.t==='star'&&type==='star')){k.day.p[i]++;if(k.day.p[i]>=q.n){k.water=(k.water||0)+1;msgs.push('任務完成：'+q.txt+'！得到 1 💧')}}});
+        if((q.t==='play'&&type==='play'&&arg===q.g)||(q.t==='ok'&&type==='ok'&&arg===q.s)||(q.t==='vs'&&type==='vs')||(q.t==='star'&&type==='star')||(q.t==='town'&&type==='town')){k.day.p[i]++;if(k.day.p[i]>=q.n){k.water=(k.water||0)+1;msgs.push('任務完成：'+q.txt+'！得到 1 💧')}}});
       if(!k.day.done&&quests(who,k.day.d).every(function(q,i){return k.day.p[i]>=q.n})){k.day.done=1;k.water=(k.water||0)+2;var st=k.streak||{n:0,last:''};
         st.n=st.last===day(-1)?st.n+1:st.last===day()?st.n:1;st.last=day();k.streak=st;msgs.push('今天的任務全部完成！再送 2 💧，連續 '+st.n+' 天 🔥')}});
     if(msgs.length)setTimeout(function(){sfx('win');confetti(null,30);say(msgs[msgs.length-1],'happy')},900)}
@@ -2874,7 +2899,7 @@ var Learn=(function(){
     sci:function(key,ok){mark(key,ok,'sci')},sciok:function(){ev('ok','sci')},mathok:function(){ev('ok','math')},
     ok:function(w){if(w&&!w.m)mark(w[0],true,'en')},bad:function(w){if(w&&!w.m)mark(w[0],false,'en')},
     t:function(a,b,ok){mark(a+'×'+b,ok,'math')},pt:function(sub){ev('ok',sub)},
-    play:function(gid){ev('play',gid)},vs:function(){ev('vs')},star:function(n){for(var i=0;i<(n|0);i++)ev('star')},
+    play:function(gid){ev('play',gid)},vs:function(){ev('vs')},town:function(){ev('town')},star:function(n){for(var i=0;i<(n|0);i++)ev('star')},
     /* 自己玩的時候把「要加強」的題目排到前面（連線時兩邊題目要一樣，所以不動） */
     boost:function(list,tok){if(tok)return list;var wk=weakW(list);if(!wk.length)return list;wk=wk.slice(0,Math.ceil(list.length/3));return wk.concat(list.filter(function(w){return wk.indexOf(w)<0}))},
     pick:function(pool){var wk=weakW(pool);return wk.length&&Math.random()<.4?wk[rand(wk.length)]:pool[rand(pool.length)]},
@@ -5273,14 +5298,14 @@ if(window.SocialFactory)try{(function(){
   var subPts0=subPts;subPts=function(d,sub){var g=(d&&d.byGame)||{},so=0;for(var id in g)if(id==='soc')so+=+g[id].pts||0;if(sub==='soc')return so;var r=subPts0(d,sub);return sub==='en'?Math.max(0,r-so):r};
   SOCX=window.SocialFactory({Store:Store,PGX:function(){return PGX},isKid:isKid,who:function(){return who},esc:esc,sfx:sfx,say:say,confetti:confetti,kidName:function(){return nm()},egrade:function(){return egrade},
     shell:shell,body:function(){return gBody},title:function(t){$('#gTitle').textContent=t},prog:function(t){$('#gProg').textContent=t},award:award,
-    finishBonus:function(score,total){return Store.finishGame(who,'soc',{score:score,total:total,roundPts:roundPts,eg:egrade})},
+    finishBonus:function(score,total){var x=Store.finishGame(who,'soc',{score:score,total:total,roundPts:roundPts,eg:egrade});Learn.play('soc');return x},
     goHome:function(){gOpen='soc';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}}});
   window.__soc=SOCX;
   if(window.AdvFactory){var ADV=window.AdvFactory({SOC:SOCX,Store:Store,Net:Net,isKid:isKid,who:function(){return who},esc:esc,sfx:sfx,say:say,confetti:confetti,kidName:function(){return nm()},
-    award:function(n){var g0=curGame;curGame='soc';try{award(n)}finally{curGame=g0}},finishBonus:function(score,total){return Store.finishGame(who,'soc',{score:score,total:total,roundPts:0,eg:egrade})},
+    award:function(n){var g0=curGame;curGame='soc';try{award(n)}finally{curGame=g0}},finishBonus:function(score,total){var x=Store.finishGame(who,'soc',{score:score,total:total,roundPts:0,eg:egrade});Learn.play('socadv');return x},
     refresh:function(){try{if(gOpen==='soc'&&!curGame)renderGameHome();updatePill()}catch(e){}}});ADV.css();window.__socAdv=ADV}
   if(window.TownFactory){window.__town=window.TownFactory({SOC:SOCX,Store:Store,isKid:isKid,who:function(){return who},esc:esc,sfx:sfx,say:say,confetti:confetti,
-    sciLv:function(id){return scLevel(subPts(Store.kid(id),'sci')).i},sciPts:function(id){return subPts(Store.kid(id),'sci')},sciStamp:function(id,k){return scStampAny(id,k)},sciStars:function(id){var n=0;STN.forEach(function(st){[2,3,4].forEach(function(g){var r=scRowG(id,st.k,g);n+=r[0]+r[1]+r[2]})});return n},
+    sciLv:function(id){return scLevel(subPts(Store.kid(id),'sci')).i},sciPts:function(id){return subPts(Store.kid(id),'sci')},onBuild:function(){Learn.town()},sciStamp:function(id,k){return scStampAny(id,k)},sciStars:function(id){var n=0;STN.forEach(function(st){[2,3,4].forEach(function(g){var r=scRowG(id,st.k,g);n+=r[0]+r[1]+r[2]})});return n},
     refresh:function(){try{if((gOpen==='soc'||gOpen==='sci')&&!curGame)renderGameHome();updatePill()}catch(e){}}})}
   var up0=updatePill;updatePill=function(){up0.apply(this,arguments);try{if(!isKid())return;var t=SOCX.town(who),el=$('#starNum');if(el&&!el.querySelector('.sp.so')){var sp=document.createElement('span');sp.className='sp so';sp.innerHTML='<img class="gi" src="'+SOCX.img(t.icon)+'" alt="" style="border-radius:50%;object-fit:cover"><i>'+t.pts+'</i>';el.appendChild(sp)}}catch(e){}};
   var rgh=renderGameHome;renderGameHome=function(){var soc=gOpen==='soc';rgh.apply(this,arguments);
