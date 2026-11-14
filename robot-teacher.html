@@ -42,9 +42,9 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=14.0.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=15.5.0"></script>
-<script src="assets/v15/adv.js?v=15.4.4"></script>
-<script src="assets/v15/town.js?v=15.5.0"></script>
+<script src="assets/v15/social.js?v=15.5.1"></script>
+<script src="assets/v15/adv.js?v=15.4.5"></script>
+<script src="assets/v15/town.js?v=15.5.1"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -565,7 +565,7 @@ body{position:fixed;top:0;bottom:0;left:0;right:0;height:auto;overscroll-behavio
 .dyq{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:15px}.dyq .tx{flex:1;min-width:0}.dyq .pg{font-weight:700;color:var(--ink-soft)}
 .dyq.ok .tx{text-decoration:line-through;opacity:.6}
 .dyt{margin:4px 0 8px;font-size:12px;color:var(--ink-soft)}
-.dyb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dyb .btn{font-size:14px;padding:8px 6px;background:var(--surface-2)}
+.dyb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dyb .dytown{grid-column:1/-1;display:flex;align-items:center;gap:10px;text-align:left;padding:6px 12px 6px 8px}.dytown img{width:58px;height:44px;object-fit:contain;flex:none}.dytown span{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}.dytown b{font-size:15px}.dytown small{font-size:12px;opacity:.75;font-weight:700}.dytown i{font-style:normal;flex:none;background:#e53935;color:#fff;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:900}.dyb .btn{font-size:14px;padding:8px 6px;background:var(--surface-2)}
 /* 圖鑑 */
 .book{background:linear-gradient(170deg,#1c2a52,#111a36)}
 .bkh{margin:8px 0 0;font-size:17px}
@@ -2136,7 +2136,6 @@ function sciHome(){
   var pts=isKid()?subPts(Store.kid(who),'sci'):0,L=scLevel(pts),ns=isKid()?scStamps(who):0,td=scToday();
   var pc=L.to?Math.round((pts-L.from)/(L.to-L.from)*100):100;
   var h='<div class="sxh"><img src="'+L.img+'" alt=""><div class="t"><small>自然等級 Lv.'+(L.i+1)+'</small><b>'+esc(L.name)+'</b><div class="bar"><i style="width:'+pc+'%"></i></div><small>'+(L.to?'自然分 '+pts+'・再 '+(L.to-pts)+' 分升到「'+esc(L.next)+'」':'自然分 '+pts+'・最高等級了！')+'</small></div><div class="stp"><b>'+ns+'/10</b>'+(scG()===4?'四年級以上':egrade+'年級')+'印章</div></div>';
-  if(window.__town)h+=window.__town.entry('sci');
   h+='<div class="sxmap"><img src="'+SCIA.map+'" alt="自然探險島地圖">';
   STN.forEach(function(s){var r=isKid()?scRow(who,s.k):[0,0,0],st=r[0]+r[1]+r[2],stamp=r[0]&&r[1]&&r[2];
     var tdy=s.on&&td&&td.k===s.k;
@@ -2145,7 +2144,6 @@ function sciHome(){
   h+='</div><div class="sxbook"><h3>📔 自然探險手冊・集印章</h3><div class="sxst">'+STN.map(function(s){var on=isKid()&&scStamp(who,s.k);return '<span class="'+(on?'on':'')+'"><img src="'+SCIA[s.ic]+'" alt="">'+esc(s.zh.replace('冰與水的瀑布湖','冰與水'))+'</span>'}).join('')+'</div></div>'+
     '<p class="sxnote">點地圖上的小島就能開始玩！每一站有 3 關，全部過關就能蓋印章，花園還會多一個會動的魔法裝飾。題目會跟著 '+egrade+' 年級自動調整。</p>';
   gb.innerHTML=h;
-  var te=gb.querySelector('[data-town]');if(te)te.addEventListener('click',function(){sfx('win');window.__town.open()});
   gb.querySelectorAll('[data-st]').forEach(function(b){b.addEventListener('click',function(){var s=STK[b.dataset.st];if(!s.on){sfx('no');say('「'+s.zh+'」還在建造中，先去別的小島探險吧！','oops');return}sfx('win');confetti(b,16);var g=GAMES.filter(function(x){return x.id===s.id})[0];if(g)GAME_FN[g.id](g)})});
   say(td?'今天推薦你去「'+td.zh+'」探險！點地圖上的小島開始吧！':'點地圖上的小島開始探險！','happy');
 }
@@ -2847,8 +2845,11 @@ function renderDay(){var el=$('#dayBox');if(!el)return;if(!isKid()||gOpen){el.hi
   el.innerHTML='<div class="dyh"><b>'+ic('chest')+' 今日任務</b><span>'+ic('fire')+' 連續 '+I.streak+' 天</span><span>'+ic('can')+' '+I.water+'</span></div>'+
     I.q.map(function(q,i){var p=Math.min(I.p[i]||0,q.n),ok=p>=q.n;return '<div class="dyq'+(ok?' ok':'')+'"><span class="ck">'+(ok?ic('ok'):'⬜')+'</span><span class="tx">'+esc(q.txt)+'</span><span class="pg en">'+p+'/'+q.n+'</span></div>'}).join('')+
     '<p class="dyt">'+(I.done?'今天全部完成了，明天再來！💧 可以拿去花園澆水。':'每完成一個得 1 💧，三個都完成再送 2 💧，連續天數 +1。')+'</p>'+
-    '<div class="dyb"><button class="btn ghost" id="dyBook">'+ic('book')+' 圖鑑與錯題本</button><button class="btn ghost" id="dyGdn">🏡 我的花園</button></div>';
-  $('#dyBook').addEventListener('click',function(){sfx('tap');openBook(who)});$('#dyGdn').addEventListener('click',function(){sfx('tap');openGarden(who,'en')})}
+    '<div class="dyb"><button class="btn ghost" id="dyBook">'+ic('book')+' 圖鑑與錯題本</button><button class="btn ghost" id="dyGdn">🏡 我的花園</button>'+townBtn()+'</div>';
+  $('#dyBook').addEventListener('click',function(){sfx('tap');openBook(who)});$('#dyGdn').addEventListener('click',function(){sfx('tap');openGarden(who,'en')});var tb=$('#dyTown');if(tb)tb.addEventListener('click',function(){if(!window.__town)return;sfx('win');window.__town.open()})}
+/* 家鄉小鎮入口（跟花園放在一起） */
+function townBtn(){var T=window.__town,s=window.__soc,nc=T&&T.newCount?T.newCount():0,src=s?s.img('tn_town_entry'):'';
+  return '<button class="btn ghost dytown" id="dyTown">'+(src?'<img src="'+src+'" alt="">':'')+'<span><b>我的家鄉小鎮</b><small>社會＋自然一起蓋</small></span>'+(nc&&(nc.n||nc.coins)?'<i>'+(nc.n?nc.n+' 個新東西':'')+(nc.n&&nc.coins?'・':'')+(nc.coins?'+'+nc.coins+' 幣':'')+'</i>':'')+'</button>'}
 
 /* ---- 圖鑑與錯題本 ---- */
 var bookEl=null,bookId='';
@@ -5234,7 +5235,7 @@ if(window.SocialFactory)try{(function(){
     award:function(n){var g0=curGame;curGame='soc';try{award(n)}finally{curGame=g0}},finishBonus:function(score,total){return Store.finishGame(who,'soc',{score:score,total:total,roundPts:0,eg:egrade})},
     refresh:function(){try{if(gOpen==='soc'&&!curGame)renderGameHome();updatePill()}catch(e){}}});ADV.css();window.__socAdv=ADV}
   if(window.TownFactory){window.__town=window.TownFactory({SOC:SOCX,Store:Store,isKid:isKid,who:function(){return who},esc:esc,sfx:sfx,say:say,confetti:confetti,
-    sciLv:function(id){return scLevel(subPts(Store.kid(id),'sci')).i},sciPts:function(id){return subPts(Store.kid(id),'sci')},sciStamp:function(id,k){return scStampAny(id,k)},
+    sciLv:function(id){return scLevel(subPts(Store.kid(id),'sci')).i},sciPts:function(id){return subPts(Store.kid(id),'sci')},sciStamp:function(id,k){return scStampAny(id,k)},sciStars:function(id){var n=0;STN.forEach(function(st){[2,3,4].forEach(function(g){var r=scRowG(id,st.k,g);n+=r[0]+r[1]+r[2]})});return n},
     refresh:function(){try{if((gOpen==='soc'||gOpen==='sci')&&!curGame)renderGameHome();updatePill()}catch(e){}}})}
   var up0=updatePill;updatePill=function(){up0.apply(this,arguments);try{if(!isKid())return;var t=SOCX.town(who),el=$('#starNum');if(el&&!el.querySelector('.sp.so')){var sp=document.createElement('span');sp.className='sp so';sp.innerHTML='<img class="gi" src="'+SOCX.img(t.icon)+'" alt="" style="border-radius:50%;object-fit:cover"><i>'+t.pts+'</i>';el.appendChild(sp)}}catch(e){}};
   var rgh=renderGameHome;renderGameHome=function(){var soc=gOpen==='soc';rgh.apply(this,arguments);

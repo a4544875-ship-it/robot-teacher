@@ -7,7 +7,7 @@ global.TownFactory=function(C){
 var DEMO=true;
 var SOC=C.SOC,N=12,TW=96,TH=48,PT=230,PB=90,SW=N*TW+40,SH=N*TH+PT+PB,OX=SW/2,OY=PT;
 function img(k){return SOC.img('tn_'+k)}
-var AR={"cloud_lock":0.645,"town_base":0.607,"home_1":0.965,"home_2":1.177,"home_3":1.197,"school_1":0.953,"school_2":0.762,"school_3":0.819,"shop_1":1.093,"shop_2":1.162,"shop_3":1.017,"library":1.036,"center":0.976,"radio":1.212,"paifang":0.825,"rd_dirt":0.75,"rd_gravel":0.781,"rd_stone":0.796,"rd_asphalt":0.772,"tile_water":0.745,"lamp_1":1.761,"lamp_2":2.909,"lamp_3":1.631,"tlight":2.22,"train_f":0.828,"train_b":0.911,"bridge":0.652,"wtower":1.422,"fountain":0.863,"wind_body":1.523,"wind_blade":1.039,"wstation":0.764,"tree_a":1.097,"tree_b":1.473,"flowerbed":0.794,"park":0.715,"ranch":0.768,"bfgarden":0.874,"clocktower":1.323,"observatory":1.0,"ic_coin":1.016,"ic_road":1.123,"ic_power":1.351,"ic_water":1.571,"ic_prosper":1.388,"ic_up":1.46,"ic_build":1.419,"ic_store":1.192,"pp_boy_f":1.925,"pp_boy_b":1.958,"pp_girl_f":1.389,"pp_girl_b":1.43,"pp_grandpa_f":1.763,"pp_grandpa_b":1.74,"pp_mom_f":1.661,"pp_mom_b":1.945,"car_f":0.861,"car_b":0.925,"bus_f":0.893,"bus_b":1.029,"scooter_f":1.575,"scooter_b":1.959,"bike_f":1.462,"bike_b":1.844,"stall":1.051,"bench":0.849,"mailbox":0.876,"recycle":0.744,"flags":0.725,"planter":0.967,"planter2":1.123,"l2_front":1.184,"l2_back":1.279,"l2_side":1.058,"l2_run":1.004,"plinth":0.64,"viewdeck":1.165,"sanheyuan":0.801,"temple_1":1.061,"oldstreet":0.807,"temple_2":0.966,"factory":0.86,"stage":0.713,"farm":0.716,"port":0.573,"tower":1.538,"st_bus":0.945,"st_train":0.777,"st_hsr":0.714,"museum":0.806,"lion_statue":1.015,"town_entry":0.733};
+var AR={"cloud_lock":0.645,"town_base":0.607,"home_1":0.965,"home_2":1.177,"home_3":1.197,"school_1":0.953,"school_2":0.762,"school_3":0.819,"shop_1":1.093,"shop_2":1.162,"shop_3":1.017,"library":1.036,"center":0.976,"radio":1.212,"paifang":0.825,"rd_dirt":0.75,"rd_gravel":0.781,"rd_stone":0.796,"rd_asphalt":0.772,"tile_water":0.745,"lamp_1":1.761,"lamp_2":2.909,"lamp_3":1.631,"tlight":2.22,"train_f":0.828,"train_b":0.911,"bridge":0.652,"wtower":1.422,"fountain":0.863,"wind_body":1.523,"wind_blade":1.039,"wstation":0.764,"tree_a":1.097,"tree_b":1.473,"flowerbed":0.794,"park":0.715,"ranch":0.768,"bfgarden":0.874,"clocktower":1.323,"observatory":1.0,"ic_coin":1.016,"ic_road":1.123,"ic_power":1.351,"ic_water":1.571,"ic_prosper":1.388,"ic_up":1.46,"ic_build":1.419,"ic_store":1.192,"pp_boy_f":1.925,"pp_boy_b":1.958,"pp_girl_f":1.389,"pp_girl_b":1.43,"pp_grandpa_f":1.763,"pp_grandpa_b":1.74,"pp_mom_f":1.661,"pp_mom_b":1.945,"car_f":0.861,"car_b":0.925,"bus_f":0.893,"bus_b":1.029,"scooter_f":1.575,"scooter_b":1.959,"bike_f":1.462,"bike_b":1.844,"stall":1.051,"bench":0.849,"mailbox":0.876,"recycle":0.744,"flags":0.725,"planter":0.967,"planter2":1.123,"l2_front":1.184,"l2_back":1.279,"l2_side":1.058,"l2_run":1.004,"plinth":0.64,"viewdeck":1.165,"sanheyuan":0.801,"temple_1":1.061,"oldstreet":0.807,"temple_2":0.966,"factory":0.86,"stage":0.713,"farm":0.716,"port":0.573,"tower":1.538,"st_bus":0.945,"st_train":0.777,"st_hsr":0.714,"museum":0.806,"lion_statue":1.015,"town_entry":0.733,"paifang_1":0.907,"paifang_2":0.912,"paifang_3":0.839};
 function esc(s){return C.esc(String(s))}
 function cx(x,y){return OX+(x-y)*TW/2}function cy(x,y){return OY+(x+y)*TH/2}
 
@@ -40,7 +40,9 @@ D('shop_3',{n:'百貨公司',c:'soc',f:'shop',lv:3,s:1.12,d:'東西很多，更�
 D('library',{n:'圖書館',c:'soc',f:'library',lv:1,d:'多元學習的好地方。'});
 D('center',{n:'社區活動中心',c:'soc',f:'center',lv:1,s:1.04,d:'居民一起辦活動、開會的地方。'});
 D('radio',{n:'家鄉廣播站',c:'soc',f:'radio',lv:1,d:'家鄉特派員把家鄉的故事說給大家聽。'});
-D('paifang',{n:'家鄉牌坊',c:'soc',f:'paifang',lv:1,fp:2,s:.95,oy:.06,d:'寫著家鄉地名的大門。'});
+D('paifang',{n:'小牌坊',c:'soc',f:'paifang',lv:1,im:'paifang_1',s:1.05,oy:.08,up:'paifang_2',d:'寫著家鄉地名的大門。'});
+D('paifang_2',{n:'家鄉牌坊',c:'soc',f:'paifang',lv:2,fp:2,s:.92,oy:.08,up:'paifang_3',d:'地名背後有好多故事。'});
+D('paifang_3',{n:'石獅大牌坊',c:'soc',f:'paifang',lv:3,fp:2,s:1.05,oy:.08,d:'有石獅守護的家鄉大門。'});
 D('viewdeck',{n:'觀景台',c:'soc',f:'view',lv:1,s:1.15,d:'看看家鄉的山、河和平原。'});
 D('sanheyuan',{n:'三合院',c:'soc',f:'sanhe',lv:1,fp:2,s:1.02,d:'以前的人住的傳統房子。'});
 D('temple_1',{n:'土地公廟',c:'soc',f:'temple',lv:1,s:1.05,d:'保佑家鄉平安的小廟。'});
@@ -113,11 +115,14 @@ function unl0(id,it){
   return {ok:true,why:''}}
 function tn(){var k=kid()||{},t=k.tn&&typeof k.tn==='object'?k.tn:{};
   return {o:(Array.isArray(t.o)?t.o:[]).map(function(s){var a=String(s).split(',');return {k:a[0],x:+a[1]|0,y:+a[2]|0,f:+a[3]|0}}).filter(function(o){return IT[o.k]}),
-    r:Array.isArray(t.r)?t.r.slice():[],w:Array.isArray(t.w)?t.w.slice():[],seen:t.seen&&typeof t.seen==='object'?t.seen:{},g:t.g|0}}
-function save(T){if(!C.isKid())return;C.Store.mut(C.who(),function(k){k.tn={o:T.o.map(function(o){return o.k+','+o.x+','+o.y+','+(o.f?1:0)}),r:T.r,w:T.w,seen:T.seen,g:T.g}})}
+    r:Array.isArray(t.r)?t.r.slice():[],w:Array.isArray(t.w)?t.w.slice():[],seen:t.seen&&typeof t.seen==='object'?t.seen:{},g:t.g|0,sc:t.sc==null?null:+t.sc||0}}
+function save(T){if(!C.isKid())return;C.Store.mut(C.who(),function(k){k.tn={o:T.o.map(function(o){return o.k+','+o.x+','+o.y+','+(o.f?1:0)}),r:T.r,w:T.w,seen:T.seen,g:T.g,sc:T.sc==null?0:T.sc}})}
 function coins(){var k=kid()||{};return +((k.sa||{}).c)||0}
 function addCoins(n){C.Store.mut(C.who(),function(k){var o=k.sa&&typeof k.sa==='object'?k.sa:(k.sa={});o.z=o.z||{};o.t=o.t||{};o.c=Math.max(0,(+o.c||0)+n)})}
 function totPts(id){var a=0;try{a+=+SOC.pts(id)||0}catch(e){}try{a+=+C.sciPts(id)||0}catch(e){}return a}
+/* 社會、自然每拿到一顆新星星，就送家鄉幣 */
+var PER_STAR=3;
+function starsNow(id){var a=0;try{a+=+SOC.stars(id)||0}catch(e){}try{a+=+C.sciStars(id)||0}catch(e){}return a}
 var LAND=[[0,6],[300,8],[900,10],[1800,12]];
 function landOf(id){var p=totPts(id),n=6,nx=null;if(DEMO)p=Math.max(p,900);LAND.forEach(function(l,i){if(p>=l[0])n=l[1];else if(!nx)nx=l});return {n:n,o:(N-n)/2,p:p,nx:nx}}
 function roadMax(id){return DEMO?40:10+6*sciLv(id)}
@@ -180,14 +185,17 @@ var cssOn=false;function css(){if(cssOn)return;cssOn=true;var s=document.createE
 function entry(where){css();var id=C.who(),k=C.isKid()?kid():null,T=k?tn():null,nb=T?T.o.filter(function(o){return IT[o.k].c==='soc'}).length:0,nw=k?newUnl(id,T).length:0;
   var sub=where==='sci'?'自然破關可以鋪路、裝路燈、接水，讓小鎮亮起來！':'社會破關蓋房子、學校和商店，星星越多房子越大！';
   return '<button class="tn-entry" data-town="1"><img src="'+img('town_entry')+'" alt=""><span><b>我的家鄉小鎮'+(nw?'・'+nw+' 個新東西':'')+'</b><small>'+sub+(k?'<br>已經蓋了 '+nb+' 棟建築':'')+'</small></span><span class="go">進入</span></button>'}
-function newUnl(id,T){return ORD.filter(function(k){var it=IT[k];return it.c!=='deco'&&!T.seen[k]&&unl(id,it).ok&&!(k==='lion_statue')})}
+function newUnl(id,T){return ORD.filter(function(k){var it=IT[k];return it.c!=="deco"&&!T.seen[k]&&unl0(id,it).ok&&!(k==='lion_statue')})}
 
 /* ---------- 小鎮畫面 ---------- */
 var V=null;
 function open(){if(SOC.ready&&!open.ok){return SOC.ready(function(){open.ok=1;open()})}css();if(V)close();var id=C.who(),edit=C.isKid()&&!!kid();
   var T=edit?tn():{o:[],r:[],w:[],seen:{},g:1};
   if(edit&&!T.o.some(function(o){return o.k==='lion_statue'})){T.o.push({k:'lion_statue',x:5,y:5,f:0});[[5,7],[6,7],[7,7],[7,6],[7,5],[4,5],[4,6]].forEach(function(c){T.r.push(c[1]*N+c[0])});save(T)}
-  if(edit&&!T.g){T.g=1;save(T);addCoins(30);setTimeout(function(){toast('見面禮：送你 30 個家鄉幣！可以買居民和小物。')},900)}
+  var gift=0,msg=[];if(edit&&!T.g){T.g=1;gift+=30;msg.push('見面禮 30 個')}
+  if(edit){var sn=starsNow(id),prev=T.sc==null?0:T.sc;if(sn>prev){gift+=(sn-prev)*PER_STAR;msg.push('新拿到 '+(sn-prev)+' 顆星星，換 '+((sn-prev)*PER_STAR)+' 個')}T.sc=sn}
+  if(edit&&(gift||T.sc!=null)){save(T)}
+  if(gift){addCoins(gift);setTimeout(function(){toast('得到家鄉幣：'+msg.join('，')+'！可以買居民和小物。')},900)}
   var el=document.createElement('div');el.className='tn';document.body.appendChild(el);
   V={el:el,id:id,edit:edit,T:T,mode:'',pick:null,sel:-1,ghost:null,cam:{s:1,x:0,y:0},wk:[],raf:0,night:isNight(),tm:[]};
   el.classList.toggle('night',V.night);
@@ -201,7 +209,7 @@ function open(){if(SOC.ready&&!open.ok){return SOC.ready(function(){open.ok=1;op
   V.onKey=function(e){if(e.key==='Escape'){if(V.mode||V.pick)cancel();else close()}};document.addEventListener('keydown',V.onKey);
   V.onRs=function(){fit()};global.addEventListener('resize',V.onRs);
   if(!edit)toast(C.isKid()?'':'家長模式只能看，小朋友登入後才能蓋小鎮喔！');
-  else{var nw=newUnl(id,T);if(nw.length)setTimeout(function(){toast('新解鎖：'+nw.slice(0,4).map(function(k){return IT[k].n}).join('、')+(nw.length>4?' 等 '+nw.length+' 個':'')+'！到「建造」看看吧！')},T.g?300:3200);
+  else{var nw=newUnl(id,T);if(nw.length)setTimeout(function(){toast('新解鎖：'+nw.slice(0,4).map(function(k){return IT[k].n}).join('、')+(nw.length>4?' 等 '+nw.length+' 個':'')+'！到「建造」看看吧！')},gift?4300:300);
     C.say('這是你的家鄉小鎮！社會和自然破關，就能蓋更多東西！','happy')}
 }
 function close(){if(!V)return;cancelAnimationFrame(V.raf);V.tm.forEach(clearTimeout);document.removeEventListener('keydown',V.onKey);global.removeEventListener('resize',V.onRs);V.el.remove();V=null;try{C.refresh&&C.refresh()}catch(e){}}
@@ -377,6 +385,6 @@ function info(i){var T=V.T,o=T.o[i],it=IT[o.k],id=V.id;V.sel=i;render();closeShe
       o.k=up.k;o.x=x;o.y=y;T.seen[up.k]=1;save(T);C.sfx('win');try{C.confetti(null,60)}catch(e){}C.say('升級成「'+up.n+'」了！','happy');info(i)}})})}
 function toast(t){if(!V||!t)return;var o=V.el.querySelector('.tn-toast');if(o)o.remove();var d=document.createElement('div');d.className='tn-toast';d.textContent=t;V.el.appendChild(d);V.tm.push(setTimeout(function(){d.remove()},3200))}
 
-return {entry:entry,open:open,close:close,css:css,_items:IT,_V:function(){return V},_C:function(){return C},version:'1.0.0'};
+return {newCount:function(){if(!C.isKid()||!kid())return 0;var id=C.who(),T=tn(),n=newUnl(id,T).length,sn=starsNow(id);return {n:n,coins:Math.max(0,(sn-(T.sc==null?0:T.sc)))*PER_STAR+(T.g?0:30)}},entry:entry,open:open,close:close,css:css,_items:IT,_V:function(){return V},_C:function(){return C},version:'1.0.0'};
 };
 })(window);

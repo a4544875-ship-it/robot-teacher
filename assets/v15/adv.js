@@ -93,13 +93,13 @@ function addCss(){if(css)return;css=true;var st=document.createElement('style');
 '.sav-end .sav-stars{font-size:44px;text-align:center;color:#ddd;letter-spacing:4px}.sav-end .sav-stars i{font-style:normal}.sav-end .sav-stars i.on{color:#f2b632}',
 '.sav-end .rw{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.sav-end .rw span{background:#fff7e0;border-radius:12px;padding:6px 10px;font-weight:800}',
 '.sav-end .tr{display:flex;align-items:center;gap:10px;justify-content:center;font-weight:900;color:#8a5a2b}.sav-end .tr img{width:70px;height:70px;object-fit:cover;border-radius:14px}',
-'.soc-advtop{display:flex;align-items:center;gap:12px;width:100%;border:0;font:inherit;cursor:pointer;text-align:left;color:#fff;background:linear-gradient(135deg,#6a4fd8,#2f8fd8);border-radius:20px;padding:10px 14px;box-shadow:0 4px 0 #2a3a8a,0 8px 18px rgba(60,80,200,.3)}',
-'.soc-advtop img{width:62px;height:62px;object-fit:contain;flex:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.3))}.soc-advtop b{display:block;font-size:19px}.soc-advtop small{opacity:.95;font-size:13px}.soc-advtop .lv{margin-left:auto;text-align:right;font-weight:900;font-size:13px;line-height:1.35;white-space:nowrap}'
+'.soc-advtop{display:flex;align-items:center;gap:8px;width:100%;border:0;font:inherit;cursor:pointer;text-align:left;color:#fff;background:linear-gradient(135deg,#6a4fd8,#2f8fd8);border-radius:14px;padding:4px 10px 4px 6px;box-shadow:0 3px 0 #2a3a8a}',
+'.soc-advtop img{width:40px;height:40px;object-fit:contain;flex:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}.soc-advtop b{font-size:15px;white-space:nowrap}.soc-advtop .lv{margin-left:auto;display:flex;gap:4px}.soc-advtop .lv i{font-style:normal;font-weight:900;font-size:12px;background:rgba(255,255,255,.22);border-radius:99px;padding:3px 9px;white-space:nowrap}.soc-advtop .lv i:first-child{background:#ffd23f;color:#3a2a00}'
 ].join('\n');document.head.appendChild(st)}
 
 /* ================= 社會島首頁的入口 ================= */
 function entry(){var id=C.who(),s=sa(id),lv=lvOf(+s.xp||0),nz=0;ZONES.forEach(function(z){if(zoneOpen(id,z)==='open')nz++});
-  return '<button class="soc-advtop" data-advtop="1"><img src="'+img('l_run')+'" alt=""><span><b>小石獅守護家鄉</b><small>3D 冒險・可以兩人連線・通過的站會變成冒險區域</small></span><span class="lv">Lv.'+lv+'<br>寶物 '+Object.keys(s.t||{}).length+'</span></button>'}
+  return '<button class="soc-advtop" data-advtop="1"><img src="'+img('l_run')+'" alt=""><b>小石獅守護家鄉</b><span class="lv"><i>Lv.'+lv+'</i><i>寶物 '+Object.keys(s.t||{}).length+'</i></span></button>'}
 
 /* ================= 大廳 ================= */
 var ROOT=null;
