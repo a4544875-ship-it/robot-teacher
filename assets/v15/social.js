@@ -872,7 +872,7 @@ function addCss(){if(css)return;css=true;var st=document.createElement('style');
 '.soc-les{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 3px 0 #e2d2b8,0 6px 14px rgba(0,0,0,.07);cursor:pointer;font:inherit;color:inherit}',
 '.soc-les .n{flex:none;width:40px;height:40px;border-radius:50%;background:linear-gradient(#ffd27a,#f2a93b);color:#5b3412;font-weight:900;display:grid;place-items:center;font-size:18px}',
 '.soc-les .nm{flex:1;min-width:0}.soc-les .nm b{display:block;font-size:16.5px}.soc-les .nm small{color:#6b7b8a}',
-'.soc-les .s3{flex:none;font-size:20px;letter-spacing:1px;color:#ddd}.soc-les .s3 i{font-style:normal}.soc-les .s3 i.on{color:#f2b632}',
+'.soc-les .s3{flex:none;font-size:20px;letter-spacing:1px;color:#ddd}.soc-les .s3 i{font-style:normal}.soc-ex{background:linear-gradient(135deg,#6b2bd9,#b13fd6)!important;color:#fff!important;box-shadow:0 4px 0 #4a1a9c!important}.soc-ex.lock{background:#e4dff0!important;color:#77708a!important;box-shadow:none!important;cursor:default}.soc-ex .n{background:rgba(255,255,255,.22)!important;color:#fff!important}.soc-ex small{color:inherit!important;opacity:.92}.soc-les .s3.ex i{color:rgba(255,255,255,.35)}.soc-les .s3.ex i.on{color:#ffe9ff;text-shadow:0 0 8px #f0a8ff}.soc-ex.lock .s3.ex i{color:#cfc8de}.soc-stars.ex i.on{color:#a23ff0!important;text-shadow:0 3px 0 #6b1fb0,0 0 14px rgba(214,90,255,.7)!important}.bdgwin.gold{background:linear-gradient(135deg,#fff3c4,#ffd76a)!important}.soc-exrw{color:#6b2bd9;font-weight:800}.soc-les .s3 i.on{color:#f2b632}',
 '.soc-les:active{transform:translateY(2px)}',
 '.soc-rw{display:flex;gap:12px;align-items:center;background:#fff8ec;border-radius:18px;padding:10px 14px;font-size:14px}.soc-rw img{width:54px;height:54px;object-fit:contain}.soc-rw.off img{filter:grayscale(1) opacity(.45)}',
 /* 題目 */
@@ -987,11 +987,17 @@ function station(u){var id=C.who();C.shell('社會小鎮');C.title(u.n);var B=C.
   var h='<div class="soc soc-st">'+(u.pic?'<div class="soc-stpic"><img src="'+img(u.pic)+'" alt=""></div>':'')+'<div class="soc-sth"><img src="'+img(bd?'lion_cheer':'lion_happy')+'" alt=""><div><small>'+(u.g===3?'三':'四')+'年級'+(u.s==='a'?'上':'下')+'學期'+(u.tag?'・'+esc(u.tag):'')+'</small><b>'+esc(u.n)+'</b><span>'+(bd?'已經拿到家鄉徽章！再玩可以拿更多分數。':'每一課都拿到 2 顆星，就能拿到家鄉徽章。')+'</span></div></div>';
   u.ls.forEach(function(l,i){var s=C.isKid()?lessonStar(id,l[0]):0,n=(BANK[l[0]]||[]).length;
     h+='<button class="soc-les" data-l="'+l[0]+'"><span class="n">'+(i+1)+'</span><span class="nm"><b>第 '+(i+1)+' 課：'+esc(l[1])+'</b><small>'+n+' 題題庫・每次 8 題</small></span><span class="s3">'+[0,1,2].map(function(j){return '<i class="'+(j<s?'on':'')+'">★</i>'}).join('')+'</span></button>'});
+  if(u.ls.length){var xs=C.isKid()?+((so(id).X||{})[u.k])||0:0;
+    h+='<button class="soc-les soc-ex'+(bd?'':' lock')+'" data-ex="1"'+(bd?'':' disabled')+'><span class="n">'+(bd?'★':'🔒')+'</span><span class="nm"><b>單元大考驗</b><small>'+(bd?'整個單元混合 10 題・答對一題 20 分・全對拿金徽章':'拿到家鄉徽章後開放')+'</small></span><span class="s3 ex">'+[0,1,2].map(function(j){return '<i class="'+(j<xs?'on':'')+'">★</i>'}).join('')+'</span></button>'}
   h+='<div class="soc-rw'+(bd?'':' off')+'"><img src="'+img('badge')+'" alt=""><div><b>'+(bd?'已得到「'+esc(u.n)+'」徽章':'過關獎勵：「'+esc(u.n)+'」家鄉徽章')+'</b><br>'+(bd?'收在家鄉護照裡了。':'集滿徽章，家鄉護照就會越來越豐富。')+'</div></div></div>';
   B.innerHTML=h;
   B.querySelectorAll('[data-l]').forEach(function(b){b.addEventListener('click',function(){C.sfx('tap');var lk=b.dataset.l;play(u,lk,buildRound(id,u,lk))})});
+  var exb=B.querySelector('[data-ex]');if(exb)exb.addEventListener('click',function(){if(exb.disabled)return;C.sfx('win');play(exU(u),null,buildExam(u))});
   C.say('選一課開始！','happy');
 }
+/* 單元大考驗（v16）：拿到徽章後開放，整個單元混合 10 題，答對一題 20 分；全對 3 顆紫星＋金徽章 */
+function exU(u){var o={};for(var k in u)o[k]=u[k];o.ex=1;o.base=u;return o}
+function buildExam(u){var pool=[];u.ls.forEach(function(l){(BANK[l[0]]||[]).forEach(function(q){pool.push(q)})});return shuf(pool).slice(0,10)}
 function buildRound(id,u,lk){var pool=(BANK[lk]||[]).slice(),N=Math.min(8,pool.length),pick=[];
   if(C.isKid()){var due=dueList(id,[u.k]).map(qById).filter(function(q){return q&&q.lk===lk});shuf(due).slice(0,3).forEach(function(q){pick.push(q)})}
   shuf(pool).forEach(function(q){if(pick.length<N&&pick.indexOf(q)<0)pick.push(q)});return shuf(pick)}
@@ -1012,7 +1018,7 @@ function play(u,lk,qs,opt){var id=C.who(),B=(opt&&opt.host)||C.body(),i=0,right=
     B.innerHTML=h;var A=B.querySelector('.soc-area');
     ({mc:mc,mi:mi,tf:tf,sort:sort,ord:ord,pair:pair,shop:shop})[q.t](q,A);
   }
-  function done(ok,bonus){var q=cur;if(ok){right++;var n=bonus?2:1;pts+=n*10;if(C.isKid())C.award(n)}
+  function done(ok,bonus){var q=cur;if(ok){right++;var n=(bonus?2:1)*(u.ex?2:1);pts+=n*10;if(C.isKid())C.award(n)}
     if(C.isKid())markQ(id,q,ok);C.sfx(ok?'ok':'no');
     var L=B.querySelector('.soc-ask img');if(L&&!opt)L.src=img(ok?'lion_happy':'lion_sad');
     var ans='';if(q.t==='mi'&&CAP[q.a])ans='答案是「'+CAP[q.a]+'」。';if(!ok){if(q.t==='mc')ans='答案是「'+q.a+'」。';else if(q.t==='tf')ans='答案是「'+(q.a?'對':'錯')+'」。'}
@@ -1052,7 +1058,7 @@ function play(u,lk,qs,opt){var id=C.who(),B=(opt&&opt.host)||C.body(),i=0,right=
       if(!sel||sel.dataset.s===b.dataset.s){if(sel)sel.classList.remove('sel');sel=b;b.classList.add('sel');C.sfx('tap');return}
       if(sel.dataset.j===b.dataset.j){C.sfx('pop');[sel,b].forEach(function(x){x.classList.remove('sel');x.classList.add('done');x.disabled=true});sel=null;left--;if(!left)done(miss===0,miss===0)}
       else{miss++;C.sfx('no');var s0=sel;s0.classList.remove('sel');b.classList.add('no');s0.classList.add('no');setTimeout(function(){b.classList.remove('no');s0.classList.remove('no')},400);sel=null}})})}
-  function result(){C.prog('');var n=qs.length,pc=right/n,st=pc>=0.9?3:pc>=0.7?2:pc>=0.4?1:0,id2=C.who(),newBadge=false,bonus=0;
+  function result(){C.prog('');var n=qs.length,pc=right/n,st=pc>=0.9?3:pc>=0.7?2:pc>=0.4?1:0,id2=C.who(),newBadge=false,bonus=0;if(u.ex)return exResult();
     if(C.isKid()){var before=u.ls.length&&unitBadge(id2,u);
       if(lk)mut(id2,function(o){var r=o.L[lk]||[0,0,0,0];o.L[lk]=[Math.max(+r[0]||0,st),(+r[1]||0)+1,(+r[2]||0)+right,(+r[3]||0)+n];if(unitBadge(id2,u))o.b[u.k]=1});
       newBadge=!before&&u.ls.length&&unitBadge(id2,u);bonus=C.finishBonus(right,n)||0}
@@ -1067,6 +1073,20 @@ function play(u,lk,qs,opt){var id=C.who(),B=(opt&&opt.host)||C.body(),i=0,right=
     B.querySelector('#socMap').addEventListener('click',function(){C.sfx('tap');C.goHome()});
     C.say(newBadge?'恭喜拿到家鄉徽章！':st>=2?'做得很好！':'多練習幾次就會了！','happy');
   }
+  function exResult(){var n=qs.length,st=right>=n?3:right>=n-2?2:right>=n-4?1:0,id2=C.who(),first=false,gold=false,bonus=0;
+    if(C.isKid()){var old=+((so(id2).X||{})[u.k])||0;mut(id2,function(o){o.X=o.X&&typeof o.X==='object'?o.X:{};if(st>old)o.X[u.k]=st});
+      if(st>=1&&old<1){first=true;try{C.Store.mut(id2,function(k){var sa=k.sa&&typeof k.sa==='object'?k.sa:(k.sa={});sa.c=(+sa.c||0)+30})}catch(e){}}
+      if(st===3&&old<3)gold=true;bonus=C.finishBonus(right,n)||0}
+    var h='<div class="soc soc-res"><img class="l" src="'+img(st>=2?'lion_cheer':st===1?'lion_happy':'lion_sad')+'" alt=""><div class="soc-stars ex">'+[0,1,2].map(function(j){return '<i class="'+(j<st?'on':'')+'">★</i>'}).join('')+'</div>';
+    h+='<h3>'+(st===3?'大考驗全對！':st>=1?'大考驗過關！':'再挑戰一次！')+'</h3><p>'+n+' 題答對 '+right+' 題（全對 3 星、錯 2 題內 2 星、錯 4 題內 1 星）</p><div class="pts">+'+(pts+bonus)+' 分</div>';
+    if(gold)h+='<div class="bdgwin gold"><img src="'+img('badge')+'" alt="">拿到「'+esc(u.n)+'」金徽章！</div>';
+    if(first)h+='<p class="soc-exrw">第一次過關：家鄉幣 +30</p>';
+    h+='<div class="row"><button class="a" id="socAgain">再挑戰</button><button class="b" id="socSt">回到這一站</button><button class="b" id="socMap">回地圖</button></div></div>';
+    B.innerHTML=h;C.sfx('win');try{C.confetti(B.querySelector('.soc-stars'),st*14+8)}catch(e){}
+    B.querySelector('#socAgain').addEventListener('click',function(){C.sfx('tap');play(u,null,buildExam(u.base||u))});
+    B.querySelector('#socSt').addEventListener('click',function(){C.sfx('tap');station(u.base||u)});
+    B.querySelector('#socMap').addEventListener('click',function(){C.sfx('tap');C.goHome()});
+    C.say(gold?'拿到金徽章了！太厲害了！':st>=1?'大考驗過關了！':'大考驗比較難，多練習幾次一定可以！','happy')}
   next();
 }
 
@@ -1165,7 +1185,7 @@ function rpg(u){var id=C.who(),cfg=CH[u.k];if(!cfg)return station(u);C.shell('�
 global.SocialFactory=function(ctx){C=ctx;addCss();
   return {home:home,station:station,review:review,img:img,rpg:rpg,badge:unitBadge,markQ:markQ,ready:ready,pts:socPts,stars:function(id){var L=so(id).L||{},n=0;for(var k in L)n+=+(L[k]&&L[k][0])||0;return n},ustar:function(id,uk){var u=UK[uk];if(!u||!u.ls.length)return 0;return Math.min.apply(null,u.ls.map(function(l){return lessonStar(id,l[0])}))},town:function(id){return townOf(socPts(id))},
     /* 家長後台用：一個孩子的社會整體狀況 */
-    report:function(id){var g=gradeOf(id)>=4?4:3,o=so(id),w=o.w||{},L=o.L||{},units=MAP[g].units.map(function(u){return {k:u.k,n:u.n,s:u.s,badge:unitBadge(id,u),master:unitMaster(id,u),ls:u.ls.map(function(l){var r=L[l[0]];return {k:l[0],n:l[1],star:r?+r[0]||0:0,best:r&&r.length>1?+r[1]||0:0}})}}),
+    report:function(id){var g=gradeOf(id)>=4?4:3,o=so(id),w=o.w||{},L=o.L||{},units=MAP[g].units.map(function(u){return {k:u.k,n:u.n,s:u.s,badge:unitBadge(id,u),master:unitMaster(id,u),ex:+((o.X||{})[u.k])||0,ls:u.ls.map(function(l){var r=L[l[0]];return {k:l[0],n:l[1],star:r?+r[0]||0:0,best:r&&r.length>1?+r[1]||0:0}})}}),
       wrong=Object.keys(w).filter(function(q){return Array.isArray(w[q])}).map(function(qid){var q=qById(qid),r=w[qid];return q?{q:q.q,a:q.t==='mi'?(CAP[q.a]||''):q.t==='mc'?q.a:q.t==='tf'?(q.a?'對':'錯'):'',lv:+r[0]||0,due:(+r[1]||0)<=dayN(),u:qid.split('-')[0]}:null}).filter(Boolean),
       nb=units.filter(function(u){return u.badge}).length,st=0;units.forEach(function(u){u.ls.forEach(function(l){st+=l.star})});
       return {grade:g,real:gradeOf(id),pts:socPts(id),town:townOf(socPts(id)),units:units,badges:nb,total:units.length,stars:st,maxStars:units.reduce(function(a,u){return a+u.ls.length*3},0),wrong:wrong,due:wrong.filter(function(x){return x.due}).length}},version:'15.0.0',

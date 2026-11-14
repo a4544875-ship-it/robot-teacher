@@ -40,9 +40,9 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v10/progress.js?v=16.1.0"></script>
 <script src="assets/v11/esk.js?v=11.2.0"></script>
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
-<script src="assets/v13/parent.js?v=16.1.0"></script>
+<script src="assets/v13/parent.js?v=16.2.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=15.6.0"></script>
+<script src="assets/v15/social.js?v=16.2.0"></script>
 <script src="assets/v15/adv.js?v=15.6.0"></script>
 <script src="assets/v15/town.js?v=15.6.0"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
@@ -1011,7 +1011,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 /* 結算 */
 .obres .card.sciend .big{display:none}
 .sest{display:flex;justify-content:center;gap:6px;font-size:46px;line-height:1}
-.sest i{font-style:normal;color:#d9dcea;animation:sciStar .5s ease-out both}.sest i.on{color:#ffc531;text-shadow:0 3px 0 #d99a00}body[data-tier="1"] .sest i.on,body[data-tier="1"] .v2result .v2stars,body[data-tier="1"] .obres .st,.tstar.t1,.gtier.t1,.obn small b.t1{color:#2f7bf0;text-shadow:0 3px 0 #1c4fa8}body[data-tier="2"] .sest i.on,body[data-tier="2"] .v2result .v2stars,body[data-tier="2"] .obres .st,.tstar.t2,.gtier.t2,.obn small b.t2{color:#a23ff0;text-shadow:0 3px 0 #6b1fb0,0 0 12px rgba(214,90,255,.7)}.tstar{font-style:normal;color:#ffc531}.gtier{position:absolute;left:10px;top:10px;background:#fff;border-radius:99px;padding:2px 8px;font-size:12px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.15)}.tierup{position:fixed;inset:0;z-index:9990;display:grid;place-items:center;background:rgba(20,24,60,.55);padding:20px}.tierup .bx{background:#fff;border-radius:26px;max-width:360px;width:100%;padding:22px 18px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:tuIn .45s cubic-bezier(.2,1.4,.4,1)}.tierup .big{font-size:84px;line-height:1}.tierup.t1 .big{color:#2f7bf0;text-shadow:0 5px 0 #1c4fa8}.tierup.t2 .big{color:#a23ff0;text-shadow:0 5px 0 #6b1fb0,0 0 22px rgba(214,90,255,.8)}.tierup h3{margin:8px 0 4px;font-size:24px;color:#1f2a44}.tierup p{margin:4px 0;color:#4a5672;line-height:1.55;font-size:15px}.tierup .rw{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}.tierup .rw span{background:#f3f6ff;border-radius:99px;padding:5px 12px;font-weight:900;color:#1f2a44}.tierup button{margin-top:8px;border:0;border-radius:99px;padding:11px 22px;font:inherit;font-weight:900;font-size:16px;background:#3f51d9;color:#fff}@keyframes tuIn{from{transform:scale(.6);opacity:0}}
+.sest i{font-style:normal;color:#d9dcea;animation:sciStar .5s ease-out both}.sest i.on{color:#ffc531;text-shadow:0 3px 0 #d99a00}body[data-tier="1"] .sest i.on,body[data-tier="1"] .v2result .v2stars,body[data-tier="1"] .obres .st,.tstar.t1,.gtier.t1,.obn small b.t1{color:#2f7bf0;text-shadow:0 3px 0 #1c4fa8}body[data-tier="2"] .sest i.on,body[data-tier="2"] .v2result .v2stars,body[data-tier="2"] .obres .st,.tstar.t2,.gtier.t2,.obn small b.t2{color:#a23ff0;text-shadow:0 3px 0 #6b1fb0,0 0 12px rgba(214,90,255,.7)}.tstar{font-style:normal;color:#ffc531}.sxexp{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:18px;padding:12px 14px;margin-top:10px;font:inherit;text-align:left;color:#fff;background:linear-gradient(135deg,#6b2bd9,#b13fd6);box-shadow:0 4px 0 #4a1a9c}.sxexp.lock{background:#d9d4e8;color:#6b6480;box-shadow:none}.sxexp .n{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:20px;flex:none}.sxexp .nm{flex:1;min-width:0;display:flex;flex-direction:column}.sxexp b{font-size:17px}.sxexp small{font-size:12.5px;opacity:.92}.sxexp .s3 i{font-style:normal;color:rgba(255,255,255,.35);font-size:20px}.sxexp .s3 i.on{color:#ffe9ff;text-shadow:0 0 8px #f0a8ff}.sxwrap{padding:0 2px 10px}.sxm{color:#a23ff0;text-shadow:0 0 6px rgba(214,90,255,.6)}.sxq{background:var(--card,#fff);border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(40,30,90,.12);display:flex;flex-direction:column;gap:12px}.sxtop{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px;color:#6b6480}.sxtop .tag{background:linear-gradient(135deg,#6b2bd9,#b13fd6);color:#fff;border-radius:99px;padding:3px 10px}.sxq h3{margin:0;font-size:20px;line-height:1.5}.sxo{display:grid;gap:8px}.sxo button{border:2px solid #e3def2;background:#faf8ff;border-radius:14px;padding:12px;font:inherit;font-size:16px;font-weight:700;text-align:left;color:#1f2a44}.sxo button.ok{border-color:#2fa86b;background:#e6f8ee}.sxo button.bad{border-color:#e05252;background:#fdecec}.sxf{background:#f4f0ff;border-radius:14px;padding:12px;line-height:1.6}.sxf p{margin:4px 0 8px;font-size:14px;color:#4a4260}.sxf button{border:0;border-radius:99px;padding:9px 18px;font:inherit;font-weight:900;background:#6b2bd9;color:#fff}.sxrw{color:#6b2bd9;font-weight:800}.gtier{position:absolute;left:10px;top:10px;background:#fff;border-radius:99px;padding:2px 8px;font-size:12px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.15)}.tierup{position:fixed;inset:0;z-index:9990;display:grid;place-items:center;background:rgba(20,24,60,.55);padding:20px}.tierup .bx{background:#fff;border-radius:26px;max-width:360px;width:100%;padding:22px 18px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:tuIn .45s cubic-bezier(.2,1.4,.4,1)}.tierup .big{font-size:84px;line-height:1}.tierup.t1 .big{color:#2f7bf0;text-shadow:0 5px 0 #1c4fa8}.tierup.t2 .big{color:#a23ff0;text-shadow:0 5px 0 #6b1fb0,0 0 22px rgba(214,90,255,.8)}.tierup h3{margin:8px 0 4px;font-size:24px;color:#1f2a44}.tierup p{margin:4px 0;color:#4a5672;line-height:1.55;font-size:15px}.tierup .rw{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}.tierup .rw span{background:#f3f6ff;border-radius:99px;padding:5px 12px;font-weight:900;color:#1f2a44}.tierup button{margin-top:8px;border:0;border-radius:99px;padding:11px 22px;font:inherit;font-weight:900;font-size:16px;background:#3f51d9;color:#fff}@keyframes tuIn{from{transform:scale(.6);opacity:0}}
 .setip{text-align:left;background:var(--surface-2);border-radius:16px;padding:10px 12px;margin:0 0 12px;display:flex;flex-direction:column;gap:6px}
 .setip b{font-size:15px}
 .setip p{margin:0;font-size:14px;line-height:1.55;color:var(--ink)}.setip p small{display:block;font-size:11.5px;color:var(--ink-soft)}
@@ -2140,7 +2140,7 @@ function sciHome(){
   STN.forEach(function(s){var r=isKid()?scRow(who,s.k):[0,0,0],st=r[0]+r[1]+r[2],stamp=r[0]&&r[1]&&r[2];
     var tdy=s.on&&td&&td.k===s.k;
     h+='<button class="sxs'+(s.on?'':' lock')+(tdy?' today':'')+'" data-st="'+s.k+'" style="left:'+s.x+'%;top:'+s.y+'%" aria-label="'+esc(s.zh)+'"><span class="ring"></span>'+(tdy?'<span class="flag">⭐ 今日推薦</span>':'')+(stamp?'<span class="done">全破</span>':'')+'</button>'+
-      '<button class="sxl'+(s.on?'':' lock')+(stamp?' got':'')+'" data-st="'+s.k+'" style="left:'+s.lx+'%;top:'+(s.ly+3.9)+'%" aria-label="'+esc(s.zh)+'"><small>'+(s.on?(stamp?'✅ ':'<i>★</i> ')+st+' / 9':'🔒 建造中')+'</small></button>'});
+      '<button class="sxl'+(s.on?'':' lock')+(stamp?' got':'')+'" data-st="'+s.k+'" style="left:'+s.lx+'%;top:'+(s.ly+3.9)+'%" aria-label="'+esc(s.zh)+'"><small>'+(s.on?(stamp?'✅ ':'<i>★</i> ')+st+' / 9'+(sxRow(s.k)?' <b class="sxm">★'+sxRow(s.k)+'</b>':''):'🔒 建造中')+'</small></button>'});
   h+='</div><div class="sxbook"><h3>📔 自然探險手冊・集印章</h3><div class="sxst">'+STN.map(function(s){var on=isKid()&&scStamp(who,s.k);return '<span class="'+(on?'on':'')+'"><img src="'+SCIA[s.ic]+'" alt="">'+esc(s.zh.replace('冰與水的瀑布湖','冰與水'))+'</span>'}).join('')+'</div></div>'+
     '<p class="sxnote">點地圖上的小島就能開始玩！每一站有 3 關，全部過關就能蓋印章，花園還會多一個會動的魔法裝飾。題目會跟著 '+egrade+' 年級自動調整。</p>';
   gb.innerHTML=h;
@@ -2155,11 +2155,39 @@ function stMenu(g){
   var h='<div class="sth"><div class="bgi" style="background-image:url('+SCIA['bg'+['mag','circ','water','plant','animal'].indexOf(s.k)]+')"></div><img class="ico" src="'+SCIA[s.ic]+'" alt=""><div class="tx"><small>'+esc(s.zh)+'</small><b>'+esc(s.gz)+'</b><span>'+(stamp?'✅ 已經蓋好印章了！再玩可以拿更多分數':'3 關都過關就能蓋印章')+'</span></div></div><div class="stlv">';
   s.lv.forEach(function(l,i){var open=i===0||r[i-1]>0;
     h+='<button class="stl'+(i===nxt?' next':'')+'" data-lv="'+i+'"'+(open?'':' disabled')+'><span class="n">'+(open?i+1:'🔒')+'</span><span class="nm"><b>第 '+(i+1)+' 關：'+esc(l[0])+'</b><small>'+esc(open?l[1]:'先過第 '+i+' 關才能玩')+'</small></span><span class="s3">'+[0,1,2].map(function(j){return '<i class="'+(j<r[i]?'on':'')+'">★</i>'}).join('')+'</span></button>'});
+  h+=sxBtn(s.k,stamp);
   h+='</div><div class="strw'+(stamp?' got':'')+'"><img src="'+SCIA['rw_'+{mtrain:'train',mlamp:'lamp',mcloud:'cloud',msun:'sun',mdeer:'deer'}[s.rw]]+'" alt=""><div><b>'+(stamp?'已得到：':'全破獎勵：')+esc(s.rz)+'</b>'+(stamp?'到花園的商店「✨ 魔法」就能免費放上去！':'3 關都過關，花園就會多一個會動的「'+esc(s.rz)+'」。')+'</div></div>';
   gBody.innerHTML=h;
-  gBody.querySelectorAll('[data-lv]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');OB.st(g,+b.dataset.lv)})});
+  gBody.querySelectorAll('[data-lv]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');OB.st(g,+b.dataset.lv)})});sxBind(gBody,s.k,function(){stMenu(g)});
   say(stamp?'「'+s.gz+'」全破了！要再挑戰拿三顆星嗎？':'選一關開始！'+(nxt>=0?'下一關是第 '+(nxt+1)+' 關。':''),'happy');
 }
+/* ---- 自然「高手關」（v16）：三關都過關後開放；10 題混合推理題、沒有提示，答對一題 20 分；10 題全對 3 顆紫星 ---- */
+var SX_T={mag:'magnet',circ:'circuit',water:'water',plant:'plant',animal:'animal',moon:'moon',sound:'sound',wind:'air',weather:'weather',insect:'insect'},
+    SX_LAB={mag:['mag2'],circ:['ckt2'],water:['temp','flow'],plant:['eco2'],animal:['eco2','pond'],moon:['moon2','time'],sound:['sun'],wind:['wx2'],weather:['wx2'],insect:['eco2']},SX_LABQ=null;
+function sxLab(){if(SX_LABQ)return SX_LABQ;SX_LABQ={};var cur='';String(window.LAB_BANK_TEXT||'').split('\n').forEach(function(L){L=L.trim();if(L[0]==='@'){cur=L.slice(1).split('|')[0];return}
+    var p=L.split('|');if(p.length>=5&&p[1]==='c'&&cur){(SX_LABQ[cur]=SX_LABQ[cur]||[]).push({q:p[2],a:p[3],w:p[4].split('^').filter(Boolean).slice(0,3),x:p[5]||''})}});return SX_LABQ}
+function sxPool(k){var o=[],t=SX_T[k];(SCI.g['三'].mc||[]).forEach(function(q){if(q.t!==t)return;if(q.tf)o.push({q:'是非題：'+q.q,a:q.a?'對':'錯',w:[q.a?'錯':'對'],x:q.x||''});else o.push({q:q.q,a:q.a,w:(q.w||[]).slice(0,3),x:q.x||''})});
+  var lab=sxLab();(SX_LAB[k]||[]).forEach(function(id){(lab[id]||[]).forEach(function(q){o.push(q)})});return o}
+function sxRow(k){var d=isKid()&&Store.kid(who);return d&&d.sx&&typeof d.sx==='object'?+d.sx[k]||0:0}
+function sxBtn(k,stamp){var st=sxRow(k);return '<button class="sxexp'+(stamp?'':' lock')+'" data-sxexp="'+k+'"'+(stamp?'':' disabled')+'><span class="n">'+(stamp?'★':'🔒')+'</span><span class="nm"><b>高手關</b><small>'+(stamp?'10 題混合推理題・沒有提示・全對才有 3 顆紫星':'3 關都過關後開放')+'</small></span><span class="s3 t2">'+[0,1,2].map(function(j){return '<i class="'+(j<st?'on':'')+'">★</i>'}).join('')+'</span></button>'}
+function sxBind(root,k,back){var b=root.querySelector('[data-sxexp]');if(b)b.addEventListener('click',function(){if(b.disabled)return;sfx('win');sxRun(k,back)})}
+function sxRun(k,back){var pool=sxPool(k),qs=[],seen={};pool.slice().sort(function(){return Math.random()-.5}).forEach(function(q){if(qs.length<10&&!seen[q.q]){seen[q.q]=1;qs.push(q)}});
+  var i=0,right=0;roundPts=0;document.body.dataset.tier='2';$('#gTitle').textContent=(STK[k]?STK[k].zh:k)+'・高手關';
+  function show(){if(i>=qs.length)return end();var q=qs[i],opts=[q.a].concat(q.w).sort(function(){return Math.random()-.5});$('#gProg').textContent=(i+1)+' / '+qs.length;
+    gBody.innerHTML='<div class="sxq"><div class="sxtop"><span class="tag">★ 高手關</span><span>第 '+(i+1)+' / '+qs.length+' 題・答對 '+right+'</span></div><h3>'+esc(q.q)+'</h3><div class="sxo">'+opts.map(function(o){return '<button data-o="'+esc(o)+'">'+esc(o)+'</button>'}).join('')+'</div><div class="sxf" hidden></div></div>';
+    gBody.querySelectorAll('[data-o]').forEach(function(b){b.addEventListener('click',function(){if(gBody.querySelector('.sxo.done'))return;var ok=b.dataset.o===q.a;gBody.querySelector('.sxo').classList.add('done');
+      gBody.querySelectorAll('[data-o]').forEach(function(x){if(x.dataset.o===q.a)x.classList.add('ok')});if(!ok)b.classList.add('bad');
+      if(ok){right++;award(2);sfx("ok")}else{sfx("no")}
+      var f=gBody.querySelector('.sxf');f.hidden=false;f.innerHTML='<b>'+(ok?'答對了！':'答案是「'+esc(q.a)+'」')+'</b>'+(q.x?'<p>'+esc(q.x)+'</p>':'')+'<button id="sxNext">'+(i+1<qs.length?'下一題':'看結果')+'</button>';
+      $('#sxNext').addEventListener('click',function(){sfx('tap');i++;show()})})})}
+  function end(){var st=right>=10?3:right>=8?2:right>=6?1:0,first=false,first3=false,bonus=0;
+    if(isKid()){Store.mut(who,function(d){var o=d.sx&&typeof d.sx==='object'?d.sx:(d.sx={}),old=+o[k]||0;if(st>old)o[k]=st;if(st>=1&&old<1){first=true;var sa=d.sa&&typeof d.sa==='object'?d.sa:(d.sa={});sa.c=(+sa.c||0)+30}if(st===3&&old<3){first3=true;d.water=(+d.water||0)+10}});
+      bonus=Store.finishGame(who,curGame,{score:right,total:qs.length,roundPts:roundPts,eg:egrade})||0}
+    gBody.innerHTML='<div class="obres"><div class="card"><div class="sest">'+[0,1,2].map(function(j){return '<i class="'+(j<st?'on':'')+'" style="animation-delay:'+(.15+j*.18)+'s">★</i>'}).join('')+'</div><h3>'+(st===3?'高手關全對！你是真正的自然高手！':st>=1?'高手關過關！':'再挑戰一次！')+'</h3><p>10 題答對 '+right+' 題（全對 3 星、8 題 2 星、6 題 1 星）</p>'+
+      (first?'<p class="sxrw">第一次過關：家鄉幣 +30</p>':'')+(first3?'<p class="sxrw">第一次全對：💧 +10，自然島地圖上這一站會亮紫星</p>':'')+'<div class="pts en">+'+(roundPts+bonus)+' 分</div><div class="row"><button class="btn alt" id="sxAgain">再挑戰</button><button class="btn ghost" id="sxBack">回這一站</button></div></div></div>';
+    sfx('win');confetti(gBody.querySelector('.sest'),st*14+8);say(st===3?'全對！太厲害了！':st>=1?'高手關過關了！':'高手關很難，多練習幾次一定可以！','happy');
+    $('#sxAgain').addEventListener('click',function(){sfx('tap');sxRun(k,back)});$('#sxBack').addEventListener('click',function(){sfx('tap');document.body.dataset.tier='0';back()})}
+  say('高手關沒有提示，10 題全對才有 3 顆紫星，加油！','happy');show()}
 function stopGameOverlay(){if(typeof OB!=='undefined'&&OB)OB.stop()}
 
 /* 排行榜：社會（社會分、家鄉徽章、小石獅冒險、家鄉小鎮） */
@@ -2439,6 +2467,87 @@ var SCI=(function(){
   M('circuit','電路小幫手',[['電池','提供電','','battery'],['燈泡','通電後會亮','','bulb_on'],['電線','讓電流通過','','wire'],['開關','控制電路接通或斷開','','switch']]);
   M('sound','聲光小祕密',[['敲鼓','鼓面在振動','🥁'],['影子','光被擋住了','🌑'],['鏡子','光被反射','🪞'],['太空','聽不到聲音','🚀'],['月亮','反射太陽的光','','m_full']]);
 
+  /* ---- v16 高手關：推理、應用題 ---- */
+  Q('plant','把一盆植物放在窗邊，幾天後莖往哪裡彎？','往有陽光的窗外彎',['往房間裡面彎','直直往下長','不會有任何改變'],'植物的莖會朝向光的方向生長，這叫向光性。');
+  Q('plant','想知道「植物需不需要陽光」，兩盆植物哪個條件應該不一樣？','一盆照光、一盆不照光',['一盆澆水、一盆不澆水','兩盆用不同的土','兩盆植物種類不同'],'公平測試一次只改變一個條件，其他都要相同，才知道是哪個條件造成差別。');
+  Q('plant','種子發芽時，最先長出來的通常是什麼？','根',['花','果實','葉子上的花苞'],'種子發芽時通常先長出根，把自己固定並吸收水分。');
+  Q('plant','芹菜插進紅色水裡，過一陣子莖和葉出現紅色，說明了什麼？','莖會把水往上運送',['葉子會吸紅色的光','根會製造紅色','水會自己變色'],'莖裡有運送水分的管道，所以紅色的水被送到莖和葉。');
+  Q('plant','仙人掌的葉子變成尖刺，對它生活在沙漠有什麼幫助？','減少水分散失',['讓它長得更高','幫助它開更多花','讓它吸收更多陽光'],'葉子變成刺能減少水分從葉子散失，適合乾燥的沙漠。');
+  Q('plant','下面哪一種是「靠風」散播種子的？','蒲公英',['椰子','鬼針草','蘋果'],'蒲公英的種子有冠毛，像小降落傘被風吹走；椰子靠水、鬼針草靠動物沾黏。');
+  Q('plant','一棵植物葉子都被摘光，接下來最可能怎樣？','很難製造養分，會變虛弱',['長得更快','開更多花','完全不受影響'],'葉子是製造養分的地方，沒有葉子植物就很難製造養分。');
+  Q('plant','地瓜可以用哪一部分種出新的植物？','塊根',['花瓣','葉柄上的刺','果皮'],'地瓜吃的部分是塊根，種下去可以長出新的芽和根。');
+  Q('animal','鴨子的腳有蹼，最主要幫助牠做什麼？','划水游泳',['爬樹','挖洞','抓小蟲'],'蹼能增加划水的面積，讓鴨子在水中游得更好。');
+  Q('animal','青蛙小時候（蝌蚪）用什麼呼吸？','鰓',['肺','皮膚上的毛','嘴巴的牙齒'],'蝌蚪住在水裡用鰓呼吸，長大成青蛙後主要用肺和皮膚呼吸。');
+  Q('animal','下面哪一種動物是「胎生」的？','狗',['雞','烏龜','青蛙'],'胎生動物由媽媽直接生出小寶寶，例如狗、貓、人；雞、烏龜、青蛙是卵生。');
+  Q('animal','老鷹的眼睛很銳利，主要幫助牠做什麼？','從高空找到獵物',['在水裡呼吸','在黑暗中發光','保持身體溫暖'],'老鷹在高空飛行，銳利的眼睛讓牠看見地面上的小動物。');
+  Q('animal','北極熊的毛又厚又密，對牠有什麼幫助？','在寒冷的地方保暖',['讓牠游得更快','幫助牠消化','讓牠被看得更清楚'],'厚厚的毛和脂肪能保暖，適合寒冷的北極。');
+  Q('animal','「草 → 兔子 → 老鷹」中，如果兔子變得很少，老鷹會怎樣？','食物變少，數量可能減少',['數量會變多','改吃草','完全不受影響'],'這是食物鏈，兔子是老鷹的食物，兔子變少，老鷹的食物也變少。');
+  Q('animal','魚的身體大多是流線形，主要的好處是什麼？','在水中游動時阻力比較小',['可以飛起來','比較好吃','可以在陸地上走路'],'流線形的身體在水中阻力小，游起來比較省力。');
+  Q('animal','蝙蝠在夜晚飛行時，主要靠什麼找到方向？','發出聲音再聽回音',['眼睛發光','聞花的味道','看月亮的位置'],'蝙蝠會發出聲音，聽反彈回來的回音判斷前方有沒有東西。');
+  Q('insect','昆蟲的身體可以分成哪三部分？','頭、胸、腹',['頭、腳、尾巴','頭、翅膀、腳','胸、腹、尾巴'],'昆蟲身體分成頭、胸、腹三部分，胸部有 3 對腳。');
+  Q('insect','蜘蛛有 8 隻腳，牠是不是昆蟲？','不是，昆蟲只有 6 隻腳',['是，所有會爬的都是昆蟲','是，因為牠很小','不一定，要看顏色'],'昆蟲有 6 隻腳、身體分三部分；蜘蛛有 8 隻腳、身體分兩部分，不是昆蟲。');
+  Q('insect','蝴蝶的一生依序是哪一個？','卵 → 幼蟲 → 蛹 → 成蟲',['卵 → 蛹 → 幼蟲 → 成蟲','幼蟲 → 卵 → 成蟲 → 蛹','蛹 → 卵 → 成蟲 → 幼蟲'],'蝴蝶是完全變態：卵、幼蟲、蛹、成蟲。');
+  Q('insect','蟋蟀的一生沒有「蛹」，這叫做什麼？','不完全變態',['完全變態','沒有變態','胎生'],'蟋蟀、蟑螂、蝗蟲從卵孵出若蟲，直接長大成成蟲，沒有蛹，叫不完全變態。');
+  Q('insect','昆蟲的觸角最主要用來做什麼？','感覺氣味和周圍環境',['吃東西','走路','飛行'],'觸角像昆蟲的鼻子和手，可以感覺氣味、碰觸和震動。');
+  Q('insect','蜜蜂在花間飛來飛去，對植物有什麼幫助？','幫忙傳播花粉',['吃掉害蟲','幫植物澆水','讓葉子變大'],'蜜蜂採蜜時身上沾了花粉，帶到別朵花，幫助植物結出果實。');
+  Q('insect','為什麼在不同季節，能看到的昆蟲種類不太一樣？','昆蟲的生活和溫度、食物有關',['昆蟲會自己換顏色','昆蟲只在冬天出現','昆蟲都會飛到外國'],'很多昆蟲在溫暖、食物多的季節比較活躍，冷的時候會躲起來或以卵、蛹度過。');
+  Q('insect','螳螂的前腳像鐮刀，主要用來做什麼？','捕捉獵物',['挖土','游泳','發出聲音'],'螳螂的前腳有刺像鐮刀，可以夾住小昆蟲。');
+  Q('air','把空杯子倒過來直直壓進水裡，杯底的紙巾為什麼不會濕？','杯子裡有空氣佔住空間',['紙巾會防水','水不喜歡紙巾','杯子會吸水'],'空氣佔有空間，水進不到杯子上方，所以紙巾不會濕。');
+  Q('air','打氣筒把空氣打進球裡，球變硬了，說明空氣有什麼特性？','空氣可以被壓縮',['空氣有顏色','空氣很重像石頭','空氣會變成水'],'空氣可以被壓縮，打進更多空氣，球裡的空氣變多、球就變硬。');
+  Q('air','風車轉得越快，表示什麼？','風越大',['風越小','沒有風','天氣越冷'],'風是流動的空氣，風越大推動葉片的力量越大，風車轉得越快。');
+  Q('air','熱氣球為什麼能升上天空？','球裡的空氣受熱變輕往上升',['球裡裝滿了水','有繩子在天上拉','球裡的空氣變冷變重'],'空氣受熱會膨脹、變輕而上升，熱氣球就利用這個原理。');
+  Q('air','用吸管喝飲料，飲料為什麼會上來？','吸走吸管裡的空氣，外面的空氣把飲料壓上來',['飲料自己會往上爬','吸管會吸水','杯子會推飲料'],'吸管裡的空氣變少，杯子裡飲料表面的空氣把飲料壓進吸管。');
+  Q('air','想比較哪一種風車葉片轉得最快，下面哪一個做法最公平？','用同一台電風扇、同樣距離吹',['每個風車用不同的風扇','有的在室內有的在戶外','風扇距離每次都不同'],'公平測試要讓風的大小相同，只改變葉片，才知道是葉片造成的差別。');
+  Q('air','乾冰或冰塊旁邊冒出白白的「煙」，那其實是什麼？','空氣中的水蒸氣遇冷變成的小水滴',['冰塊燒起來的煙','空氣變成固體','灰塵飛起來'],'空氣中的水蒸氣遇冷凝結成小水滴，看起來像白煙。');
+  Q('air','塑膠袋裝滿空氣綁緊，用力壓會有什麼感覺？','有東西頂住，壓不扁',['一壓就完全扁掉','袋子會變熱燒起來','袋子會變重'],'袋子裡的空氣佔有空間，壓的時候會感覺到空氣在頂住。');
+  Q('water','水煮開時冒出的水蒸氣，碰到冷鍋蓋變成水滴，這叫做什麼？','凝結',['蒸發','結冰','融化'],'水蒸氣遇冷變回液態的水，叫做凝結。');
+  Q('water','冬天晾衣服比夏天乾得慢，主要原因是什麼？','溫度低，水蒸發得慢',['冬天的水比較多','冬天沒有空氣','衣服冬天比較厚所以不會乾'],'溫度越高、風越大，水蒸發得越快；冬天溫度低，蒸發變慢。');
+  Q('water','把裝滿水的玻璃瓶放進冷凍庫，可能會破掉，為什麼？','水結成冰體積變大',['冰比水重','冷凍庫會擠壓瓶子','水會變成氣體'],'水結冰時體積會變大，把瓶子撐破。');
+  Q('water','冰塊放在室溫下慢慢變成水，這叫做什麼？','融化',['凝固','凝結','沸騰'],'固態的冰吸收熱變成液態的水，叫做融化。');
+  Q('water','下面哪一種方法最能讓一杯熱水變涼得快？','把水倒進淺盤，放在有風的地方',['蓋上蓋子','用厚毛巾包起來','放進保溫瓶'],'增加水和空氣接觸的面積、加上風，散熱和蒸發都會變快。');
+  Q('water','冷飲杯外面出現小水珠，水珠是從哪裡來的？','空氣中的水蒸氣遇冷凝結',['杯子裡的水滲出來','杯子在流汗','冰塊跑出來'],'空氣中的水蒸氣碰到冰冷的杯子，凝結成小水珠。');
+  Q('water','用溫度計量冰水，溫度最接近幾度？','0 °C',['50 °C','100 °C','37 °C'],'冰水混合時溫度大約是 0 °C；水在 100 °C 左右沸騰。');
+  Q('water','鹽溶在水裡之後看不見了，要怎麼把鹽拿回來？','讓水蒸發掉',['用篩子撈','用磁鐵吸','把水冰起來就好'],'水蒸發後，溶在水裡的鹽會留下來。');
+  Q('weather','天空出現又厚又黑的積雨雲，接下來最可能怎樣？','可能下大雨或打雷',['一定會出大太陽','一定會下雪','天氣完全不會變'],'積雨雲常帶來雷陣雨。');
+  Q('weather','雨量筒量到 30 毫米和 5 毫米，哪一天雨下得比較多？','30 毫米那天',['5 毫米那天','兩天一樣多','沒辦法知道'],'雨量筒的數字越大，表示雨下得越多。');
+  Q('weather','早上和中午的氣溫通常哪個比較高？','中午',['早上','一樣高','半夜最高'],'中午太陽比較高，照射比較強，氣溫通常比早上高。');
+  Q('weather','風向袋被吹向南方，代表風是從哪裡吹來的？','北方',['南方','東方','往上吹'],'風向是指風「吹來」的方向；風向袋飄向南，表示風從北方吹來。');
+  Q('weather','颱風來之前，下面哪一個準備最重要？','把陽台的盆栽搬進屋內',['把窗戶全部打開','到海邊看浪','把雨傘丟掉'],'颱風風大，容易把東西吹落傷人，要把外面的東西收好。');
+  Q('weather','天氣預報說「降雨機率 80%」，代表什麼？','很有可能下雨',['一定不會下雨','會下 80 毫米的雨','80% 的地方會淹水'],'降雨機率越高，下雨的可能性越大，出門最好帶傘。');
+  Q('weather','雨過天晴，太陽在你背後，彩虹可能出現在哪裡？','你的前方天空',['太陽的旁邊','你的腳下','地底下'],'彩虹出現在和太陽相反方向的天空，所以背對太陽才看得到。');
+  Q('weather','溫度計放在太陽直射的地方量氣溫，會有什麼問題？','量到的溫度會偏高',['量到的溫度會偏低','完全沒有影響','溫度計會結冰'],'量氣溫要放在通風、陰涼的地方，太陽直射會讓溫度計變熱，數字偏高。');
+  Q('moon','今天看到上弦月，大約一個星期後最可能看到什麼月相？','滿月',['新月','上弦月','眉月'],'月相大約一個月循環一次：新月 → 上弦月 → 滿月 → 下弦月，每階段約一個星期。');
+  Q('moon','月亮每天升起的時間，大約會怎麼變？','每天晚大約 50 分鐘',['每天早 3 小時','每天都一樣','每天晚 6 小時'],'月亮每天升起的時間大約比前一天晚 50 分鐘左右。');
+  Q('moon','月亮為什麼會有圓缺變化？','我們看到月亮被太陽照亮的部分不一樣',['月亮自己會長大變小','地球的影子每天都蓋住月亮','雲把月亮切掉'],'月亮繞地球轉，太陽照亮的那一面我們看到的多少不同，所以有月相。');
+  Q('moon','滿月的時候，月亮大約什麼時間升起？','傍晚太陽下山時',['中午','早上 6 點','半夜 3 點'],'滿月時月亮和太陽在地球兩邊，太陽下山時月亮剛好升起。');
+  Q('moon','觀察月亮時，記錄「月亮的方位和高度」可以用什麼工具？','指北針和拳頭測高度',['溫度計','雨量筒','放大鏡'],'用指北針找方位，伸直手臂用拳頭估計高度角。');
+  Q('moon','月亮的亮光是怎麼來的？','反射太陽光',['自己燃燒發光','地球的燈照亮','星星照亮的'],'月亮自己不會發光，是反射太陽的光。');
+  Q('moon','農曆十五左右，最常看到什麼月相？','滿月',['新月','上弦月','下弦月'],'農曆十五左右是滿月，中秋節就在農曆八月十五。');
+  Q('moon','月亮在天空中移動的方向和太陽像不像？','像，都是東邊升起、西邊落下',['不像，月亮從西邊升起','月亮不會移動','月亮從北邊升起'],'因為地球自轉，太陽和月亮看起來都是東升西落。');
+  Q('magnet','兩個磁鐵 N 極對 N 極靠近，會怎樣？','互相推開（相斥）',['互相吸住','沒有反應','變成一個大磁鐵'],'同極相斥、異極相吸。');
+  Q('magnet','下面哪一個東西會被磁鐵吸住？','鐵釘',['鋁罐','銅板（一元）','塑膠尺'],'磁鐵會吸鐵、鎳等金屬；鋁、銅、塑膠不會被吸。');
+  Q('magnet','用磁鐵同一端往同方向摩擦鐵針很多次，鐵針會怎樣？','變成有磁性',['變成銅','變得很熱會燒起來','變得更重'],'這叫磁化，鐵針會暫時變成小磁鐵。');
+  Q('magnet','指北針的指針靜止時，N 極會指向哪裡？','北方',['南方','東方','往上'],'地球像一個大磁鐵，指北針的 N 極會指向北方。');
+  Q('magnet','想知道哪個磁鐵磁力比較強，最好的方法是？','比較能吸起幾個迴紋針',['比較哪個顏色比較深','比較哪個比較重','比較哪個比較長'],'能吸起越多迴紋針，表示磁力越強，這是可以數的證據。');
+  Q('magnet','磁鐵隔著一本厚厚的書，能不能吸住書另一邊的迴紋針？','不一定，距離越遠磁力越弱',['一定可以','一定不行','只有晚上可以'],'磁力會隨距離變遠而變弱，隔太厚可能就吸不住。');
+  Q('magnet','冰箱門的磁條能讓門關緊，利用的是什麼？','磁鐵吸鐵的特性',['膠水黏住','空氣壓力','電的力量'],'冰箱門的磁條會吸住冰箱的鐵框，讓門關緊。');
+  Q('magnet','把一個不知道極性的磁鐵靠近已知的 N 極，結果互相吸引，那一端是什麼極？','S 極',['N 極','沒有極','兩個都是'],'異極相吸，所以被 N 極吸住的那一端是 S 極。');
+  Q('circuit','電池、電線、燈泡要怎樣接，燈泡才會亮？','接成一個完整的迴路',['只接電池正極','電線剪斷一半','燈泡放在電池旁邊就好'],'電流要從電池正極出發，經過燈泡回到負極，形成通路燈才會亮。');
+  Q('circuit','下面哪一種東西可以導電？','迴紋針',['橡皮擦','塑膠吸管','木頭筷子'],'金屬容易導電，像迴紋針；橡皮、塑膠、木頭不容易導電。');
+  Q('circuit','電路中加了開關，按下「關」時燈泡為什麼會熄滅？','電路斷開，電流不能流通',['電池沒電了','燈泡壞了','電線變短了'],'開關關上時電路變成斷路，電流無法流動。');
+  Q('circuit','兩個燈泡串聯，其中一個壞掉，另一個會怎樣？','也不會亮',['變得更亮','一樣亮','會爆炸'],'串聯只有一條路，一個燈泡壞掉路就斷了，另一個也不會亮。');
+  Q('circuit','兩個燈泡並聯，其中一個拔掉，另一個會怎樣？','還會亮',['也會熄滅','變成紅色','電池會爆炸'],'並聯有兩條路，一條斷了，另一條還是通的。');
+  Q('circuit','為什麼不能用濕的手去碰插座？','水可能導電，容易觸電',['手會變冷','插座會壞掉','水會讓插座生鏽而已'],'濕的手比較容易導電，觸電非常危險。');
+  Q('circuit','電池用久了燈泡變暗，最可能的原因是？','電池的電快用完了',['燈泡變大了','電線變長了','開關變新了'],'電池的電量下降，燈泡得到的電變少，就會變暗。');
+  Q('circuit','下面哪一個是「節約用電」的好方法？','離開房間隨手關燈',['冰箱門一直打開','白天也開著燈','電視沒人看也開著'],'不用的電器要關掉，節約能源。');
+  Q('sound','用力敲鼓和輕輕敲鼓，哪一個聲音比較大？','用力敲',['輕輕敲','一樣大','不會發出聲音'],'振動越大，聲音越大。');
+  Q('sound','橡皮筋拉得越緊，彈起來的聲音會怎樣？','越高',['越低','越小聲','完全沒有聲音'],'橡皮筋越緊振動越快，聲音越高。');
+  Q('sound','把耳朵貼在桌上，另一人輕敲桌子，聽起來比較清楚，說明什麼？','聲音可以在固體中傳播',['聲音只能在空氣中傳播','桌子會放大顏色','耳朵貼著才會有聲音'],'聲音可以在固體、液體和氣體中傳播，固體傳聲效果很好。');
+  Q('sound','打雷時為什麼先看到閃電，再聽到雷聲？','光跑得比聲音快很多',['雷聲比較慢出發','耳朵比眼睛慢','閃電是假的'],'光的速度比聲音快很多，所以先看到閃電。');
+  Q('sound','在教室裡想減少噪音，下面哪一個方法最有效？','在桌腳套上軟墊',['大力拖椅子','把窗戶打開對著馬路','大聲說話蓋過噪音'],'軟的東西可以吸收振動，減少聲音傳出去。');
+  Q('sound','杯子裝不同多少的水，敲起來聲音不同，水越多聲音通常怎樣？','越低',['越高','越大聲','沒有聲音'],'敲杯子時水越多，振動越慢，聲音越低。');
+  Q('sound','鏡子能讓光改變方向，這叫做什麼？','反射',['折射','吸收','發光'],'光碰到鏡子會反彈回來，這叫反射。');
+  Q('sound','影子為什麼會出現？','光被不透明的物體擋住',['物體會發出黑色的光','地面會變色','太陽關掉了'],'光沿直線前進，被不透明的物體擋住，後面就形成影子。');
   return {topics:TOPICS,g:{'三':{mc:mc,sort:sort,order:order,match:match}},
     tn:function(t){for(var i=0;i<TOPICS.length;i++)if(TOPICS[i][0]===t)return TOPICS[i][1];return ''},
     find:function(key){var g=this.g['三'],i,x;
@@ -4986,6 +5095,7 @@ var V2=(function(){
   function station(m){
     cleanupGame();shell(m.zh);var r=isKid()?scRow(who,m.station):[0,0,0,0];
     gBody.innerHTML='<section class="v2station"><div class="v2station-head" style="background-image:linear-gradient(transparent,#152c47bb),url('+PATH+m.bg+'.webp)"><span>'+m.ico+' 自然探索</span><h2>'+esc(m.zh)+'</h2><p>'+esc(m.d)+'</p></div><span class="v2badge">'+(r[3]?'✅ 已收集印章':'三關完成，收集自然印章與 5 💧')+'</span>'+m.levels.map(function(l,i){var open=i===0||r[i-1]>0;return '<button class="v2level" data-v2-level="'+i+'"'+(open?'':' disabled')+'><b>'+(open?i+1:'🔒')+'</b><span><strong>'+esc(l[0])+'</strong><small>'+esc(open?l[1]:'先完成前一關')+'</small></span><i class="v2stars">'+'★'.repeat(r[i])+'☆'.repeat(3-r[i])+'</i></button>'}).join('')+'<p class="v2hint">二年級可當生活課程探索；高年級是基礎複習與延伸。這些活動不代表完整年級課綱。</p></section>';
+    var sxw=document.createElement('div');sxw.className='sxwrap';sxw.innerHTML=sxBtn(m.station,!!(r[0]&&r[1]&&r[2]));var vs=gBody.querySelector('.v2station');if(vs)vs.appendChild(sxw);sxBind(gBody,m.station,function(){station(m)});
     gBody.querySelectorAll('[data-v2-level]').forEach(function(b){bind(b,'click',function(){start(m,+b.dataset.v2Level)})});say('選一關，開始做小小研究員！','happy');
   }
   function frame(s,q){
