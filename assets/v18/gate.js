@@ -45,20 +45,32 @@ var ICO={en:'<svg viewBox="0 0 24 24"><path d="M3 5.5C5.5 4 8.5 4 12 6c3.5-2 6.5
  so:'<svg viewBox="0 0 24 24"><path d="M3 20h18M5 20V10l7-5 7 5v10" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="10" y="13" width="4" height="7" rx="1" fill="currentColor"/></svg>',
  sci:'<svg viewBox="0 0 24 24"><path d="M5 19C5 10 11 5 20 4c0 9-5 15-14 15Z" fill="currentColor" opacity=".25"/><path d="M5 19C5 10 11 5 20 4c0 9-5 15-14 15ZM5 19 14 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'};
 function num(n){return (+n||0).toLocaleString('en-US')}
-var seen=false;
+var seen=false,lastList='';
 /* ---------- 1. 選帳號 ---------- */
-function pickScreen(){setMode('pick');gate.classList.remove('cover');gate.classList.add('g18');try{Music.play('cover')}catch(e){}
+/* 只產生帳號卡片（不含背景、標題、面板），雲端資料更新時用來比對、只換卡片 */
+function listHTML(){var h='';
   var ks=KIDS.slice(),top=null,best=-1;ks.forEach(function(k){var p=+(Store.kid(k.id)||{}).pts||0;if(p>best){best=p;top=k.id}});
-  var h='<div class="g18head">'+bot()+plaque('你是誰呢？')+'<p class="g18sub">選自己的帳號，分數和學習紀錄都會記在這裡！</p></div><div class="g18panel"><div class="g18list">';
   ks.forEach(function(k,i){var d=Store.kid(k.id)||{},e=growOf(k.id,'en'),m=growOf(k.id,'math'),sp=subPts(d,'sci'),L=scLevel(sp),c=cfgOf(k.id);
     function socTile(id){var R=null;try{R=window.__soc&&__soc.report(id)}catch(e){}var pts=R?R.pts:0,pc=R&&R.total?R.badges/R.total*100:0;return tile('so','社會',pts,pc,0)}
     function tile(cls,label,pts,pc,x){return '<span class="g18t '+cls+'"><span class="i">'+ICO[cls]+'</span><b>'+label+'</b><small>'+num(pts)+' 分'+(x?' <em>×'+x+'</em>':'')+'</small><span class="bar"><i style="--w:'+Math.max(5,Math.min(100,pc)).toFixed(0)+'%"></i></span></span>'}
     h+='<button class="g18card" data-id="'+k.id+'" style="--i:'+i+'"><span class="g18shine"></span>'+(c?big(c,{crown:k.id===top&&best>0}):'<span class="g18big emo"><span class="g18ring"></span><span class="g18emo">'+esc(k.emo)+'</span></span>')+
       '<span class="g18info"><span class="g18nm"><b>'+esc(k.name)+'</b><span class="g18tot"><i>★</i>'+num(d.pts)+'</span></span><span class="g18tiles">'+
       tile('en','英文',e.cur,(e.cur-e.lv[0])/(e.nx[0]-e.lv[0])*100,e.n)+tile('math','數學',m.cur,(m.cur-m.lv[0])/(m.nx[0]-m.lv[0])*100,m.n)+tile('sci','自然',sp,L.to?(sp-L.from)/(L.to-L.from)*100:100,0)+socTile(k.id)+'</span></span></button>'});
+  return h}
+function bindCards(){gate.querySelectorAll('.g18card').forEach(function(b){b.addEventListener('click',function(){if(b.classList.contains('tap'))return;sfx('tap');b.classList.add('tap');setTimeout(function(){pinScreen(b.dataset.id)},180)})})}
+/* 雲端資料（分數、名單）更新時呼叫：已經在選帳號畫面，就只把有變的卡片換掉，
+   不重畫整個畫面——以前每來一筆雲端資料就整頁重畫、面板重新淡入，手機上看起來就是一直閃、一直跳。
+   回傳 true 代表已處理；false 代表目前不在選帳號畫面，交給呼叫端決定要不要整頁重畫。 */
+function refreshPick(){if(!ready||getMode()!=='pick'||!gate.classList.contains('g18'))return false;
+  var wrap=gate.querySelector('.g18wrap.pick'),list=wrap&&wrap.querySelector('.g18list');if(!list)return false;
+  var h=listHTML();if(h===lastList)return true;
+  lastList=h;wrap.classList.add('again');list.innerHTML=h;bindCards();return true}
+function pickScreen(){setMode('pick');gate.classList.remove('cover');gate.classList.add('g18');try{Music.play('cover')}catch(e){}
+  lastList=listHTML();
+  var h='<div class="g18head">'+bot()+plaque('你是誰呢？')+'<p class="g18sub">選自己的帳號，分數和學習紀錄都會記在這裡！</p></div><div class="g18panel"><div class="g18list">'+lastList;
   h+='</div></div><button class="g18parent" id="toParent"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4" fill="currentColor"/><circle cx="16.5" cy="9" r="2.6" fill="currentColor" opacity=".75"/><path d="M2.5 19c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5Z" fill="currentColor"/><path d="M14.5 14.2c.7-.4 1.4-.6 2.2-.6 2.4 0 4.3 1.4 4.8 4.4h-5.3" fill="currentColor" opacity=".75"/></svg>家長區（看孩子的紀錄）</button>';
   gate.innerHTML=stage(h,'pick'+(seen?' again':''));seen=true;
-  gate.querySelectorAll('.g18card').forEach(function(b){b.addEventListener('click',function(){sfx('tap');b.classList.add('tap');setTimeout(function(){pinScreen(b.dataset.id)},180)})});
+  bindCards();
   gate.querySelector('#toParent').addEventListener('click',function(){sfx('tap');gate.classList.remove('g18');renderPin()})}
 
 /* ---------- 2. 輸入密碼（自製數字鍵盤） ---------- */
@@ -113,7 +125,8 @@ function avScreen(id){var k=kidOf(id);if(!k)return pickScreen();setMode('kav');g
 /* ---------- 樣式 ---------- */
 var CSS=`
 #gate.g18{padding:0!important;background:#1b2f74!important;overflow-y:auto;overflow-x:hidden;display:block}
-.g18bgl{position:fixed;inset:-24px;background:url(assets/v17/cover/bg.webp) center 35%/cover no-repeat;filter:blur(5px) saturate(1.1) brightness(.9);transform:scale(1.04);animation:g18pan 24s ease-in-out infinite alternate;z-index:0}
+.g18bgl{position:fixed;inset:-24px;background:url(assets/v17/cover/bg.webp) center 35%/cover no-repeat;filter:blur(5px) saturate(1.1) brightness(.9);transform:scale(1.04);z-index:0}
+/* 背景不再慢慢平移：整張模糊大圖一直動，手機每一格都要重新算模糊，很吃效能、手機會發燙變慢 */
 .g18bgl::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 0%,rgba(255,255,255,.12),transparent 60%),linear-gradient(180deg,rgba(14,26,78,.25),rgba(14,26,78,.55) 70%,rgba(10,18,60,.8))}
 @keyframes g18pan{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.1) translate(-1.5%,-1%)}}
 .g18fx{position:fixed;inset:0;pointer-events:none;z-index:1}
@@ -278,5 +291,5 @@ var CSS=`
 `;
 var css=false;function addCSS(){if(css)return;css=true;var e=document.createElement('style');e.id='g18css';e.textContent=CSS;document.head.appendChild(e)}
 addCSS();
-window.GateV18={init:init,ready:function(){return ready},pick:pickScreen,pin:function(id){pinScreen(id)},av:avScreen,face:face,cfg:cfgOf,big:big,AV:AV};
+window.GateV18={init:init,ready:function(){return ready},pick:pickScreen,refresh:refreshPick,pin:function(id){pinScreen(id)},av:avScreen,face:face,cfg:cfgOf,big:big,AV:AV};
 })();
