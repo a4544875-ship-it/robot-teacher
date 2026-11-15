@@ -374,7 +374,7 @@ global.ProgressFactory=function(C){
   function kidChip(id,esc,where){var g=gradeStr(id);if(!g)return '';var m=state(id,'m'),e=state(id,'e'),n=state(id,'s');
     if(where==='sci')return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(n?'<span class="chip pgchip">🔬 '+esc(n.U[1])+'</span>':'<span class="chip pgchip">🔬 自然島全部開放</span>');
     var cm=chal(id,'m'),ce=chal(id,'e'),cl=where==='math'?cm:ce;
-    return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(m?'<span class="chip pgchip">🔢 '+esc(m.U[1])+'</span>':'')+(e?'<span class="chip pgchip">🔤 '+esc(e.U[1].replace(/^Unit \d+ /,''))+'</span>':'')+
+    return '<span class="lab">🎒 '+g+'年級・跟著學校進度</span>'+(where!=='en'&&m?'<span class="chip pgchip">🔢 '+esc(m.U[1])+'</span>':'')+(where!=='math'&&e?'<span class="chip pgchip">🔤 '+esc(e.U[1].replace(/^Unit \d+ /,''))+'</span>':'')+
       '<span class="chip pgchip chl'+cl+'" title="答對 9 成以上連續幾局就會升級"><i class="tstar t'+cl+'">★</i> '+CHN[cl]+'・答對 '+[10,15,20][cl]+' 分</span>'}
 
   return {chal:chal,CHN:CHN,chObj:chObj,onTier:function(f){tierCB.push(f)},hardQ:hardQ,sciOpen:sciOpen,sciWhen:sciWhen,sciCur:sciCur,sciCheck:sciCheck,sciBanner:sciBanner,sciTopics:sciTopics,setStars:function(f){starsFn=f},setNames:function(f){nameFn=f},sem:sem,grade:grade,gradeStr:gradeStr,state:state,skills:skillsAll,gen:gen,pool:pool,others:others,hook:hook,mbHook:mbHook,round0:r0,finish:finish,

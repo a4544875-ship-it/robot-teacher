@@ -79,7 +79,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v9/lab-bank-g4.js?v=9.2.0"></script>
 <script src="assets/v9/lab-studio.js?v=9.1.0"></script>
 <script src="assets/v9/lab.js?v=9.3.0"></script>
-<script src="assets/v10/progress.js?v=16.1.0"></script>
+<script src="assets/v10/progress.js?v=16.5.0"></script>
 <script src="assets/v11/esk.js?v=11.2.0"></script>
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=16.4.0"></script>
@@ -92,7 +92,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v16/expert-en.js?v=16.3.0"></script>
 <script src="assets/v17/cover.js?v=17.0.0"></script>
 <script src="assets/v18/gate.js?v=18.2.0"></script>
-<script src="assets/mobile-magic/ui.js?v=4.1.0"></script>
+<script src="assets/mobile-magic/ui.js?v=4.2.0"></script>
 <script src="assets/habitat/scene.js?v=1.0.0"></script>
 </head>
 <body>
@@ -1468,8 +1468,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 </style>
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
-<link rel="stylesheet" href="assets/mobile-magic/theme.css?v=4.1.0">
-<link rel="stylesheet" href="assets/habitat/scene.css?v=1.0.0">
+<link rel="stylesheet" href="assets/mobile-magic/theme.css?v=4.2.0">
+<link rel="stylesheet" href="assets/habitat/scene.css?v=1.1.0">
 
 
 <header class="top">
@@ -2922,7 +2922,7 @@ function gdnPlots(id,sub){
   for(j=from;j<=n;j++){var i=d.p[j];if(typeof i==='number'&&i>=0&&i<NC&&!used[i]){used[i]=1;cells[i]={j:j};done[j]=1}}
   for(j=from;j<n;j++)if(!done[j])for(f=0;f<NC;f++)if(!used[f]){used[f]=1;cells[f]={j:j};done[j]=1;break}
   return {cells:cells,need:!done[n],x:x,d:d}}
-function openGarden(id,sub){gdEditing=false;gdnV={id:id,sub:sub||'en'};if(!gdnEl){musPrev=Music.want();Music.play('garden');gdnEl=document.createElement('div');gdnEl.className='gdn gdfull';document.body.appendChild(gdnEl)}renderGarden();gdGrowFx()}
+function openGarden(id,sub){gdEditing=false;gdCam={s:1,cx:.5,cy:.5};gdnV={id:id,sub:sub||'en'};if(!gdnEl){musPrev=Music.want();Music.play('garden');gdnEl=document.createElement('div');gdnEl.className='gdn gdfull';document.body.appendChild(gdnEl)}renderGarden();gdGrowFx()}
 /* 回到花園時：植物比上次看到的長大了，就播一段長大的動畫 */
 function gdGrowFx(){var id=gdnV.id,sub=gdnV.sub;if(!(isKid()&&who===id))return;var x=growOf(id,sub),key='rt-gseen-'+id+'-'+sub,o=ls.get(key,null),now={n:x.n,i:x.i,c:x.cur};ls.set(key,now);
   if(!o||(o.n===now.n&&o.i===now.i&&o.c>=now.c))return;var b=gdnEl&&gdnEl.querySelector('.gdp.cur');if(!b)return;var im=b.querySelector('img');
@@ -2943,9 +2943,10 @@ function renderGarden(){
     '<div class="gdpan" id="gdPan"><div class="gdscene'+(own?' own':'')+(gdEditing?' hab-edit':'')+'" id="gdSc" style="aspect-ratio:1/'+I.ar+'"><img class="gdisl" src="'+I.img+'" alt="">';
   if(window.HabitatView)h+=HabitatView.grid([I.T,I.R,I.L],GN);
   var seedSpots=[];if(own&&P.need)for(var si=0;si<GN*GN;si++){var seedCell=(si+27)%(GN*GN);if(!P.cells[seedCell]&&(!window.HabitatView||HabitatView.fits(cellUV(seedCell),{c:'a',k:'plant'},gdObstacles(P),[],-1)))seedSpots.push(seedCell)}
+  var seedShow=[];if(seedSpots.length){var byD=seedSpots.slice().sort(function(a,b){var p=cellUV(a),q=cellUV(b);return Math.hypot(p[0]-.5,p[1]-.5)-Math.hypot(q[0]-.5,q[1]-.5)});byD.forEach(function(c){if(seedShow.length>=4)return;var p=cellUV(c);if(seedShow.every(function(d){var q=cellUV(d);return Math.hypot(p[0]-q[0],p[1]-q[1])>.22}))seedShow.push(c)})}
   for(var c=0;c<GN*GN;c++){var c0=P.cells[c],q=cellUV(c),pp=isoXY(I,q[0],q[1]),z=Math.round((q[0]+q[1])*100);
     if(c0){var cur=c0.j===x.n,kn=cur?null:kindOf(G,id,c0.j);h+='<button class="gdp'+(cur?' cur':'')+'" data-c="'+c+'" data-j="'+c0.j+'"'+(cur?' data-l="'+x.cur+' 分"':'')+' style="left:'+pp[0]+'%;top:'+pp[1]+'%;width:'+(cur?12:13.5)+'%;z-index:'+(10+z)+'" aria-label="'+esc(cur?x.lv[1]:kn[1])+'"><img src="'+ART[cur?x.lv[2]:kn[0]]+'" alt=""></button>'}
-    else if(own&&P.need&&seedSpots.indexOf(c)>=0&&(gdEditing||seedSpots.indexOf(c)<4))h+='<button class="gdp add" data-c="'+c+'" data-new="1" style="left:'+pp[0]+'%;top:'+pp[1]+'%;z-index:'+(10+z)+'" aria-label="種在這裡">＋</button>'}
+    else if(own&&P.need&&seedSpots.indexOf(c)>=0&&(gdEditing||seedShow.indexOf(c)>=0))h+='<button class="gdp add" data-c="'+c+'" data-new="1" style="left:'+pp[0]+'%;top:'+pp[1]+'%;z-index:'+(10+z)+'" aria-label="種在這裡">＋</button>'}
   if(own&&!P.need&&((Store.kid(id).hv||{})[sub])!==Learn.day()){var cc=P.cells.indexOf(P.cells.filter(function(c){return c&&c.j===x.n})[0]);if(cc>=0){var hq=cellUV(cc),hp=isoXY(I,hq[0],hq[1]);h+='<button class="gdhv" id="gdHv" style="left:'+(hp[0]+10)+'%;top:'+(hp[1]-18)+'%" aria-label="收成">'+(tree?'🍎':'🌸')+'</button>'}}
   P.d.d.slice(0,GD_MAX).forEach(function(z,di){var D=GDK[gdKey(z)];if(!D)return;var uv=gdUV(z),pp=isoXY(I,uv[0],uv[1]),w=(D.sz*.72).toFixed(1);
     h+='<button class="gddeco hab-art c-'+D.c+' k-'+D.k+(D.mv?' mv-'+D.mv:'')+(TM==='night'&&(D.k==='lamp'||D.k==='lantern'||D.k==='star'||D.k==='mlamp')?' glow':'')+'" data-d="'+di+'" data-k="'+D.k+'" data-u="'+uv[0]+'" data-v="'+uv[1]+'" aria-label="'+D.zh+'" style="left:'+pp[0]+'%;top:'+pp[1]+'%;width:'+w+'%;z-index:'+(10+Math.round((uv[0]+uv[1])*100)+(D.c==='k'?300:0))+'"><span class="gdm" style="animation-delay:-'+(di*.7).toFixed(1)+'s"><img src="'+GDI[D.k]+'" alt="">'+(D.k==='windmill'&&window.HabitatView?'<img class="hab-rotor" src="'+HabitatView.art('windmill-rotor')+'" alt="">':'')+(D.k==='bee'?'<img class="gdw" src="'+GDI.bee_w+'" alt="">':'')+'</span></button>'});

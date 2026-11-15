@@ -1,7 +1,7 @@
 /* Presentation helpers only: retain the original buttons, handlers and data. */
 (function () {
   'use strict';
-  var media = window.matchMedia('(max-width: 600px)');
+  var media = window.matchMedia('(max-width: 1100px)');
   var subjects = {
     en: ['英文', '單字與拼字', '魔法書島'],
     math: ['數學', '數字與解謎', '水晶數字島'],
@@ -23,7 +23,7 @@
         var picture = document.createElement('picture');
         picture.className = 'magic-subject-art';
         var source = document.createElement('source');
-        source.media = '(max-width: 600px)';
+        source.media = '(max-width: 1100px)';
         source.srcset = 'assets/mobile-magic/island-' + id + '.webp';
         image.parentNode.insertBefore(picture, image);
         picture.appendChild(source);
@@ -74,7 +74,7 @@
           var dragonPicture = document.createElement('picture');
           dragonPicture.className = 'magic-subject-art';
           var dragonSource = document.createElement('source');
-          dragonSource.media = '(max-width: 600px)';
+          dragonSource.media = '(max-width: 1100px)';
           dragonSource.srcset = 'assets/mobile-magic/scene-dragon.webp';
           dragonImage.parentNode.insertBefore(dragonPicture, dragonImage);
           dragonPicture.appendChild(dragonSource);
@@ -101,7 +101,7 @@
       var picture = document.createElement('picture');
       picture.className = 'magic-support-art';
       var source = document.createElement('source');
-      source.media = '(max-width: 600px)';
+      source.media = '(max-width: 1100px)';
       source.srcset = 'assets/mobile-magic/' + entry[1] + '.webp';
       image.parentNode.insertBefore(picture, image);
       picture.appendChild(source);picture.appendChild(image);
@@ -130,6 +130,14 @@
     progress.textContent = complete === total && total ? '今日全部完成！' : '已完成 ' + complete + ' / ' + total + ' 項';
     heading.appendChild(progress);
     summary.appendChild(heading);
+    var nextQuest = box.querySelector('.dyq:not(.ok) .tx');
+    if (nextQuest) {
+      var next = document.createElement('span');
+      next.className = 'magic-next';
+      next.innerHTML = '<b>下一個</b>';
+      next.appendChild(document.createTextNode(nextQuest.textContent));
+      summary.appendChild(next);
+    }
     details.appendChild(summary);
     var content = document.createElement('div');
     content.className = 'magic-day-content';

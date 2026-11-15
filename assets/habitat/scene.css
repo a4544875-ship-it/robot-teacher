@@ -74,3 +74,6 @@
 @media(max-width:360px){.gdn .gdbar button{min-width:47px;padding:5px 2px}.gdn .gdbar{gap:1px}.gdn .gdsw button{width:32px}.gdn .gdwho b{font-size:13px}.tn .tn-tt{font-size:14px}.tn .tn-pill small{display:none}.tn .tn-pill{font-size:11px;padding-right:5px}.gdn .gdtabs button{min-width:61px;font-size:12px}}
 @media(min-width:700px){.gdn .gdsheet,.tn .tn-sheet{left:50%;right:auto;transform:translateX(-50%);width:540px;max-height:65%;animation:none}.gdn .gdbar button{min-width:74px}.hab-tools{left:22px;right:22px}.hab-caption{font-size:13px}.tn .tn-cat{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.gdn *,.tn *,.gdn *::before,.gdn *::after,.tn *::before,.tn *::after{animation:none!important;transition:none!important}.hab-atmosphere,.hab-breeze{display:none}}
+/* v19：小鎮提示改到下方，不再蓋住左上角的村落資訊 */
+.tn .tn-toast{top:auto;bottom:calc(108px + env(safe-area-inset-bottom,0px));animation:habToastIn .35s ease-out both}
+@keyframes habToastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
