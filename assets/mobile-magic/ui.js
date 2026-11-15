@@ -1,7 +1,7 @@
 /* Presentation helpers only: retain the original buttons, handlers and data. */
 (function () {
   'use strict';
-  var media = window.matchMedia('(max-width: 1100px)');
+  var media = window.matchMedia('(max-width: 1100px), (max-width: 1400px) and (any-pointer: coarse)');
   var subjects = {
     en: ['英文', '單字與拼字', '魔法書島'],
     math: ['數學', '數字與解謎', '水晶數字島'],
@@ -23,7 +23,7 @@
         var picture = document.createElement('picture');
         picture.className = 'magic-subject-art';
         var source = document.createElement('source');
-        source.media = '(max-width: 1100px)';
+        source.media = '(max-width: 1100px), (max-width: 1400px) and (any-pointer: coarse)';
         source.srcset = 'assets/mobile-magic/island-' + id + '.webp';
         image.parentNode.insertBefore(picture, image);
         picture.appendChild(source);
@@ -74,7 +74,7 @@
           var dragonPicture = document.createElement('picture');
           dragonPicture.className = 'magic-subject-art';
           var dragonSource = document.createElement('source');
-          dragonSource.media = '(max-width: 1100px)';
+          dragonSource.media = '(max-width: 1100px), (max-width: 1400px) and (any-pointer: coarse)';
           dragonSource.srcset = 'assets/mobile-magic/scene-dragon.webp';
           dragonImage.parentNode.insertBefore(dragonPicture, dragonImage);
           dragonPicture.appendChild(dragonSource);
@@ -101,7 +101,7 @@
       var picture = document.createElement('picture');
       picture.className = 'magic-support-art';
       var source = document.createElement('source');
-      source.media = '(max-width: 1100px)';
+      source.media = '(max-width: 1100px), (max-width: 1400px) and (any-pointer: coarse)';
       source.srcset = 'assets/mobile-magic/' + entry[1] + '.webp';
       image.parentNode.insertBefore(picture, image);
       picture.appendChild(source);picture.appendChild(image);

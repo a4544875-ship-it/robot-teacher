@@ -5,6 +5,17 @@
 .gdn .gdv.dawn{background:linear-gradient(#d4dafa,#fbeddd 65%,#c8e9f8)}
 .gdn .gdv.dusk{background:linear-gradient(#b4d6f6,#ffdec1 65%,#e8e6fd)}
 .gdv::before,.gdv::after{opacity:.55;filter:blur(12px)}
+.gdv .hab-world-sky{position:absolute;inset:0;background:url('../habitat-v2/world-sky.webp') center/cover no-repeat;pointer-events:none;opacity:.78}
+.gdv.night .hab-world-sky{opacity:.27;filter:brightness(.7) saturate(.7)}
+.gdv.theme-2:not(.night) .hab-world-sky{filter:hue-rotate(12deg) saturate(.7);opacity:.55}
+.gdv.theme-2:not(.night){background:linear-gradient(#94c9ec,#cde1fa 65%,#a1c9e7)}
+.gdv .hab-world-sky~.gdpan{z-index:5}.gdn .hab-breeze{z-index:6}
+.gdn .gddeco[data-k^="lab_"] .gdm>img{filter:drop-shadow(0 3px 2px #163c672c)}
+.gdn .gddeco.k-lab_time .gdm::after{content:'';position:absolute;left:48%;top:35%;width:3%;height:17%;background:#f6d56c;box-shadow:0 0 3px #fff1bd;animation:habSand 2s linear infinite;pointer-events:none}
+.gdn .gddeco.k-lab_flow .gdm::after,.gdn .gddeco.k-lab_pond .gdm::after{content:'';position:absolute;left:28%;top:56%;width:43%;height:12%;border:1px solid #d9ffffbd;border-radius:50%;animation:habRipple 2.8s ease-out infinite;pointer-events:none}
+.gdn .gddeco.k-lab_eco2 .gdm{transform-origin:50% 95%;animation:habSway 6s ease-in-out infinite}
+@keyframes habSand{50%{opacity:.35}}
+.gdn .hab-tools #gdHv{position:static;inset:auto;transform:none;translate:none;animation:none;width:auto;height:auto;min-height:44px;min-width:0;aspect-ratio:auto;border-radius:14px;border:1px solid #ceab57;background:linear-gradient(#fff8df,#f3df9e);box-shadow:0 3px 10px #1e477d18;color:#73521c;font:800 12px var(--font-zh,sans-serif);padding:7px 10px;line-height:1.5}
 .gdn .gdtop{gap:6px;padding:calc(10px + env(safe-area-inset-top,0px)) 10px 7px}
 .gdn .gdwho,.gdn .gdsw,.gdn .gdtop .obx,.tn .tn-x,.tn .tn-pill{border:1px solid #e2c77e;background:linear-gradient(145deg,#fff,#f3f8ff);box-shadow:0 4px 12px #2347751c,inset 0 0 0 2px #ffffffa6;color:#19355d}
 .gdn .gdwho{border-radius:18px;min-height:45px;flex-wrap:wrap;gap:2px 5px;padding:4px 8px}
@@ -28,6 +39,7 @@
 .gdn .gdtabs button[aria-pressed=true]{background:#1b61ad;border-color:#dbb65e;color:#fff}.gdn .gdtabs button small{display:block;font-size:10px;margin-top:3px}
 .gdn .gdshop{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.gdn .gdshop button{background:linear-gradient(#fff,#edf4fd);border:1px solid #d4deeb;color:#264b74;border-radius:17px;padding:9px 4px;box-shadow:0 3px 5px #2443740a;min-height:127px}
 .gdn .gdshop button img{height:76px;width:100%;object-fit:contain;filter:drop-shadow(0 4px 4px #1e3e5b20)}
+.gdn .gdshop button:disabled{opacity:1;cursor:default}.gdn .gdshop button.lock img{filter:grayscale(1);opacity:.48}.gdn .gdshop button.lock small{color:#65748a}
 .gdn .gdshop button .en{font-size:12px}.gdn .gdshop button small{color:#65748a;font-size:11px;line-height:1.4}.gdn .gdtip{color:#5d718a!important;font-size:12px;line-height:1.7}
 .gdn .gdbg button{background:#ffffffc9!important;border:1px solid #d6c38f!important;color:#244873;border-radius:16px}.gdn .gdbg button[aria-pressed=true]{border:2px solid #bd9842!important;background:#edf6ff!important}
 .hab-grid{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:visible}.hab-grid path{fill:none;stroke:#ecf9ff;stroke-width:.19;stroke-dasharray:.6 .65;opacity:.75;vector-effect:non-scaling-stroke}
@@ -77,3 +89,21 @@
 /* v19：小鎮提示改到下方，不再蓋住左上角的村落資訊 */
 .tn .tn-toast{top:auto;bottom:calc(108px + env(safe-area-inset-bottom,0px));animation:habToastIn .35s ease-out both}
 @keyframes habToastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+/* Tablets use larger objects and touch targets, with room for the map in either orientation. */
+@media(min-width:700px){
+ .gdn .gdtip2{font-size:14px}
+ .gdn .gdsheet,.tn .tn-sheet{width:min(680px,calc(100% - 32px));max-height:72%}
+ .gdn .gdshop,.tn .tn-cat{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+ .gdn .gdshop button,.tn .tn-it{min-height:148px;padding:10px 6px}
+ .gdn .gdshop button img,.tn .tn-it img{height:96px;width:100%;object-fit:contain}
+ .gdn .gdshop button .en,.tn .tn-it b{font-size:14px}.gdn .gdshop button small,.tn .tn-it small{font-size:12px}
+ .gdn .gdsh b,.tn .tn-sh b{font-size:18px}.gdn .gdtabs button,.tn .tn-tabs button{min-height:48px;font-size:14px}
+ .gdn .gdbar button{min-width:78px;min-height:60px}.gdn .gdbar button small{font-size:12px}
+ .gdn .hab-tools button,.gdn .hab-tools #gdHv{min-height:48px;font-size:14px}
+}
+@media(min-width:700px) and (orientation:landscape){
+ .gdn .hab-tools{top:calc(132px + env(safe-area-inset-top,0px));left:20px;right:auto;width:124px;flex-direction:column;gap:12px}
+ .gdn .hab-tools button,.gdn .hab-tools #gdHv{width:124px}
+ .gdn .gdtop{padding-left:20px;padding-right:20px}.gdn .gdwho{flex:0 1 450px}
+ .gdn .gdtip2{max-width:60%}
+}

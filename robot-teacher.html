@@ -50,8 +50,8 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v16/expert-en.js?v=16.3.0"></script>
 <script src="assets/v17/cover.js?v=17.0.0"></script>
 <script src="assets/v18/gate.js?v=18.2.0"></script>
-<script src="assets/mobile-magic/ui.js?v=4.2.0"></script>
-<script src="assets/habitat/scene.js?v=1.0.0"></script>
+<script src="assets/mobile-magic/ui.js?v=4.3.0"></script>
+<script src="assets/habitat/scene.js?v=1.2.0"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -1423,8 +1423,8 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 </style>
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
-<link rel="stylesheet" href="assets/mobile-magic/theme.css?v=4.2.0">
-<link rel="stylesheet" href="assets/habitat/scene.css?v=1.1.0">
+<link rel="stylesheet" href="assets/mobile-magic/theme.css?v=4.3.0">
+<link rel="stylesheet" href="assets/habitat/scene.css?v=1.2.0">
 
 
 <header class="top">
@@ -2858,7 +2858,7 @@ GDI.mtrain=SCIA.rw_train;GDI.mlamp=SCIA.rw_lamp;GDI.mcloud=SCIA.rw_cloud;GDI.msu
 var GDK={};GD.forEach(function(x){GDK[x[0]]={k:x[0],c:x[1],zh:x[2],sz:x[3],mv:x[4]||'',en:GDEN[x[0]]||x[0],p:GDC[x[1]][1]}});
 /* New artwork keeps every original item key, price and ownership record. */
 if(window.HabitatView){
-  ISL[0]={img:HabitatView.art('garden-map'),ar:2/3,T:[50,16],R:[90,37.5],L:[10,37.5]};
+  ISL=ISL.map(function(old,index){return {img:HabitatView.terrain(index),ar:.84,T:[50,16],R:[90,37.5],L:[10,37.5]}});
   ART.e6=HabitatView.art('blossom-tree');ART.e7=HabitatView.art('fruit-tree');ART.e8=HabitatView.art('fruit-tree');ART.m6=HabitatView.art('sunflower');
   Object.keys(HabitatView.garden).forEach(function(k){GDI[k]=HabitatView.art(HabitatView.garden[k])});
 }
@@ -2877,7 +2877,7 @@ function gdnPlots(id,sub){
   for(j=from;j<=n;j++){var i=d.p[j];if(typeof i==='number'&&i>=0&&i<NC&&!used[i]){used[i]=1;cells[i]={j:j};done[j]=1}}
   for(j=from;j<n;j++)if(!done[j])for(f=0;f<NC;f++)if(!used[f]){used[f]=1;cells[f]={j:j};done[j]=1;break}
   return {cells:cells,need:!done[n],x:x,d:d}}
-function openGarden(id,sub){gdEditing=false;gdCam={s:1,cx:.5,cy:.5};gdnV={id:id,sub:sub||'en'};if(!gdnEl){musPrev=Music.want();Music.play('garden');gdnEl=document.createElement('div');gdnEl.className='gdn gdfull';document.body.appendChild(gdnEl)}renderGarden();gdGrowFx()}
+function openGarden(id,sub){gdEditing=false;gdCam={s:1.08,cx:.5,cy:.5};gdnV={id:id,sub:sub||'en'};if(!gdnEl){musPrev=Music.want();Music.play('garden');gdnEl=document.createElement('div');gdnEl.className='gdn gdfull';document.body.appendChild(gdnEl)}renderGarden();gdGrowFx()}
 /* 回到花園時：植物比上次看到的長大了，就播一段長大的動畫 */
 function gdGrowFx(){var id=gdnV.id,sub=gdnV.sub;if(!(isKid()&&who===id))return;var x=growOf(id,sub),key='rt-gseen-'+id+'-'+sub,o=ls.get(key,null),now={n:x.n,i:x.i,c:x.cur};ls.set(key,now);
   if(!o||(o.n===now.n&&o.i===now.i&&o.c>=now.c))return;var b=gdnEl&&gdnEl.querySelector('.gdp.cur');if(!b)return;var im=b.querySelector('img');
@@ -2887,14 +2887,20 @@ function gdFloat(el,t){var sc=gdnEl&&gdnEl.querySelector('.gdscene');if(!sc||!el
   f.style.left=((r.left+r.width/2-q.left)/q.width*100)+'%';f.style.top=((r.top-q.top)/q.height*100)+'%';sc.appendChild(f);setTimeout(function(){f.remove()},1900)}
 function closeGarden(){gdnTm.forEach(clearInterval);gdnTm=[];if(gdnEl){gdnEl.remove();gdnEl=null;Music.play(musPrev)}}
 /* 全螢幕花園：島放在可以拖曳、縮放的「鏡頭」裡。gdCam：s 放大倍率（1＝整座島剛好塞滿），cx/cy＝畫面中心對到島圖的哪個位置（0~1） */
-var gdCam={s:1.5,cx:.5,cy:.46},gdPanel='';
-function gdCamApply(){var st=$('#gdStage'),pan=$('#gdPan');if(!st||!pan)return;var W=st.clientWidth,H=st.clientHeight,I=ISL[gdnData(gdnV.id,gdnV.sub).bg],top=64,bot=96,avH=Math.max(120,H-top-bot),
-  wb=Math.min(W*.96,avH/I.ar*.96),hb=wb*I.ar;pan.style.width=wb+'px';gdCam.s=gclamp(gdCam.s,1,3.2);gdCam.cx=gclamp(gdCam.cx,0,1);gdCam.cy=gclamp(gdCam.cy,0,1);
-  var tx=W/2-gdCam.cx*wb*gdCam.s,ty=top+avH/2-gdCam.cy*hb*gdCam.s;pan.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+gdCam.s.toFixed(3)+')';
-  var z=$('#gdZoom');if(z)z.innerHTML=gdCam.s>1.15?'🔍<small>看整座島</small>':'🔎<small>放大</small>';pan.dataset.wb=wb;pan.dataset.hb=hb}
+var gdCam={s:1.08,cx:.5,cy:.5},gdPanel='';
+function gdCamApply(){var st=$('#gdStage'),pan=$('#gdPan');if(!st||!pan)return;
+  var W=st.clientWidth,H=st.clientHeight,I=ISL[gdnData(gdnV.id,gdnV.sub).bg],rect=st.getBoundingClientRect(),tools=gdnEl.querySelector('.hab-tools'),caption=gdnEl.querySelector('.hab-caption'),
+    top=tools?Math.max(160,tools.getBoundingClientRect().bottom-rect.top+18):180,bot=caption?Math.max(106,H-(caption.getBoundingClientRect().top-rect.top)+12):125,avH=Math.max(120,H-top-bot),
+    wb=Math.min(W*.94,avH/I.ar*.9),hb=wb*I.ar;
+  if(W>=700&&W>H){var tip=gdnEl.querySelector('.gdtip2');top=tip?Math.max(112,tip.getBoundingClientRect().bottom-rect.top+16):120;avH=Math.max(120,H-top-bot);wb=Math.min(W*.94,avH/I.ar*.94);hb=wb*I.ar}
+  pan.style.width=wb+'px';gdCam.s=gclamp(gdCam.s,1,3.2);gdCam.cx=gclamp(gdCam.cx,0,1);gdCam.cy=gclamp(gdCam.cy,0,1);
+  var tx=W/2-gdCam.cx*wb*gdCam.s,ty=top+avH*.46-gdCam.cy*hb*gdCam.s;
+  pan.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+gdCam.s.toFixed(3)+')';
+  var z=$('#gdZoom');if(z)z.innerHTML=gdCam.s>1.15?'🔍<small>看整座島</small>':'🔎<small>放大細看</small>';pan.dataset.wb=wb;pan.dataset.hb=hb}
+
 function renderGarden(){
   if(!gdnEl)return;var id=gdnV.id,sub=gdnV.sub,G=GROW[sub],P=gdnPlots(id,sub),x=P.x,own=isKid()&&who===id,kd=kidOf(id),tree=sub==='en',I=ISL[P.d.bg],TM=gdLight||gdTime(),W=isKid()?Learn.bal(who):0,nd=P.d.d.length,lk=Learn.likes(id,sub);
-  var h='<div class="gdstage gdv '+TM+'" id="gdStage">'+(TM==='night'?'<div class="gdstars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>':'')+
+  var h='<div class="gdstage gdv theme-'+P.d.bg+' '+TM+'" id="gdStage"><div class="hab-world-sky" aria-hidden="true"></div>'+(TM==='night'?'<div class="gdstars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>':'')+
     '<div class="gdpan" id="gdPan"><div class="gdscene'+(own?' own':'')+(gdEditing?' hab-edit':'')+'" id="gdSc" style="aspect-ratio:1/'+I.ar+'"><img class="gdisl" src="'+I.img+'" alt="">';
   if(window.HabitatView)h+=HabitatView.grid([I.T,I.R,I.L],GN);
   var seedSpots=[];if(own&&P.need)for(var si=0;si<GN*GN;si++){var seedCell=(si+27)%(GN*GN);if(!P.cells[seedCell]&&(!window.HabitatView||HabitatView.fits(cellUV(seedCell),{c:'a',k:'plant'},gdObstacles(P),[],-1)))seedSpots.push(seedCell)}
@@ -2929,12 +2935,12 @@ function renderGarden(){
     else if(gdPanel==='isl')h+='<div class="gdbg">'+ISL.map(function(u,k){return '<button data-bg="'+k+'" aria-pressed="'+(k===P.d.bg)+'"><img src="'+u.img+'" alt=""><span>'+ISL_N[k]+'</span></button>'}).join('')+'</div>';
     else h+='<div class="gdw">'+KIDS.map(function(k){var y=growOf(k.id,sub);return '<button data-kid="'+k.id+'" aria-pressed="'+(k.id===id)+'"><b>'+kface(k)+' '+esc(k.short)+(isKid()&&k.id===who?'（你）':'')+'</b>收成 '+y.n+' '+G.cnt+G.bigName+'<br>'+gimg(y.lv[2])+' '+esc(y.lv[1])+'・'+y.cur+' 分</button>'}).join('')+'</div>';
     h+='</div>'}
-  gdnEl.innerHTML=h;gdCamApply();
+  gdnEl.innerHTML=h;var harvestButton=$('#gdHv');if(harvestButton){harvestButton.removeAttribute('style');harvestButton.innerHTML=(tree?'🍎':'🌸')+' 收成 +1💧';var tools=gdnEl.querySelector('.hab-tools');tools.insertBefore(harvestButton,tools.lastElementChild)}gdCamApply();
   var sc=$('#gdSc'),tr=$('#gdTrash'),stage=$('#gdStage');
-  var editButton=$('#gdEdit');if(editButton)editButton.addEventListener('click',function(){sfx('tap');gdEditing=!gdEditing;gdPanel='';renderGarden()});
+  var editButton=$('#gdEdit');if(editButton)editButton.addEventListener('click',function(){sfx('tap');gdEditing=!gdEditing;gdCam={s:gdEditing?1.7:1.08,cx:.5,cy:.5};gdPanel='';renderGarden()});
   $('#gdLight').addEventListener('click',function(){sfx('tap');gdLight=TM==='night'?'day':'night';renderGarden()});
   $('#gdX').addEventListener('click',function(){sfx('tap');gdPanel='';closeGarden()});
-  $('#gdZoom').addEventListener('click',function(){sfx('tap');if(gdCam.s>1.15){gdCam.s=1;gdCam.cx=.5;gdCam.cy=.5}else{gdCam.s=1.9}stage.classList.add('anim');gdCamApply();setTimeout(function(){stage.classList.remove('anim')},400)});
+  $('#gdZoom').addEventListener('click',function(){sfx('tap');if(gdCam.s>1.15){gdCam.s=1.08;gdCam.cx=.5;gdCam.cy=.5}else{gdCam.s=1.7}stage.classList.add('anim');gdCamApply();setTimeout(function(){stage.classList.remove('anim')},400)});
   gdnEl.querySelectorAll('[data-pn]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdPanel=gdPanel===b.dataset.pn?'':b.dataset.pn;renderGarden()})});
   var e1=$('#gdShX');if(e1)e1.addEventListener('click',function(){sfx('tap');gdPanel='';renderGarden()});
   e1=$('#gdHome');if(e1)e1.addEventListener('click',function(){sfx('tap');gdnV.id=who;renderGarden()});
@@ -2949,7 +2955,7 @@ function renderGarden(){
   e1=$('#gdHv');if(e1)e1.addEventListener('click',function(){sfx('win');confetti(e1,30);Store.mut(who,function(k){var hv=k.hv||(k.hv={});hv[sub]=Learn.day();k.water=(k.water||0)+1});say('收成了！今天的'+(tree?'果實':'花朵')+'換到 1 💧，明天再來收！','happy')});
   gdnEl.querySelectorAll('[data-sub]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.sub=b.dataset.sub;renderGarden();gdGrowFx()})});
   gdnEl.querySelectorAll('[data-kid]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.id=b.dataset.kid;gdPanel='';renderGarden()})});
-  gdnEl.querySelectorAll('[data-bg]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');Store.garden(id,sub,function(g){g.bg=+b.dataset.bg});say('搬到「'+ISL_N[+b.dataset.bg]+'」了！','happy')})});
+  gdnEl.querySelectorAll('[data-bg]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdCam={s:1.08,cx:.5,cy:.5};gdPanel='';Store.garden(id,sub,function(g){g.bg=+b.dataset.bg});say('搬到「'+ISL_N[+b.dataset.bg]+'」了！','happy')})});
   /* 鏡頭：在空白處一根手指拖曳＝移動，兩根手指＝縮放，滑鼠滾輪也可以縮放 */
   var pts={},pinch=null,panS=null;
   stage.addEventListener('pointerdown',function(e){if(e.target.closest('.gdp,.gddeco,.gdhv'))return;pts[e.pointerId]={x:e.clientX,y:e.clientY};try{stage.setPointerCapture(e.pointerId)}catch(x){}
@@ -5420,7 +5426,7 @@ var V2=(function(){
 (function(){var old=renderGameHome;renderGameHome=function(){old();var upd=document.querySelector('.gupd');if(upd)upd.textContent='新版 4.0 · 飛車與太空拼字 · 三款數學冒險';var sm=document.querySelector('.v2welcome small');if(sm)sm.textContent='KNOWLEDGE ADVENTURES · 4.0'}})();
 /* Nature II 9.1 reward adapter; preserve first-island and seasonal rewards. */
 var labRewards={};var labMagicOriginal=gdMagic;gdMagic=function(k,id,sub){var meta=labRewards[k];if(!meta)return labMagicOriginal(k,id,sub);var d=Store.kid(id).lab||{},st=d.st||{},r=[meta.station,meta.station+'@2',meta.station+'@3',meta.station+'@4'].some(function(x){return Array.isArray(st[x])&&st[x][3]});return {s:{zh:meta.name},ok:isKid()&&r,has:gdnData(id,sub).d.some(function(z){return gdKey(z)===k})}};
-function registerLabReward(st,name,path){var key='lab_'+st;labRewards[key]={station:st,name:name};if(!GDK[key]){GD.push([key,'m',name,16]);GDK[key]={k:key,c:'m',zh:name,sz:16,mv:'',en:name,p:0};GDI[key]=path}}
+function registerLabReward(st,name,path){var key='lab_'+st;labRewards[key]={station:st,name:name};if(!GDK[key]){GD.push([key,'m',name,16]);GDK[key]={k:key,c:'m',zh:name,sz:16,mv:'',en:name,p:0};GDI[key]=window.HabitatView&&HabitatView.rewards[st]||path}}
 /* v9 奇蹟研究所：自然第二座島 */
 if(window.LabFactory)try{window.LabFactory({pg:LABPG,registerReward:registerLabReward,scAny:scStampsAny,Store:Store,who:function(){return who},isKid:isKid,esc:esc,sfx:sfx,say:say,confetti:confetti,plusFx:plusFx,shell:shell,body:function(){return gBody},cleanupGame:function(){cleanupGame()},backGameHome:backGameHome,egrade:function(){return egrade},Music:Music,Learn:Learn,subPts:subPts,scLevel:scLevel,scRow:scRow,STN:STN,SCI_IDS:SCI_IDS,GAMES:GAMES,GAME_FN:GAME_FN,gOpen:function(){return gOpen},muted:function(){return muted},kidName:function(){return nm()},goSci:function(){gOpen='sci';backGameHome()},addCleanup:function(f){var c0=cleanupGame;cleanupGame=function(){try{f()}catch(e){}return c0.apply(this,arguments)}},getHome:function(){return renderGameHome},setHome:function(f){renderGameHome=f}})}catch(e){console.error('lab',e)}
 /* v9.2 每日分數紀錄：紀錄分頁最上方，看每天三科一共玩了多少分 */

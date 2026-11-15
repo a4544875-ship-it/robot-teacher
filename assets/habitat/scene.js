@@ -4,6 +4,9 @@
   var root = 'assets/habitat/';
   var garden = {cabin:'cottage',windmill:'windmill-body',gazebo:'gazebo',fountain:'fountain',treehouse:'treehouse',pond:'pond',lamp:'lamp',flowerpot:'flowers',rabbit:'rabbit'};
   var town = {home_1:'cottage',school_1:'school',shop_1:'shop',fountain:'fountain',wind_body:'windmill-body',wind_blade:'windmill-rotor',planter2:'flowers',lion_statue:'guardian'};
+  var themes=['garden-map','map-cloud','map-moon','map-autumn','map-snow','map-beach'];
+  var rewards={};['mag2','ckt2','moon2','eco2','wx2','temp','pond','flow','sun','time'].forEach(function(key){rewards[key]='assets/habitat-v2/reward-'+key+'.webp';});
+  function terrain(index){return index===0?art(themes[0]):'assets/habitat-v2/'+themes[index]+'.webp';}
   function art(name) { return root + name + '.webp'; }
   function grid(points, n, extra) {
     var t=points[0],r=points[1],l=points[2],path='';
@@ -33,5 +36,5 @@
     for(var y=1;y<15;y++)for(var x=1;x<15;x++)positions.push([x/16,y/16]);
     return positions.filter(function(p){return fits(p,d,items,plants,-1);})[0]||null;
   }
-  global.HabitatView={art:art,garden:garden,town:town,grid:grid,ambient:ambient,fits:fits,freeSpot:freeSpot};
+  global.HabitatView={art:art,garden:garden,town:town,terrain:terrain,rewards:rewards,grid:grid,ambient:ambient,fits:fits,freeSpot:freeSpot};
 })(window);
