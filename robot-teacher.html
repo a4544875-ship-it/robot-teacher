@@ -50,6 +50,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v16/expert-en.js?v=16.3.0"></script>
 <script src="assets/v17/cover.js?v=17.0.0"></script>
 <script src="assets/v18/gate.js?v=18.2.0"></script>
+<script src="assets/mobile-magic/ui.js?v=4.1.0"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -1421,6 +1422,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 </style>
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
+<link rel="stylesheet" href="assets/mobile-magic/theme.css?v=4.1.0">
 
 
 <header class="top">
@@ -5520,6 +5522,13 @@ if(window.SocialFactory)try{(function(){
     SOCX.home($('#games'))};
 })()}catch(e){console.error('social',e)}
 /* ========== boot ========== */
+/* Mobile artwork and layout wrap the existing renderers; learning and account logic stay intact. */
+if(window.MobileMagicUI){(function(){
+  var magicHome=renderGameHome,magicDay=renderDay,magicShell=shell;
+  shell=function(){magicShell.apply(this,arguments);gPlay.dataset.magicGame=curGame};
+  renderDay=function(){magicDay.apply(this,arguments);MobileMagicUI.day()};
+  renderGameHome=function(){magicHome.apply(this,arguments);MobileMagicUI.home({subject:gOpen,name:who||''})};
+})()}
 Store.connect();
 renderGameHome();
 if(window.GateV18)GateV18.init({KIDS:KIDS,Store:Store,kidOf:kidOf,growOf:growOf,subPts:subPts,scLevel:scLevel,esc:esc,sfx:sfx,confetti:confetti,hashPin:hashPin,enter:enter,renderPin:renderPin,Music:Music,PIC:PIC,gate:gate,setMode:function(m){gateMode=m},getMode:function(){return gateMode}});
