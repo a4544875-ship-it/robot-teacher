@@ -44,13 +44,14 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v14/care.js?v=14.1.0"></script>
 <script src="assets/v15/social.js?v=16.3.0"></script>
 <script src="assets/v15/adv.js?v=15.6.0"></script>
-<script src="assets/v15/town.js?v=15.6.0"></script>
+<script src="assets/v15/town.js?v=16.0.0"></script>
 <script src="assets/v16/expert-sci.js?v=16.3.0"></script>
 <script src="assets/v16/expert-soc.js?v=16.3.0"></script>
 <script src="assets/v16/expert-en.js?v=16.3.0"></script>
 <script src="assets/v17/cover.js?v=17.0.0"></script>
 <script src="assets/v18/gate.js?v=18.2.0"></script>
 <script src="assets/mobile-magic/ui.js?v=4.1.0"></script>
+<script src="assets/habitat/scene.js?v=1.0.0"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@600;700&family=Huninn&family=Andika:wght@400;700&display=swap">
 <style>
 /* 機器人老師 — 小學家教 + 英文遊戲樂園。手機優先的單畫面 App。
@@ -1423,6 +1424,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <link rel="stylesheet" href="assets/island-v2.css?v=2.0.0">
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
 <link rel="stylesheet" href="assets/mobile-magic/theme.css?v=4.1.0">
+<link rel="stylesheet" href="assets/habitat/scene.css?v=1.0.0">
 
 
 <header class="top">
@@ -2845,7 +2847,7 @@ function cellOf(uv){var m=.07,k=gclamp(Math.floor((uv[0]-m)/(1-2*m)*GN),0,GN-1),
 function gdUV(z){if(z[3]===1)return [gclamp(+z[1]/100,0,1),gclamp(+z[2]/100,0,1)];return [gclamp((+z[1]||50)/100,.08,.92),gclamp(((+z[2]||80)-30)/70,.08,.92)]}
 function toast2(t){say(t,'oops')}
 function gclamp(v,a,b){return Math.max(a,Math.min(b,v))}
-var gdnEl=null,gdnV={id:'',sub:'en'},gdnTm=[];
+var gdnEl=null,gdnV={id:'',sub:'en'},gdnTm=[],gdEditing=false,gdLight='day';
 /* 花園裝飾：a 小動物（會走動）、s 建築、g 地面、k 天空與節慶。sz 是寬度（場景寬的 %），mv：fly 會飛、hop 會跳、walk 會爬 */
 var GDC={a:['🐾 小動物',3],s:['🏠 建築',10],g:['🌼 地面',3],k:['🌈 天空',5],m:['✨ 魔法',0]};
 var GD=[['butterfly','a','蝴蝶',8,'fly'],['bee','a','蜜蜂',8,'fly'],['ladybug','a','瓢蟲',7,'walk'],['rabbit','a','兔子',9,'hop'],['squirrel','a','松鼠',9,'hop'],['hedgehog','a','刺蝟',8,'walk'],['bird','a','小鳥',8,'fly'],['frog','a','青蛙',9,'hop'],
@@ -2854,6 +2856,15 @@ var GD=[['butterfly','a','蝴蝶',8,'fly'],['bee','a','蜜蜂',8,'fly'],['ladybu
   ['mtrain','m','磁鐵小火車',17,'walk'],['mlamp','m','魔法路燈',11],['mcloud','m','小雨雲',14,'fly'],['msun','m','神奇向日葵',13],['mdeer','m','小鹿',11,'walk'],['hwpumpkin','m','南瓜燈',13],['hwghost','m','小幽靈',12,'fly'],['rainbow','k','彩虹',17],['balloon_hot','k','熱氣球',13],['balloon','k','氣球',11],['kite','k','風箏',12],['lantern','k','燈籠',11],['cloud','k','雲朵',13],['star','k','星星',10],['sun','k','太陽',12]];
 GDI.mtrain=SCIA.rw_train;GDI.mlamp=SCIA.rw_lamp;GDI.mcloud=SCIA.rw_cloud;GDI.msun=SCIA.rw_sun;GDI.mdeer=SCIA.rw_deer;GDI.hwpumpkin='assets/v8/hw-pumpkin.svg';GDI.hwghost='assets/v8/hw-ghost.svg';var GDEN={balloon_hot:'hot air balloon',mtrain:'magnet train',mlamp:'magic lamp',mcloud:'rain cloud',msun:'sunflower',mdeer:'deer',hwpumpkin:'jack-o-lantern',hwghost:'little ghost'};
 var GDK={};GD.forEach(function(x){GDK[x[0]]={k:x[0],c:x[1],zh:x[2],sz:x[3],mv:x[4]||'',en:GDEN[x[0]]||x[0],p:GDC[x[1]][1]}});
+/* New artwork keeps every original item key, price and ownership record. */
+if(window.HabitatView){
+  ISL[0]={img:HabitatView.art('garden-map'),ar:2/3,T:[50,16],R:[90,37.5],L:[10,37.5]};
+  ART.e6=HabitatView.art('blossom-tree');ART.e7=HabitatView.art('fruit-tree');ART.e8=HabitatView.art('fruit-tree');ART.m6=HabitatView.art('sunflower');
+  Object.keys(HabitatView.garden).forEach(function(k){GDI[k]=HabitatView.art(HabitatView.garden[k])});
+}
+function gdObstacles(P){return P.d.d.map(function(z){return {uv:gdUV(z),def:GDK[gdKey(z)]}})}
+function gdPlantSpots(P){return P.cells.map(function(c,i){return c?cellUV(i):null}).filter(Boolean)}
+function gdFits(uv,D,P,skip){return !window.HabitatView||HabitatView.fits(uv,D,gdObstacles(P),gdPlantSpots(P),skip)}
 /* 魔法裝飾：對應的自然站全破才解鎖；每座島各放一個 */
 function gdMagic(k,id,sub){var has=gdnData(id,sub).d.some(function(z){return gdKey(z)===k});if(k.indexOf('hw')===0){var hw=(Store.kid(id)||{}).hw||{};return {s:{zh:'萬聖節糖果'},ok:isKid()&&(+hw.c||0)>=7,has:has}}var s=STN.filter(function(x){return x.rw===k})[0],ok=!!s&&isKid()&&scStampAny(id,s.k);return {s:s,ok:ok,has:has}}
 var GD_LEG=['butterfly','bee','ladybug','rabbit','squirrel','hedgehog','mushroom','fountain','lantern','balloon','kite','rainbow'],GD_MAX=40,gdShop='a';
@@ -2866,7 +2877,7 @@ function gdnPlots(id,sub){
   for(j=from;j<=n;j++){var i=d.p[j];if(typeof i==='number'&&i>=0&&i<NC&&!used[i]){used[i]=1;cells[i]={j:j};done[j]=1}}
   for(j=from;j<n;j++)if(!done[j])for(f=0;f<NC;f++)if(!used[f]){used[f]=1;cells[f]={j:j};done[j]=1;break}
   return {cells:cells,need:!done[n],x:x,d:d}}
-function openGarden(id,sub){gdnV={id:id,sub:sub||'en'};if(!gdnEl){musPrev=Music.want();Music.play('garden');gdnEl=document.createElement('div');gdnEl.className='gdn gdfull';document.body.appendChild(gdnEl)}renderGarden();gdGrowFx()}
+function openGarden(id,sub){gdEditing=false;gdnV={id:id,sub:sub||'en'};if(!gdnEl){musPrev=Music.want();Music.play('garden');gdnEl=document.createElement('div');gdnEl.className='gdn gdfull';document.body.appendChild(gdnEl)}renderGarden();gdGrowFx()}
 /* 回到花園時：植物比上次看到的長大了，就播一段長大的動畫 */
 function gdGrowFx(){var id=gdnV.id,sub=gdnV.sub;if(!(isKid()&&who===id))return;var x=growOf(id,sub),key='rt-gseen-'+id+'-'+sub,o=ls.get(key,null),now={n:x.n,i:x.i,c:x.cur};ls.set(key,now);
   if(!o||(o.n===now.n&&o.i===now.i&&o.c>=now.c))return;var b=gdnEl&&gdnEl.querySelector('.gdp.cur');if(!b)return;var im=b.querySelector('img');
@@ -2876,23 +2887,29 @@ function gdFloat(el,t){var sc=gdnEl&&gdnEl.querySelector('.gdscene');if(!sc||!el
   f.style.left=((r.left+r.width/2-q.left)/q.width*100)+'%';f.style.top=((r.top-q.top)/q.height*100)+'%';sc.appendChild(f);setTimeout(function(){f.remove()},1900)}
 function closeGarden(){gdnTm.forEach(clearInterval);gdnTm=[];if(gdnEl){gdnEl.remove();gdnEl=null;Music.play(musPrev)}}
 /* 全螢幕花園：島放在可以拖曳、縮放的「鏡頭」裡。gdCam：s 放大倍率（1＝整座島剛好塞滿），cx/cy＝畫面中心對到島圖的哪個位置（0~1） */
-var gdCam={s:1.9,cx:.5,cy:.42},gdPanel='';
+var gdCam={s:1.5,cx:.5,cy:.46},gdPanel='';
 function gdCamApply(){var st=$('#gdStage'),pan=$('#gdPan');if(!st||!pan)return;var W=st.clientWidth,H=st.clientHeight,I=ISL[gdnData(gdnV.id,gdnV.sub).bg],top=64,bot=96,avH=Math.max(120,H-top-bot),
   wb=Math.min(W*.96,avH/I.ar*.96),hb=wb*I.ar;pan.style.width=wb+'px';gdCam.s=gclamp(gdCam.s,1,3.2);gdCam.cx=gclamp(gdCam.cx,0,1);gdCam.cy=gclamp(gdCam.cy,0,1);
   var tx=W/2-gdCam.cx*wb*gdCam.s,ty=top+avH/2-gdCam.cy*hb*gdCam.s;pan.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+gdCam.s.toFixed(3)+')';
   var z=$('#gdZoom');if(z)z.innerHTML=gdCam.s>1.15?'🔍<small>看整座島</small>':'🔎<small>放大</small>';pan.dataset.wb=wb;pan.dataset.hb=hb}
 function renderGarden(){
-  if(!gdnEl)return;var id=gdnV.id,sub=gdnV.sub,G=GROW[sub],P=gdnPlots(id,sub),x=P.x,own=isKid()&&who===id,kd=kidOf(id),tree=sub==='en',I=ISL[P.d.bg],TM=gdTime(),W=isKid()?Learn.bal(who):0,nd=P.d.d.length,lk=Learn.likes(id,sub);
+  if(!gdnEl)return;var id=gdnV.id,sub=gdnV.sub,G=GROW[sub],P=gdnPlots(id,sub),x=P.x,own=isKid()&&who===id,kd=kidOf(id),tree=sub==='en',I=ISL[P.d.bg],TM=gdLight||gdTime(),W=isKid()?Learn.bal(who):0,nd=P.d.d.length,lk=Learn.likes(id,sub);
   var h='<div class="gdstage gdv '+TM+'" id="gdStage">'+(TM==='night'?'<div class="gdstars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>':'')+
-    '<div class="gdpan" id="gdPan"><div class="gdscene'+(own?' own':'')+'" id="gdSc" style="aspect-ratio:1/'+I.ar+'"><img class="gdisl" src="'+I.img+'" alt="">';
+    '<div class="gdpan" id="gdPan"><div class="gdscene'+(own?' own':'')+(gdEditing?' hab-edit':'')+'" id="gdSc" style="aspect-ratio:1/'+I.ar+'"><img class="gdisl" src="'+I.img+'" alt="">';
+  if(window.HabitatView)h+=HabitatView.grid([I.T,I.R,I.L],GN);
+  var seedSpots=[];if(own&&P.need)for(var si=0;si<GN*GN;si++){var seedCell=(si+27)%(GN*GN);if(!P.cells[seedCell]&&(!window.HabitatView||HabitatView.fits(cellUV(seedCell),{c:'a',k:'plant'},gdObstacles(P),[],-1)))seedSpots.push(seedCell)}
   for(var c=0;c<GN*GN;c++){var c0=P.cells[c],q=cellUV(c),pp=isoXY(I,q[0],q[1]),z=Math.round((q[0]+q[1])*100);
     if(c0){var cur=c0.j===x.n,kn=cur?null:kindOf(G,id,c0.j);h+='<button class="gdp'+(cur?' cur':'')+'" data-c="'+c+'" data-j="'+c0.j+'"'+(cur?' data-l="'+x.cur+' 分"':'')+' style="left:'+pp[0]+'%;top:'+pp[1]+'%;width:'+(cur?12:13.5)+'%;z-index:'+(10+z)+'" aria-label="'+esc(cur?x.lv[1]:kn[1])+'"><img src="'+ART[cur?x.lv[2]:kn[0]]+'" alt=""></button>'}
-    else if(own&&P.need)h+='<button class="gdp add" data-c="'+c+'" data-new="1" style="left:'+pp[0]+'%;top:'+pp[1]+'%;z-index:'+(10+z)+'" aria-label="種在這裡">＋</button>'}
-  if(own&&!P.need&&((Store.kid(id).hv||{})[sub])!==Learn.day()){var cc=P.cells.indexOf(P.cells.filter(function(c){return c&&c.j===x.n})[0]);if(cc>=0){var hq=cellUV(cc),hp=isoXY(I,hq[0],hq[1]);h+='<button class="gdhv" id="gdHv" style="left:'+hp[0]+'%;top:'+(hp[1]-12)+'%" aria-label="收成">'+(tree?'🍎':'🌸')+'</button>'}}
+    else if(own&&P.need&&seedSpots.indexOf(c)>=0&&(gdEditing||seedSpots.indexOf(c)<4))h+='<button class="gdp add" data-c="'+c+'" data-new="1" style="left:'+pp[0]+'%;top:'+pp[1]+'%;z-index:'+(10+z)+'" aria-label="種在這裡">＋</button>'}
+  if(own&&!P.need&&((Store.kid(id).hv||{})[sub])!==Learn.day()){var cc=P.cells.indexOf(P.cells.filter(function(c){return c&&c.j===x.n})[0]);if(cc>=0){var hq=cellUV(cc),hp=isoXY(I,hq[0],hq[1]);h+='<button class="gdhv" id="gdHv" style="left:'+(hp[0]+10)+'%;top:'+(hp[1]-18)+'%" aria-label="收成">'+(tree?'🍎':'🌸')+'</button>'}}
   P.d.d.slice(0,GD_MAX).forEach(function(z,di){var D=GDK[gdKey(z)];if(!D)return;var uv=gdUV(z),pp=isoXY(I,uv[0],uv[1]),w=(D.sz*.72).toFixed(1);
-    h+='<button class="gddeco c-'+D.c+' k-'+D.k+(D.mv?' mv-'+D.mv:'')+(TM==='night'&&(D.k==='lamp'||D.k==='lantern'||D.k==='star'||D.k==='mlamp')?' glow':'')+'" data-d="'+di+'" data-k="'+D.k+'" data-u="'+uv[0]+'" data-v="'+uv[1]+'" aria-label="'+D.zh+'" style="left:'+pp[0]+'%;top:'+pp[1]+'%;width:'+w+'%;z-index:'+(10+Math.round((uv[0]+uv[1])*100)+(D.c==='k'?300:0))+'"><span class="gdm" style="animation-delay:-'+(di*.7).toFixed(1)+'s"><img src="'+GDI[D.k]+'" alt="">'+(D.k==='bee'?'<img class="gdw" src="'+GDI.bee_w+'" alt="">':'')+'</span></button>'});
+    h+='<button class="gddeco hab-art c-'+D.c+' k-'+D.k+(D.mv?' mv-'+D.mv:'')+(TM==='night'&&(D.k==='lamp'||D.k==='lantern'||D.k==='star'||D.k==='mlamp')?' glow':'')+'" data-d="'+di+'" data-k="'+D.k+'" data-u="'+uv[0]+'" data-v="'+uv[1]+'" aria-label="'+D.zh+'" style="left:'+pp[0]+'%;top:'+pp[1]+'%;width:'+w+'%;z-index:'+(10+Math.round((uv[0]+uv[1])*100)+(D.c==='k'?300:0))+'"><span class="gdm" style="animation-delay:-'+(di*.7).toFixed(1)+'s"><img src="'+GDI[D.k]+'" alt="">'+(D.k==='windmill'&&window.HabitatView?'<img class="hab-rotor" src="'+HabitatView.art('windmill-rotor')+'" alt="">':'')+(D.k==='bee'?'<img class="gdw" src="'+GDI.bee_w+'" alt="">':'')+'</span></button>'});
   if(TM==='night')h+='<div class="gdnight"><b></b><b></b><b></b><b></b><b></b></div>';
   h+='</div></div>'+(own?'<span class="gdtrash" id="gdTrash" hidden>🗑️ 拖到島外面就會收起來</span>':'')+'</div>';
+  h+='<div class="hab-breeze" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>';
+  if(window.HabitatView)h+=HabitatView.ambient();
+  h+='<div class="hab-tools">'+(own?'<button id="gdEdit" aria-pressed="'+gdEditing+'">'+(gdEditing?'✓ 完成佈置':'✥ 佈置庭園')+'</button>':'<span></span>')+'<button id="gdLight">'+(TM==='night'?'☀ 看白天':'☾ 看夜景')+'</button></div>';
+  h+='<div class="hab-caption">'+(gdEditing?'拖曳會對齊格點・空出一點距離更好看':'點點動物與裝飾，看看它們的反應')+'</div>';
   /* 上方：關閉、名字、樹園／花園切換、看別人 */
   h+='<div class="gdtop"><button class="obx" id="gdX" aria-label="離開花園">✕</button><button class="gdwho" data-pn="who">'+kface(kd)+'<b>'+esc(kd.short)+(own?'':'')+'</b><small>'+esc(ISL_N[P.d.bg])+' ▾</small></button>'+
     '<div class="gdsw"><button data-sub="en" aria-pressed="'+tree+'">🌳</button><button data-sub="math" aria-pressed="'+!tree+'">🌻</button></div></div>';
@@ -2907,12 +2924,14 @@ function renderGarden(){
   if(gdPanel){h+='<div class="gdsheet"><div class="gdsh"><b>'+(gdPanel==='shop'?'🛍️ 裝飾小店・你有 '+W+' 💧'+(nd>=GD_MAX?'（已放滿 '+GD_MAX+' 個）':'（'+nd+'/'+GD_MAX+'）'):gdPanel==='isl'?'🏝️ 換一座島':'👀 去誰的'+(tree?'樹園':'花園')+'？')+'</b><button id="gdShX" aria-label="關閉">✕</button></div>';
     if(gdPanel==='shop')h+='<div class="gdtabs">'+Object.keys(GDC).map(function(c){return '<button data-tab="'+c+'" aria-pressed="'+(gdShop===c)+'">'+GDC[c][0]+'<small>'+(c==='m'?'自然獎勵':GDC[c][1]+' 💧')+'</small></button>'}).join('')+'</div><div class="gdshop">'+
       GD.filter(function(x){return x[1]===gdShop}).map(function(x){var D=GDK[x[0]];if(D.c==='m'){var M=gdMagic(D.k,id,sub);return '<button data-deco="'+D.k+'" class="mg'+(M.ok?'':' lock')+'"'+(!M.ok||M.has||nd>=GD_MAX?' disabled':'')+'><img src="'+GDI[D.k]+'" alt=""><b class="en">'+esc(D.en)+'</b><small>'+D.zh+'・'+(M.has?'已經放了':M.ok?'免費':(D.k.indexOf('hw')===0?'🔒 集滿 7 顆萬聖節糖果':'🔒 全破'+(M.s?M.s.zh:'')))+'</small></button>'}
-   return '<button data-deco="'+D.k+'"'+(W<D.p||nd>=GD_MAX?' disabled':'')+'><img src="'+GDI[D.k]+'" alt=""><b class="en">'+esc(D.en)+'</b><small>'+D.zh+'・'+D.p+' 💧</small></button>'}).join('')+(gdShop==='m'?'<p class="gdtip" style="grid-column:1/-1">到「自然探險島」把一站的 3 關都過關，就能免費得到那一站的魔法裝飾！</p>':'')+'</div><p class="gdtip">買了會放在島的中間，再用手指拖到喜歡的地方。拖到島外面就收起來。</p>';
+   return '<button data-deco="'+D.k+'"'+(W<D.p||nd>=GD_MAX?' disabled':'')+'><img src="'+GDI[D.k]+'" alt=""><b class="en">'+esc(D.en)+'</b><small>'+D.zh+'・'+D.p+' 💧</small></button>'}).join('')+(gdShop==='m'?'<p class="gdtip" style="grid-column:1/-1">到「自然探險島」把一站的 3 關都過關，就能免費得到那一站的魔法裝飾！</p>':'')+'</div><p class="gdtip">兌換後會找空位放好。開啟「佈置庭園」可拖曳對齊，拖到島外會收起。</p>';
     else if(gdPanel==='isl')h+='<div class="gdbg">'+ISL.map(function(u,k){return '<button data-bg="'+k+'" aria-pressed="'+(k===P.d.bg)+'"><img src="'+u.img+'" alt=""><span>'+ISL_N[k]+'</span></button>'}).join('')+'</div>';
     else h+='<div class="gdw">'+KIDS.map(function(k){var y=growOf(k.id,sub);return '<button data-kid="'+k.id+'" aria-pressed="'+(k.id===id)+'"><b>'+kface(k)+' '+esc(k.short)+(isKid()&&k.id===who?'（你）':'')+'</b>收成 '+y.n+' '+G.cnt+G.bigName+'<br>'+gimg(y.lv[2])+' '+esc(y.lv[1])+'・'+y.cur+' 分</button>'}).join('')+'</div>';
     h+='</div>'}
   gdnEl.innerHTML=h;gdCamApply();
   var sc=$('#gdSc'),tr=$('#gdTrash'),stage=$('#gdStage');
+  var editButton=$('#gdEdit');if(editButton)editButton.addEventListener('click',function(){sfx('tap');gdEditing=!gdEditing;gdPanel='';renderGarden()});
+  $('#gdLight').addEventListener('click',function(){sfx('tap');gdLight=TM==='night'?'day':'night';renderGarden()});
   $('#gdX').addEventListener('click',function(){sfx('tap');gdPanel='';closeGarden()});
   $('#gdZoom').addEventListener('click',function(){sfx('tap');if(gdCam.s>1.15){gdCam.s=1;gdCam.cx=.5;gdCam.cy=.5}else{gdCam.s=1.9}stage.classList.add('anim');gdCamApply();setTimeout(function(){stage.classList.remove('anim')},400)});
   gdnEl.querySelectorAll('[data-pn]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdPanel=gdPanel===b.dataset.pn?'':b.dataset.pn;renderGarden()})});
@@ -2923,9 +2942,9 @@ function renderGarden(){
   e1=$('#gdLike');if(e1)e1.addEventListener('click',function(){sfx('ok');confetti(e1,20);Learn.like(id,sub);say('幫 '+kd.short+' 按讚了！互相加油最棒了！','happy')});
   e1=$('#gdGift');if(e1)e1.addEventListener('click',function(){if(!Learn.gift(id))return;sfx('ok');confetti(e1,20);say('送給 '+kd.short+' 1 滴水！你真大方！','happy')});
   gdnEl.querySelectorAll('[data-tab]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdShop=b.dataset.tab;renderGarden()})});
-  gdnEl.querySelectorAll('[data-deco]').forEach(function(b){b.addEventListener('click',function(){var D=GDK[b.dataset.deco];if(!D)return;if(D.c==='m'){var M=gdMagic(D.k,id,sub);if(!M.ok||M.has)return}else if(!Learn.spend(D.p))return;sfx('ok');gdSay(D.en);
-    var u=gclamp(gdCam.cx+(Math.random()-.5)*.2,.15,.85),v=gclamp(gdCam.cy+(Math.random()-.5)*.2,.15,.85);var uv=uvOf(I,u*100,v*100);
-    Store.garden(id,sub,function(g){if(!Array.isArray(g.d))g.d=[];g.d.push([D.k,Math.round(gclamp(uv[0],.05,.95)*100),Math.round(gclamp(uv[1],.05,.95)*100),1])});say('買了「'+D.zh+'」！英文是 '+D.en+'。用手指把它拖到喜歡的地方吧！','happy')})});
+  gdnEl.querySelectorAll('[data-deco]').forEach(function(b){b.addEventListener('click',function(){var D=GDK[b.dataset.deco];if(!D||gdnData(id,sub).d.length>=GD_MAX)return;var uv=window.HabitatView?HabitatView.freeSpot(D,gdObstacles(P),gdPlantSpots(P)):[.5,.5];if(!uv){toast2('這裡有點擠了，先移動幾個裝飾，留出一塊空地吧！');return}if(D.c==='m'){var M=gdMagic(D.k,id,sub);if(!M.ok||M.has)return}else if(!Learn.spend(D.p))return;sfx('ok');gdSay(D.en);
+    gdEditing=true;gdPanel='';
+    Store.garden(id,sub,function(g){if(!Array.isArray(g.d))g.d=[];g.d.push([D.k,Math.round(gclamp(uv[0],.05,.95)*100),Math.round(gclamp(uv[1],.05,.95)*100),1])});say('買了「'+D.zh+'」！英文是 '+D.en+'。已幫你找到空位，現在可以拖曳佈置！','happy')})});
   e1=$('#gdHv');if(e1)e1.addEventListener('click',function(){sfx('win');confetti(e1,30);Store.mut(who,function(k){var hv=k.hv||(k.hv={});hv[sub]=Learn.day();k.water=(k.water||0)+1});say('收成了！今天的'+(tree?'果實':'花朵')+'換到 1 💧，明天再來收！','happy')});
   gdnEl.querySelectorAll('[data-sub]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.sub=b.dataset.sub;renderGarden();gdGrowFx()})});
   gdnEl.querySelectorAll('[data-kid]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.id=b.dataset.kid;gdPanel='';renderGarden()})});
@@ -2942,25 +2961,26 @@ function renderGarden(){
   stage.addEventListener('wheel',function(e){e.preventDefault();gdCam.s*=Math.exp(-e.deltaY*.0015);gdCamApply()},{passive:false});
   /* 點：裝飾會動＋唸英文；植物說明。拖：自己的東西可以移動 */
   function act(b){var D=GDK[b.dataset.k];if(!D)return;b.classList.remove('act');void b.offsetWidth;b.classList.add('act');sfx(D.c==='a'?'pop':'tap');if(D.k==='mlamp')b.classList.toggle('lit');if(D.k==='mcloud'){tone(1200,0,.05,'sine',.07);tone(700,.06,.08,'sine',.06);tone(1000,.14,.05,'sine',.06);var cp=gdnEl.querySelector('.gdp.cur');if(cp){cp.classList.remove('watered');void cp.offsetWidth;cp.classList.add('watered')}}if(D.k==='mtrain'){tone(523,0,.18,'square',.05);tone(659,.2,.25,'square',.05)}gdSay(D.en);gdFloat(b,D.en+'・'+D.zh);setTimeout(function(){b.classList.remove('act')},1100)}
-  function plantTap(b){if(b.dataset.new){sfx('ok');confetti(b,24);Store.garden(id,sub,function(g){g.p[x.n]=+b.dataset.c});say('種下去了！繼續玩'+G.name+'遊戲，它就會長大！','happy');return}
+  function plantTap(b){if(b.dataset.new){if(window.HabitatView&&!HabitatView.fits(cellUV(+b.dataset.c),{c:'a',k:'plant'},gdObstacles(P),[],-1)){toast2('這格有裝飾，換一個空位種下去吧！');return}sfx('ok');confetti(b,24);Store.garden(id,sub,function(g){g.p[x.n]=+b.dataset.c});say('種下去了！繼續玩'+G.name+'遊戲，它就會長大！','happy');return}
     sfx('tap');b.classList.remove('act');void b.offsetWidth;b.classList.add('act');var j=+b.dataset.j;if(j===x.n){gdFloat(b,x.lv[1]+'・'+x.cur+' 分');say('「'+x.lv[1]+'」：'+x.cur+' 分，再 '+(x.nx[0]-x.cur)+' 分長成「'+x.nx[1]+'」！','happy')}else{gdFloat(b,kindOf(G,id,j)[1]);say('第 '+(j+1)+' 次收成：'+kindOf(G,id,j)[1]+'！','happy')}}
   function toUV(e){var r=sc.getBoundingClientRect();return uvOf(I,(e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*100)}
   gdnEl.querySelectorAll('.gdp,.gddeco').forEach(function(b){var deco=b.classList.contains('gddeco'),drag=null;
-    if(!own||b.dataset.new){b.addEventListener('click',function(){deco?act(b):plantTap(b)});return}
+    if(!own||!gdEditing||b.dataset.new){b.addEventListener('click',function(){deco?act(b):plantTap(b)});return}
     b.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();b.style.transition='none';drag={x:e.clientX,y:e.clientY,mv:false};try{b.setPointerCapture(e.pointerId)}catch(x){}});
     b.addEventListener('pointermove',function(e){if(!drag)return;if(!drag.mv&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<8)return;if(!drag.mv){drag.mv=true;b.classList.add('drag');if(deco)tr.hidden=false}
-      var uv=toUV(e),out=uv[0]<-.08||uv[0]>1.08||uv[1]<-.08||uv[1]>1.08;drag.uv=uv;drag.out=deco&&out;if(deco)tr.classList.toggle('on',out);
+      var uv=toUV(e);if(deco)uv=uv.map(function(n){return Math.round(n*16)/16});var out=uv[0]<-.08||uv[0]>1.08||uv[1]<-.08||uv[1]>1.08;drag.uv=uv;drag.out=deco&&out;drag.blocked=deco&&!out&&!gdFits(uv,GDK[b.dataset.k],P,+b.dataset.d);b.classList.toggle('hab-blocked',!!drag.blocked);if(deco)tr.classList.toggle('on',out);
       var r=sc.getBoundingClientRect(),cu=[gclamp(uv[0],0,1),gclamp(uv[1],0,1)],pp=deco&&out?[(e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*100]:isoXY(I,cu[0],cu[1]);
       b.style.left=pp[0]+'%';b.style.top=pp[1]+'%';b.style.zIndex=900});
     function up(){if(!drag)return;var d=drag;drag=null;b.classList.remove('drag');if(tr){tr.hidden=true;tr.classList.remove('on')}
       if(!d.mv){deco?act(b):plantTap(b);return}
+      if(deco&&d.blocked){sfx('no');toast2('這裡太靠近其他物品了，留一點空間再放吧！');renderGarden();return}
       if(deco){var i=+b.dataset.d;sfx(d.out?'tap':'ok');Store.garden(id,sub,function(g){if(!Array.isArray(g.d)||!g.d[i])return;if(d.out)g.d.splice(i,1);else g.d[i]=[gdKey(g.d[i]),Math.round(gclamp(d.uv[0],0,1)*100),Math.round(gclamp(d.uv[1],0,1)*100),1]});if(d.out)say('收起來了！','idle');return}
-      var c=cellOf(d.uv),j=+b.dataset.j,taken=P.cells[c]&&P.cells[c].j!==j;if(taken){sfx('no');toast2('那一格已經有植物了！');renderGarden();return}
+      var c=cellOf(d.uv),j=+b.dataset.j,taken=P.cells[c]&&P.cells[c].j!==j;var plantUV=cellUV(c);if(!taken&&window.HabitatView)taken=!HabitatView.fits(plantUV,{c:'a',k:'plant'},gdObstacles(P),[],-1);if(taken){sfx('no');toast2('那一格已有植物或裝飾，請換一個空位！');renderGarden();return}
       sfx('ok');Store.garden(id,sub,function(g){var all=gdnPlots(id,sub).cells;all.forEach(function(cl,ci){if(cl&&typeof g.p[cl.j]!=='number')g.p[cl.j]=ci});g.p[j]=c})}
-    b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up)});
+    b.addEventListener('pointerup',up);b.addEventListener('pointercancel',function(){if(!drag)return;drag=null;renderGarden()})});
   gdnTm.forEach(clearInterval);gdnTm=[];
   gdnEl.querySelectorAll('.gddeco[class*="mv-"]').forEach(function(b){var D=GDK[b.dataset.k],fly=D.mv==='fly',nx=Date.now()+1500+rand(4000),u=+b.dataset.u,v=+b.dataset.v;
-    gdnTm.push(setInterval(function(){if(!b.isConnected||b.classList.contains('drag')||Date.now()<nx)return;var u1=gclamp(u+(Math.random()-.5)*(fly?.4:.24),.05,.95),v1=gclamp(v+(Math.random()-.5)*(fly?.4:.24),.05,.95),p0=isoXY(I,u,v),p1=isoXY(I,u1,v1),
+    gdnTm.push(setInterval(function(){if(!b.isConnected||gdEditing||matchMedia('(prefers-reduced-motion: reduce)').matches||b.classList.contains('drag')||Date.now()<nx)return;var u1=gclamp(u+(Math.random()-.5)*(fly?.4:.24),.05,.95),v1=gclamp(v+(Math.random()-.5)*(fly?.4:.24),.05,.95),p0=isoXY(I,u,v),p1=isoXY(I,u1,v1),
       dist=Math.hypot(p1[0]-p0[0],p1[1]-p0[1]),dur=Math.max(1.4,dist/(fly?9:D.mv==='hop'?7:4));u=u1;v=v1;
       b.classList.toggle('fr',p1[0]>p0[0]);b.classList.add('moving');b.style.transition='left '+dur+'s linear,top '+dur+'s linear';b.style.left=p1[0]+'%';b.style.top=p1[1]+'%';b.style.zIndex=10+Math.round((u1+v1)*100)+(fly?300:0);
       setTimeout(function(){b.classList.remove('moving')},dur*1000);nx=Date.now()+dur*1000+2000+rand(5000)},400))});

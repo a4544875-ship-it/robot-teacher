@@ -6,8 +6,9 @@ global.TownFactory=function(C){
 /* 範例試玩：全部先打開，上線前改回 false */
 var DEMO=false;
 var SOC=C.SOC,N=12,TW=96,TH=48,PT=230,PB=90,SW=N*TW+40,SH=N*TH+PT+PB,OX=SW/2,OY=PT;
-function img(k){return SOC.img('tn_'+k)}
+function img(k){return global.HabitatView&&HabitatView.town[k]?HabitatView.art(HabitatView.town[k]):SOC.img('tn_'+k)}
 var AR={"cloud_lock":0.645,"town_base":0.607,"home_1":0.965,"home_2":1.177,"home_3":1.197,"school_1":0.953,"school_2":0.762,"school_3":0.819,"shop_1":1.093,"shop_2":1.162,"shop_3":1.017,"library":1.036,"center":0.976,"radio":1.212,"paifang":0.825,"rd_dirt":0.75,"rd_gravel":0.781,"rd_stone":0.796,"rd_asphalt":0.772,"tile_water":0.745,"lamp_1":1.761,"lamp_2":2.909,"lamp_3":1.631,"tlight":2.22,"train_f":0.828,"train_b":0.911,"bridge":0.652,"wtower":1.422,"fountain":0.863,"wind_body":1.523,"wind_blade":1.039,"wstation":0.764,"tree_a":1.097,"tree_b":1.473,"flowerbed":0.794,"park":0.715,"ranch":0.768,"bfgarden":0.874,"clocktower":1.323,"observatory":1.0,"ic_coin":1.016,"ic_road":1.123,"ic_power":1.351,"ic_water":1.571,"ic_prosper":1.388,"ic_up":1.46,"ic_build":1.419,"ic_store":1.192,"pp_boy_f":1.925,"pp_boy_b":1.958,"pp_girl_f":1.389,"pp_girl_b":1.43,"pp_grandpa_f":1.763,"pp_grandpa_b":1.74,"pp_mom_f":1.661,"pp_mom_b":1.945,"car_f":0.861,"car_b":0.925,"bus_f":0.893,"bus_b":1.029,"scooter_f":1.575,"scooter_b":1.959,"bike_f":1.462,"bike_b":1.844,"stall":1.051,"bench":0.849,"mailbox":0.876,"recycle":0.744,"flags":0.725,"planter":0.967,"planter2":1.123,"l2_front":1.184,"l2_back":1.279,"l2_side":1.058,"l2_run":1.004,"plinth":0.64,"viewdeck":1.165,"sanheyuan":0.801,"temple_1":1.061,"oldstreet":0.807,"temple_2":0.966,"factory":0.86,"stage":0.713,"farm":0.716,"port":0.573,"tower":1.538,"st_bus":0.945,"st_train":0.777,"st_hsr":0.714,"museum":0.806,"lion_statue":1.015,"town_entry":0.733,"paifang_1":0.907,"paifang_2":0.912,"paifang_3":0.839};
+AR.home_1=1;AR.school_1=.914;AR.shop_1=.914;AR.fountain=.914;AR.wind_body=.914;
 function esc(s){return C.esc(String(s))}
 function cx(x,y){return OX+(x-y)*TW/2}function cy(x,y){return OY+(x+y)*TH/2}
 
@@ -197,16 +198,16 @@ function open(){if(SOC.ready&&!open.ok){return SOC.ready(function(){open.ok=1;op
   if(edit&&(gift||T.sc!=null)){save(T)}
   if(gift){addCoins(gift);setTimeout(function(){toast('得到家鄉幣：'+msg.join('，')+'！可以買居民和小物。')},900)}
   var el=document.createElement('div');el.className='tn';document.body.appendChild(el);
-  V={el:el,id:id,edit:edit,T:T,mode:'',pick:null,sel:-1,ghost:null,cam:{s:1,x:0,y:0},wk:[],raf:0,night:isNight(),tm:[]};
+  V={el:el,id:id,edit:edit,T:T,mode:'',pick:null,sel:-1,ghost:null,cam:{s:1,x:0,y:0},wk:[],raf:0,night:false,tm:[]};
   el.classList.toggle('night',V.night);
   el.innerHTML='<div class="tn-top"><button class="tn-x" data-x aria-label="離開小鎮">✕</button><div class="tn-tt">我的家鄉小鎮</div><span class="tn-pill" data-pp><img src="'+img('ic_prosper')+'" alt=""><span></span></span><span class="tn-pill" data-pc><img src="'+img('ic_coin')+'" alt=""><span></span></span></div>'+
-    '<div class="tn-view"><div class="tn-stage" style="width:'+SW+'px;height:'+SH+'px"></div><div class="tn-zoom"><button data-z="1" aria-label="放大">+</button><button data-z="-1" aria-label="縮小">−</button></div></div>'+
+    '<div class="tn-view">'+(global.HabitatView?HabitatView.ambient():'')+'<div class="hab-status" aria-live="polite"></div><div class="tn-stage" style="width:'+SW+'px;height:'+SH+'px"></div><div class="tn-zoom"><button data-z="1" aria-label="放大">+</button><button data-z="-1" aria-label="縮小">−</button><button data-z="0" aria-label="看整座小鎮">⌖</button></div></div>'+
     '<div class="tn-bar"><button data-m="build"><img src="'+img('ic_build')+'" alt="">建造</button><button data-m="road"><img src="'+img(roadIm(id))+'" alt="">鋪路</button><button data-m="water"'+(waterMax(id)?'':' disabled')+'><img src="'+img('tile_water')+'" alt="">挖河</button><button data-m="night"><img src="'+img('lamp_2')+'" alt="">'+(V.night?'看白天':'看夜景')+'</button></div>';
   el.querySelector('[data-x]').addEventListener('click',function(){C.sfx('tap');close()});
-  el.querySelectorAll('[data-z]').forEach(function(b){b.addEventListener('click',function(){zoomBy(+b.dataset.z>0?1.25:.8)})});
+  el.querySelectorAll('[data-z]').forEach(function(b){b.addEventListener('click',function(){if(+b.dataset.z===0)fit();else zoomBy(+b.dataset.z>0?1.25:.8)})});
   el.querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){C.sfx('tap');tool(b.dataset.m)})});
-  bindPan();render();fit();V.raf=requestAnimationFrame(loop);
-  V.onKey=function(e){if(e.key==='Escape'){if(V.mode||V.pick)cancel();else close()}};document.addEventListener('keydown',V.onKey);
+  bindPan();render();fit(true);V.raf=requestAnimationFrame(loop);
+  V.onKey=function(e){if(e.key==='Escape'){if(V.mode||V.pick)cancel();else close()}else if((e.key==='Enter'||e.key===' ')&&e.target.closest('.tn-o[data-i]')){e.preventDefault();var i=+e.target.closest('.tn-o').dataset.i;if(i>=0)info(i)}};document.addEventListener('keydown',V.onKey);
   V.onRs=function(){fit()};global.addEventListener('resize',V.onRs);
   if(!edit)toast(C.isKid()?'':'家長模式只能看，小朋友登入後才能蓋小鎮喔！');
   else{var nw=newUnl(id,T);if(nw.length)setTimeout(function(){toast('新解鎖：'+nw.slice(0,4).map(function(k){return IT[k].n}).join('、')+(nw.length>4?' 等 '+nw.length+' 個':'')+'！到「建造」看看吧！')},gift?4300:300);
@@ -239,17 +240,26 @@ function pos(o){var it=IT[o.k],w=it.fp*TW*it.s,bx=cx(o.x+it.fp/2,o.y+it.fp/2),by
 function oHtml(o,i,cls){var it=IT[o.k],p=pos(o),z=100+(o.x+o.y+2*it.fp-2)*10+(it.sm?6:0),h='';
   var inner='<img src="'+img(it.im)+'" alt="">';
   if(it.zone){inner+='<img class="tn-trophy" src="'+SOC.img(ZT[it.zone][0])+'" alt="" style="position:absolute;width:52%;bottom:52%;border-radius:12px">'}
-  h+='<div class="tn-o'+(o.f?' flip':'')+(it.train?' tn-train':'')+(it.lamp?' lit':'')+(cls||'')+'" data-i="'+i+'" style="left:'+p.l.toFixed(1)+'px;top:'+(p.b).toFixed(1)+'px;width:'+p.w.toFixed(1)+'px;transform:translateY(-100%);z-index:'+z+'">'+inner+'</div>';
-  if(it.mill){var bw=p.w*1.12;h+='<img class="tn-blade" src="'+img('wind_blade')+'" alt="" style="left:'+(p.l+p.w*.5-bw/2).toFixed(1)+'px;top:'+(p.b-p.w*1.22-bw/2).toFixed(1)+'px;width:'+bw.toFixed(1)+'px;z-index:'+(z+1)+'">'}
+  h+='<div class="tn-o'+(o.f?' flip':'')+(it.train?' tn-train':'')+(it.lamp?' lit':'')+(cls||'')+'" '+(i>=0?'role="button" tabindex="0" aria-label="'+esc(it.n)+'" ':'')+'data-kind="'+o.k+'" data-i="'+i+'" style="left:'+p.l.toFixed(1)+'px;top:'+(p.b).toFixed(1)+'px;width:'+p.w.toFixed(1)+'px;transform:translateY(-100%);z-index:'+z+'">'+inner+'</div>';
+  if(it.mill){var bw=p.w*.86;h+='<img class="tn-blade" src="'+img('wind_blade')+'" alt="" style="left:'+(p.l+p.w*.5-bw/2).toFixed(1)+'px;top:'+(p.b-p.w*.60-bw/2).toFixed(1)+'px;width:'+bw.toFixed(1)+'px;z-index:'+(z+1)+'">'}
   if(it.lamp){var gw=TW*1.6;h+='<div class="tn-glow" style="left:'+(p.l+p.w/2-gw/2).toFixed(1)+'px;top:'+(p.b-p.w*(o.k==='lamp_2'?2.4:1.6)-gw/2).toFixed(1)+'px;width:'+gw+'px;height:'+gw+'px;z-index:'+(z+1)+'"></div>'}
   return h}
 function render(){var S=V.el.querySelector('.tn-stage'),T=V.T,id=V.id,L=landOf(id),h='',bw=N*TW*1.0;
-  bw=L.n*TW;h+='<img class="tn-base" src="'+img('town_base')+'" alt="" style="left:'+(cx(L.o,L.o)-bw*226/445).toFixed(1)+'px;top:'+(cy(L.o,L.o)-2).toFixed(1)+'px;width:'+bw+'px">';
+  bw=L.n*TW;h+='<img class="tn-base" src="assets/habitat/town-map.webp" alt="" style="left:'+(cx(L.o,L.o)-bw*.53).toFixed(1)+'px;top:'+(cy(L.o,L.o)-bw*.021).toFixed(1)+'px;width:'+(bw*1.06)+'px;height:'+(bw*.70)+'px">';
+  if(V.edit&&(V.pick||V.mode==='road'||V.mode==='water')){
+    var grid='';for(var gx=L.o;gx<L.o+L.n;gx++)for(var gy=L.o;gy<L.o+L.n;gy++){
+      var available=V.pick?canPlace(IT[V.pick.k],gx,gy,V.pick.move==null?-1:V.pick.move):occMap()[gy*N+gx]==null;
+      var fill=available?'rgba(240,255,249,.13)':'rgba(153,71,76,.18)';
+      grid+='<path d="M'+cx(gx,gy)+','+cy(gx,gy)+'L'+cx(gx+1,gy)+','+cy(gx+1,gy)+'L'+cx(gx+1,gy+1)+','+cy(gx+1,gy+1)+'L'+cx(gx,gy+1)+','+cy(gx,gy+1)+'Z" fill="'+fill+'" stroke="rgba(255,255,255,.55)" stroke-width="1.5"/>';
+    }h+='<svg class="tn-grid" width="'+SW+'" height="'+SH+'" aria-hidden="true">'+grid+'</svg>';
+  }
   var rim=img(roadIm(id)),tw=TW*1.0;
-  function tile(i,src){var x=i%N,y=(i/N)|0;return '<img src="'+src+'" alt="" style="left:'+(cx(x,y)-tw/2).toFixed(1)+'px;top:'+(cy(x,y)-1).toFixed(1)+'px;width:'+tw+'px;z-index:'+(10+x+y)+'">'}
+  function tile(i,src){var x=i%N,y=(i/N)|0,water=src===img('tile_water'),kind=roadIm(id),col=water?'#79dded':kind==='rd_dirt'?'#d7b282':kind==='rd_gravel'?'#d2d7cc':kind==='rd_stone'?'#e9e4cf':'#6d8096',edge=water?'#35a9cd':kind==='rd_asphalt'?'#4a5e78':'#b6a78b';
+    return '<svg class="tn-tile'+(water?' hab-water':'')+'" viewBox="0 0 96 62" aria-hidden="true" style="position:absolute;left:'+(cx(x,y)-tw/2).toFixed(1)+'px;top:'+cy(x,y).toFixed(1)+'px;width:'+tw+'px;height:'+(tw*62/96)+'px;z-index:'+(10+x+y)+'"><path d="M0 24L48 48 96 24V29L48 53 0 29Z" fill="'+edge+'"/><path d="M0 24L48 0 96 24 48 48Z" fill="'+col+'" stroke="'+edge+'" stroke-width="1"/>'+(water?'<path class="hab-wave" d="M17 24Q30 18 43 24T69 24M27 33Q40 27 53 33" fill="none" stroke="#deffff" stroke-width="1.5"/>':kind==='rd_asphalt'?'<path d="M27 15L37 20M57 30L67 35" stroke="#fff5be" stroke-width="2"/>':'<path d="M24 12L72 36M24 36L72 12" stroke="'+edge+'" opacity=".6"/>')+'</svg>';
+  }
   T.w.forEach(function(i){h+=tile(i,img('tile_water'))});T.r.forEach(function(i){h+=tile(i,rim)});
   T.o.forEach(function(o,i){if(IT[o.k].walk)return;h+=oHtml(o,i,V.sel===i?' sel':'')});
-  if(V.edit)T.o.forEach(function(o){var it=IT[o.k];if(it.c!=='soc')return;var n=needs(o),ic=[];if(!n.road)ic.push('ic_road');if(!n.power&&sciSt(id,'circ'))ic.push('ic_power');if(!n.water&&sciSt(id,'water'))ic.push('ic_water');
+  if(V.edit&&(V.mode||V.pick||V.sel>=0))T.o.forEach(function(o){var it=IT[o.k];if(it.c!=='soc')return;var n=needs(o),ic=[];if(!n.road)ic.push('ic_road');if(!n.power&&sciSt(id,'circ'))ic.push('ic_power');if(!n.water&&sciSt(id,'water'))ic.push('ic_water');
     if(ic.length){var p=pos(o);h+='<div class="tn-need" style="left:'+(p.l+p.w/2).toFixed(1)+'px;top:'+(p.b-p.w*(AR[it.im]||1)*.82).toFixed(1)+'px;z-index:900">'+ic.map(function(k){return '<img src="'+img(k)+'" alt="">'}).join('')+'</div>'}});
   /* 土地外圍一圈雲：代表還能擴建 */
   if(L.n<N){var a=L.o-1,b=L.o+L.n,cl=[];for(var j=a;j<=b;j+=2){cl.push([a,j],[b,j],[j,a],[j,b])}
@@ -257,7 +267,7 @@ function render(){var S=V.el.querySelector('.tn-stage'),T=V.T,id=V.id,L=landOf(i
   if(V.ghost){var g=V.ghost,it=IT[g.k];if(it.walk){var wp=wkPos(g.x+.5,g.y+.5);h+='<div class="tn-wk ghost'+(g.ok?'':' bad')+'" style="left:'+wp.x+'px;top:'+wp.y+'px;width:'+wkW(it)+'px;z-index:990"><img src="'+img(it.im)+'" alt=""></div>'}
     else h+=oHtml(g,-1,' ghost'+(g.ok?'':' bad')).replace(/z-index:\d+/,'z-index:990')}
   S.innerHTML=h;V.wk.forEach(function(w){w.el=null});wkSync();hud()}
-function hud(){var e=V.el,s=prosper();e.querySelector('[data-pp] span').innerHTML=s+' <small>'+prName(s)+'</small>';e.querySelector('[data-pc] span').textContent=coins();
+function hud(){var e=V.el,s=prosper();var status=e.querySelector('.hab-status');if(status){var L=landOf(V.id);status.innerHTML='<b>'+prName(s)+' · '+L.n+' × '+L.n+' 地圖</b>'+(V.pick?'亮格可以擺放・紅格先留空':V.mode?'依照格線設計自己的街道':'點建築看需求・拖空白處移動地圖');}e.querySelector('[data-pp] span').innerHTML=s+' <small>'+prName(s)+'</small>';e.querySelector('[data-pc] span').textContent=coins();
   e.querySelectorAll('[data-m]').forEach(function(b){b.setAttribute('aria-pressed',String(V.mode===b.dataset.m))})}
 
 /* ---------- 走路的居民和車子 ---------- */
@@ -275,12 +285,12 @@ function wkStep(w,dt){var it=IT[w.o.k],sp=it.walk===1?.7:it.walk===2?1.3:1.7;w.t
   var fw=opts.filter(function(d){return !(d[0]===-w.dir[0]&&d[1]===-w.dir[1])}),pick=(fw.length?fw:opts)[Math.floor(Math.random()*(fw.length?fw:opts).length)];
   if(it.walk===1&&Math.random()<.15){w.t=-.8;w.tx=w.x;w.ty=w.y;return}
   w.dir=pick;w.tx=w.x+pick[0];w.ty=w.y+pick[1];w.t=0}
-var last=0;function loop(ts){if(!V)return;var dt=last?Math.min(.1,(ts-last)/1000):0;last=ts;V.wk.forEach(function(w){if(w.el){wkStep(w,dt);wkDraw(w)}});V.raf=requestAnimationFrame(loop)}
+var last=0;function loop(ts){if(!V)return;var dt=last?Math.min(.1,(ts-last)/1000):0;last=ts;V.wk.forEach(function(w){if(w.el&&!matchMedia('(prefers-reduced-motion: reduce)').matches){wkStep(w,dt);wkDraw(w)}});V.raf=requestAnimationFrame(loop)}
 
 /* ---------- 鏡頭：拖曳、雙指縮放 ---------- */
 function apply(){var c=V.cam,S=V.el.querySelector('.tn-stage');S.style.transform='translate('+c.x.toFixed(1)+'px,'+c.y.toFixed(1)+'px) scale('+c.s.toFixed(3)+')'}
-function fit(){if(!V)return;var vw=V.el.querySelector('.tn-view'),W=vw.clientWidth,H=vw.clientHeight,L=landOf(V.id),span=(L.n+2.6)*TW,s=Math.max(.35,Math.min(1.6,W/span,H/((L.n+4)*TH+PT*.5)));
-  V.cam.s=s;var mx=cx(N/2,N/2),my=cy(N/2,N/2)-TH*.6;V.cam.x=W/2-mx*s;V.cam.y=H/2-my*s;apply()}
+function fit(focus){if(!V)return;var vw=V.el.querySelector('.tn-view'),W=vw.clientWidth,H=vw.clientHeight,L=landOf(V.id),span=(L.n+2.6)*TW,s=Math.max(.35,Math.min(1.6,W/span,H/((L.n+4)*TH+PT*.5)));
+  if(focus&&V.T.o.length)s=Math.min(.72,s*1.5);V.cam.s=s;var mx=cx(N/2,N/2),my=cy(N/2,N/2)-TH*.6;V.cam.x=W/2-mx*s;V.cam.y=H/2-my*s;apply()}
 function zoomBy(f,px,py){var vw=V.el.querySelector('.tn-view'),c=V.cam;if(px==null){px=vw.clientWidth/2;py=vw.clientHeight/2}var ns=Math.max(.3,Math.min(2.6,c.s*f));c.x=px-(px-c.x)*ns/c.s;c.y=py-(py-c.y)*ns/c.s;c.s=ns;apply()}
 function toCell(px,py){var c=V.cam,sx=(px-c.x)/c.s,sy=(py-c.y)/c.s,u=(sx-OX)/(TW/2),v=(sy-OY)/(TH/2);return {x:Math.floor((u+v)/2),y:Math.floor((v-u)/2)}}
 function bindPan(){var vw=V.el.querySelector('.tn-view'),pts={},st=null;
@@ -296,7 +306,9 @@ function bindPan(){var vw=V.el.querySelector('.tn-view'),pts={},st=null;
   vw.addEventListener('wheel',function(e){e.preventDefault();var p=rel(e);zoomBy(e.deltaY<0?1.12:.89,p.x,p.y)},{passive:false})}
 
 /* ---------- 點地圖 ---------- */
-function tap(px,py){var c=toCell(px,py);if(c.x<0||c.y<0||c.x>=N||c.y>=N){if(!V.mode&&!V.pick)deselect();return}
+function tap(px,py){
+  if(!V.mode&&!V.pick){var vr=V.el.querySelector('.tn-view').getBoundingClientRect(),hit=Array.prototype.slice.call(V.el.querySelectorAll('.tn-o[data-i]')).filter(function(el){var r=el.getBoundingClientRect();return +el.dataset.i>=0&&px+vr.left>=r.left+r.width*.08&&px+vr.left<=r.right-r.width*.08&&py+vr.top>=r.top+r.height*.06&&py+vr.top<=r.bottom}).sort(function(a,b){return (+b.style.zIndex)-(+a.style.zIndex)});if(hit.length){info(+hit[0].dataset.i);return}}
+  var c=toCell(px,py);if(c.x<0||c.y<0||c.x>=N||c.y>=N){if(!V.mode&&!V.pick)deselect();return}
   if(!V.edit){var o0=objAt(c);if(o0>=0)info(o0);return}
   if(V.mode==='road'||V.mode==='water')return paint(c);
   if(V.pick)return ghostAt(c);
