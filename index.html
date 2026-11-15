@@ -1470,6 +1470,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <link rel="stylesheet" href="assets/english-premium-v3.css?v=3.0.0">
 <link rel="stylesheet" href="assets/mobile-magic/theme.css?v=4.3.0">
 <link rel="stylesheet" href="assets/habitat/scene.css?v=1.2.0">
+<link rel="stylesheet" href="assets/community/ui.css?v=1.0.0">
 
 
 <header class="top">
@@ -2300,20 +2301,19 @@ var ADV_LV=[0,120,300,550,900,1350,1900,2600,3400,4300];
 function advLv(id){var x=+(((Store.kid(id)||{}).sa||{}).xp)||0,l=1;ADV_LV.forEach(function(v,i){if(x>=v)l=i+1});return l}
 function socRank(){var S=window.__soc,T=window.__town;if(!S)return '<p class="gap">社會島還在載入，等一下再看看。</p>';
   var arr=KIDS.map(function(k){var R=S.report(k.id);return {k:k,R:R,p:R.pts,lv:advLv(k.id),tr:Object.keys((((Store.kid(k.id)||{}).sa||{}).t)||{}).length,ts:T?T.stat(k.id):null}}).sort(function(a,b){return b.p-a.p});
-  var h='<h2 class="h">🏙️ 社會排行榜</h2><div class="podium">'+arr.map(function(r,i){var t=r.R.town,rank=(i>0&&r.p===arr[0].p)?0:i;
-    return '<div class="rk '+r.k.id+(i===0&&r.p>0?' lead':'')+'" style="'+kbg(r.k)+'"><div class="medal">'+(r.p>0?(['🥇','🥈','🥉'][rank]||''):'')+'</div><div class="face">'+kface(r.k)+'</div><b>'+esc(r.k.name)+'</b>'+
-      '<div class="lv"><img src="'+S.img(t.icon)+'" alt="" style="width:56px;height:56px;border-radius:12px;object-fit:cover;display:block;margin:2px auto">'+esc(t.name)+'</div><div class="pt en">'+r.p+'<small> 分</small></div>'+
-      '<div class="sm">家鄉徽章 '+r.R.badges+' / '+r.R.total+'・星星 '+r.R.stars+'</div><div class="big"><small>冒險 Lv.'+r.lv+'・寶物 '+r.tr+(r.ts?'・小鎮 '+esc(r.ts.name):'')+'</small></div></div>'}).join('')+'</div>';
+  var totals=arr.map(function(r){return r.p});
+  var h='<h2 class="rank-subtitle">🏙️ 社會排行榜<small>依累計積分排序</small></h2><div class="podium honor-podium">'+arr.map(function(r,i){var t=r.R.town;
+    return honorCard(r.k,{place:honorPlace(totals,i),points:r.p,image:S.img(t.icon),stage:t.name,detail:'家鄉徽章 '+r.R.badges+' / '+r.R.total+' · 星星 '+r.R.stars,foot:'冒險 Lv.'+r.lv+' · 寶物 '+r.tr+(r.ts?' · 小鎮 '+r.ts.name:'')});
+  }).join('')+'</div>';
   function bars(title,f,unit){var v=arr.map(function(r){return {k:r.k,v:f(r)}}),top=Math.max.apply(null,v.map(function(r){return r.v})),mx=Math.max(1,top);
     return '<div class="grow"><div class="gname">'+title+'</div>'+v.map(function(r){return '<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.v===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.v/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.v+(unit||'')+'</span></div>'}).join('')+'</div>'}
   h+=bars('🏙️ 社會總積分',function(r){return r.p})+bars('🏅 家鄉徽章',function(r){return r.R.badges})+bars('⭐ 社會星星',function(r){return r.R.stars})+bars('🦁 小石獅冒險等級',function(r){return r.lv})+(T?bars('🏡 家鄉小鎮繁榮度',function(r){return r.ts?r.ts.pros:0}):'');
   return h}
 /* 排行榜：自然等級頒獎台（跟英文樹、數學花一樣） */
-function sciPodium(){var arr=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}).sort(function(a,b){return b.p-a.p});
-  var h='<div class="podium">'+arr.map(function(r,i){var L=scLevel(r.p),rank=(i>0&&r.p===arr[0].p)?0:i,pc=L.to?Math.round((r.p-L.from)/(L.to-L.from)*100):100;
-    return '<div class="rk '+r.k.id+(i===0&&r.p>0?' lead':'')+'" style="'+kbg(r.k)+'"><div class="medal">'+(r.p>0?(['🥇','🥈','🥉'][rank]||''):'')+'</div><div class="face">'+kface(r.k)+'</div><b>'+esc(r.k.name)+'</b>'+
-      '<div class="lv"><img class="gi xl" src="'+L.img+'" alt="" style="box-shadow:none;border-radius:50%">'+esc(L.name)+'</div><div class="pt en">'+r.p+'<small> 分</small></div><div class="bar2"><i style="width:'+pc+'%"></i></div>'+
-      '<div class="sm">'+(L.to?'再 '+(L.to-r.p)+' 分 → '+esc(L.next):'最高等級！')+'</div><div class="big"><small>印章 '+scStampsAny(r.k.id)+' / 10</small></div></div>'}).join('')+'</div>';
+function sciPodium(){var arr=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}).sort(function(a,b){return b.p-a.p}),totals=arr.map(function(r){return r.p});
+  var h='<div class="podium honor-podium">'+arr.map(function(r,i){var L=scLevel(r.p),pc=L.to?Math.round((r.p-L.from)/(L.to-L.from)*100):100;
+    return honorCard(r.k,{place:honorPlace(totals,i),points:r.p,image:L.img,stage:L.name,detail:L.to?'再 '+honorNumber(L.to-r.p)+' 分成長為'+L.next:'已到最高等級，繼續探索！',progress:pc,foot:'已獲得印章 '+scStampsAny(r.k.id)+' / 10'});
+  }).join('')+'</div>';
   var a1=arr[1]||{p:0},d=arr[0].p-a1.p;
   return h+'<p class="gap">'+(arr[0].p===0?'還沒有自然分，快去自然探險島玩吧！':d===0?'目前平手，繼續加油！':esc(arr[0].k.short)+' 領先 '+d+' 分！')+'</p>'}
 
@@ -2810,18 +2810,33 @@ function rosterWire(){var el=PANELS.rec;function re(){renderRec()}
     var np=$('#rosNoPh');if(np)np.addEventListener('click',function(){sfx('tap');rosEd.name=$('#rosName').value;rosEd.avd='';re()});
     $('#rosCancel').addEventListener('click',function(){sfx('tap');rosEd=null;re()})}}
 /* ========== 9. leaderboard ========== */
+/* Community presentation: no awards, account writes or score changes. */
+function honorNumber(n){return (+n||0).toLocaleString('zh-TW')}
+function honorPlace(values,i){if(!(values[i]>0))return null;var first=i;while(first>0&&values[first-1]===values[i])first--;return first+1}
+function honorCard(k,o){var place=o.place,medal=place&&place<=3?['🥇','🥈','🥉'][place-1]:'✦',self=isKid()&&who===k.id,pc=Math.max(0,Math.min(100,+o.progress||0));
+  var h='<article class="honor-card'+(place===1?' honor-lead':'')+'" data-rank-kid="'+esc(k.id)+'" data-rank-total="'+(+o.points||0)+'"><div class="honor-ribbon"><span class="honor-medal" aria-hidden="true">'+medal+'</span><b>'+(place?'第 '+place+' 名':'一起開始冒險')+'</b>'+(self?'<span class="honor-self">你</span>':'')+'</div>';
+  h+='<div class="honor-main"><span class="honor-avatar">'+kface(k)+'</span><div class="honor-identity"><h3>'+esc(k.name)+'</h3>'+(o.tier?'<small>'+esc(o.tier)+'</small>':'<small>知識島探險家</small>')+'</div><div class="honor-score"><strong>'+honorNumber(o.points)+'</strong><small>累計積分</small></div></div>';
+  h+='<div class="honor-growth"><img src="'+o.image+'" alt=""><div><b>'+esc(o.stage)+'</b><small>'+esc(o.detail||'')+'</small>'+(o.progress!=null?'<div class="honor-progress" role="progressbar" aria-label="'+esc(o.stage)+'成長進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pc+'"><i style="width:'+pc+'%"></i></div>':'')+'</div></div>';
+  h+='<div class="honor-foot"><span>'+esc(o.foot||'')+'</span>'+(o.visit?'<button data-rank-visit="'+esc(k.id)+'" data-visit-sub="'+o.visit+'">參觀'+(o.visit==='en'?'樹園':'花園')+' <span aria-hidden="true">›</span></button>':'')+'</div></article>';return h}
+function honorWeek(rows,max){var best=Math.max.apply(null,rows.map(function(r){return r.g}).concat([0]));
+  return '<details class="rank-week"><summary>'+ic('trophy')+'<span><b>本週進步王</b><small>'+(best?'本週最多增加 '+honorNumber(best)+' 分':'新的一週，從一次學習挑戰開始')+'</small></span><i aria-hidden="true">⌄</i></summary><p>跟自己比！本週新增積分，每週一重新開始。</p>'+rows.slice().sort(function(a,b){return b.g-a.g}).map(function(r){return '<div class="rank-week-row"><span class="rank-week-avatar">'+kface(r.k)+'</span><b>'+esc(r.k.short)+'</b><span class="rank-week-track"><i style="width:'+Math.round(r.g/max*100)+'%"></i></span><strong>+'+honorNumber(r.g)+'</strong></div>'}).join('')+'</details>'}
+function gardenPeopleHtml(id,sub,G){return '<p class="people-intro">選擇一位探險家，看看不同的學習成果。</p><div class="gdw garden-people">'+KIDS.map(function(k){var y=growOf(k.id,sub),selected=k.id===id,self=isKid()&&k.id===who,need=gdnPlots(k.id,sub).need;
+  return '<button class="people-card" data-kid="'+esc(k.id)+'" aria-pressed="'+selected+'"><span class="people-avatar">'+kface(k)+'</span><span class="people-info"><strong>'+esc(k.short)+(self?'<em>你</em>':'')+'</strong><span class="people-stage">'+esc(y.lv[1])+' · 本輪 '+honorNumber(y.cur)+' 分</span><small>'+(need?'這一輪的種子還沒種下':'已收成 '+y.n+' '+G.cnt+G.bigName)+'</small></span><span class="people-preview">'+gimg(y.lv[2])+'</span><span class="people-state">'+(selected?'參觀中':'前往參觀')+'<i aria-hidden="true">'+(selected?'✓':'›')+'</i></span></button>'}).join('')+'</div>'}
+
 var rankSub={s:'',g:null};
 function renderRank(){
   var el=PANELS.rank,RS=(rankSub.g===gOpen&&rankSub.s)||(gOpen==='math'?'math':gOpen==='sci'?'sci':gOpen==='soc'?'soc':'en');
   var wg=KIDS.map(function(k){return {k:k,g:Learn.gain(k.id),s:Learn.info(k.id).streak}}),wmx=Math.max.apply(null,wg.map(function(r){return r.g}).concat([1]));
-  var h='<div class="wkbox grow"><b>'+ic('trophy')+' 本週進步王</b><small>跟自己比！這個星期多拿最多分的人就是進步王，每週一重新開始。</small>'+wg.map(function(r){return '<div class="bar"><span>'+esc(r.k.short)+(r.g>0&&r.g===wmx?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.g/wmx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">+'+r.g+(r.s?'・🔥'+r.s:'')+'</span></div>'}).join('')+'</div>';
-  h+='<div class="gdbtn"><button class="btn alt" data-gd="en">🌳 進入樹園</button><button class="btn alt" data-gd="math">🌻 進入花園</button></div>';
+  var h='<div class="rank-banner"><span class="rank-banner-art">'+ic('trophy')+'</span><div><h2>冒險榮譽榜</h2><p>每一次學習，都讓冒險家成長一點。</p></div></div>';
   h+='<div class="subsw rks">'+[['en','🔤 英文'],['math','🔢 數學'],['sci','🔬 自然'],['soc','🏙️ 社會']].map(function(x){return '<button data-rs="'+x[0]+'" aria-pressed="'+(RS===x[0])+'">'+x[1]+'</button>'}).join('')+'</div>';
+  h+='<div class="gdbtn"><button class="btn alt" data-gd="en"><img src="assets/mobile-magic/garden-entry.webp" alt="">進入樹園</button><button class="btn alt" data-gd="math"><img src="assets/habitat/sunflower.webp" alt="">進入花園</button></div>';
+  h+=honorWeek(wg,wmx);
   ['en','math'].filter(function(s){return s===RS}).forEach(function(sub){var G=GROW[sub],arr=KIDS.map(function(k){return {k:k,g:growOf(k.id,sub)}}).sort(function(a,b){return b.g.tot-a.g.tot});
-    h+='<h2 class="h">'+G.ico+' '+G.name+'排行榜</h2><div class="podium">';
-    arr.forEach(function(r,i){var x=r.g,rank=(i>0&&x.tot===arr[0].g.tot)?0:i,span=x.nx[0]-x.lv[0],pc=Math.round((x.cur-x.lv[0])/span*100);
-      h+='<div class="rk '+r.k.id+(i===0&&x.tot>0?' lead':'')+'" style="'+kbg(r.k)+'"><div class="medal">'+(x.tot>0?(['🥇','🥈','🥉'][rank]||''):'')+'</div><div class="face'+(sub==='en'?' rkf" style="--rk:'+rankOf(r.k.id).c:'')+'">'+kface(r.k)+'</div><b'+(sub==='en'&&rankOf(r.k.id).i===4?' class="shine"':'')+'>'+esc(r.k.name)+'</b>'+(sub==='en'?'<div class="rkt">'+rankOf(r.k.id).e+' '+rankOf(r.k.id).n+(facOf(r.k.id)?'・'+FAC[facOf(r.k.id)].e+FAC[facOf(r.k.id)].n:'')+'</div>':'')+'<div class="lv">'+gimg(x.lv[2],'xl')+esc(x.lv[1])+'</div><div class="pt">'+x.cur+'<small> 分</small></div>'+
-        '<div class="bar2"><i style="width:'+pc+'%"></i></div><div class="sm">再 '+(x.nx[0]-x.cur)+' 分 → '+gimg(x.nx[2])+' '+esc(x.nx[1])+'</div><div class="big">'+(x.n?x.bigs()+' <small>×'+x.n+'</small>':'<small>還沒有'+G.bigName+'</small>')+'</div></div>';});
+    h+='<h2 class="rank-subtitle">'+G.ico+' '+G.name+'排行榜<small>依累計積分排序</small></h2><div class="podium honor-podium">';
+    var totals=arr.map(function(r){return r.g.tot});
+    arr.forEach(function(r,i){var x=r.g,span=x.nx[0]-x.lv[0],pc=Math.round((x.cur-x.lv[0])/span*100),R=sub==='en'?rankOf(r.k.id):null,F=sub==='en'&&facOf(r.k.id),tier=R?R.e+' '+R.n+(F?' · '+FAC[F].n:''):'';
+      h+=honorCard(r.k,{place:honorPlace(totals,i),points:x.tot,tier:tier,image:ART[x.lv[2]],stage:x.lv[1],detail:'本輪 '+honorNumber(x.cur)+' 分 · 再 '+honorNumber(x.nx[0]-x.cur)+' 分成長為'+x.nx[1],progress:pc,foot:'已收成 '+x.n+' '+G.cnt+G.bigName,visit:sub});
+    });
     var a1=arr[1]||{g:{tot:0,n:0}},diff=arr[0].g.tot-a1.g.tot;
     h+='</div><p class="gap">'+(arr[0].g.tot===0?'還沒有分數，快去玩'+G.name+'遊戲吧！':diff===0?'目前平手，繼續加油！':arr[0].g.n>a1.g.n?esc(arr[0].k.short)+' 多了 '+(arr[0].g.n-a1.g.n)+' '+G.cnt+G.bigName+'！':esc(arr[0].k.short)+' 領先 '+diff+' 分')+'</p>';
     GAMES.filter(function(g){return !g.noscore&&(g.sub||'en')===sub}).forEach(function(g){var v=KIDS.map(function(k){var x=Store.kid(k.id).byGame[g.id]||{pts:0,plays:0,best:0};return {k:k,x:x}});
@@ -2830,7 +2845,7 @@ function renderRank(){
       v.forEach(function(r){h+='<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.x.pts===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>';});
       h+='</div>';});
   });
-  if(RS==='sci')h+='<h2 class="h">🔬 自然排行榜</h2>'+sciPodium()+(function(){var v=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}),top=Math.max.apply(null,v.map(function(r){return r.p})),mx=Math.max(1,top),o='<div class="grow"><div class="gname">🔬 自然總積分</div>';
+  if(RS==='sci')h+='<h2 class="rank-subtitle">🔬 自然排行榜<small>依累計積分排序</small></h2>'+sciPodium()+(function(){var v=KIDS.map(function(k){return {k:k,p:subPts(Store.kid(k.id),'sci')}}),top=Math.max.apply(null,v.map(function(r){return r.p})),mx=Math.max(1,top),o='<div class="grow"><div class="gname">🔬 自然總積分</div>';
     v.forEach(function(r){o+='<div class="bar"><span>'+esc(r.k.short)+(top>0&&r.p===top?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.p/mx*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.p+'</span></div>'});o+='</div>';
     GAMES.filter(function(g){return g.sub==='sci'}).forEach(function(g){var w=KIDS.map(function(k){return {k:k,x:Store.kid(k.id).byGame[g.id]||{pts:0,plays:0,best:0}}}),t2=Math.max.apply(null,w.map(function(r){return r.x.pts})),m2=Math.max(1,t2);
       o+='<div class="grow"><div class="gname">'+g.ico+' '+esc(g.zh)+'</div>';w.forEach(function(r){o+='<div class="bar"><span>'+esc(r.k.short)+(t2>0&&r.x.pts===t2?' 👑':'')+'</span><span class="trk"><i style="width:'+Math.round(r.x.pts/m2*100)+'%;background:var('+r.k.c+')"></i></span><span class="v">'+r.x.pts+'</span></div>'});o+='</div>'});
@@ -2842,6 +2857,7 @@ function renderRank(){
   el.innerHTML=h;
   el.querySelectorAll('[data-gd]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');openGarden(isKid()?who:KIDS[0].id,b.dataset.gd)})});
   el.querySelectorAll('[data-rs]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');rankSub={s:b.dataset.rs,g:gOpen};var y=el.scrollTop;renderRank();el.scrollTop=y})});
+  el.querySelectorAll('[data-rank-visit]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');openGarden(b.dataset.rankVisit,b.dataset.visitSub)})});
 }
 
 /* ========== 10. records ========== */
@@ -2963,7 +2979,7 @@ function renderGarden(){
   h+='<div class="hab-tools">'+(own?'<button id="gdEdit" aria-pressed="'+gdEditing+'">'+(gdEditing?'✓ 完成佈置':'✥ 佈置庭園')+'</button>':'<span></span>')+'<button id="gdLight">'+(TM==='night'?'☀ 看白天':'☾ 看夜景')+'</button></div>';
   h+='<div class="hab-caption">'+(gdEditing?'拖曳會對齊格點・空出一點距離更好看':'點點動物與裝飾，看看它們的反應')+'</div>';
   /* 上方：關閉、名字、樹園／花園切換、看別人 */
-  h+='<div class="gdtop"><button class="obx" id="gdX" aria-label="離開花園">✕</button><button class="gdwho" data-pn="who">'+kface(kd)+'<b>'+esc(kd.short)+(own?'':'')+'</b><small>'+esc(ISL_N[P.d.bg])+' ▾</small></button>'+
+  h+='<div class="gdtop"><button class="obx" id="gdX" aria-label="離開花園">✕</button><button class="gdwho" data-pn="who" aria-haspopup="dialog" aria-expanded="'+(gdPanel==='who')+'">'+kface(kd)+'<b>'+esc(kd.short)+(own?'':'')+'</b><small>'+esc(ISL_N[P.d.bg])+' ▾</small></button>'+
     '<div class="gdsw"><button data-sub="en" aria-pressed="'+tree+'">🌳</button><button data-sub="math" aria-pressed="'+!tree+'">🌻</button></div></div>';
   var tip=own&&P.need?'🌰 有新'+(tree?'樹':'花')+'種子！點島上閃閃的「＋」種下去':P.need?esc(kd.short)+' 還沒種下這一輪的種子':gimg(x.lv[2])+' '+esc(x.lv[1])+'・'+x.cur+' 分・再 '+(x.nx[0]-x.cur)+' 分長成「'+esc(x.nx[1])+'」';
   h+='<div class="gdtip2'+(own&&P.need?' new':'')+'">'+tip+(lk?'　'+ic('like')+' '+lk:'')+'</div>';
@@ -2973,12 +2989,12 @@ function renderGarden(){
   else if(isKid())h+='<button class="go" id="gdLike"'+(Learn.canLike(id,sub)?'':' disabled')+'>'+ic('like')+'<small>'+(Learn.canLike(id,sub)?'按讚':'按過了')+'</small></button><button id="gdGift"'+(W<1?' disabled':'')+'>🎁<small>送 1💧</small></button><button id="gdHome">🏡<small>回我的島</small></button>';
   h+='</div>';
   /* 底部抽屜：商店／換島／看誰的花園 */
-  if(gdPanel){h+='<div class="gdsheet"><div class="gdsh"><b>'+(gdPanel==='shop'?'🛍️ 裝飾小店・你有 '+W+' 💧'+(nd>=GD_MAX?'（已放滿 '+GD_MAX+' 個）':'（'+nd+'/'+GD_MAX+'）'):gdPanel==='isl'?'🏝️ 換一座島':'👀 去誰的'+(tree?'樹園':'花園')+'？')+'</b><button id="gdShX" aria-label="關閉">✕</button></div>';
+  if(gdPanel){h+='<div class="gdsheet'+(gdPanel==='who'?' gdpeople-sheet':'')+'"><div class="gdsh"><b>'+(gdPanel==='shop'?'🛍️ 裝飾小店・你有 '+W+' 💧'+(nd>=GD_MAX?'（已放滿 '+GD_MAX+' 個）':'（'+nd+'/'+GD_MAX+'）'):gdPanel==='isl'?'🏝️ 換一座島':'👀 去誰的'+(tree?'樹園':'花園')+'？')+'</b><button id="gdShX" aria-label="關閉">✕</button></div>';
     if(gdPanel==='shop')h+='<div class="gdtabs">'+Object.keys(GDC).map(function(c){return '<button data-tab="'+c+'" aria-pressed="'+(gdShop===c)+'">'+GDC[c][0]+'<small>'+(c==='m'?'自然獎勵':GDC[c][1]+' 💧')+'</small></button>'}).join('')+'</div><div class="gdshop">'+
       GD.filter(function(x){return x[1]===gdShop}).map(function(x){var D=GDK[x[0]];if(D.c==='m'){var M=gdMagic(D.k,id,sub);return '<button data-deco="'+D.k+'" class="mg'+(M.ok?'':' lock')+'"'+(!M.ok||M.has||nd>=GD_MAX?' disabled':'')+'><img src="'+GDI[D.k]+'" alt=""><b class="en">'+esc(D.en)+'</b><small>'+D.zh+'・'+(M.has?'已經放了':M.ok?'免費':(D.k.indexOf('hw')===0?'🔒 集滿 7 顆萬聖節糖果':'🔒 全破'+(M.s?M.s.zh:'')))+'</small></button>'}
    return '<button data-deco="'+D.k+'"'+(W<D.p||nd>=GD_MAX?' disabled':'')+'><img src="'+GDI[D.k]+'" alt=""><b class="en">'+esc(D.en)+'</b><small>'+D.zh+'・'+D.p+' 💧</small></button>'}).join('')+(gdShop==='m'?'<p class="gdtip" style="grid-column:1/-1">到「自然探險島」把一站的 3 關都過關，就能免費得到那一站的魔法裝飾！</p>':'')+'</div><p class="gdtip">兌換後會找空位放好。開啟「佈置庭園」可拖曳對齊，拖到島外會收起。</p>';
     else if(gdPanel==='isl')h+='<div class="gdbg">'+ISL.map(function(u,k){return '<button data-bg="'+k+'" aria-pressed="'+(k===P.d.bg)+'"><img src="'+u.img+'" alt=""><span>'+ISL_N[k]+'</span></button>'}).join('')+'</div>';
-    else h+='<div class="gdw">'+KIDS.map(function(k){var y=growOf(k.id,sub);return '<button data-kid="'+k.id+'" aria-pressed="'+(k.id===id)+'"><b>'+kface(k)+' '+esc(k.short)+(isKid()&&k.id===who?'（你）':'')+'</b>收成 '+y.n+' '+G.cnt+G.bigName+'<br>'+gimg(y.lv[2])+' '+esc(y.lv[1])+'・'+y.cur+' 分</button>'}).join('')+'</div>';
+    else h+=gardenPeopleHtml(id,sub,G);
     h+='</div>'}
   gdnEl.innerHTML=h;var harvestButton=$('#gdHv');if(harvestButton){harvestButton.removeAttribute('style');harvestButton.innerHTML=(tree?'🍎':'🌸')+' 收成 +1💧';var tools=gdnEl.querySelector('.hab-tools');tools.insertBefore(harvestButton,tools.lastElementChild)}gdCamApply();
   var sc=$('#gdSc'),tr=$('#gdTrash'),stage=$('#gdStage');
@@ -2999,7 +3015,7 @@ function renderGarden(){
     Store.garden(id,sub,function(g){if(!Array.isArray(g.d))g.d=[];g.d.push([D.k,Math.round(gclamp(uv[0],.05,.95)*100),Math.round(gclamp(uv[1],.05,.95)*100),1])});say('買了「'+D.zh+'」！英文是 '+D.en+'。已幫你找到空位，現在可以拖曳佈置！','happy')})});
   e1=$('#gdHv');if(e1)e1.addEventListener('click',function(){sfx('win');confetti(e1,30);Store.mut(who,function(k){var hv=k.hv||(k.hv={});hv[sub]=Learn.day();k.water=(k.water||0)+1});say('收成了！今天的'+(tree?'果實':'花朵')+'換到 1 💧，明天再來收！','happy')});
   gdnEl.querySelectorAll('[data-sub]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.sub=b.dataset.sub;renderGarden();gdGrowFx()})});
-  gdnEl.querySelectorAll('[data-kid]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.id=b.dataset.kid;gdPanel='';renderGarden()})});
+  gdnEl.querySelectorAll('[data-kid]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdnV.id=b.dataset.kid;gdEditing=false;gdCam={s:1.08,cx:.5,cy:.5};gdPanel='';renderGarden()})});
   gdnEl.querySelectorAll('[data-bg]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');gdCam={s:1.08,cx:.5,cy:.5};gdPanel='';Store.garden(id,sub,function(g){g.bg=+b.dataset.bg});say('搬到「'+ISL_N[+b.dataset.bg]+'」了！','happy')})});
   /* 鏡頭：在空白處一根手指拖曳＝移動，兩根手指＝縮放，滑鼠滾輪也可以縮放 */
   var pts={},pinch=null,panS=null;
