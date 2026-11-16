@@ -1427,7 +1427,7 @@ body:has(.obplay.scip) .plus{top:calc(118px + env(safe-area-inset-top,0px))}
 <link rel="stylesheet" href="assets/habitat/scene.css?v=1.2.0">
 <link rel="stylesheet" href="assets/community/ui.css?v=1.0.0">
 <link rel="stylesheet" href="assets/polish/experience.css?v=1.0.0">
-<link rel="stylesheet" href="assets/word-island-v4.css?v=4.0.0">
+<link rel="stylesheet" href="assets/word-island-v4.css?v=4.1.0">
 <script src="assets/polish/experience.js?v=1.0.0"></script>
 
 
@@ -5245,6 +5245,60 @@ var WI4={palettes:[
  {sky:0xb7d5ed,fog:0xe1edf7,grass:0xe9f5fa,edge:0xaacddd,rock:0x8faabe,stone:0xf5f5ed,blue:0x548fc6,leaf:0x75a7b1,flower:0xa9b3f1},
  {sky:0x747b9b,fog:0xb4a7ba,grass:0x686b86,edge:0x454e6d,rock:0x555370,stone:0xe5d6c8,blue:0x516fc0,leaf:0x758f97,flower:0xffb77c}
 ]};
+/* These silhouettes and palettes follow the sixteen existing account portraits. */
+var WI_AVATARS={
+ adv:{label:'冒險家',hair:0x74492e,coat:0x2868a5,scarf:0x2868a5,eye:0x487eae,gear:'goggles'},
+ blue:{label:'藍髮耳機',hair:0x203862,coat:0x275a94,scarf:0x204d85,eye:0x218bb8,gear:'headphones'},
+ star:{label:'星帽少年',hair:0xc49a63,coat:0x2e4670,scarf:0x28436c,eye:0x467ba4,gear:'cap'},
+ ninja:{label:'銀髮忍者',hair:0xcbd2e6,coat:0x52627e,scarf:0xa93643,eye:0x258db7,gear:'mask'},
+ black:{label:'黑髮戰士',hair:0x263042,coat:0x243e62,scarf:0x2b486a,eye:0x507696,gear:'circlet'},
+ knight:{label:'鋼鐵騎士',hair:0x624735,coat:0x8995a9,scarf:0xc29b50,eye:0x625347,gear:'helmet'},
+ wizard:{label:'魔法師',hair:0xbf995e,coat:0x334c9c,scarf:0x2c448d,eye:0x4d759d,gear:'wizard'},
+ archer:{label:'森林弓箭手',hair:0x60412e,coat:0x397e64,scarf:0x3b6d55,eye:0x5b6752,gear:'hood'},
+ pirate:{label:'小海盜',hair:0x854b35,coat:0x304f58,scarf:0x446862,eye:0x664732,gear:'pirate'},
+ tech:{label:'科技護目鏡',hair:0x283141,coat:0x294e78,scarf:0x31587e,eye:0x3187ae,gear:'visor'},
+ red:{label:'紅髮勇者',hair:0x9a3e43,coat:0x4a4d69,scarf:0xa83a46,eye:0x74524e,gear:'scarf'},
+ prince:{label:'金髮王子',hair:0xd8b572,coat:0x34486b,scarf:0xa04453,eye:0x3e83b4,gear:'crown'},
+ cat:{label:'獸耳少年',hair:0xc5cce3,coat:0x40506e,scarf:0x35475f,eye:0x4299c8,gear:'ears'},
+ astro:{label:'太空探險家',hair:0x293344,coat:0xe7ecf1,scarf:0x30456c,eye:0x76513c,gear:'space'},
+ stargirl:{label:'星光魔法女孩',hair:0x7d492d,coat:0x364fa0,scarf:0x344b98,eye:0x68462f,gear:'girl'},
+ horn:{label:'魔角戰士',hair:0x82404a,coat:0x45435b,scarf:0x9b404a,eye:0x8b5e48,gear:'horns'}
+};
+function wiAvatarModel(id,col,name){
+ var p=WI_AVATARS[id]||WI_AVATARS.adv,g=new T.Group(),head=new T.Group();head.position.y=1.20;g.add(head);
+ function mat(c,metal){var m=new T.MeshStandardMaterial({color:c,roughness:metal?.40:.66,metalness:metal?.35:0});m.color.convertSRGBToLinear();m.userData.wiLinear=true;return m}
+ var skin=mat(0xffd9bd),hair=mat(p.hair),coat=mat(p.coat),scarf=mat(p.scarf),navy=mat(0x283953),ivory=mat(0xfff4db),gold=mat(0xd9b56b,true),steel=mat(0xb2bdcf,true),ink=mat(0x202938),iris=mat(p.eye),glass=mat(0x55b4df,true),pink=mat(0xeaa08e);
+ function mesh(geo,m,x,y,z,par){var q=new T.Mesh(geo,m);q.position.set(x,y,z);(par||g).add(q);q.castShadow=true;q.receiveShadow=true;return q}
+ function orb(r,m,x,y,z,sx,sy,sz,par){var q=mesh(new T.SphereGeometry(1,16,12),m,x,y,z,par);q.scale.set(r*(sx||1),r*(sy||1),r*(sz||1));return q}
+ function ring(r,t,m,x,y,z,par){return mesh(new T.TorusGeometry(r,t,7,28),m,x,y,z,par)}
+ function star(r,m,x,y,z,par){var s=new T.Shape();for(var i=0;i<10;i++){var a=Math.PI/2+i*Math.PI/5,k=i%2?r*.46:r;if(i===0)s.moveTo(Math.cos(a)*k,Math.sin(a)*k);else s.lineTo(Math.cos(a)*k,Math.sin(a)*k)}s.closePath();return mesh(new T.ExtrudeGeometry(s,{depth:.022,bevelEnabled:false}),m,x,y,z,par)}
+ orb(.37,skin,0,0,0,1,1,.94,head);[-1,1].forEach(function(s){orb(.075,skin,s*.355,-.01,-.01,.65,1,.75,head);orb(.039,pink,s*.135,-.08,.313,1,.45,.22,head);orb(.071,ivory,s*.122,.045,.321,1,1.23,.45,head);orb(.044,iris,s*.122,.04,.350,1,1.20,.4,head);orb(.025,ink,s*.121,.041,.365,1,1.23,.4,head);orb(.016,ivory,s*.122-.014,.064,.378,1,1,.3,head);orb(.075,hair,s*.13,.153,.307,1,.15,.23,head)});orb(.030,skin,0,-.032,.354,1,.8,.75,head);orb(.060,ink,0,-.142,.315,1,.40,.22,head);orb(.045,ivory,0,-.128,.328,1,.16,.18,head);
+ orb(.38,hair,0,.18,-.045,1.04,.72,1,head);orb(.30,hair,0,.015,-.19,1.10,.97,.66,head);
+ for(var i=0;i<5;i++){var s=(i-2),bang=orb(.14,hair,s*.118,.21-Math.abs(s)*.023,.225,1.0,.63,.56,head);bang.rotation.z=.25+s*.20}
+ if(['helmet','pirate','wizard','girl','hood','cap','space'].indexOf(p.gear)<0){for(i=0;i<5;i++){var tuft=mesh(new T.ConeGeometry(.12,.27,7),hair,(i-2)*.12,.39-Math.abs(i-2)*.018,-.02,head);tuft.rotation.z=-(i-2)*.26;tuft.rotation.x=-.25}}
+ orb(.26,coat,0,.73,0,1,1.08,.78);orb(.23,navy,0,.44,0,1.05,.42,.83);var collar=ring(.17,.065,scarf,0,.98,0);collar.rotation.x=Math.PI/2;var belt=ring(.21,.027,gold,0,.53,0);belt.rotation.x=Math.PI/2;orb(.085,gold,0,.78,.22,.8,.8,.3);star(.06,glass,0,.78,.244);
+ var cape=mesh(new T.PlaneGeometry(.57,.55,3,3),scarf,0,.74,-.25);cape.material.side=T.DoubleSide;cape.rotation.x=.18;
+ function limb(x,y,len,r,m,leg){var pivot=new T.Group();pivot.position.set(x,y,0);g.add(pivot);mesh(new T.CylinderGeometry(r,r*.87,len,12),m,0,-len/2,0,pivot);orb(r,m,0,-len,0,1,1,1,pivot);if(leg){orb(r*1.35,navy,0,-len-.005,.045,1.1,.65,1.45,pivot);orb(r*.70,gold,0,-len+.045,.12,1,.2,.3,pivot)}else{orb(r*1.1,ivory,0,-len+.055,0,1,.45,1,pivot);orb(r*1.1,skin,0,-len,0,1,1,1,pivot)}return pivot}
+ var model={g:g,la:limb(-.30,.94,.34,.087,coat,false),ra:limb(.30,.94,.34,.087,coat,false),ll:limb(-.12,.43,.32,.095,navy,true),rl:limb(.12,.43,.32,.095,navy,true),ph:0,skinId:id,skinLabel:p.label,cape:cape};
+ var gear=p.gear;
+ if(gear==='goggles'){mesh(new T.CylinderGeometry(.375,.375,.055,24),navy,0,.265,-.01,head);[-.14,.14].forEach(function(x){ring(.101,.020,gold,x,.29,.278,head);orb(.085,glass,x,.29,.282,1,.78,.22,head)});}
+ if(gear==='headphones'||gear==='visor'||gear==='space'){var band=mesh(new T.TorusGeometry(.395,.035,6,26,Math.PI),gear==='space'?ivory:steel,0,.035,-.04,head);[-1,1].forEach(function(s){orb(.13,gear==='space'?ivory:steel,s*.37,0,-.01,.48,1,1,head);orb(.095,glass,s*.418,0,-.01,.20,.85,.9,head)})}
+ if(gear==='cap'){mesh(new T.SphereGeometry(.39,20,12,0,Math.PI*2,0,Math.PI/2),navy,0,.17,-.03,head);orb(.28,navy,0,.18,.25,1.35,.13,.75,head);star(.065,gold,-.13,.34,.29,head);star(.083,gold,.11,.38,.26,head)}
+ if(gear==='wizard'||gear==='girl'){mesh(new T.CylinderGeometry(.46,.46,.035,28),coat,0,.32,0,head);var hat=mesh(new T.ConeGeometry(.33,.65,24),coat,-.035,.66,-.025,head);hat.rotation.z=-.14;mesh(new T.CylinderGeometry(.315,.33,.055,24),gold,0,.375,-.01,head);orb(.048,gold,.015,.985,-.02,1,1,1,head);star(.10,gold,0,.52,.284,head);star(.062,glass,0,.52,.31,head);if(gear==='girl'){[-1,1].forEach(function(s){orb(.145,hair,s*.36,-.15,-.12,.8,1.2,.9,head);orb(.095,hair,s*.36,-.32,-.13,1,1.1,1,head);orb(.065,gold,s*.36,-.08,-.11,1,.4,1,head)});var bow=orb(.08,glass,-.37,.31,.03,1.5,.6,.5,head);bow.rotation.z=.5}}
+ if(gear==='mask'||gear==='scarf'){orb(.23,scarf,0,-.16,.13,1.25,.40,.9,head);var tail=mesh(new T.PlaneGeometry(.18,.47),scarf,.23,.92,-.22);tail.rotation.z=-.6;tail.material.side=T.DoubleSide}
+ if(gear==='circlet'){mesh(new T.CylinderGeometry(.375,.375,.065,24),steel,0,.16,-.01,head);orb(.067,mat(0xf1a64b,true),0,.16,.37,.8,1,.35,head);[-1,1].forEach(function(s){orb(.14,gold,s*.29,.92,0,1,.5,.85)})}
+ if(gear==='helmet'){mesh(new T.SphereGeometry(.395,20,12,0,Math.PI*2,0,Math.PI/2),steel,0,.10,-.025,head);[-1,1].forEach(function(s){orb(.16,steel,s*.32,-.01,-.015,.42,1.3,.9,head)});orb(.30,steel,0,.20,.26,1.05,.40,.34,head);for(i=-2;i<=2;i++)mesh(new T.BoxGeometry(.035,.13,.014),ink,i*.082,.20,.36,head);}
+ if(gear==='hood'){var hood=mesh(new T.ConeGeometry(.43,.47,16),coat,0,.41,-.06,head);hood.rotation.z=-.16;orb(.37,coat,0,.23,.04,1.12,.13,.95,head);star(.085,gold,.29,.35,.18,head);var quiver=mesh(new T.CylinderGeometry(.11,.12,.6,10),mat(0x87613d),.23,.77,-.28);quiver.rotation.z=-.22;for(i=0;i<3;i++){mesh(new T.CylinderGeometry(.012,.012,.65,5),gold,.18+i*.065,1.20,-.31);orb(.055,ivory,.18+i*.065,1.49,-.31,.40,1,.25)}}
+ if(gear==='pirate'){var shape=new T.Shape();shape.moveTo(-.52,0);shape.quadraticCurveTo(-.30,.06,-.23,.28);shape.quadraticCurveTo(0,.53,.23,.28);shape.quadraticCurveTo(.30,.06,.52,0);shape.quadraticCurveTo(.30,-.12,0,-.09);shape.quadraticCurveTo(-.3,-.12,-.52,0);var geo=new T.ExtrudeGeometry(shape,{depth:.13,bevelEnabled:true,bevelThickness:.02,bevelSize:.02,bevelSegments:1});var trim=mesh(geo,gold,0,.30,-.02,head);trim.scale.set(1.045,1.045,1);mesh(geo,navy,0,.30,.012,head);orb(.080,ivory,0,.49,.165,1,1,.28,head);[-.026,.026].forEach(function(x){orb(.018,ink,x,.50,.188,1,1,.25,head)});for(i=-1;i<=1;i+=2){var bone=mesh(new T.CylinderGeometry(.014,.014,.24,5),ivory,0,.39,.17,head);bone.rotation.z=i*.88}}
+ if(gear==='visor'){orb(.40,ivory,0,.035,.28,1,.43,.28,head);orb(.37,glass,0,.035,.34,1,.38,.18,head);orb(.32,mat(0x1675b7,true),0,.035,.38,1,.36,.12,head);var shine=orb(.20,ivory,-.08,.11,.41,1,.06,.08,head);shine.rotation.z=.06}
+ if(gear==='crown'){mesh(new T.CylinderGeometry(.32,.34,.095,16),gold,0,.34,-.025,head);for(i=0;i<5;i++){var a=i*Math.PI*2/5;mesh(new T.ConeGeometry(.075,.24,8),gold,Math.sin(a)*.28,.49,Math.cos(a)*.28-.025,head)}orb(.069,mat(0xaa568c,true),0,.39,.308,.8,1,.35,head)}
+ if(gear==='ears'){[-1,1].forEach(function(s){var ear=mesh(new T.ConeGeometry(.145,.29,4),hair,s*.27,.45,-.02,head);ear.rotation.z=-s*.30;var inside=mesh(new T.ConeGeometry(.09,.18,3),pink,s*.27,.45,.065,head);inside.rotation.z=-s*.30})}
+ if(gear==='space'){ring(.40,.055,ivory,0,.015,.075,head);mesh(new T.SphereGeometry(.41,20,12,0,Math.PI*2,0,Math.PI/2),ivory,0,.09,-.03,head);var bubble=mat(0xc5edff,true);bubble.transparent=true;bubble.opacity=.10;bubble.depthWrite=false;orb(.435,bubble,0,.015,.025,1,1,1,head);orb(.23,ivory,0,.73,-.25,1,.95,.55);orb(.065,glass,.12,.74,.21,1,1,.3)}
+ if(gear==='horns'){[-1,1].forEach(function(s){var h=mesh(new T.ConeGeometry(.115,.45,10),gold,s*.33,.49,-.015,head);h.rotation.z=-s*.35;var tip=mesh(new T.ConeGeometry(.06,.21,9),gold,s*.41,.76,-.015,head);tip.rotation.z=s*.22})}
+ if(name){var sp=new T.Sprite(new T.SpriteMaterial({map:tex(function(c,s){c.fillStyle='rgba(25,54,88,.88)';rr(c,8,s*.32,s-16,s*.34,25);c.fill();c.fillStyle='#fff9e5';c.font='700 '+s*.18+'px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillText(name,s/2,s*.5)},256),depthTest:false}));sp.scale.set(2,2,1);sp.position.y=2.40;g.add(sp)}
+ wiBatch(head,[]);g.userData.wiAvatarId=id;return model;
+}
+var wiAvatarBefore=avatar;avatar=function(col,name,identity){if(!S||!identity)return wiAvatarBefore(col,name,identity);var cfg=window.GateV18&&GateV18.cfg(identity),id=cfg&&WI_AVATARS[cfg.id]?cfg.id:'adv';return wiAvatarModel(id,col,name)};
 function wiMat(c,glow){var key=c+','+(glow||0),pool=WI4.matPool||(WI4.matPool={});return pool[key]||(pool[key]=new T.MeshStandardMaterial({color:c,roughness:.78,metalness:0,emissive:glow||0}))}
 function wiMesh(geo,mat,x,y,z,parent){var m=new T.Mesh(geo,mat);m.position.set(x,y,z);m.receiveShadow=true;parent.add(m);return m}
 function wiRound(w,d,h,r){r=Math.min(r,w*.24,d*.24);var s=new T.Shape(),x=-w/2,y=-d/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+d-r);s.quadraticCurveTo(x+w,y+d,x+w-r,y+d);s.lineTo(x+r,y+d);s.quadraticCurveTo(x,y+d,x,y+d-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);var g=new T.ExtrudeGeometry(s,{depth:h,bevelEnabled:false,curveSegments:3});g.rotateX(-Math.PI/2);var pos=g.attributes.position,uv=[];for(var i=0;i<pos.count;i++)uv.push(pos.getX(i)/w+.5,pos.getZ(i)/d+.5);g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));return g}
@@ -5325,11 +5379,16 @@ function wiIsland(a){
  v.ripple=wiMesh(new T.RingGeometry(.46,.50,28),new T.MeshBasicMaterial({color:0xffe3a6,transparent:true,opacity:0,depthWrite:false,side:T.DoubleSide}),0,0,0,sc);v.ripple.rotation.x=-Math.PI/2;
  a.sea.material.color.setHex(a.def.boss?WORLDS[world].haz:world===3?0xc57864:0x9acddd);a.sea.material.transparent=true;a.sea.material.opacity=a.def.boss?.9:.55;
  // Authoring colours/textures are sRGB. Convert once for the lit linear pipeline.
- var seen=[];sc.traverse(function(o){var list=o.material?(Array.isArray(o.material)?o.material:[o.material]):[];list.forEach(function(m){if(seen.indexOf(m)>=0)return;seen.push(m);if(m.color)m.color.convertSRGBToLinear();if(m.emissive)m.emissive.convertSRGBToLinear();if(m.map){m.map.encoding=T.sRGBEncoding;m.map.needsUpdate=true}})});sc.background.encoding=T.sRGBEncoding;sc.fog.color.convertSRGBToLinear();
+ var seen=[];sc.traverse(function(o){var list=o.material?(Array.isArray(o.material)?o.material:[o.material]):[];list.forEach(function(m){if(seen.indexOf(m)>=0)return;seen.push(m);if(m.color&&!m.userData.wiLinear)m.color.convertSRGBToLinear();if(m.emissive&&!m.userData.wiLinear)m.emissive.convertSRGBToLinear();if(m.map){m.map.encoding=T.sRGBEncoding;m.map.needsUpdate=true}})});sc.background.encoding=T.sRGBEncoding;sc.fog.color.convertSRGBToLinear();
  // Batch repeated flowers/leaves/props; preserve every animated mesh and collision root.
  var protectedObjects=v.motion.map(function(o){return o.m}).concat([a.av.g,a.sh,a.star,v.portal.ring,v.portal.disk]);a.gates.forEach(function(g){if(g.tiles)g.tiles.forEach(function(b){if(b.wiRing)protectedObjects.push(b.wiRing)})});
  a.boxes.forEach(function(b){wiBatch(b.wiArt,protectedObjects)});v.motion.filter(function(o){return o.type==='island'}).forEach(function(o){wiBatch(o.m,protectedObjects)});wiBatch(sc,protectedObjects.concat(a.boxes.map(function(b){return b.m})));
  wiControls(a,v);wiMission(a,v,true);
+}
+function wiHUDLayout(a){var v=a&&a.wi4;if(!v||!v.hud||a.dead||!a.el.isConnected)return;var w=a.el.clientWidth,full=a.el.clientHeight,top=Math.ceil(v.hud.getBoundingClientRect().height),h=Math.max(1,full-top);if(v.viewWidth===w&&v.viewHeight===h&&v.viewTop===top)return;v.viewWidth=w;v.viewHeight=h;v.viewTop=top;a.el.style.setProperty('--wi-hud-height',top+'px');a.rd.setSize(w,h,false);a.cam.aspect=w/h;a.cam.fov=w/h<.8?64:60;a.cam.updateProjectionMatrix()}
+function wiDockHUD(a,v){var el=a.el,hud=document.createElement('div');hud.className='wi-hud';hud.setAttribute('role','region');hud.setAttribute('aria-label','關卡資訊與單字題目');var row=el.querySelector('.obhud'),tools=el.querySelector('.wi-tools'),prompt=el.querySelector('#obPrompt'),race=el.querySelector('#obRace');hud.appendChild(row);hud.appendChild(tools);hud.appendChild(v.mission);hud.appendChild(prompt);hud.appendChild(race);el.appendChild(hud);v.hud=hud;
+ var config=window.GateV18&&GateV18.cfg(who);if(config&&WI_AVATARS[config.id]){var badge=document.createElement('span');badge.className='wi-id';badge.setAttribute('aria-label','目前角色：'+WI_AVATARS[config.id].label);badge.title=WI_AVATARS[config.id].label;var im=document.createElement('img');im.src='assets/v18/av/'+config.id+'.webp';im.alt=WI_AVATARS[config.id].label;badge.appendChild(im);row.appendChild(badge)}
+ hud.addEventListener('pointerdown',function(e){e.stopPropagation()});window.removeEventListener('resize',a.rs);a.rs=function(){wiHUDLayout(a)};window.addEventListener('resize',a.rs);if(window.ResizeObserver){v.hudObserver=new ResizeObserver(function(){wiHUDLayout(a)});v.hudObserver.observe(hud);v.hudObserver.observe(el)}wiHUDLayout(a);
 }
 function wiControls(a,v){var el=a.el,jump=el.querySelector('#obJump');jump.hidden=false;jump.innerHTML='<span aria-hidden="true">↑</span><small>跳躍</small>';jump.setAttribute('aria-label','跳躍');
  el.insertAdjacentHTML('beforeend','<div class="wi-mission"><span>探險任務</span><b></b><div><i></i></div><small></small></div><div class="wi-tools"><button type="button" class="wi-help" aria-label="操作說明" aria-expanded="false">?</button><button type="button" class="wi-direction" aria-label="顯示方向按鈕" aria-pressed="false">✥</button></div><div class="wi-stick-hint" aria-hidden="true"><i>✥</i><small>拖曳移動</small></div><div class="wi-dpad" aria-label="方向控制" hidden><button data-wi-key="w" aria-label="向前移動">↑</button><button data-wi-key="a" aria-label="向左移動">←</button><button data-wi-key="s" aria-label="向後移動">↓</button><button data-wi-key="d" aria-label="向右移動">→</button></div><div class="wi-help-panel" hidden><b>一起探索單字島</b><p>左側拖曳移動，右側按鈕跳躍。也可以開啟方向按鈕。</p><p>電腦使用方向鍵或 WASD 移動，空白鍵跳躍。</p><p>聽單字、選對圖像；站上發光圓環會記下本局的回到位置。</p><small>畫面上的時間會繼續計算。</small><button type="button">知道了</button></div><div class="wi-feedback" role="status" aria-live="polite"></div>');
@@ -5338,7 +5397,7 @@ function wiControls(a,v){var el=a.el,jump=el.querySelector('#obJump');jump.hidde
  direction.addEventListener('click',function(){pad.hidden=!pad.hidden;direction.setAttribute('aria-pressed',String(!pad.hidden));direction.setAttribute('aria-label',pad.hidden?'顯示方向按鈕':'隱藏方向按鈕');el.classList.toggle('wi-show-pad',!pad.hidden);if(pad.hidden)pad.querySelectorAll('button').forEach(function(b){a.keys[b.dataset.wiKey]=0})});
  pad.querySelectorAll('button').forEach(function(b){var key=b.dataset.wiKey;b.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();a.keys[key]=1;b.setPointerCapture(e.pointerId);b.classList.add('held')});function release(){a.keys[key]=0;b.classList.remove('held')}b.addEventListener('pointerup',release);b.addEventListener('pointercancel',release);b.addEventListener('lostpointercapture',release);b.addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();a.keys[key]=1}});b.addEventListener('keyup',release);b.addEventListener('blur',release)});
  // A visible touch hint disappears once the player starts moving.
- v.hint=el.querySelector('.wi-stick-hint');v.mission=el.querySelector('.wi-mission');v.feedback=el.querySelector('.wi-feedback');
+ v.hint=el.querySelector('.wi-stick-hint');v.mission=el.querySelector('.wi-mission');v.feedback=el.querySelector('.wi-feedback');wiDockHUD(a,v);
 }
 function wiMission(a,v,force){var done=a.gates.filter(function(g){return g.done}).length,pr=clamp((a.z0-a.p.z)/(a.z0-a.z1),0,1),act=a.act,title=act?(act.type==='spell'?'收集字母，修復魔法橋':'聽一聽，找到正確圖像'):done===a.gates.length?'前往藍色傳送門':a.def.boss?'危險正在上升，沿著浮島向上！':a.cp===0?'沿著浮島，尋找單字庭院':'穿越浮島，繼續探索';
  if(force||v.missionTitle!==title){v.missionTitle=title;v.mission.querySelector('b').textContent=title}v.mission.querySelector('i').style.width=Math.round(pr*100)+'%';v.mission.querySelector('small').textContent='單字挑戰 '+done+' / '+a.gates.length+'　・　路線 '+Math.round(pr*100)+'%';
@@ -5360,14 +5419,16 @@ function wiTick(a,dt){var v=a&&a.wi4;if(!v)return;v.time+=dt;var t=v.time,P=a.p,
  if(a.falls!==v.lastFalls){v.lastFalls=a.falls;wiFeedback(v,'回到休息點，再試一次就更熟練！')}
  a.boxes.forEach(function(b){if(b.wiFade)b.wiFade.forEach(function(m){m.opacity=b.m.material.opacity})});
  a.gates.forEach(function(g){if(g.tiles)g.tiles.forEach(function(b){if(b.wiRing){b.wiRing.material=g.done&&b.ok?v.mSuccess||(v.mSuccess=wiMat(0x83dbba,0x175b43)):b.wiRing.material;b.wiRing.visible=!b.gone||b.ok}})});
- if(v.feedbackUntil<t)v.feedback.classList.remove('show');if(!v.nextMission||t>=v.nextMission){v.nextMission=t+.12;wiMission(a,v,false)}
+ if(v.feedbackUntil<t)v.feedback.classList.remove('show');if(!v.nextMission||t>=v.nextMission){v.nextMission=t+.12;wiMission(a,v,false);if(!v.hudObserver)wiHUDLayout(a)}
  a.el.classList.toggle('wi-answering',!!a.act);a.el.classList.toggle('wi-finished',a.fin);
+ if(a.av.cape&&!still)a.av.cape.rotation.x=.18+Math.sin(t*5)*.035+Math.min(mv,1)*.15;
  if(a.fin)wiRecap(a,v);
 }
 // Replace the legacy scenery pass, while keeping its existing spark-pool state.
 v3Obby=function(a){if(!a||a.wi4)return;v3InitState(a);v3Renderer(a.rd);a.el.classList.add('v3-play','v3-obby');wiIsland(a)};
 var wiTick0=v3Tick;v3Tick=function(a,dt){wiTick0(a,dt);wiTick(a,dt)};
 var wiMap0=map;map=function(g){wiMap0(g);var cover=gBody.querySelector('.obmap .v3-cover');if(cover){cover.querySelector('span').textContent='WORD ISLAND · 4.0';cover.querySelector('p').textContent='探險營地、單字庭院與魔法傳送門。聽一聽、跳一跳，一起找回浮島的魔法！'}};
+var wiStopBefore=stop;stop=function(keep){if(S&&S.wi4&&S.wi4.hudObserver)S.wi4.hudObserver.disconnect();wiStopBefore(keep)};
 
 /* WORD_ISLAND_V4_END */
   return {map:map,stop:stop,STG:STG,WORLDS:WORLDS,ft:ft,menu:menu,st:stPlay,mb:mbPlay,MB_G:MB_G,mbQs:mbQs};
