@@ -144,7 +144,7 @@ var CSS=[
 '.tn-stage{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}',
 '.tn-stage img{position:absolute;pointer-events:none;-webkit-user-drag:none;user-select:none}',
 '.tn-base{filter:drop-shadow(0 18px 18px rgba(30,60,40,.25))}',
-'.tn-o{position:absolute;pointer-events:none}.tn-o img{position:static;display:block;width:100%;height:auto}',
+'.tn-o{position:absolute;pointer-events:auto;cursor:pointer}.tn-o img{position:static;display:block;width:100%;height:auto}',
 '.tn-o.flip img{transform:scaleX(-1)}.tn-o.sel{filter:drop-shadow(0 0 6px #ffd23f) drop-shadow(0 0 10px #ffb400)}',
 '.tn-o.ghost{opacity:.75}.tn-o.ghost.bad{filter:drop-shadow(0 0 4px #e53935) grayscale(.6)}',
 '.tn-grid{position:absolute;left:0;top:0;pointer-events:none}',
@@ -201,10 +201,10 @@ function open(){if(SOC.ready&&!open.ok){return SOC.ready(function(){open.ok=1;op
   V={el:el,id:id,edit:edit,T:T,mode:'',pick:null,sel:-1,ghost:null,cam:{s:1,x:0,y:0},wk:[],raf:0,night:false,tm:[]};
   el.classList.toggle('night',V.night);
   el.innerHTML='<div class="tn-top"><button class="tn-x" data-x aria-label="離開小鎮">✕</button><div class="tn-tt">我的家鄉小鎮</div><span class="tn-pill" data-pp><img src="'+img('ic_prosper')+'" alt=""><span></span></span><span class="tn-pill" data-pc><img src="'+img('ic_coin')+'" alt=""><span></span></span></div>'+
-    '<div class="tn-view">'+(global.HabitatView?HabitatView.ambient():'')+'<div class="hab-status" aria-live="polite"></div><div class="tn-stage" style="width:'+SW+'px;height:'+SH+'px"></div><div class="tn-zoom"><button data-z="1" aria-label="放大">+</button><button data-z="-1" aria-label="縮小">−</button><button data-z="0" aria-label="看整座小鎮">⌖</button></div></div>'+
+    '<div class="tn-view">'+(global.HabitatView?HabitatView.ambient():'')+'<div class="hab-status" aria-live="polite"></div><div class="tn-stage" style="width:'+SW+'px;height:'+SH+'px"></div><div class="tn-zoom"><button data-z="1" aria-label="放大">+</button><button data-z="-1" aria-label="縮小">−</button><button data-z="0" aria-label="看整座小鎮">⌖</button><button data-z="list" aria-label="我的建築清單">建築<br>清單</button></div></div>'+
     '<div class="tn-bar"><button data-m="build"><img src="'+img('ic_build')+'" alt="">建造</button><button data-m="road"><img src="'+img(roadIm(id))+'" alt="">鋪路</button><button data-m="water"'+(waterMax(id)?'':' disabled')+'><img src="'+img('tile_water')+'" alt="">挖河</button><button data-m="night"><img src="'+img('lamp_2')+'" alt="">'+(V.night?'看白天':'看夜景')+'</button></div>';
   el.querySelector('[data-x]').addEventListener('click',function(){C.sfx('tap');close()});
-  el.querySelectorAll('[data-z]').forEach(function(b){b.addEventListener('click',function(){if(+b.dataset.z===0)fit();else zoomBy(+b.dataset.z>0?1.25:.8)})});
+  el.querySelectorAll('[data-z]').forEach(function(b){b.addEventListener('click',function(){if(b.dataset.z==='list'){cancel();buildingList();return}if(+b.dataset.z===0)fit();else zoomBy(+b.dataset.z>0?1.25:.8)})});
   el.querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){C.sfx('tap');tool(b.dataset.m)})});
   bindPan();render();fit(true);V.raf=requestAnimationFrame(loop);
   V.onKey=function(e){if(e.key==='Escape'){if(V.mode||V.pick)cancel();else close()}else if((e.key==='Enter'||e.key===' ')&&e.target.closest('.tn-o[data-i]')){e.preventDefault();var i=+e.target.closest('.tn-o').dataset.i;if(i>=0)info(i)}};document.addEventListener('keydown',V.onKey);
@@ -296,18 +296,20 @@ function toCell(px,py){var c=V.cam,sx=(px-c.x)/c.s,sy=(py-c.y)/c.s,u=(sx-OX)/(TW
 function bindPan(){var vw=V.el.querySelector('.tn-view'),pts={},st=null;
   function rel(e){var r=vw.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}
   vw.addEventListener('pointerdown',function(e){if(e.target.closest('.tn-zoom,.tn-hint'))return;try{vw.setPointerCapture(e.pointerId)}catch(x){}pts[e.pointerId]=rel(e);var ks=Object.keys(pts);
-    if(ks.length===1)st={x:pts[ks[0]].x,y:pts[ks[0]].y,cx:V.cam.x,cy:V.cam.y,mv:false};
+    if(ks.length===1)st={x:pts[ks[0]].x,y:pts[ks[0]].y,cx:V.cam.x,cy:V.cam.y,mv:false,target:e.target.closest('.tn-o[data-i]')?+e.target.closest('.tn-o').dataset.i:-1};
     else if(ks.length===2){var a=pts[ks[0]],b=pts[ks[1]];st={pinch:Math.hypot(a.x-b.x,a.y-b.y),s:V.cam.s,mx:(a.x+b.x)/2,my:(a.y+b.y)/2,cx:V.cam.x,cy:V.cam.y,mv:true}}});
   vw.addEventListener('pointermove',function(e){if(!pts[e.pointerId]||!st)return;pts[e.pointerId]=rel(e);var ks=Object.keys(pts);
     if(st.pinch&&ks.length>=2){var a=pts[ks[0]],b=pts[ks[1]],d=Math.hypot(a.x-b.x,a.y-b.y),ns=Math.max(.3,Math.min(2.6,st.s*d/st.pinch));V.cam.s=ns;V.cam.x=st.mx-(st.mx-st.cx)*ns/st.s;V.cam.y=st.my-(st.my-st.cy)*ns/st.s;apply();return}
     var p=pts[e.pointerId],dx=p.x-st.x,dy=p.y-st.y;if(!st.mv&&Math.hypot(dx,dy)>8)st.mv=true;if(st.mv&&!st.pinch){V.cam.x=st.cx+dx;V.cam.y=st.cy+dy;apply()}});
-  function up(e){if(!pts[e.pointerId])return;var p=pts[e.pointerId];delete pts[e.pointerId];if(st&&!st.mv&&!Object.keys(pts).length){tap(p.x,p.y)}if(!Object.keys(pts).length)st=null}
+  function up(e){if(!pts[e.pointerId])return;var p=pts[e.pointerId];delete pts[e.pointerId];if(st&&!st.mv&&!Object.keys(pts).length){tap(p.x,p.y,st.target)}if(!Object.keys(pts).length)st=null}
   vw.addEventListener('pointerup',up);vw.addEventListener('pointercancel',function(e){delete pts[e.pointerId];st=null});
   vw.addEventListener('wheel',function(e){e.preventDefault();var p=rel(e);zoomBy(e.deltaY<0?1.12:.89,p.x,p.y)},{passive:false})}
 
 /* ---------- 點地圖 ---------- */
-function tap(px,py){
-  if(!V.mode&&!V.pick){var vr=V.el.querySelector('.tn-view').getBoundingClientRect(),hit=Array.prototype.slice.call(V.el.querySelectorAll('.tn-o[data-i]')).filter(function(el){var r=el.getBoundingClientRect();return +el.dataset.i>=0&&px+vr.left>=r.left+r.width*.08&&px+vr.left<=r.right-r.width*.08&&py+vr.top>=r.top+r.height*.06&&py+vr.top<=r.bottom}).sort(function(a,b){return (+b.style.zIndex)-(+a.style.zIndex)});if(hit.length){info(+hit[0].dataset.i);return}}
+var spriteHitCache={};
+function opaqueSpriteAt(el,x,y){var im=el.querySelector('img');if(!im||!im.complete||!im.naturalWidth)return null;var r=im.getBoundingClientRect();if(x<r.left||x>r.right||y<r.top||y>r.bottom)return false;var key=im.currentSrc||im.src,alpha=spriteHitCache[key];if(!alpha){try{var cv=document.createElement('canvas');cv.width=cv.height=64;var ctx=cv.getContext('2d',{willReadFrequently:true});ctx.drawImage(im,0,0,64,64);alpha=spriteHitCache[key]=ctx.getImageData(0,0,64,64).data}catch(e){return null}}var u=(x-r.left)/r.width;if(el.classList.contains('flip'))u=1-u;var ix=Math.min(63,Math.max(0,Math.floor(u*64))),iy=Math.min(63,Math.max(0,Math.floor((y-r.top)/r.height*64)));for(var dy=-1;dy<=1;dy++)for(var dx=-1;dx<=1;dx++){var xx=ix+dx,yy=iy+dy;if(xx>=0&&xx<64&&yy>=0&&yy<64&&alpha[(yy*64+xx)*4+3]>40)return true}return false}
+function tap(px,py,target){
+  if(!V.mode&&!V.pick){var vr=V.el.querySelector('.tn-view').getBoundingClientRect(),x=px+vr.left,y=py+vr.top,hit=Array.prototype.slice.call(V.el.querySelectorAll('.tn-o[data-i]')).filter(function(el){var r=el.getBoundingClientRect();return +el.dataset.i>=0&&x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom&&opaqueSpriteAt(el,x,y)!==false}).sort(function(a,b){return (+b.style.zIndex)-(+a.style.zIndex)});if(hit.length>1){buildingList(hit.map(function(n){return +n.dataset.i}));return}if(hit.length){info(+hit[0].dataset.i);return}}
   var c=toCell(px,py);if(c.x<0||c.y<0||c.x>=N||c.y>=N){if(!V.mode&&!V.pick)deselect();return}
   if(!V.edit){var o0=objAt(c);if(o0>=0)info(o0);return}
   if(V.mode==='road'||V.mode==='water')return paint(c);
@@ -375,7 +377,9 @@ function place(){var g=V.ghost,it=IT[g.k];if(!g||!g.ok)return;var T=V.T;
 
 /* ---------- 點建築看資訊 ---------- */
 function deselect(quiet){if(!V)return;var had=V.sel>=0;V.sel=-1;closeSheet();if(had&&!quiet)render()}
-function info(i){var T=V.T,o=T.o[i],it=IT[o.k],id=V.id;V.sel=i;render();closeSheet();
+function focusBuilding(i){var o=V.T.o[i];if(!o)return;var p=pos(o),it=IT[o.k],vw=V.el.querySelector('.tn-view'),s=Math.max(V.cam.s,Math.min(1.05,vw.clientWidth<600?.86:.95));V.cam.s=s;V.cam.x=vw.clientWidth/2-(p.l+p.w/2)*s;V.cam.y=vw.clientHeight*.32-(p.b-p.w*(AR[it.im]||1)*.5)*s;apply()}
+function buildingList(indices){closeSheet();var list=indices||V.T.o.map(function(o,i){return i}),sh=document.createElement('div');sh.className='tn-sheet';sh.innerHTML='<div class="tn-sh"><b>'+(indices?'選擇這裡的建築':'我的建築 · '+V.T.o.length+' 個')+'</b><button data-c aria-label="關閉">✕</button></div><p style="padding:0 14px;color:#62758e;font-size:13px">'+(indices?'這裡的物件有重疊，選擇你想靠近看的那一個。':'選一棟建築，靠近看看或調整佈置。')+'</p><div class="tn-building-list">'+list.map(function(i){var o=V.T.o[i],it=IT[o.k];return '<button data-building="'+i+'"><img src="'+img(it.im)+'" alt=""><span>'+esc(it.n)+'<small>查看 · '+(i+1)+'</small></span></button>'}).join('')+'</div>';V.el.appendChild(sh);sh.querySelector('[data-c]').onclick=closeSheet;sh.querySelectorAll('[data-building]').forEach(function(b){b.onclick=function(){C.sfx('tap');info(+b.dataset.building)}})}
+function info(i){focusBuilding(i);var T=V.T,o=T.o[i],it=IT[o.k],id=V.id;V.sel=i;render();closeSheet();
   var sh=document.createElement('div');sh.className='tn-sheet';
   var src=it.c==='soc'?'社會島：'+FAM[it.f].map(function(u){return '「'+UN[u]+'」'}).join(''):it.c==='sci'?(it.st?'自然島：「'+STN[it.st]+'」':'自然等級 Lv.'+(it.sl+1)):it.c==='deco'?'用家鄉幣買的':it.zone?'3D 冒險：「'+ZT[it.zone][2]+'」':'小鎮的守護者';
   var h='<div class="tn-sh"><b>'+esc(it.n)+'</b><button data-c aria-label="關閉">✕</button></div><div class="tn-info"><div class="hd"><img src="'+img(it.im)+'" alt=""><div><div class="src">'+esc(src)+'</div><p>'+esc(it.d||'')+'</p></div></div>';
@@ -385,7 +389,7 @@ function info(i){var T=V.T,o=T.o[i],it=IT[o.k],id=V.id;V.sel=i;render();closeShe
     '<div class="'+(n.water?'ok':'')+'"><img src="'+img('ic_water')+'" alt="">'+(n.water?'有水塔，可以用水':sciSt(id,'water')?'還沒有水：在 4 格內蓋一座水塔':'還沒有水：去自然島「冰與水的瀑布湖」3 關都過關，就能蓋水塔')+'</div></div>'}
   var up=it.up&&IT[it.up],upOk=up&&unl(id,up).ok;
   if(V.edit){h+='<div class="tn-acts">';
-    if(up)h+='<button class="go" data-a="up"'+(upOk?'':' disabled')+'>'+(upOk?'升級成「'+esc(up.n)+'」':'升級：'+esc(unl(id,up).why))+'</button>';
+    if(up)h+=upOk?'<button class="go" data-a="up">升級成「'+esc(up.n)+'」</button>':'<div class="tn-upgrade-requirement"><b>下一個目標：'+esc(up.n)+'</b><small>'+esc(unl(id,up).why)+'</small></div>';
     h+='<button data-a="mv">移動</button><button data-a="fl">轉方向</button>'+(it.k==='lion_statue'?'':'<button data-a="rm">收起來'+(it.p?'（退回 '+it.p+' 幣）':'')+'</button>')+'</div>'}
   h+='</div>';sh.innerHTML=h;V.el.appendChild(sh);
   sh.querySelector('[data-c]').addEventListener('click',function(){C.sfx('tap');deselect()});
