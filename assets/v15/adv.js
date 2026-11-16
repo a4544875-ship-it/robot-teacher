@@ -9,22 +9,22 @@
 var C=null,SOC=null,T=null,G=null,css=false;
 var DEMO=false; /* 測試版時設 true：還沒通過的區也先開放試玩 */
 var ZONES=[
- {k:'3a3',n:'班級廣場',g:3,boss:'m_purple',bn:'吵架怪',tr:['sc_award','班級榮譽獎盃'],sky:0x9fd8ff,top:0x7fd06f,side:0xb07a4a,path:0xf1d9a6,built:1},
- {k:'3a1',n:'溫馨家園',g:3,boss:'m_bucket',bn:'懶惰怪',tr:['fam_three','全家福相框']},
- {k:'3a2',n:'學習森林',g:3,boss:'m_cyclops',bn:'分心怪',tr:['l_lib','智慧之書']},
- {k:'3a4',n:'校園大操場',g:3,boss:'m_red',bn:'霸凌怪',tr:['sc_tug','友誼拔河繩']},
- {k:'3b1',n:'社區街道',g:3,boss:'m_slime',bn:'亂丟垃圾怪',tr:['pf_post','郵差的信']},
- {k:'3b2',n:'熱鬧市場',g:3,boss:'m_cat',bn:'亂花錢怪',tr:['i_piggy','金撲滿']},
- {k:'3b3',n:'超市大樓',g:3,boss:'m_fire',bn:'過期怪',tr:['i_ecobag','環保購物袋']},
- {k:'3b4',n:'古地名山谷',g:3,boss:'s_wizard',bn:'忘記怪',tr:['nm_stone','古老地名碑']},
- {k:'4a1',n:'山河平原',g:4,boss:'m_snow',bn:'浪費水怪',tr:['w_dam','水庫之鑰']},
- {k:'4a2',n:'三合院村',g:4,boss:'s_boar',bn:'拆房怪',tr:['a_lamp','古早煤油燈']},
- {k:'4a3',n:'廟口老街',g:4,boss:'s_ghost',bn:'塗鴉怪',tr:['t_jiao','神明筊杯']},
- {k:'4a4',n:'節慶廣場',g:4,boss:'m_bat',bn:'偷粽子怪',tr:['i_zongzi','金粽子']},
- {k:'4b1',n:'產業農場',g:4,boss:'s_slime',bn:'汙染怪',tr:['n_rice','金稻穗']},
- {k:'4b2',n:'人口城鎮',g:4,boss:'s_ice',bn:'冷漠怪',tr:['pf_center','社區之心']},
- {k:'4b3',n:'交通車站',g:4,boss:'s_flame',bn:'闖紅燈怪',tr:['v_hsr','高鐵模型']},
- {k:'4b4',n:'家鄉風景',g:4,boss:'m_yeti',bn:'破壞怪',tr:['hm_sun','太陽餅金盒']}];
+ {k:'3a3',n:'班級廣場',g:3,boss:'m_purple',bn:'吵架怪',tr:['sc_award','班級榮譽獎盃'],sky:0x9fd8ff,top:0x7fd06f,side:0xb07a4a,path:0xf1d9a6,built:1,deco:['sc_group','l_school','sc_relay','sc_tug','sc_friends','sc_award'],foes:['s_slime','s_ghost','s_flame']},
+ {k:'3a1',n:'溫馨家園',g:3,boss:'m_bucket',bn:'懶惰怪',tr:['fam_three','全家福相框'],deco:['fam_three','fam_big','k_hug','k_sweep','k_dish','fam_grand'],foes:['s_slime','s_light','s_ghost'],sky:0xffe3c2,top:0x9bd46c,side:0xc48a58,path:0xf7d9b5,built:1},
+ {k:'3a2',n:'學習森林',g:3,boss:'m_cyclops',bn:'分心怪',tr:['l_lib','智慧之書'],deco:['l_lib','l_museum','l_garden','l_paint','l_dict','l_flute'],foes:['s_wizard','s_ghost','s_slime'],sky:0xc6f0d4,top:0x6fc65a,side:0x8a6a44,path:0xe9e2b8,built:1},
+ {k:'3a4',n:'校園大操場',g:3,boss:'m_red',bn:'霸凌怪',tr:['sc_tug','友誼拔河繩'],deco:['sc_relay','sc_tug','sc_janitor','sc_wheel','sc_help','sc_learn'],foes:['s_flame','s_slime','s_helmet'],sky:0xa9dcff,top:0x86d46a,side:0xb07a4a,path:0xf3c9a4,built:1},
+ {k:'3b1',n:'社區街道',g:3,boss:'m_slime',bn:'亂丟垃圾怪',tr:['ii_postman','郵差的信'],deco:['pf_police','pf_fire','pf_lib','pf_office','pf_garbage','pf_market'],foes:['s_slime','s_cross','s_ghost'],sky:0xb8e2ff,top:0x8fcf74,side:0x9a8a7a,path:0xdcd6cc,built:1},
+ {k:'3b2',n:'熱鬧市場',g:3,boss:'m_cat',bn:'亂花錢怪',tr:['i_piggy','金撲滿'],deco:['pf_market','sh_night','cs_price','cs_scale','i_piggy','cs_save'],foes:['s_light','s_slime','s_flame'],sky:0xffe0a8,top:0x9fd36a,side:0xb7864e,path:0xf4d39a,built:1},
+ {k:'3b3',n:'超市大樓',g:3,boss:'m_fire',bn:'過期怪',tr:['i_ecobag','環保購物袋'],deco:['sh_super','sh_cvs','sh_online','i_ecobag','ck_receipt','ck_date'],foes:['s_ice','s_slime','s_ghost'],sky:0xd4ecff,top:0x92d38a,side:0x8c9aa8,path:0xe6edf2,built:1},
+ {k:'3b4',n:'古地名山谷',g:3,boss:'s_wizard',bn:'忘記怪',tr:['nm_stone','古老地名碑'],deco:['nm_stone','nm_story','nm_terrain','nm_tribe','nm_water','nm_animal'],foes:['s_wizard','s_ghost','s_boar'],sky:0xd9d0ff,top:0x7cc06a,side:0x8b6b4a,path:0xe2d2b0,built:1},
+ {k:'4a1',n:'山河平原',g:4,boss:'m_snow',bn:'浪費水怪',tr:['w_dam','水庫之鑰'],deco:['g_mt','g_river','g_plain','g_basin','w_dam','g_estuary'],foes:['s_ice','s_slime','s_boar'],sky:0xa8e4ff,top:0x6fcf6a,side:0x7d6a52,path:0xd9c9a0,built:1},
+ {k:'4a2',n:'三合院村',g:4,boss:'s_boar',bn:'拆房怪',tr:['a_lamp','古早煤油燈'],deco:['h_stone','h_hak','a_well','a_stove','a_mill','a_lamp'],foes:['s_boar','s_ghost','s_flame'],sky:0xffe7c8,top:0x93c968,side:0xa0603c,path:0xe7c39a,built:1},
+ {k:'4a3',n:'廟口老街',g:4,boss:'s_ghost',bn:'塗鴉怪',tr:['t_jiao','神明筊杯'],deco:['ex_temple','t_censer','t_door','ex_tea','ex_sign','t_jiao'],foes:['s_ghost','s_flame','s_wizard'],sky:0xffd6c2,top:0x8fcf6c,side:0x9c4a36,path:0xe9c8a6,built:1},
+ {k:'4a4',n:'節慶廣場',g:4,boss:'m_bat',bn:'偷粽子怪',tr:['i_zongzi','金粽子'],deco:['f_cny','f_zongzi','f_moon','f_lan','f_lights','f_tomb'],foes:['s_flame','s_light','s_ghost'],sky:0xffd0e0,top:0x9bd86e,side:0xb0605c,path:0xf6d3c4,built:1},
+ {k:'4b1',n:'產業農場',g:4,boss:'s_slime',bn:'汙染怪',tr:['n_rice','金稻穗'],deco:['n_rice','n_tea','ii_factory','n_grape','ii_fish','n_chicken'],foes:['s_slime','s_boar','s_flame'],sky:0xd8f3c0,top:0x7fcc52,side:0x8b6b3a,path:0xe6d79a,built:1},
+ {k:'4b2',n:'人口城鎮',g:4,boss:'s_ice',bn:'冷漠怪',tr:['pf_center','社區之心'],deco:['pl_city','pl_farm','pl_fish','pl_mount','p_elder','p_new'],foes:['s_ice','s_ghost','s_slime'],sky:0xc9dcff,top:0x8fcf80,side:0x7f8aa0,path:0xdfe3ee,built:1},
+ {k:'4b3',n:'交通車站',g:4,boss:'s_flame',bn:'闖紅燈怪',tr:['iv_hsr','高鐵模型'],deco:['v_train','v_mrt','v_bus','v_ship','v_plane','iv_hsr'],foes:['s_flame','s_cross','s_helmet'],sky:0xb3e0ff,top:0x86cf6a,side:0x6e7a8a,path:0xcfd6df,built:1},
+ {k:'4b4',n:'家鄉風景',g:4,boss:'m_yeti',bn:'破壞怪',tr:['hm_sun','太陽餅金盒'],deco:['hm_beach','hm_river','hm_market','hm_court1','hm_guide','hm_bike'],foes:['s_slime','s_boar','s_ice'],sky:0xa4e6ff,top:0x72d36a,side:0x8a7050,path:0xf0deb0,built:1}];
 var LV=[0,120,300,550,900,1350,1900,2600,3400,4300];
 function lvOf(xp){var l=1;LV.forEach(function(v,i){if(xp>=v)l=i+1});return l}
 function esc(s){return C.esc(String(s))}
@@ -228,7 +228,7 @@ Game.prototype.build=function(){var g=this,z=g.z,Q=g.Q,R=g.R,sc=g.sc;
   /* 0 起點廣場 */
   g.ground(0,0,-5.4,12,14.8);g.tree(-5,0,0);g.tree(5,0,-1);
   [-4,4].forEach(function(x){g.coin(x,0,-6)});g.coin(0,0,-9);
-  ['sc_group','pf_school','sc_relay','sc_tug','sc_friends','sc_award'].forEach(function(k,i){var sd=i%2?1:-1;g.bld(k,sd*(10+(i%3)),-1,-14-i*30,5.5)});
+  (z.deco||['sc_group','l_school','sc_relay','sc_tug','sc_friends','sc_award']).forEach(function(k,i){var sd=i%2?1:-1;g.bld(k,sd*(10+(i%3)),-1,-14-i*30,5.5)});
   for(var cl=0;cl<10;cl++){var cm=new T.Mesh(new T.SphereGeometry(2+R()*1.5,8,6),new T.MeshLambertMaterial({color:0xffffff}));cm.scale.y=.45;cm.position.set((R()*2-1)*30,14+R()*6,-R()*200);sc.add(cm)}
   /* 1 跑酷 */
   [[0,0,-15],[-1.2,.6,-19.6],[1,1.2,-24.2],[0,.6,-28.6]].forEach(function(p){g.ground(p[0],p[1],p[2],4,4);g.coin(p[0],p[1]+.6,p[2])});
@@ -244,7 +244,7 @@ Game.prototype.build=function(){var g=this,z=g.z,Q=g.Q,R=g.R,sc=g.sc;
   /* 3 箱子和小怪 */
   g.ground(0,0,-81,12,20);g.checkpoint(0,0,-72.5);
   for(var c2=0;c2<7;c2++){var bx=(R()*2-1)*4.5,bz=-75-R()*12;var cr=g.box(bx,1,bz,1,1,1,0xffffff,{crate:1,solid:false});cr.m.material.map=g.ptex('wood',1,1);cr.m.material.needsUpdate=true;g.coin(bx,0,bz)}
-  ['s_slime','s_ghost','s_flame'].forEach(function(k,i){g.foe(k,(i-1)*3.5,0,-80-i*2.5,1.3,2)});
+  (z.foes||['s_slime','s_ghost','s_flame']).forEach(function(k,i){g.foe(k,(i-1)*3.5,0,-80-i*2.5,1.3,2)});
   for(var c3=0;c3<5;c3++)g.coin(-4+c3*2,0,-88);
   /* 4 吼開的門 */
   var qd=Q.door,dop=qd?opts(qd,R,3):[];g.doors=[];
