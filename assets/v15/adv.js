@@ -103,9 +103,10 @@ function entry(){var id=C.who(),s=sa(id),lv=lvOf(+s.xp||0),nz=0;ZONES.forEach(fu
 
 /* ================= 大廳 ================= */
 var ROOT=null;
-function open(){addCss();close();ROOT=document.createElement('div');ROOT.className='sav';document.body.appendChild(ROOT);C.sfx('win');lobby()}
-function close(){if(G)G.stop();G=null;if(ROOT){ROOT.remove();ROOT=null}try{C.Net.off()}catch(e){}C.refresh&&C.refresh()}
-function lobby(){var id=C.who(),s=sa(id),xp=+s.xp||0,lv=lvOf(xp),nx=LV[lv]||LV[LV.length-1],pv=LV[lv-1]||0;
+var musPrev='';
+function open(){addCss();close();try{musPrev=global.Music.want();global.Music.play('adv')}catch(e){}ROOT=document.createElement('div');ROOT.className='sav';document.body.appendChild(ROOT);C.sfx('win');lobby()}
+function close(){if(G)G.stop();G=null;if(ROOT){ROOT.remove();ROOT=null;try{global.Music.play(musPrev||'soc')}catch(e){}}try{C.Net.off()}catch(e){}C.refresh&&C.refresh()}
+function lobby(){try{global.Music.play('adv')}catch(e){}var id=C.who(),s=sa(id),xp=+s.xp||0,lv=lvOf(xp),nx=LV[lv]||LV[LV.length-1],pv=LV[lv-1]||0;
   var h='<div class="sav-lob"><div class="sav-lh"><button class="sav-x" data-x="1" aria-label="離開">✕</button><h2>小石獅守護家鄉</h2></div>';
   h+='<div class="sav-me"><img src="'+img('l_front')+'" alt=""><div class="t"><b>'+(C.isKid()?esc(C.kidName())+' 的小石獅':'小石獅')+'・Lv.'+lv+'</b><div class="sav-xp"><i style="width:'+Math.min(100,Math.round((xp-pv)/Math.max(1,nx-pv)*100))+'%"></i></div><small>經驗 '+xp+(lv<LV.length?' / '+nx:'')+'・家鄉幣 '+(+s.c||0)+'・愛心 '+(4+Math.min(3,Math.floor(lv/3)))+' 顆・吼聲範圍 '+(4.5+lv*.2).toFixed(1)+'</small></div></div>';
   h+='<p class="sav-note">搗蛋怪把家鄉的寶物偷走了！外面的站拿到家鄉徽章，冒險裡那一區就會開放。每一區要跑酷、用動作答題，最後打倒搗蛋怪拿回寶物。'+(DEMO?'<b>測試版：還沒通過的區也先開放試玩。</b>':'')+'</p>';
@@ -396,7 +397,7 @@ Game.prototype.solve=function(kind,first,remote){var g=this;if(g.solved[kind])re
   g.hud()};
 Game.prototype.showQ=function(tr){var el=ROOT.querySelector('.sav-q'),q=tr.q;el.hidden=false;el.classList.toggle('pic',!!q.p);el.innerHTML=q.p?'<img src="'+img(q.p)+'" alt=""><div><small>'+esc(tr.txt)+'</small>'+esc(q.q)+'<small style="color:#8a99a8;margin-top:2px">點照片可以放大</small></div>':'<small>'+esc(tr.txt)+'</small>'+esc(q.q);var im=el.querySelector('img');if(im)im.addEventListener('click',function(){var g=G;var z2=document.createElement('div');z2.className='sav-zoom';z2.innerHTML='<img src="'+img(q.p)+'" alt="">';ROOT.appendChild(z2);if(g)g.paused=true;z2.addEventListener('click',function(){z2.remove();if(g)g.paused=false})});C.say(q.q,'happy')};
 /* ---------- 魔王 ---------- */
-Game.prototype.spawnBoss=function(){var g=this,c=g.bossCfg,sp=g.sprite([c.k],3.6);sp.position.set(c.x,1.8,c.z);g.sc.add(sp);g.boss={sw:sp.scale.x,sh:sp.scale.y,sp:sp,x:c.x,z:c.z,hp:c.hp,max:c.hp,alive:true,t:0,shoot:2,stun:0,hits:0,qi:0};
+Game.prototype.spawnBoss=function(){try{global.Music.play('advboss')}catch(e){}var g=this,c=g.bossCfg,sp=g.sprite([c.k],3.6);sp.position.set(c.x,1.8,c.z);g.sc.add(sp);g.boss={sw:sp.scale.x,sh:sp.scale.y,sp:sp,x:c.x,z:c.z,hp:c.hp,max:c.hp,alive:true,t:0,shoot:2,stun:0,hits:0,qi:0};
   ROOT.querySelector('.sav-boss').hidden=false;ROOT.querySelector('.sav-q').hidden=true;g.tip(g.z.bn+'出現了！躲開攻擊，靠近牠按「吼！」',3);C.say(g.z.bn+'出現了！','oops');g.cp={x:0,y:.1,z:-176}};
 Game.prototype.bossStep=function(dt,P){var g=this,b=g.boss;if(!b.alive)return;b.t+=dt;
   var dx=P.x-b.x,dz=P.z-b.z,l=Math.hypot(dx,dz)||1;if(l>3.2&&!b.stun){b.x+=dx/l*dt*1.6;b.z+=dz/l*dt*1.6}var dr=Math.hypot(b.x-g.arena.x,b.z-g.arena.z);if(dr>10){b.x=g.arena.x+(b.x-g.arena.x)/dr*10;b.z=g.arena.z+(b.z-g.arena.z)/dr*10}

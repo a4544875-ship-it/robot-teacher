@@ -190,7 +190,8 @@ function newUnl(id,T){return ORD.filter(function(k){var it=IT[k];return it.c!=="
 
 /* ---------- 小鎮畫面 ---------- */
 var V=null;
-function open(){if(SOC.ready&&!open.ok){return SOC.ready(function(){open.ok=1;open()})}css();if(V)close();var id=C.who(),edit=C.isKid()&&!!kid();
+var musPrev='';
+function open(){if(SOC.ready&&!open.ok){return SOC.ready(function(){open.ok=1;open()})}css();if(V)close();try{musPrev=global.Music.want();global.Music.play('town')}catch(e){}var id=C.who(),edit=C.isKid()&&!!kid();
   var T=edit?tn():{o:[],r:[],w:[],seen:{},g:1};
   if(edit&&!T.o.some(function(o){return o.k==='lion_statue'})){T.o.push({k:'lion_statue',x:5,y:5,f:0});[[5,7],[6,7],[7,7],[7,6],[7,5],[4,5],[4,6]].forEach(function(c){T.r.push(c[1]*N+c[0])});save(T)}
   var gift=0,msg=[];if(edit&&!T.g){T.g=1;gift+=30;msg.push('見面禮 30 個')}
@@ -213,7 +214,7 @@ function open(){if(SOC.ready&&!open.ok){return SOC.ready(function(){open.ok=1;op
   else{var nw=newUnl(id,T);if(nw.length)setTimeout(function(){toast('新解鎖：'+nw.slice(0,4).map(function(k){return IT[k].n}).join('、')+(nw.length>4?' 等 '+nw.length+' 個':'')+'！到「建造」看看吧！')},gift?4300:300);
     C.say('這是你的家鄉小鎮！社會和自然破關，就能蓋更多東西！','happy')}
 }
-function close(){if(!V)return;cancelAnimationFrame(V.raf);V.tm.forEach(clearTimeout);document.removeEventListener('keydown',V.onKey);global.removeEventListener('resize',V.onRs);V.el.remove();V=null;try{C.refresh&&C.refresh()}catch(e){}}
+function close(){if(!V)return;try{global.Music.play(musPrev||'lobby')}catch(e){}cancelAnimationFrame(V.raf);V.tm.forEach(clearTimeout);document.removeEventListener('keydown',V.onKey);global.removeEventListener('resize',V.onRs);V.el.remove();V=null;try{C.refresh&&C.refresh()}catch(e){}}
 function isNight(){var h=new Date().getHours();return h>=18||h<6}
 
 /* ---------- 計算 ---------- */

@@ -29,6 +29,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <link rel="stylesheet" href="assets/expansion-v4.css?v=4.1.0">
 <script src="assets/velocity-v4.js?v=4.1.0"></script>
 <script src="assets/math-v4.js?v=4.2.0"></script>
+<script src="assets/v21/music.js?v=21.0.0"></script>
 <link rel="stylesheet" href="assets/v8/family.css?v=8.3.1">
 <script src="assets/v8/family.js?v=8.3.1"></script>
 <link rel="stylesheet" href="assets/v9/lab.css?v=9.1.0">
@@ -43,8 +44,8 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v13/parent.js?v=16.4.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
 <script src="assets/v15/social.js?v=16.3.0"></script>
-<script src="assets/v15/adv.js?v=22.0.0"></script>
-<script src="assets/v15/town.js?v=16.1.0"></script>
+<script src="assets/v15/adv.js?v=22.1.0"></script>
+<script src="assets/v15/town.js?v=16.2.0"></script>
 <script src="assets/v16/expert-sci.js?v=16.3.0"></script>
 <script src="assets/v16/expert-soc.js?v=16.3.0"></script>
 <script src="assets/v16/expert-en.js?v=16.3.0"></script>
@@ -1558,8 +1559,8 @@ function sfx(k){
 /* ========== 背景音樂 ==========
    全部用 Web Audio 即時合成的原創小曲（沒有音檔，離線也能播）。每首是 4 小節循環：主旋律＋低音＋分解和弦。
    Music.play(名稱) 只記下「想播哪一首」，排程器下一拍才切換，所以連續呼叫不會爆音。靜音鈕同時關掉音樂。 */
-var MUSIC_G={obby:'obby',kart:'kart',shoot:'space',meteor:'space',tug:'bounce',tower:'bounce',diner:'diner',boss:'boss',mboss:'boss',mbingo:'math',msnake:'math',mbond:'math',mcmp:'math',ttab:'math',smag:'garden',scirc:'garden',swater:'garden',splant:'garden',sanimal:'garden',scisprint:'math',scisort:'math',sciorder:'math',scimatch:'math'};
-var Music=(function(){
+var MUSIC_G={obby:'obby',kart:'kart',shoot:'space',meteor:'space',tug:'bounce',tower:'bounce',diner:'diner',boss:'boss',mboss:'boss',mbingo:'math',msnake:'math',mbond:'math',mcmp:'math',ttab:'math',smag:'sci',scirc:'sci',swater:'sci',splant:'sci',sanimal:'sci',scisprint:'sci',scisort:'sci',sciorder:'sci',scimatch:'sci'};
+var Music=window.RTMusic?RTMusic({get:function(){return actx},set:function(a){actx=a;return a},muted:function(){return muted}}):(function(){
   var MAJ=[0,2,4,5,7,9,11],MIN=[0,2,3,5,7,8,10],_=null;
   var T={
     cover:{k:60,bpm:96,lead:'sine',v:1,m:[2,4,7,_,6,4,2,_, 5,7,9,_,8,7,5,_, 3,5,7,_,5,3,5,_, 4,6,8,_,6,4,1,_],b:[0,5,3,4]},
@@ -1590,7 +1591,7 @@ var Music=(function(){
   ['pointerdown','keydown','touchend'].forEach(function(ev){document.addEventListener(ev,unlock,{capture:true,passive:true})});
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&actx&&actx.state==='suspended')try{actx.resume()}catch(e){}});
   return {play:function(k){want=k||''},stop:function(){want=''},want:function(){return want},cur:function(){return cur}};
-})();
+})();window.Music=Music;
 var fx=$('#fx'),COLORS=['--sun','--coral','--mint','--grape','--sky','--rose'];
 function confetti(target,n){if(REDUCED)return;
   var r=target&&target.getBoundingClientRect?target.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/3,width:0,height:0};
@@ -2724,6 +2725,7 @@ function renderGameHome(){
   var mbo=document.querySelector('.mbk');if(mbo)mbo.remove();if(gsub==='math'&&!lobby)mbHome(gb);
   if(gsub==='sci'&&!lobby)sciHome();
   var exo=document.querySelector('.enxk');if(exo)exo.remove();if(gOpen==='en'&&!lobby)enXHome(gb);
+  if(!curGame)Music.play(({en:'en',math:'math',sci:'sci',soc:'soc'})[gOpen]||'lobby');
 }
 function backGameHome(){cleanupGame();document.body.dataset.tier='0';gPlay.hidden=true;gHome.hidden=false;PANELS.game.scrollTop=0;renderGameHome()}
 $('#gBack').addEventListener('click',function(){sfx('tap');backGameHome();say('換一個遊戲吧！','idle')});
@@ -5476,7 +5478,7 @@ var V2=(function(){
     bind(el('#v2Leave'),'click',function(){var m=s.meta;stop();if(m.station)station(m);else backGameHome()});
   }
   function start(m,level){
-    cleanupGame();shell(m.zh);Music.play(m.sub==='sci'?'garden':m.sub==='math'?'math':'lobby');Learn.round0();
+    cleanupGame();shell(m.zh);Music.play(m.sub==='sci'?'sci':m.sub==='math'?'math':'en');Learn.round0();
     var s={meta:m,level:level||0,kid:who,token:++serial,index:0,total:m.station?5:8,right:0,wrong:0,first:0,tries:0,streak:0,bestCombo:0,done:false,review:[],seen:[],grade:EGRADES.indexOf(egrade)+2,started:Date.now()};active=s;
     world(s,'<div class="v2intro"><img class="v2companion" src="'+PATH+companion(m)+'.webp" alt="探險夥伴"><span class="v2badge">'+(m.station?'第 '+(s.level+1)+' 關 · '+esc(m.levels[s.level][0]):'全新互動冒險')+'</span><h2>'+esc(m.zh)+'</h2><p>'+esc(m.d)+'</p><ul><li>每次挑戰 '+s.total+' 個任務，沒有倒數壓力。</li><li>答錯會有提示，可以再試；第一次答對比例決定星星。</li><li>做對任務 +10 分，完成後顯示學習摘要。</li></ul><button class="v2action" id="v2Begin">開始探險 ✦</button></div>');
     bind(el('#v2Begin'),'click',function(){if(alive(s)){sfx('tap');next(s)}});say('準備好了嗎？這次一起探索「'+m.zh+'」！','happy');
