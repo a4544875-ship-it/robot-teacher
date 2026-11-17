@@ -2679,7 +2679,7 @@ var GAMES=[
  {id:'shoot',cls:'g13 feat',ico:'🎯',img:'balloon',tag:'對戰',zh:'單字射擊場',en:'Word Blaster',d:'瞄準對的氣球把它射下來，可以連線比誰先射完！',how:'聽題目，點對的氣球把它射下來。自己玩有 3 顆愛心；連線對戰時射錯會暫停一下，先射完 10 題的人獲勝。'},
  {id:'meteor',cls:'g14 feat',ico:'☄️',tag:'對戰',zh:'字母隕石',en:'Letter Meteors',d:'照順序射下字母隕石拼出單字，可以連線比誰先拼完！',how:'看圖片和中文，照順序點字母隕石把單字拼出來。連線對戰時先拼完 6 個單字的人獲勝。'},
  {id:'diner',cls:'g22 feat',ico:'🍔',img:'diner',tag:'NEW',zh:'魔法星餐廳',en:'Magic Star Diner',d:'當餐廳大廚！聽客人用英文點餐，把對的食物送上去。',how:'客人會用英文點餐（按 🔊 可以再聽一次，按 ？ 看中文）。在餐檯上點對的食物；高年級要把正確的數量放到托盤，再按 🔔 上菜。連續答對 3 次會進入尖峰時刻，每道菜多拿小費；遇到自己陣營的客人分數兩倍。小心不要拿到魔法藥水！連線對戰是比 120 秒內誰的分數高。'},
- {id:'boss',cls:'g21 feat',ico:'🐲',img:'monster',tag:'合作',zh:'合作打魔王',en:'Boss Battle',d:'不比輸贏！兩個人一起答題，合力把魔王的血打完！',how:'魔王有很多血，90 秒內每答對一題就打魔王一下；答錯魔王會休息一下。可以跟小機合作，也可以兩台裝置連線，兩個人一起打。打贏了兩個人都加 30 分！',coop:1},
+ {id:'boss',hide:1,cls:'g21 feat',ico:'🐲',img:'monster',tag:'合作',zh:'合作打魔王',en:'Boss Battle',d:'不比輸贏！兩個人一起答題，合力把魔王的血打完！',how:'魔王有很多血，90 秒內每答對一題就打魔王一下；答錯魔王會休息一下。可以跟小機合作，也可以兩台裝置連線，兩個人一起打。打贏了兩個人都加 30 分！',coop:1},
  {id:'enx',sub:'en',hide:1,cls:'g11',ico:'🏆',zh:'英文高手關',en:'English Expert',d:'英文高手關'},
  {id:'mbook',sub:'math',hide:1,cls:'g17',ico:'📘',zh:'課本闖關',en:'Textbook',d:'照康軒課本單元一關一關練'},
  {id:'mbingo',sub:'math',cls:'g17 feat',ico:'🟦',tag:'對決',zh:'九九賓果搶地盤',en:'Times Table Bingo',d:'算對九九乘法就佔一格，先連成 4 格一條線的人贏！',how:'看上面的乘法題，在格子裡找到答案點下去，那一格就是你的。先把 4 格連成一條線（直、橫、斜都可以）的人獲勝；點錯會暫停一下。',duel:1},
@@ -3024,7 +3024,7 @@ $('#starPill').addEventListener('click',function(){if(isKid()){sfx('tap');openGa
    k.day   ：今天的任務進度；k.streak：連續完成天數；k.water：水滴（任務獎勵，可在花園澆水或換裝飾）
    k.wk    ：這一週開始時的分數，用來算「本週進步」 */
 var Learn=(function(){
-  var NEED=3,EN_G=['obby','kart','tower','shoot','meteor','boss','diner'],MA_G=['mbingo','msnake','mbond','mboss'];
+  var NEED=3,EN_G=['obby','kart','tower','shoot','meteor','diner'],EN_G1=['obby','kart','tower','shoot','meteor','boss','diner'],MA_G=['mbingo','msnake','mbond','mboss'];
   function pad2(n){return (n<10?'0':'')+n}
   function dstr(d){return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())}
   function day(off){var d=new Date();d.setDate(d.getDate()+(off||0));return dstr(d)}
@@ -3042,8 +3042,8 @@ var Learn=(function(){
     function pl(g){return {t:'play',g:g,n:1,txt:SO_N[g]?'玩一局 '+SO_N[g]:'玩一局 '+gname(g)}}
     var okT={en:'答對 10 題英文',math:'答對 10 題數學',sci:'在自然探險島做對 10 次',soc:'在社會遊戲樂園答對 10 題'};
     return [pl(g1),{t:'ok',s:s2,n:10,txt:okT[s2]},q3===0?{t:'vs',n:1,txt:'跟人連線或跟小機對決一場'}:q3===1&&u1!=='sci'?{t:'star',n:2,txt:'在自然探險島拿到 2 顆星'}:q3===2?{t:'town',n:1,txt:'到家鄉小鎮蓋或升級一棟建築'}:pl(g3)]}
-  function questsV1(id,d){var h=hash(id+d),SC_G=STN.filter(function(s){return s.on}).map(function(s){return s.id}),all=EN_G.concat(MA_G,SC_G),g1=all[h%all.length],u1=MA_G.indexOf(g1)>=0?'math':SC_G.indexOf(g1)>=0?'sci':'en',s2=['en','math','sci'][(h>>3)%3],
-      oth=u1==='math'?EN_G.concat(SC_G):u1==='sci'?EN_G.concat(MA_G):MA_G.concat(SC_G),g3=oth[(h>>5)%oth.length],q3=(h>>7)%3;
+  function questsV1(id,d){var h=hash(id+d),SC_G=STN.filter(function(s){return s.on}).map(function(s){return s.id}),all=EN_G1.concat(MA_G,SC_G),g1=all[h%all.length],u1=MA_G.indexOf(g1)>=0?'math':SC_G.indexOf(g1)>=0?'sci':'en',s2=['en','math','sci'][(h>>3)%3],
+      oth=u1==='math'?EN_G1.concat(SC_G):u1==='sci'?EN_G1.concat(MA_G):MA_G.concat(SC_G),g3=oth[(h>>5)%oth.length],q3=(h>>7)%3;
     return [{t:'play',g:g1,n:1,txt:'玩一局 '+gname(g1)},{t:'ok',s:s2,n:10,txt:s2==='sci'?'在自然探險島做對 10 次':'答對 10 題'+(s2==='en'?'英文':'數學')},q3===0?{t:'vs',n:1,txt:'跟人連線或跟小機對決一場'}:q3===1&&u1!=='sci'?{t:'star',n:2,txt:'在自然探險島拿到 2 顆星'}:{t:'play',g:g3,n:1,txt:'玩一局 '+gname(g3)}]}
   function ensure(k){var d=day();if(!k.day||k.day.d!==d)k.day={d:d,p:[0,0,0],done:0};if(!Array.isArray(k.day.p))k.day.p=[0,0,0];
     var w=week();if(!k.wk||k.wk.w!==w){if(k.wk)k.pw={w:k.wk.w,g:Math.max(0,subPts(k,'en')-(+k.wk.e||0))};k.wk={w:w,e:subPts(k,'en'),m:subPts(k,'math'),s:subPts(k,'sci')}}}
@@ -5455,7 +5455,7 @@ var V2=(function(){
   var active=null, serial=0;
   var PATH='assets/';
   var META={
-    v2post:{id:'v2post',zh:'天空快遞',en:'Sky Post',ico:'📮',bg:'sky',sub:'en',d:'聽懂包裹、拼出單字，讓飛船完成送貨！'},
+    v2post:{id:'v2post',hide:1,zh:'天空快遞',en:'Sky Post',ico:'📮',bg:'sky',sub:'en',d:'聽懂包裹、拼出單字，讓飛船完成送貨！'},
     v2fraction:{id:'v2fraction',zh:'分數魔法廚房',en:'Fraction Kitchen',ico:'🥧',bg:'kitchen',sub:'math',d:'親手分派、組合切片，從幾分之一到異分母加減。'},
     v2clock:{id:'v2clock',zh:'時鐘修理師',en:'Clock Workshop',ico:'🕰️',bg:'clock',sub:'math',d:'修好時鐘、安排出發時間，練習讀鐘與時間計算。'},
     smoon:{id:'smoon',zh:'月相觀測站',en:'Moon Observatory',ico:'🌙',bg:'moon',sub:'sci',station:'moon',d:'月亮不會自己發光！觀察亮面、月相與變化。',levels:[['月亮觀察員','辨認月亮的亮面與月相'],['月相時間軸','排出月相變化的順序'],['月亮小偵探','理解月相與觀察方法']]},
@@ -5629,7 +5629,7 @@ var V2=(function(){
   }
   function install(){
     Object.keys(META).forEach(function(id){var m=META[id];if(m.sub==='math')MATH_IDS[id]=1;if(m.sub==='sci')SCI_IDS[id]=1;
-      GAMES.push({id:id,sub:m.sub==='en'?undefined:m.sub,cls:'v2new feat',ico:m.ico,tag:'新冒險',zh:m.zh,en:m.en,d:m.d});
+      GAMES.push({id:id,hide:m.hide?1:undefined,sub:m.sub==='en'?undefined:m.sub,cls:'v2new feat',ico:m.ico,tag:'新冒險',zh:m.zh,en:m.en,d:m.d});
       GAME_FN[id]=function(){if(m.station)station(m);else start(m,0)};
       if(m.station){var s=STK[m.station];s.on=1;s.gz=m.zh;s.lv=m.levels;s.rz='自然印章與 5 💧';s.v2=true}
     });

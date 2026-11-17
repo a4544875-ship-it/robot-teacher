@@ -4,7 +4,7 @@ var V2=(function(){
   var active=null, serial=0;
   var PATH='assets/';
   var META={
-    v2post:{id:'v2post',zh:'天空快遞',en:'Sky Post',ico:'📮',bg:'sky',sub:'en',d:'聽懂包裹、拼出單字，讓飛船完成送貨！'},
+    v2post:{id:'v2post',hide:1,zh:'天空快遞',en:'Sky Post',ico:'📮',bg:'sky',sub:'en',d:'聽懂包裹、拼出單字，讓飛船完成送貨！'},
     v2fraction:{id:'v2fraction',zh:'分數魔法廚房',en:'Fraction Kitchen',ico:'🥧',bg:'kitchen',sub:'math',d:'親手分派、組合切片，從幾分之一到異分母加減。'},
     v2clock:{id:'v2clock',zh:'時鐘修理師',en:'Clock Workshop',ico:'🕰️',bg:'clock',sub:'math',d:'修好時鐘、安排出發時間，練習讀鐘與時間計算。'},
     smoon:{id:'smoon',zh:'月相觀測站',en:'Moon Observatory',ico:'🌙',bg:'moon',sub:'sci',station:'moon',d:'月亮不會自己發光！觀察亮面、月相與變化。',levels:[['月亮觀察員','辨認月亮的亮面與月相'],['月相時間軸','排出月相變化的順序'],['月亮小偵探','理解月相與觀察方法']]},
@@ -177,7 +177,7 @@ var V2=(function(){
   }
   function install(){
     Object.keys(META).forEach(function(id){var m=META[id];if(m.sub==='math')MATH_IDS[id]=1;if(m.sub==='sci')SCI_IDS[id]=1;
-      GAMES.push({id:id,sub:m.sub==='en'?undefined:m.sub,cls:'v2new feat',ico:m.ico,tag:'新冒險',zh:m.zh,en:m.en,d:m.d});
+      GAMES.push({id:id,hide:m.hide?1:undefined,sub:m.sub==='en'?undefined:m.sub,cls:'v2new feat',ico:m.ico,tag:'新冒險',zh:m.zh,en:m.en,d:m.d});
       GAME_FN[id]=function(){if(m.station)station(m);else start(m,0)};
       if(m.station){var s=STK[m.station];s.on=1;s.gz=m.zh;s.lv=m.levels;s.rz='自然印章與 5 💧';s.v2=true}
     });
