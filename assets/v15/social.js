@@ -789,6 +789,7 @@ var MAP={
   {k:'4b4',s:'b',wk:14,n:'家鄉風情畫',pic:'hm_river',x:75,y:84,ls:[['4b4-1','家鄉的風貌'],['4b4-2','家鄉的特產'],['4b4-3','愛我家鄉']]}],
   hub:{x:50,y:46,ly:51.4}}
 };
+if(global.Adventure23Questions)Object.keys(global.Adventure23Questions.social).forEach(function(lk){if(BANK[lk])BANK[lk]=BANK[lk].concat(global.Adventure23Questions.social[lk])});
 var UK={};[3,4].forEach(function(g){MAP[g].units.forEach(function(u){u.g=g;UK[u.k]=u;u.ls.forEach(function(l){(BANK[l[0]]||[]).forEach(function(q,i){q.id=l[0]+':'+i;q.lk=l[0]})})})});
 
 var C=null,css=false;
@@ -1001,7 +1002,7 @@ function buildExam(u){var X=(window.EXPERT&&EXPERT.soc&&EXPERT.soc[u.k])||[];if(
   var pool=[];u.ls.forEach(function(l){(BANK[l[0]]||[]).forEach(function(q){pool.push(q)})});return shuf(pool).slice(0,10)}
 function buildRound(id,u,lk){var pool=(BANK[lk]||[]).slice(),N=Math.min(8,pool.length),pick=[];
   if(C.isKid()){var due=dueList(id,[u.k]).map(qById).filter(function(q){return q&&q.lk===lk});shuf(due).slice(0,3).forEach(function(q){pick.push(q)})}
-  shuf(pool).forEach(function(q){if(pick.length<N&&pick.indexOf(q)<0)pick.push(q)});return shuf(pick)}
+  var mastered=C.isKid()&&lessonStar(id,lk)>=2,advanced=shuf(pool.filter(function(q){return q.scene}));advanced.slice(0,mastered?4:2).forEach(function(q){if(pick.length<N&&pick.indexOf(q)<0)pick.push(q)});shuf(pool).forEach(function(q){if(pick.length<N&&pick.indexOf(q)<0)pick.push(q)});return pick.sort(function(a,b){return (a.level||(a.t==='mc'||a.t==='tf'?1:2))-(b.level||(b.t==='mc'||b.t==='tf'?1:2))})}
 function review(){var id=C.who(),g=C.isKid()?mapGrade(id):3,units=MAP[g].units.filter(function(u){return u.ls.length&&openState(id,u)!=='lock'}),uk=units.map(function(u){return u.k});
   var due=C.isKid()?dueList(id,uk).map(qById).filter(Boolean):[],pick=shuf(due).slice(0,8),extra=[];
   units.forEach(function(u){u.ls.forEach(function(l){(BANK[l[0]]||[]).forEach(function(q){extra.push(q)})})});
@@ -1015,15 +1016,15 @@ function play(u,lk,qs,opt){var id=C.who(),B=(opt&&opt.host)||C.body(),i=0,right=
   function lion(k){return '<img src="'+img(k)+'" alt="">'}
   function next(){if(i>=qs.length)return opt?opt.onEnd(right,qs.length,pts):result();cur=qs[i];if(!opt)C.prog((i+1)+' / '+qs.length);
     var q=cur,h='<div class="soc soc-q'+(q.p?' haspic':'')+'"><div class="soc-bar"><i style="width:'+(i/qs.length*100)+'%"></i></div>';
-    h+='<div class="soc-ask">'+(opt&&opt.npc?'<img class="npc" src="'+img(opt.npc)+'" alt="">':lion('lion_think'))+'<div class="bub">'+(opt&&opt.who?'<b class="who">'+esc(opt.who)+'</b>':'')+'<span class="ty">'+TY[q.t]+'</span><br>'+esc(q.q)+'</div></div>'+(q.p?'<div class="soc-qpic"><img src="'+img(q.p)+'" alt=""></div>':'')+'<div class="soc-area"></div><div class="soc-out"></div></div>';
-    B.innerHTML=h;var A=B.querySelector('.soc-area');
+    h+='<div class="soc-ask">'+(opt&&opt.npc?'<img class="npc" src="'+img(opt.npc)+'" alt="">':lion('lion_think'))+'<div class="bub">'+(opt&&opt.who?'<b class="who">'+esc(opt.who)+'</b>':'')+'<span class="a23-level">'+['','觀念熱身','情境應用','推理挑戰'][q.level||(q.t==='mc'||q.t==='tf'?1:2)]+'</span><span class="ty">'+TY[q.t]+'</span><br>'+esc(q.q)+'</div></div>'+(q.p?'<div class="soc-qpic"><img src="'+img(q.p)+'" alt=""></div>':'')+'<div class="soc-area"></div><div class="soc-out"></div></div>';
+    B.innerHTML=h;var A=B.querySelector('.soc-area');if(q.scene){var sc=q.scene;A.insertAdjacentHTML('beforebegin','<div class="a23-social-scene"><img src="'+img(sc.image)+'" alt=""><div><small>你來決定下一步</small><strong>'+esc(sc.title)+'</strong><p>'+esc(sc.before)+'</p></div></div>')}
     ({mc:mc,mi:mi,tf:tf,sort:sort,ord:ord,pair:pair,shop:shop})[q.t](q,A);
   }
   function done(ok,bonus){var q=cur;if(ok){right++;var n=(bonus?2:1)*(u.ex?2:1);pts+=n*10;if(C.isKid())C.award(n)}
     if(C.isKid())markQ(id,q,ok);C.sfx(ok?'ok':'no');
     var L=B.querySelector('.soc-ask img');if(L&&!opt)L.src=img(ok?'lion_happy':'lion_sad');
     var ans='';if(q.t==='mi'&&CAP[q.a])ans='答案是「'+CAP[q.a]+'」。';if(!ok){if(q.t==='mc')ans='答案是「'+q.a+'」。';else if(q.t==='tf')ans='答案是「'+(q.a?'對':'錯')+'」。'}
-    var O=B.querySelector('.soc-out');O.innerHTML='<div class="soc-fb '+(ok?'ok':'no')+'">'+lion(ok?'lion_cheer':'lion_sad')+'<div><b>'+(ok?['答對了！','好厲害！','完全正確！','你真棒！'][i%4]:'沒關係，記起來就好！')+'</b><p>'+esc(ans+(q.e||''))+'</p></div></div><button class="soc-next">'+(i+1>=qs.length?(opt?'好！':'看結果'):'下一題')+'</button>';
+    var scene=B.querySelector('.a23-social-scene');if(scene){scene.classList.toggle('is-done',ok);scene.querySelector('p').textContent=ok?q.scene.after:'看看解說，想一想怎樣做會更合適。'}var O=B.querySelector('.soc-out');O.innerHTML='<div class="soc-fb '+(ok?'ok':'no')+'">'+lion(ok?'lion_cheer':'lion_sad')+'<div><b>'+(ok?['答對了！','好厲害！','完全正確！','你真棒！'][i%4]:'沒關係，記起來就好！')+'</b><p>'+esc(ans+(q.e||''))+'</p></div></div><button class="soc-next">'+(i+1>=qs.length?(opt?'好！':'看結果'):'下一題')+'</button>';
     O.querySelector('.soc-next').addEventListener('click',function(){C.sfx('tap');i++;next()});
     try{O.scrollIntoView({behavior:'smooth',block:'nearest'})}catch(e){}
     C.say(ok?'答對了！':'再想一想，下次就會了！',ok?'happy':'oops');

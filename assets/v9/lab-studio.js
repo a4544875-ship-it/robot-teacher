@@ -40,7 +40,7 @@ if(id==='sun')controls=select('太陽所在方位','a',['東','西','南','北']
 if(id==='time')controls=range('單擺長度','a',15,100,45,' cm');
 return '<section class="n2-lab"><div><small>先動手觀察</small><h3>'+st.icon+' 研究工作台</h3><p>模型是概念示意，非精密實驗或真實天文預報。</p>'+controls+'</div><div><div id="n2LabVisual"></div><p id="n2LabInfo" role="status">'+info+'</p></div></section>'}
 function updateLab(root,st){let get=k=>Number(root.querySelector('[data-lab="'+k+'"]')?.value||0),a=get('a'),b=get('b'),v='',info='';root.querySelectorAll('[data-lab]').forEach(e=>{let out=root.querySelector('[data-out="'+e.dataset.lab+'"]');if(out)out.textContent=e.value});switch(st.id){
-case'magnet':v=svg('<rect x="90" y="85" width="90" height="60" rx="12" fill="#d76a69"/>'+text(135,123,'N',28,'white')+'<rect x="180" y="85" width="90" height="60" rx="12" fill="#629bbd"/>'+text(225,123,'S',28,'white')+'<rect x="295" y="40" width="18" height="160" fill="'+['#ebd9b6','#7cc5dd','#a1cbbc'][b]+'"/>'+text(300,230,['紙張','水','塑膠'][b],16)+'<path d="M'+(315+a*18)+' 110v55m-12-55h24" stroke="#6c7b86" stroke-width="7"/>'+text(440,50,'距離 '+a+' 格',20),'磁力距離示意');info='紙、水和塑膠不會直接讓磁力消失；距離增加通常會使吸引效果減弱。是否移動還受摩擦等影響。';break;
+case'magnet':v=window.Adventure23.magnet(a,['紙張','清水','塑膠板'][b],false);info='紙、水和塑膠不會直接讓磁力消失；距離增加通常會使吸引效果減弱。是否移動還受摩擦等影響。';break;
 case'circuit':{let wire='fill="none" stroke="#638f99" stroke-width="5"',g='<path d="M100 150V55H500V220H100V195" '+wire+'/>';
 if(a)g+='<path d="M100 125H500" '+wire+'/>';
 let lamps=a?[[300,55,true],[300,125,b===0]]:[[240,55,b===0],[400,55,b===0]];

@@ -26,6 +26,7 @@
     var ST=parse(window.LAB_BANK_TEXT),STK={};ST.forEach(function(s){STK[s.k]=s});
     /* 各年級題庫：2＝二年級、3＝三年級、4＝四年級以上；進度用「站@年級」分開記錄 */
     var BK={3:STK};[[2,window.LAB_BANK_TEXT_G2],[4,window.LAB_BANK_TEXT_G4]].forEach(function(x){var m={};parse(x[1]).forEach(function(s){m[s.k]=s});if(Object.keys(m).length===ST.length)BK[x[0]]=m});
+    if(window.Adventure23Questions)[2,3,4].forEach(function(grade){var st=BK[grade]&&BK[grade].mag2;if(st)window.Adventure23Questions.magnet(grade).forEach(function(q){st.q[q.level].push(q)})});
     function G(){var e=C.egrade();return e==='二'?2:e==='三'?3:4}
     function GN(){var g=G();return g===2?'二年級':g===3?'三年級':'四年級以上'}
     function SK(key){return (BK[G()]||STK)[key]||SK(key)}
@@ -51,6 +52,7 @@
 
     /* ===================== 圖：溫度計／長條圖／折線圖／月相／影子／電路 ===================== */
     var VIS={
+      magnet:function(){return window.Adventure23.magnet(3,'',true)},
       th:function(a){var v=+a[0],y=function(t){return 240-t*4.2},tk='';
         for(var t=0;t<=50;t++){var big=t%10===0,mid=t%5===0;tk+='<line x1="70" x2="'+(big?86:mid?81:77)+'" y1="'+y(t)+'" y2="'+y(t)+'" stroke="#35505e" stroke-width="'+(big?2:1)+'"/>';if(big)tk+='<text x="92" y="'+(y(t)+5)+'" font-size="14" font-weight="700" fill="#24404d">'+t+'</text>'}
         return '<svg class="lb-svg lb-th" viewBox="0 0 130 300" role="img" aria-label="溫度計"><rect x="50" y="18" width="20" height="245" rx="10" fill="#f4fbfd" stroke="#8fb3c0" stroke-width="2"/><rect x="56" y="'+y(v)+'" width="8" height="'+(262-y(v))+'" fill="#e5484d"/><circle cx="60" cy="268" r="17" fill="#e5484d" stroke="#8fb3c0" stroke-width="2"/>'+tk+'<text x="104" y="16" font-size="13" fill="#24404d">°C</text></svg>'},
@@ -148,7 +150,7 @@
       var it=g.queue[g.i],q=it.q,firstCount=g.queue.filter(function(x){return !x.retry}).length,num=it.retry?'再挑戰':((g.i+1)+' / '+firstCount);
       var h='<div class="lb-top"><button class="lb-back" data-act="quit">← 存檔離開</button><button class="lb-back" data-act="pause">Ⅱ 暫停</button><span class="lb-chip">'+g.s.ico+' '+esc(g.s.lv[g.lv][0])+'</span><span class="lb-chip lb-time">⏱ <b id="lbTime">'+fmt(g.elapsed)+'</b></span></div>'+
         '<div class="lb-q"><div class="lb-qhead"><span>'+(it.retry?'🔁 ':'題目 ')+num+'</span><span>✦ 首次答對 '+g.first+'</span></div><div class="lb-prog"><i style="width:'+Math.min(100,g.i/g.queue.length*100)+'%"></i></div>'+
-        '<h2 class="lb-qt"><span id="lbQText">'+esc(q.q)+'</span> <button class="lb-say" data-act="say" aria-label="唸題目">🔊</button></h2>'+visual(q.v)+'<div id="lbTask"></div><div id="lbFeed" role="status" aria-live="polite"></div></div>';
+        '<h2 class="lb-qt"><span id="lbQText">'+esc(q.q)+'</span> <button class="lb-say" data-act="say" aria-label="唸題目">🔊</button></h2>'+visual(g.key==='mag2'&&(!q.v||q.v.indexOf('emo:')===0)?'magnet:neutral':q.v)+'<div id="lbTask"></div><div id="lbFeed" role="status" aria-live="polite"></div></div>';
       h='<div class="lb-play-banner" style="background-image:linear-gradient(90deg,#103849dd,#10384944),url('+art(g.s)+')"><small>'+esc(g.mode?'複習研究':'新題探索')+'</small><h2>'+esc(g.s.zh)+'</h2><span id="lbStarTime">首次全對＋限時完成＝三星</span><div class="lb-checkpoints">'+g.queue.filter(function(x){return !x.retry}).map(function(_,i){return '<i class="'+(i<g.i?'done':'')+'">'+(i+1)+'</i>'}).join('')+'</div></div>'+h+'<div class="lb-pause" id="lbPause" hidden><h2>研究暫停中</h2><p>題目已遮住，計時暫停，進度已保存。</p><button class="lb-go" data-act="resume">繼續研究</button></div>';frame(h,'lb-play');on($('[data-act="pause"]'),'click',function(){pause(g,true)});on($('[data-act="resume"]'),'click',function(){pause(g,false)});
       on($('[data-act="quit"]'),'click',function(){C.sfx('tap');station(g.key)});
       on($('[data-act="say"]'),'click',function(){talk($('#lbQText').textContent)});

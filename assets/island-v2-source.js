@@ -23,11 +23,11 @@ var V2=(function(){
   function stop(){serial++;if(active){active.done=true;active=null}try{window.speechSynthesis.cancel()}catch(e){}}
   function companion(m){return m.id==='v2post'?'owl':m.id==='v2fraction'?'fox':m.id==='v2clock'?'robot':'frog'}
   function world(s,body){
-    s.root=gBody;gBody.innerHTML='<section class="v2world" style="background-image:url('+PATH+s.meta.bg+'.webp)"><div class="v2hud"><span>'+s.meta.ico+' '+esc(s.meta.zh)+' · '+egrade+'年級</span><button id="v2Leave" aria-label="離開新版遊戲">← '+(s.meta.station?'回小島':'回選單')+'</button></div><div class="v2glass">'+body+'</div></section>';
+    s.root=gBody;gBody.innerHTML='<section class="v2world'+(s.meta.id==='swind'?' a23-science':'')+'" style="background-image:url('+PATH+s.meta.bg+'.webp)"><div class="v2hud"><span>'+s.meta.ico+' '+esc(s.meta.zh)+' · '+egrade+'年級</span><button id="v2Leave" aria-label="離開新版遊戲">← '+(s.meta.station?'回小島':'回選單')+'</button></div><div class="v2glass">'+body+'</div></section>';
     bind(el('#v2Leave'),'click',function(){var m=s.meta;stop();if(m.station)station(m);else backGameHome()});
   }
   function start(m,level){
-    cleanupGame();shell(m.zh);Music.play(m.sub==='sci'?'garden':m.sub==='math'?'math':'lobby');Learn.round0();
+    cleanupGame();shell(m.zh);Music.play(m.sub==='sci'?'sci':m.sub==='math'?'math':'en');Learn.round0();
     var s={meta:m,level:level||0,kid:who,token:++serial,index:0,total:m.station?5:8,right:0,wrong:0,first:0,tries:0,streak:0,bestCombo:0,done:false,review:[],seen:[],grade:EGRADES.indexOf(egrade)+2,started:Date.now()};active=s;
     world(s,'<div class="v2intro"><img class="v2companion" src="'+PATH+companion(m)+'.webp" alt="探險夥伴"><span class="v2badge">'+(m.station?'第 '+(s.level+1)+' 關 · '+esc(m.levels[s.level][0]):'全新互動冒險')+'</span><h2>'+esc(m.zh)+'</h2><p>'+esc(m.d)+'</p><ul><li>每次挑戰 '+s.total+' 個任務，沒有倒數壓力。</li><li>答錯會有提示，可以再試；第一次答對比例決定星星。</li><li>做對任務 +10 分，完成後顯示學習摘要。</li></ul><button class="v2action" id="v2Begin">開始探險 ✦</button></div>');
     bind(el('#v2Begin'),'click',function(){if(alive(s)){sfx('tap');next(s)}});say('準備好了嗎？這次一起探索「'+m.zh+'」！','happy');
@@ -35,6 +35,7 @@ var V2=(function(){
   function station(m){
     cleanupGame();shell(m.zh);var r=isKid()?scRow(who,m.station):[0,0,0,0];
     gBody.innerHTML='<section class="v2station"><div class="v2station-head" style="background-image:linear-gradient(transparent,#152c47bb),url('+PATH+m.bg+'.webp)"><span>'+m.ico+' 自然探索</span><h2>'+esc(m.zh)+'</h2><p>'+esc(m.d)+'</p></div><span class="v2badge">'+(r[3]?'✅ 已收集印章':'三關完成，收集自然印章與 5 💧')+'</span>'+m.levels.map(function(l,i){var open=i===0||r[i-1]>0;return '<button class="v2level" data-v2-level="'+i+'"'+(open?'':' disabled')+'><b>'+(open?i+1:'🔒')+'</b><span><strong>'+esc(l[0])+'</strong><small>'+esc(open?l[1]:'先完成前一關')+'</small></span><i class="v2stars">'+'★'.repeat(r[i])+'☆'.repeat(3-r[i])+'</i></button>'}).join('')+'<p class="v2hint">二年級可當生活課程探索；高年級是基礎複習與延伸。這些活動不代表完整年級課綱。</p></section>';
+    var sxw=document.createElement('div');sxw.className='sxwrap';sxw.innerHTML=sxBtn(m.station,!!(r[0]&&r[1]&&r[2]));var vs=gBody.querySelector('.v2station');if(vs)vs.appendChild(sxw);sxBind(gBody,m.station,function(){station(m)});
     gBody.querySelectorAll('[data-v2-level]').forEach(function(b){bind(b,'click',function(){start(m,+b.dataset.v2Level)})});say('選一關，開始做小小研究員！','happy');
   }
   function frame(s,q){
@@ -71,16 +72,16 @@ var V2=(function(){
   function clockSVG(h,m){var a=(h%12+m/60)*30,b=m*6;var nums='';for(var i=1;i<=12;i++){var rad=(i*30-90)*Math.PI/180;nums+='<text x="'+(140+98*Math.cos(rad))+'" y="'+(148+98*Math.sin(rad))+'" text-anchor="middle" fill="#253753" font-size="19" font-weight="700">'+i+'</text>'}
     return '<svg class="v2clock" viewBox="0 0 280 280" role="img" aria-label="時鐘顯示 '+h+' 點 '+m+' 分"><circle cx="140" cy="140" r="131" fill="#e6bd77"/><circle cx="140" cy="140" r="120" fill="#fffcf1" stroke="#aecfc8" stroke-width="4"/>'+nums+'<line x1="140" y1="140" x2="140" y2="79" stroke="#253753" stroke-width="10" stroke-linecap="round" transform="rotate('+a+' 140 140)"/><line x1="140" y1="140" x2="140" y2="47" stroke="#079e93" stroke-width="6" stroke-linecap="round" transform="rotate('+b+' 140 140)"/><circle cx="140" cy="140" r="10" fill="#ffbd54" stroke="#253753" stroke-width="3"/></svg>';
   }
-  function windSVG(speed){return '<svg class="v2windmill" viewBox="0 0 150 170" role="img" aria-label="風車模型"><path d="M58 158l7-95h20l7 95" fill="#d7b580" stroke="#5e6f74" stroke-width="3"/><rect x="69" y="135" width="13" height="23" rx="6" fill="#538c8b"/><g class="v2blades" style="--speed:'+(speed?Math.max(.3,4/speed):1000)+'s;'+(!speed?'animation-play-state:paused;':'')+'">'+[0,90,180,270].map(function(a){return '<path d="M75 64L66 16Q72 2 89 10L81 64Z" fill="#e7f7f0" stroke="#498981" stroke-width="3" transform="rotate('+a+' 75 64)"/>'}).join('')+'</g><circle cx="75" cy="64" r="8" fill="#ffc762"/></svg>'}
+  function windSVG(speed){return window.Adventure23.windScene(speed)}
   function soundVisual(amp,rate){return '<div class="v2soundwave" role="img" aria-label="振動示意，非實際聲波測量" style="--amp:'+amp+'px;--rate:'+rate+'s">'+Array.from({length:16},function(_,i){return '<i style="--i:'+i+'"></i>'}).join('')+'</div>'}
-  function make(s){var m=s.meta,g=s.grade,i=s.index,lv=s.level;
+  function make(s){var m=s.meta,g=s.grade,i=s.index,lv=s.level,csub=m.station?null:m.id==='v2post'?'e':m.sub==='math'?'m':null,CL=csub&&isKid()&&PGX&&PGX.chal?PGX.chal(who,csub):0;g=Math.min(6,g+CL);/* 挑戰等級越高，題目照高年級出 */
     if(m.id==='v2post'){
-      var list=Learn.boost(poolW(),false),remaining=list.filter(function(w){return s.seen.indexOf(w[0])<0}),w=Learn.pick(remaining.length?remaining:list);s.seen.push(w[0]);var stage=g>=3&&i%2===1?'spell':'delivery';
+      var list=Learn.boost(poolW(),false),remaining=list.filter(function(w){return s.seen.indexOf(w[0])<0}),w=Learn.pick(remaining.length?remaining:list);s.seen.push(w[0]);var stage=g>=3&&(CL>=2?i%3!==0:i%2===1)?'spell':'delivery';
       if(stage==='spell')return {kind:'spell',title:'包裹標籤掉了！拼出「'+w[2]+'」。',hint:'點字母放到標籤上；點已放的字母可以收回。',word:w,why:w[0]+' 的意思是「'+w[2]+'」。'};
       return {kind:'delivery',title:'聽聽看，飛船要送哪個包裹？',hint:'按「聽單字」可重聽。需要時也能顯示單字。',word:w,opts:[{label:w[2],icon:w[1],ok:true}].concat(others(w,3).map(function(x){return {label:x[2],icon:x[1],ok:false}})),why:w[0]+' 的意思是「'+w[2]+'」。'};
     }
     if(m.id==='v2fraction'){
-      var den=pick(g<=2?[2,3,4]:g===3?[3,4,6,8]:[4,6,8,10,12]),num=g===2?1:1+rand(den-1),title='把派分成 '+den+' 等份，送出 '+num+'/'+den+' 個派。',why='一個派平均分成 '+den+' 份，每份是 1/'+den+'；'+num+' 份就是 '+num+'/'+den+'。';
+      var den=pick(g<=2?[2,3,4]:g===3?[3,4,6,8]:g===4?[4,6,8,10,12]:[6,8,10,12,16]),num=g===2?1:1+rand(den-1),title='把派分成 '+den+' 等份，送出 '+num+'/'+den+' 個派。',why='一個派平均分成 '+den+' 份，每份是 1/'+den+'；'+num+' 份就是 '+num+'/'+den+'。';
       if(g>=3&&i%3===1){var a=1+rand(den-2),b=1+rand(den-a);num=a+b;title='先送 '+a+'/'+den+'，再送 '+b+'/'+den+'，一共要幾片？';why='分母相同，每片大小相同，分子相加：'+a+'/'+den+' + '+b+'/'+den+' = '+num+'/'+den+'。'}
       if(g>=4&&i%3===2){var from=2+rand(den-1),take=1+rand(from-1);num=from-take;title='有 '+from+'/'+den+' 個派，吃掉 '+take+'/'+den+'，留下幾片？';why='分母不變，分子相減：'+from+'/'+den+' − '+take+'/'+den+' = '+num+'/'+den+'。'}
       if(g>=5&&i%2===1){var pair=pick([[2,3,6],[3,4,12],[2,5,10],[3,6,6],[4,6,12]]);den=pair[2];var left=den/pair[0],right=den/pair[1];num=left+right;title='客人要 1/'+pair[0]+' + 1/'+pair[1]+' 個派，請用 '+den+' 等份的派表示。';why='先通分：1/'+pair[0]+' = '+left+'/'+den+'，1/'+pair[1]+' = '+right+'/'+den+'，相加是 '+num+'/'+den+'。'}
@@ -94,7 +95,7 @@ var V2=(function(){
     }
     if(m.id==='smoon')return moonQuestion(lv,i,g);
     if(m.id==='ssound')return soundQuestion(lv,i,g);
-    if(m.id==='swind')return windQuestion(lv,i,g);
+    if(m.id==='swind'){if(!s.windPlan)s.windPlan={force:mix([0,1,2,3]),dirs:mix([0,1,2,3]),offset:rand(8)};return windQuestion(lv,i,g,s.windPlan)}
     if(m.id==='sweather')return weatherQuestion(lv,i,g);
     if(m.id==='sinsect')return insectQuestion(lv,i,g);
   }
@@ -108,11 +109,7 @@ var V2=(function(){
     if(lv===0){var bank=[['敲一下鼓，聲音主要怎麼產生？','鼓面振動',['鼓面變色','鼓面發光'],'物體振動可以產生聲音。用手輕觸正在響的鼓面，可感受振動。'],['輕輕按住正在響的音叉，聲音通常如何？','變小或停止',['變得更高','一定變大'],'按住音叉會讓振動減弱，聲音也會減弱或停止。'],['聲音能透過什麼傳到耳朵？','空氣等介質',['只有光線','只有顏色'],'聲音需要介質傳播，例如空氣、水與固體。'],['輕敲與重敲同一面鼓，通常哪個較大聲？','重敲',['輕敲','永遠一樣'],'在其他條件相同時，較大的振動幅度通常產生較大的音量。'],['想保護耳朵，應該怎麼做？','避免長時間聽過大音量',['把耳機一直開到最大','靠近非常大的聲音'],'避免過大音量，適度休息，也不要貼近發出巨大聲音的物體。']];var b=bank[i%5];return choices(b[0],b[1],b[2],b[3],soundVisual(55,.65),'v2:sound:basic:'+i)}
     var target=pick([1,2,3]);return {kind:'sound',title:lv===1?'把音量模型調成「'+['','小聲','中等','大聲'][target]+'」。':'把音高模型調成「'+['','低音','中音','高音'][target]+'」。',hint:lv===1?'操作「振動幅度」，觀察示意的振動大小。':'操作「振動快慢」，觀察示意變化。',axis:lv===1?'amplitude':'frequency',target:target,why:lv===1?'在其他條件相同時，振動幅度越大，音量通常越大。音量和音高是不同的概念。':'振動越快，頻率越高，音高越高；這不代表音量一定越大。',key:'v2:sound:'+lv+':'+target};
   }
-  function windQuestion(lv,i,g){
-    if(lv===0){var target=pick([0,1,2,3]);return {kind:'wind',title:'讓風車呈現「'+['停止','慢慢轉','中速轉','快速轉'][target]+'」。',hint:'改變風力模型，觀察同一座風車的轉動。',target:target,why:'在同一座風車、同樣方向與距離的簡化模型中，風越強，風車轉得越快；沒有風時停止。真實轉速還受葉片與摩擦等條件影響。',key:'v2:wind:force:'+target}}
-    if(lv===1){var dirs=['北','東','南','西'],d=pick(dirs),other=dirs.filter(function(x){return x!==d});return choices('「'+d+'風」是從哪個方向吹來？',d+'方',other.map(function(x){return x+'方'}),'風向用「風從哪裡來」命名；'+d+'風就是從'+d+'方吹來。風向標箭頭通常指向風的來向。','<div class="v2weather">🧭</div>','v2:wind:direction:'+d)}
-    var bank=[['比較葉片大小對轉速的影響，應改變什麼？','只改葉片大小',['同時改風力和葉片','每次換不同風扇'],'公平比較要一次只改一個條件，其餘條件盡量相同。'],['比較不同風力，哪個條件要固定？','同一座風車與相同距離',['每次都換葉片','每次換不同位置'],'比較風力時，風車、方向、距離等其他條件要盡量固定。'],['看不到空氣，可以怎樣知道它在流動？','觀察旗子或風車的變化',['看牆壁的顏色','聽自己的心跳'],'可以從旗子、風車等物體的反應觀察空氣流動。'],['想讓比較更可靠，應該怎麼做？','重複測量並記錄',['只挑喜歡的一次','測完不記錄'],'多次測量並記錄，有助於降低偶然因素的影響。'],['做風車實驗，哪個行為安全？','手指遠離轉動的葉片',['伸手碰高速葉片','拆開插電中的風扇'],'操作風扇或風車時，手指要遠離轉動部位；電器由大人協助。']];var b=bank[i%5];return choices(b[0],b[1],b[2],b[3],windSVG(2),'v2:wind:fair:'+i);
-  }
+  function windQuestion(lv,i,g,plan){return window.Adventure23.windQuestions(lv,i,g,windSVG,choices,Math.random,plan)}
   function weatherQuestion(lv,i,g){
     if(lv===0){var bank=[['要量氣溫，使用哪種工具？','溫度計',['雨量筒','指南針'],'溫度計測量溫度；雨量筒測量降雨量，指南針指示方向。','🌡️'],['要記錄下了多少雨，使用哪種工具？','雨量筒',['時鐘','放大鏡'],'雨量筒收集並測量降雨量；同樣的觀測方法才能公平比較。','🌧️'],['記錄天氣時，哪項資料有幫助？','日期、時間、氣溫與天氣',['只寫自己的名字','只寫喜歡的顏色'],'日期、時間與觀測項目是比較天氣的重要紀錄。','📔'],['雷雨時，哪個做法安全？','到安全室內避雨',['站在大樹下','留在空曠操場'],'雷雨時到安全室內，不躲在孤立大樹下，也避開空曠地。','⛈️'],['要量空氣溫度，哪種位置較合適？','通風且避免陽光直射',['貼在發熱電器旁','放在太陽直射處'],'避免陽光直射與熱源干擾，才能較接近要測量的空氣溫度。','🌡️']];var b=bank[i%5];return choices(b[0],b[1],b[2],b[3],'<div class="v2weather">'+b[4]+'</div>','v2:weather:tools:'+i)}
     if(lv===1){var temp=pick([16,20,24,28,32]);return choices('看溫度計，氣溫是多少？','攝氏 '+temp+' 度',['攝氏 '+(temp+4)+' 度','攝氏 '+(temp-4)+' 度'],'°C 是攝氏溫度符號。這次的讀數是攝氏 '+temp+' 度。','<svg viewBox="0 0 160 180" width="160" role="img" aria-label="攝氏 '+temp+' 度"><rect x="54" y="12" width="30" height="124" rx="15" fill="#fff" stroke="#597d8a" stroke-width="3"/><rect x="63" y="'+(120-temp*2)+'" width="12" height="'+(temp*2)+'" rx="6" fill="#f4846b"/><circle cx="69" cy="143" r="23" fill="#f4846b" stroke="#597d8a" stroke-width="3"/>'+[0,10,20,30,40,50].map(function(v){return '<path d="M88 '+(120-v*2)+'h8" stroke="#597d8a" stroke-width="2"/><text x="104" y="'+(125-v*2)+'" fill="#253753" font-size="14">'+v+'</text>'}).join('')+'<text x="102" y="155" fill="#253753" font-size="16">°C</text></svg>','v2:weather:temperature:'+temp)}
@@ -164,7 +161,7 @@ var V2=(function(){
     if(!alive(s))return;var acc=s.first/s.total,stars=acc>=.9?3:acc>=.7?2:acc>=.6?1:0,passed=stars>0,stamp=false,dew=0;
     if(passed){give(3);if(stars===3)give(2)}
     if(s.meta.station&&isKid()){
-      Store.mut(who,function(k){var sc=k.sc||(k.sc={}),r=Array.isArray(sc[s.meta.station])?sc[s.meta.station].slice(0,4):[0,0,0,0];while(r.length<4)r.push(0);r[s.level]=Math.max(+r[s.level]||0,stars);if(r[0]&&r[1]&&r[2]&&!r[3]){r[3]=1;stamp=true;k.water=(k.water||0)+5;dew=5}sc[s.meta.station]=r});
+      Store.mut(who,function(k){var sc=k.sc||(k.sc={}),r=scRow(who,s.meta.station).slice(0,4);while(r.length<4)r.push(0);r[s.level]=Math.max(+r[s.level]||0,stars);if(r[0]&&r[1]&&r[2]&&!r[3]){r[3]=1;stamp=true;k.water=(k.water||0)+5;dew=5}sc[scKey(s.meta.station)]=r});
       if(stamp)give(10);if(stars)Learn.star(stars);
       var old=scLevel(subPts(Store.kid(who),'sci')-roundPts).i,current=scLevel(subPts(Store.kid(who),'sci')).i;
       Store.mut(who,function(k){var before=typeof k.scl==='number'?k.scl:old;if(current>before){k.water=(k.water||0)+(current-before)*3;dew+=(current-before)*3}k.scl=Math.max(before,current)});
@@ -190,7 +187,7 @@ var V2=(function(){
       ids.forEach(function(id){var k=Store.kid(id);Object.keys(META).forEach(function(gid){var b=k.byGame[gid];if(b&&b.v2)rows.push({id:id,m:META[gid],v:b.v2})})});rows.sort(function(a,b){return b.v.updated-a.v.updated});if(!rows.length)return;
       box.innerHTML='<h3>📔 新冒險學習摘要</h3>'+rows.slice(0,12).map(function(r){return '<div class="v2record"><strong>'+esc(kidOf(r.id).short)+' · '+r.m.ico+' '+esc(r.m.zh)+'</strong><p>'+esc(r.v.grade||'')+'年級 · 首次答對 '+r.v.first+'/'+r.v.total+' · 重試 '+(r.v.wrong||0)+' 次 · 最高 '+r.v.stars+' 星</p>'+(r.v.review||[]).map(function(t){return '<p>💡 '+esc(t)+'</p>'}).join('')+'<small>'+new Date(r.v.updated).toLocaleString('zh-TW')+'</small></div>'}).join('');PANELS.rec.prepend(box);
     };
-    var book0=renderBook;renderBook=function(){book0();if(!bookEl||!bookId)return;var k=Store.kid(bookId),rows=[];Object.keys(META).forEach(function(id){var b=k.byGame[id];if(b&&b.v2&&b.v2.review&&b.v2.review.length)rows.push({m:META[id],review:b.v2.review})});if(!rows.length)return;var section=document.createElement('section');section.className='v2records';section.innerHTML='<h3>💡 新冒險複習提示</h3>'+rows.map(function(r){return '<div class="v2record"><strong>'+r.m.ico+' '+esc(r.m.zh)+'</strong>'+r.review.map(function(t){return '<p>'+esc(t)+'</p>'}).join('')+'</div>'}).join('');var target=bookEl.querySelector('.in');if(target)target.appendChild(section)};
+    var book0=renderBook;renderBook=function(){book0();if(!bookEl||!bookId)return;var k=Store.kid(bookId),rows=[];Object.keys(META).forEach(function(id){var b=k.byGame[id];if(b&&b.v2&&b.v2.review&&b.v2.review.length)rows.push({m:META[id],review:b.v2.review})});if(!rows.length)return;var section=document.createElement('section');section.className='v2records';section.innerHTML='<h3>💡 新冒險複習提示</h3>'+rows.map(function(r){return '<div class="v2record"><strong>'+r.m.ico+' '+esc(r.m.zh)+'</strong>'+r.review.map(function(t){return '<p>'+esc(t)+'</p>'}).join('')+'</div>'}).join('');var target=bookEl.querySelector('#bkReviewPane')||bookEl.querySelector('.in');if(target)target.appendChild(section)};
     window.MiracleIslandV2={version:'2.0.0',games:Object.keys(META),stop:stop};
   }
   install();return {stop:stop};

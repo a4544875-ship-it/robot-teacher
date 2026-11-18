@@ -69,8 +69,10 @@ function unlock(){if(unlocked)return;unlocked=true;try{var u=new SpeechSynthesis
 ['pointerdown','touchend','keydown','click'].forEach(function(ev){document.addEventListener(ev,unlock,{capture:true,passive:true})});
 document.addEventListener('visibilitychange',function(){if(!document.hidden)try{ss.resume()}catch(e){}});})();</script>
 <link rel="stylesheet" href="assets/expansion-v4.css?v=4.1.0">
-<script src="assets/velocity-v4.js?v=4.1.0"></script>
-<script src="assets/math-v4.js?v=4.2.0"></script>
+<script src="assets/v23/adventure.js?v=23.0.0"></script>
+<script src="assets/v23/questions.js?v=23.0.0"></script>
+<script src="assets/velocity-v4.js?v=23.0.0"></script>
+<script src="assets/math-v4.js?v=23.0.0"></script>
 <script src="assets/v21/music.js?v=21.0.0"></script>
 <link rel="stylesheet" href="assets/v8/family.css?v=8.3.1">
 <script src="assets/v8/family.js?v=8.3.1"></script>
@@ -78,14 +80,14 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v9/lab-bank.js?v=9.2.0"></script>
 <script src="assets/v9/lab-bank-g2.js?v=9.2.0"></script>
 <script src="assets/v9/lab-bank-g4.js?v=9.2.0"></script>
-<script src="assets/v9/lab-studio.js?v=9.1.0"></script>
-<script src="assets/v9/lab.js?v=9.3.0"></script>
+<script src="assets/v9/lab-studio.js?v=23.0.0"></script>
+<script src="assets/v9/lab.js?v=23.0.0"></script>
 <script src="assets/v10/progress.js?v=16.5.0"></script>
 <script src="assets/v11/esk.js?v=11.2.0"></script>
 <script src="assets/v12/tutor.js?v=12.0.1"></script>
 <script src="assets/v13/parent.js?v=16.4.0"></script>
 <script src="assets/v14/care.js?v=14.1.0"></script>
-<script src="assets/v15/social.js?v=16.3.0"></script>
+<script src="assets/v15/social.js?v=23.0.0"></script>
 <script src="assets/v15/adv.js?v=22.1.0"></script>
 <script src="assets/v15/town.js?v=16.2.0"></script>
 <script src="assets/v16/expert-sci.js?v=16.3.0"></script>
@@ -95,6 +97,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/v18/gate.js?v=18.3.0"></script>
 <script src="assets/mobile-magic/ui.js?v=4.4.0"></script>
 <script src="assets/habitat/scene.js?v=1.2.0"></script>
+<link rel="stylesheet" href="assets/v23/adventure.css?v=23.0.0">
 </head>
 <body>
 <title>機器人老師</title>
@@ -5076,6 +5079,7 @@ var OB=(function(){
     function(C){var R=C.R;mbVc(C,[0,1,2,3].map(function(j){var b=ri(R,2,9),a=ri(R,12,98);if(j===0)a=Math.floor(a/10)*10+ri(R,1,3);return {a:a,b:b,op:'×'}}),true)},
     function(C){var R=C.R;mbVc(C,[0,1,2,3].map(function(){return {a:ri(R,102,899),b:ri(R,2,9),op:'×'}}),false)}];
 
+/* ENGLISH_PREMIUM_V3_START */
 /* English Premium v3.0. Inserted within OB's closure; original physics and Net remain authoritative. */
 var V3_IMAGES={};
 function v3Image(src){if(!V3_IMAGES[src]){var im=new Image();im.src=src;V3_IMAGES[src]=im}return V3_IMAGES[src]}
@@ -5204,45 +5208,46 @@ var v3Menu0=menu;menu=function(g){v3Menu0(g);if(['tower','shoot','diner'].indexO
 };
 
 /* New restaurant orders: seeded generation, bounded quantities, unique food names. */
-function v3Order(R,b,index){
+function v3Order(R,b,index,startLevel){
+  var phase=Math.min(2,Math.floor(index/4)+(startLevel||0));
   function r(n){return Math.floor(R()*n)}
-  var foods=DN_IDS.filter(function(k){return k!=='ga'}),hot={burger:1,hotdog:1,pizza:1,fries:1,toast:1,egg:1},first=foods[r(foods.length)],need={},color=b>=3&&!!DN_F[first][4]&&index%3===1;
+  var foods=DN_IDS.filter(function(k){return k!=='ga'}),hot={burger:1,hotdog:1,pizza:1,fries:1,toast:1,egg:1},first=foods[r(foods.length)],need={},color=b>=3&&phase>0&&!!DN_F[first][4]&&index%3===1;
   if(color&&first==='ra'&&R()<.5)first='ga';
-  var quantity=b<=1?1:b<=2?1+r(2):1+r(3);if(DN_F[first][3])quantity=1;need[first]=quantity;
-  var items=[first];if(b>=3&&index%2===1){var second=foods.filter(function(k){return DN_F[k][0]!==DN_F[first][0]});second=second[r(second.length)];need[second]=DN_F[second][3]?1:b>=5?1+r(2):1;items.push(second)}
-  var service=b<=1?'dine':b===2?(index%3===2?'takeout':'dine'):['dine','takeout','delivery'][index%3];
+  var quantity=phase===0?1:b<=2?1+r(2):1+r(3);if(DN_F[first][3])quantity=1;need[first]=quantity;
+  var items=[first];if(phase===2||(b>=3&&phase>=1&&index%2===1)){var second=foods.filter(function(k){return DN_F[k][0]!==DN_F[first][0]});second=second[r(second.length)];need[second]=DN_F[second][3]?1:b>=5?1+r(2):1;items.push(second)}
+  var service=b<=1?'dine':b===2?(phase>0&&index%3===2?'takeout':'dine'):['dine','takeout','delivery'][index%3];
   var words=items.map(function(k){return dnNp(k,need[k],color&&k===first).en});
   var sentence=(b<=1?'A ':b>=4?'Could I have ':'I would like ')+words.join(' and ')+', please.';
-  if(b<=1)sentence=DN_F[first][0].charAt(0).toUpperCase()+DN_F[first][0].slice(1)+', please.';
+  if(b<=1){sentence=(phase===0?DN_F[first][0]:words.join(' and '));sentence=sentence.charAt(0).toUpperCase()+sentence.slice(1)+', please.';}
   sentence+=' '+({dine:'For here.',takeout:'To go.',delivery:'For delivery.'}[service]);
   var translated=items.map(function(k){return dnNp(k,need[k],color&&k===first).zh}).join('和')+'，'+({dine:'在這裡吃',takeout:'外帶',delivery:'外送'}[service])+'。';
-  return {id:index,need:need,words:items,en:sentence,zh:translated,service:service,hot:items.some(function(k){return !!hot[k]}),tray:[],cooked:false,cooking:0,chosenService:'',tries:0,age:0,delivered:false,color:color};
+  return {id:index,need:need,words:items,en:sentence,zh:translated,service:service,hot:items.some(function(k){return !!hot[k]}),tray:[],cooked:false,cooking:0,chosenService:'',tries:0,age:0,delivered:false,color:color,phase:phase};
 }
 var v3DinerClassic=IMPL.diner;
 IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o),b=X.b,vs=!!o.tok,N=12,TL=120;
   pad(g,o,function(a){
     var B=$('#pdB'),original=isKid()?Store.kid(who):{},dn0=+original.dn||0,queue=[],nextId=0,selected=0,served=0,correct=0,combo=0,bestCombo=0,tipTotal=0,busy=false,done=false,seen={},missed={},myF=isKid()?facOf(who):'',customers=['fox','bear','owl','panda','unicorn','eagle','dragon'],hintOpen=false;
     a.el.classList.add('v3-diner');$('#pdQ').hidden=true;
-    var maxTables=b<=1?2:3;
-    function fill(){while(queue.length<maxTables&&nextId<N){var order=v3Order(X.R,b,nextId++);order.customer=customers[order.id%customers.length];queue.push(order)}}
+    var maxTables=b<=1?2:3,startLevel=!vs&&isKid()&&PGX?PGX.chal(who,'e'):0;
+    function fill(){while(queue.length<maxTables&&nextId<N){var order=v3Order(X.R,b,nextId++,startLevel);order.customer=customers[order.id%customers.length];queue.push(order)}}
     function current(){return queue[selected]||queue[0]}
     function image(k){return DNP[k]||DNP.ra}
     function draw(){if(done)return;var q=current();if(!q)return end();hintOpen=false;B.classList.remove('v3-delivered');if(b<=1)q.chosenService='dine';
-      B.innerHTML='<section class="v3-restaurant"><div class="v3-diner-scene" style="background-image:linear-gradient(#122d4910,#122d4950),url(assets/adventure-diner.webp)"><div class="v3-shop-sign"><b>魔法星餐廳</b><span>主廚 '+esc(nm())+' · '+served+'/'+N+' 桌完成</span></div><div class="v3-tables">'+queue.map(function(order,j){return '<button class="v3-table '+(j===selected?'active':'')+'" data-table="'+j+'" aria-pressed="'+(j===selected)+'"><img src="'+image('c_'+order.customer)+'" alt="'+esc(DN_C[order.customer][0])+'"><b>第 '+(j+1)+' 桌</b><small>'+({dine:'🍽️',takeout:'🛍️',delivery:'🚲'}[order.service])+' '+(order.tray.length?'已配 '+order.tray.length+' 份':'等待點餐')+'</small><i><em style="width:'+Math.max(20,100-order.age)+'%"></em></i></button>'}).join('')+'</div><div class="v3-chef"><img src="assets/fox.webp" alt="狐狸主廚"><span>🔥 連續上對 '+combo+' 桌<br>✦ 小費 '+tipTotal+' 分</span></div></div>'+
-      '<div class="v3-order-ticket"><div><span>ORDER '+String(q.id+1).padStart(2,'0')+'</span><b>'+esc(DN_C[q.customer][0])+'</b></div><p lang="en">'+esc(q.en)+'</p><small id="v3OrderZh" hidden>'+esc(q.zh)+'</small><div class="v3-ticket-actions"><button id="v3DinerSpeak" aria-label="朗讀訂單">🔊 聽訂單</button><button id="v3DinerHint">💡 中文提示</button></div></div>'+
+      B.innerHTML='<section class="v3-restaurant"><div class="v3-diner-scene" style="background-image:linear-gradient(#122d4910,#122d4950),url(assets/adventure-diner.webp)"><div class="v3-shop-sign"><b>魔法星餐廳</b><span>主廚 '+esc(nm())+' · '+served+'/'+N+' 桌完成</span></div><div class="v3-tables">'+queue.map(function(order,j){return '<button class="v3-table '+(j===selected?'active':'')+'" data-table="'+j+'" aria-pressed="'+(j===selected)+'"><img src="'+image('c_'+order.customer)+'" alt="'+esc(DN_C[order.customer][0])+'"><b>第 '+(j+1)+' 桌</b><small>'+({dine:'🍽️',takeout:'🛍️',delivery:'🚲'}[order.service])+' '+(order.tray.length?'已配 '+order.tray.length+' 份':'等待餐點')+'</small><i><em style="width:'+Math.max(20,100-order.age)+'%"></em></i></button>'}).join('')+'</div><div class="v3-chef"><img src="assets/fox.webp" alt="狐狸主廚"><span>🔥 連續上對 '+combo+' 桌<br>✦ 小費 '+tipTotal+' 分</span></div></div>'+
+      '<div class="v3-order-ticket"><div><span class="a23-level">'+['認識餐點','份數與服務','組合訂單'][q.phase]+'</span><span>ORDER '+String(q.id+1).padStart(2,'0')+'</span><b>'+esc(DN_C[q.customer][0])+'</b></div><p lang="en">'+esc(q.en)+'</p><small id="v3OrderZh" hidden>'+esc(q.zh)+'</small><div class="v3-ticket-actions"><button id="v3DinerSpeak" aria-label="朗讀訂單">🔊 聽訂單</button><button id="v3DinerHint">💡 中文提示</button></div></div>'+
       '<div class="v3-kitchen-tabs"><b>① 配餐檯</b><span>點食物放入托盤，點托盤食物可收回</span></div><div class="v3-food-grid" id="v3FoodGrid"></div><div class="v3-tray" id="v3Tray" aria-label="配餐托盤"></div><div class="v3-prep"><button id="v3Cook" '+(!q.hot?'disabled':'')+'>'+(!q.hot?'這桌不用加熱':q.cooked?'✅ 熱食已完成':q.cooking?'🔥 製作中…':'② 製作熱食')+'</button><div class="v3-cook-meter"><i id="v3CookBar"></i></div></div>'+
-      '<div class="v3-service" aria-label="③ 選擇用餐方式">'+['dine','takeout','delivery'].map(function(k){return '<button data-service="'+k+'" aria-pressed="'+(q.chosenService===k)+'"'+(b<=1&&k!=='dine'?' hidden':'')+'>'+({dine:'🍽️ 內用',takeout:'🛍️ 外帶',delivery:'🚲 外送'}[k])+'</button>'}).join('')+'</div><button class="v3-serve" id="v3Serve">③ '+(q.service==='dine'?'上菜':'交付餐點')+' ✦</button><div class="v3-diner-feedback" id="v3DinerFeedback" role="status" aria-live="polite"></div></section>';
+      '<div class="v3-service" aria-label="③ 選擇用餐方式">'+['dine','takeout','delivery'].map(function(k){return '<button data-service="'+k+'" aria-pressed="'+(q.chosenService===k)+'"'+(b<=1&&k!=='dine'?' hidden':'')+'>'+({dine:'🍽️ 內用',takeout:'🛍️ 外帶',delivery:'🚲 外送'}[k])+'</button>'}).join('')+'</div><button class="v3-serve" id="v3Serve">④ '+(q.service==='dine'?'上菜':'交付餐點')+' ✦</button><div class="v3-diner-feedback" id="v3DinerFeedback" role="status" aria-live="polite"></div></section>';
       var tiles=q.words.slice();if(q.color&&q.words.indexOf('ra')>=0)tiles.push('ga');if(q.color&&q.words.indexOf('ga')>=0)tiles.push('ra');var distractors=X.sh(DN_IDS.filter(function(k){return tiles.indexOf(k)<0&&(q.color||k!=='ga')}));while(tiles.length<(b<=1?4:b<=2?6:8)&&distractors.length)tiles.push(distractors.shift());tiles=X.sh(tiles);
       $('#v3FoodGrid').innerHTML=tiles.map(function(k){return '<button data-food="'+k+'" aria-label="'+esc(DN_F[k][2])+'"><img src="'+image(k)+'" alt=""><span lang="en">'+esc(q.color&&DN_F[k][4]?DN_F[k][4]+' '+DN_F[k][0]:DN_F[k][0])+'</span></button>'}).join('');
       B.querySelectorAll('[data-table]').forEach(function(btn){btn.addEventListener('click',function(){if(busy||done)return;selected=+btn.dataset.table;sfx('tap');draw()})});
       B.querySelectorAll('[data-food]').forEach(function(btn){btn.addEventListener('click',function(){if(busy||done||q.cooking)return;if(q.tray.length>=7)return;q.tray.push(btn.dataset.food);q.cooked=false;q.cooking=0;sfx('tap');drawTray()})});
       B.querySelectorAll('[data-service]').forEach(function(btn){btn.addEventListener('click',function(){if(busy||done)return;q.chosenService=btn.dataset.service;B.querySelectorAll('[data-service]').forEach(function(x){x.setAttribute('aria-pressed',String(x===btn))});sfx('tap')})});
-      $('#v3DinerSpeak').addEventListener('click',function(){speak(q.en)});if(!q._said){q._said=1;setTimeout(function(){speak(q.en)},500)}$('#v3DinerHint').addEventListener('click',function(){hintOpen=true;$('#v3OrderZh').hidden=false});
+      $('#v3DinerSpeak').addEventListener('click',function(){speak(q.en)});if(!q._said){q._said=1;setTimeout(function(){if(A===a&&!done&&q===current())speak(q.en)},500)}$('#v3DinerHint').addEventListener('click',function(){hintOpen=true;$('#v3OrderZh').hidden=false});
       $('#v3Cook').addEventListener('click',function(){if(busy||done||q.cooked||q.cooking)return;if(!q.tray.length){feedback('先把食物放進托盤，再製作熱食。',false);return}q.cooking=.001;sfx('tap');$('#v3Cook').textContent='🔥 製作中…';$('#v3Cook').disabled=true});
       $('#v3Serve').addEventListener('click',serve);drawTray();drawCooking();if(b<=1)q.chosenService='dine';
     }
-    function drawTray(){var q=current();if(!q)return;var node=$('#v3Tray');node.innerHTML=q.tray.length?q.tray.map(function(k,j){return '<button data-remove="'+j+'" aria-label="收回 '+esc(DN_F[k][2])+'"><img src="'+image(k)+'" alt=""><small>×</small></button>'}).join(''):'<span>🍽️ 托盤還是空的</span>';node.querySelectorAll('[data-remove]').forEach(function(btn){btn.addEventListener('click',function(){if(busy||done||q.cooking)return;q.tray.splice(+btn.dataset.remove,1);q.cooked=false;sfx('tap');drawTray();drawCooking()})});drawCooking()}
-    function drawCooking(){var q=current(),bar=$('#v3CookBar'),button=$('#v3Cook');if(!q||!bar||!button)return;bar.style.width=(q.cooked?100:q.cooking?Math.min(100,q.cooking/1.5*100):0)+'%';button.disabled=!q.hot||q.cooked||q.cooking>0;button.textContent=!q.hot?'這桌不用加熱':q.cooked?'✅ 熱食已完成':q.cooking?'🔥 製作中…':'② 製作熱食'}
+    function drawTray(){var q=current();if(!q)return;var label=B.querySelector('[data-table="'+selected+'"] small');if(label)label.textContent=({dine:'🍽️',takeout:'🛍️',delivery:'🚲'}[q.service])+' '+(q.tray.length?'已配 '+q.tray.length+' 份':'等待餐點');var node=$('#v3Tray');node.innerHTML=q.tray.length?q.tray.map(function(k,j){return '<button data-remove="'+j+'" aria-label="收回 '+esc(DN_F[k][2])+'"><img src="'+image(k)+'" alt=""><small>×</small></button>'}).join(''):'<span>🍽️ 托盤還是空的</span>';node.querySelectorAll('[data-remove]').forEach(function(btn){btn.addEventListener('click',function(){if(busy||done||q.cooking)return;q.tray.splice(+btn.dataset.remove,1);q.cooked=false;sfx('tap');drawTray();drawCooking()})});drawCooking()}
+    function drawCooking(){var q=current(),bar=$('#v3CookBar'),button=$('#v3Cook');if(!q||!bar||!button)return;bar.style.width=(q.cooked?100:q.cooking?Math.min(100,q.cooking/1.5*100):0)+'%';button.disabled=!q.hot||q.cooked||q.cooking>0;var prep=B.querySelector('.v3-prep'),service=B.querySelector('.v3-service');prep.classList.toggle('a23-next',!!q.tray.length&&q.hot&&!q.cooked);service.classList.toggle('a23-next',!!q.tray.length&&(!q.hot||q.cooked)&&!q.chosenService);button.textContent=!q.hot?'這桌不用加熱':q.cooked?'✅ 熱食已完成':q.cooking?'🔥 製作中…':'② 製作熱食'}
     function feedback(text,ok){var node=$('#v3DinerFeedback');if(!node)return;node.textContent=text;node.className='v3-diner-feedback '+(ok?'good':'bad');node.scrollIntoView({block:'nearest',behavior:REDUCED?'auto':'smooth'})}
     function serve(){var q=current();if(busy||done||!q)return;if(!q.tray.length){feedback('托盤是空的，先依訂單配餐。',false);return}
       var counts={};q.tray.forEach(function(k){counts[k]=(counts[k]||0)+1});var foodOK=Object.keys(q.need).every(function(k){return counts[k]===q.need[k]})&&Object.keys(counts).every(function(k){return !!q.need[k]});
@@ -5264,6 +5269,7 @@ IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o)
     a.step=function(dt){queue.forEach(function(q){q.age+=dt*.65;if(q.cooking&&!q.cooked){q.cooking+=dt;if(q.cooking>=1.5){q.cooking=0;q.cooked=true;if(q===current()){sfx('pop');drawCooking()}}}});drawCooking();$('#arInfo').textContent='完成 '+served+'/'+N+' 桌'+(vs?' · '+Math.max(0,Math.ceil(TL-a.t))+' 秒':' · 不倒數');var tableButtons=B.querySelectorAll('[data-table]');tableButtons.forEach(function(btn,j){if(queue[j])btn.querySelector('em').style.width=Math.max(20,100-queue[j].age)+'%'});if(vs&&a.t>=TL)end()};
   });
 };
+/* ENGLISH_PREMIUM_V3_END */
 
 
 
@@ -5273,7 +5279,7 @@ IMPL.diner=function(g,o){if(o.classic)return v3DinerClassic(g,o);var X=seeded(o)
   seeded=(function(orig){return function(o){var r=orig(o);if(window.MiracleHalloweenActive&&window.MiracleHalloweenActive()){var have={};r.pool.forEach(function(w){have[w[0]]=1});WORDS.forEach(function(w){if(window.MiracleHalloweenPool.indexOf(w[0])>=0&&!have[w[0]])r.pool.push(w)})}return r}})(seeded);
   /* v4 bridge: new implementations use the existing identity, curriculum and score services. */
   var V4CTX={three:function(){return T},who:function(){return who},ls:ls,$:$,esc:esc,clamp:clamp,
-    seeded:seeded,words:WORDS,Learn:Learn,arc:arc,arcEnd:arcEnd,pad:pad,padEnd:padEnd,mq:mq,
+    muted:function(){return muted},challenge:function(sub){return isKid()&&PGX?PGX.chal(who,sub):0},seeded:seeded,words:WORDS,Learn:Learn,arc:arc,arcEnd:arcEnd,pad:pad,padEnd:padEnd,mq:mq,
     award:award,sfx:sfx,tone:tone,toast:toast,ask:ask,speak:speak,ft:ft,vsFinish:vsFinish,vsPeers:vsPeers,
     reduced:REDUCED,sign:signTex,picture:function(w){var key=w[0],src=V3_WORDS[key]||SIMG[key];if(!src){var food=DN_IDS.filter(function(k){return DN_F[k][0]===key})[0];if(food)src=DNP[food]}return src||''},
     disposeObject:function(obj){disp(obj,null)},active:function(a){return A===a},body:function(){return gBody},
@@ -5494,6 +5500,7 @@ GAME_FN.ttab=function(g){
   draw();say('先選第幾段，再點算式聽聽看！','happy');
 };
 
+/* ISLAND_V2_START */
 /* Additive expansion inside the original application closure. No Firebase migration. */
 var V2=(function(){
   'use strict';
@@ -5519,7 +5526,7 @@ var V2=(function(){
   function stop(){serial++;if(active){active.done=true;active=null}try{window.speechSynthesis.cancel()}catch(e){}}
   function companion(m){return m.id==='v2post'?'owl':m.id==='v2fraction'?'fox':m.id==='v2clock'?'robot':'frog'}
   function world(s,body){
-    s.root=gBody;gBody.innerHTML='<section class="v2world" style="background-image:url('+PATH+s.meta.bg+'.webp)"><div class="v2hud"><span>'+s.meta.ico+' '+esc(s.meta.zh)+' · '+egrade+'年級</span><button id="v2Leave" aria-label="離開新版遊戲">← '+(s.meta.station?'回小島':'回選單')+'</button></div><div class="v2glass">'+body+'</div></section>';
+    s.root=gBody;gBody.innerHTML='<section class="v2world'+(s.meta.id==='swind'?' a23-science':'')+'" style="background-image:url('+PATH+s.meta.bg+'.webp)"><div class="v2hud"><span>'+s.meta.ico+' '+esc(s.meta.zh)+' · '+egrade+'年級</span><button id="v2Leave" aria-label="離開新版遊戲">← '+(s.meta.station?'回小島':'回選單')+'</button></div><div class="v2glass">'+body+'</div></section>';
     bind(el('#v2Leave'),'click',function(){var m=s.meta;stop();if(m.station)station(m);else backGameHome()});
   }
   function start(m,level){
@@ -5568,7 +5575,7 @@ var V2=(function(){
   function clockSVG(h,m){var a=(h%12+m/60)*30,b=m*6;var nums='';for(var i=1;i<=12;i++){var rad=(i*30-90)*Math.PI/180;nums+='<text x="'+(140+98*Math.cos(rad))+'" y="'+(148+98*Math.sin(rad))+'" text-anchor="middle" fill="#253753" font-size="19" font-weight="700">'+i+'</text>'}
     return '<svg class="v2clock" viewBox="0 0 280 280" role="img" aria-label="時鐘顯示 '+h+' 點 '+m+' 分"><circle cx="140" cy="140" r="131" fill="#e6bd77"/><circle cx="140" cy="140" r="120" fill="#fffcf1" stroke="#aecfc8" stroke-width="4"/>'+nums+'<line x1="140" y1="140" x2="140" y2="79" stroke="#253753" stroke-width="10" stroke-linecap="round" transform="rotate('+a+' 140 140)"/><line x1="140" y1="140" x2="140" y2="47" stroke="#079e93" stroke-width="6" stroke-linecap="round" transform="rotate('+b+' 140 140)"/><circle cx="140" cy="140" r="10" fill="#ffbd54" stroke="#253753" stroke-width="3"/></svg>';
   }
-  function windSVG(speed){return '<svg class="v2windmill" viewBox="0 0 150 170" role="img" aria-label="風車模型"><path d="M58 158l7-95h20l7 95" fill="#d7b580" stroke="#5e6f74" stroke-width="3"/><rect x="69" y="135" width="13" height="23" rx="6" fill="#538c8b"/><g class="v2blades" style="--speed:'+(speed?Math.max(.3,4/speed):1000)+'s;'+(!speed?'animation-play-state:paused;':'')+'">'+[0,90,180,270].map(function(a){return '<path d="M75 64L66 16Q72 2 89 10L81 64Z" fill="#e7f7f0" stroke="#498981" stroke-width="3" transform="rotate('+a+' 75 64)"/>'}).join('')+'</g><circle cx="75" cy="64" r="8" fill="#ffc762"/></svg>'}
+  function windSVG(speed){return window.Adventure23.windScene(speed)}
   function soundVisual(amp,rate){return '<div class="v2soundwave" role="img" aria-label="振動示意，非實際聲波測量" style="--amp:'+amp+'px;--rate:'+rate+'s">'+Array.from({length:16},function(_,i){return '<i style="--i:'+i+'"></i>'}).join('')+'</div>'}
   function make(s){var m=s.meta,g=s.grade,i=s.index,lv=s.level,csub=m.station?null:m.id==='v2post'?'e':m.sub==='math'?'m':null,CL=csub&&isKid()&&PGX&&PGX.chal?PGX.chal(who,csub):0;g=Math.min(6,g+CL);/* 挑戰等級越高，題目照高年級出 */
     if(m.id==='v2post'){
@@ -5591,7 +5598,7 @@ var V2=(function(){
     }
     if(m.id==='smoon')return moonQuestion(lv,i,g);
     if(m.id==='ssound')return soundQuestion(lv,i,g);
-    if(m.id==='swind')return windQuestion(lv,i,g);
+    if(m.id==='swind'){if(!s.windPlan)s.windPlan={force:mix([0,1,2,3]),dirs:mix([0,1,2,3]),offset:rand(8)};return windQuestion(lv,i,g,s.windPlan)}
     if(m.id==='sweather')return weatherQuestion(lv,i,g);
     if(m.id==='sinsect')return insectQuestion(lv,i,g);
   }
@@ -5605,11 +5612,7 @@ var V2=(function(){
     if(lv===0){var bank=[['敲一下鼓，聲音主要怎麼產生？','鼓面振動',['鼓面變色','鼓面發光'],'物體振動可以產生聲音。用手輕觸正在響的鼓面，可感受振動。'],['輕輕按住正在響的音叉，聲音通常如何？','變小或停止',['變得更高','一定變大'],'按住音叉會讓振動減弱，聲音也會減弱或停止。'],['聲音能透過什麼傳到耳朵？','空氣等介質',['只有光線','只有顏色'],'聲音需要介質傳播，例如空氣、水與固體。'],['輕敲與重敲同一面鼓，通常哪個較大聲？','重敲',['輕敲','永遠一樣'],'在其他條件相同時，較大的振動幅度通常產生較大的音量。'],['想保護耳朵，應該怎麼做？','避免長時間聽過大音量',['把耳機一直開到最大','靠近非常大的聲音'],'避免過大音量，適度休息，也不要貼近發出巨大聲音的物體。']];var b=bank[i%5];return choices(b[0],b[1],b[2],b[3],soundVisual(55,.65),'v2:sound:basic:'+i)}
     var target=pick([1,2,3]);return {kind:'sound',title:lv===1?'把音量模型調成「'+['','小聲','中等','大聲'][target]+'」。':'把音高模型調成「'+['','低音','中音','高音'][target]+'」。',hint:lv===1?'操作「振動幅度」，觀察示意的振動大小。':'操作「振動快慢」，觀察示意變化。',axis:lv===1?'amplitude':'frequency',target:target,why:lv===1?'在其他條件相同時，振動幅度越大，音量通常越大。音量和音高是不同的概念。':'振動越快，頻率越高，音高越高；這不代表音量一定越大。',key:'v2:sound:'+lv+':'+target};
   }
-  function windQuestion(lv,i,g){
-    if(lv===0){var target=pick([0,1,2,3]);return {kind:'wind',title:'讓風車呈現「'+['停止','慢慢轉','中速轉','快速轉'][target]+'」。',hint:'改變風力模型，觀察同一座風車的轉動。',target:target,why:'在同一座風車、同樣方向與距離的簡化模型中，風越強，風車轉得越快；沒有風時停止。真實轉速還受葉片與摩擦等條件影響。',key:'v2:wind:force:'+target}}
-    if(lv===1){var dirs=['北','東','南','西'],d=pick(dirs),other=dirs.filter(function(x){return x!==d});return choices('「'+d+'風」是從哪個方向吹來？',d+'方',other.map(function(x){return x+'方'}),'風向用「風從哪裡來」命名；'+d+'風就是從'+d+'方吹來。風向標箭頭通常指向風的來向。','<div class="v2weather">🧭</div>','v2:wind:direction:'+d)}
-    var bank=[['比較葉片大小對轉速的影響，應改變什麼？','只改葉片大小',['同時改風力和葉片','每次換不同風扇'],'公平比較要一次只改一個條件，其餘條件盡量相同。'],['比較不同風力，哪個條件要固定？','同一座風車與相同距離',['每次都換葉片','每次換不同位置'],'比較風力時，風車、方向、距離等其他條件要盡量固定。'],['看不到空氣，可以怎樣知道它在流動？','觀察旗子或風車的變化',['看牆壁的顏色','聽自己的心跳'],'可以從旗子、風車等物體的反應觀察空氣流動。'],['想讓比較更可靠，應該怎麼做？','重複測量並記錄',['只挑喜歡的一次','測完不記錄'],'多次測量並記錄，有助於降低偶然因素的影響。'],['做風車實驗，哪個行為安全？','手指遠離轉動的葉片',['伸手碰高速葉片','拆開插電中的風扇'],'操作風扇或風車時，手指要遠離轉動部位；電器由大人協助。']];var b=bank[i%5];return choices(b[0],b[1],b[2],b[3],windSVG(2),'v2:wind:fair:'+i);
-  }
+  function windQuestion(lv,i,g,plan){return window.Adventure23.windQuestions(lv,i,g,windSVG,choices,Math.random,plan)}
   function weatherQuestion(lv,i,g){
     if(lv===0){var bank=[['要量氣溫，使用哪種工具？','溫度計',['雨量筒','指南針'],'溫度計測量溫度；雨量筒測量降雨量，指南針指示方向。','🌡️'],['要記錄下了多少雨，使用哪種工具？','雨量筒',['時鐘','放大鏡'],'雨量筒收集並測量降雨量；同樣的觀測方法才能公平比較。','🌧️'],['記錄天氣時，哪項資料有幫助？','日期、時間、氣溫與天氣',['只寫自己的名字','只寫喜歡的顏色'],'日期、時間與觀測項目是比較天氣的重要紀錄。','📔'],['雷雨時，哪個做法安全？','到安全室內避雨',['站在大樹下','留在空曠操場'],'雷雨時到安全室內，不躲在孤立大樹下，也避開空曠地。','⛈️'],['要量空氣溫度，哪種位置較合適？','通風且避免陽光直射',['貼在發熱電器旁','放在太陽直射處'],'避免陽光直射與熱源干擾，才能較接近要測量的空氣溫度。','🌡️']];var b=bank[i%5];return choices(b[0],b[1],b[2],b[3],'<div class="v2weather">'+b[4]+'</div>','v2:weather:tools:'+i)}
     if(lv===1){var temp=pick([16,20,24,28,32]);return choices('看溫度計，氣溫是多少？','攝氏 '+temp+' 度',['攝氏 '+(temp+4)+' 度','攝氏 '+(temp-4)+' 度'],'°C 是攝氏溫度符號。這次的讀數是攝氏 '+temp+' 度。','<svg viewBox="0 0 160 180" width="160" role="img" aria-label="攝氏 '+temp+' 度"><rect x="54" y="12" width="30" height="124" rx="15" fill="#fff" stroke="#597d8a" stroke-width="3"/><rect x="63" y="'+(120-temp*2)+'" width="12" height="'+(temp*2)+'" rx="6" fill="#f4846b"/><circle cx="69" cy="143" r="23" fill="#f4846b" stroke="#597d8a" stroke-width="3"/>'+[0,10,20,30,40,50].map(function(v){return '<path d="M88 '+(120-v*2)+'h8" stroke="#597d8a" stroke-width="2"/><text x="104" y="'+(125-v*2)+'" fill="#253753" font-size="14">'+v+'</text>'}).join('')+'<text x="102" y="155" fill="#253753" font-size="16">°C</text></svg>','v2:weather:temperature:'+temp)}
@@ -5692,6 +5695,7 @@ var V2=(function(){
   }
   install();return {stop:stop};
 })();
+/* ISLAND_V2_END */
 
 /* Outer application integration for English Premium v3.0. */
 (function(){
