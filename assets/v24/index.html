@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173e4b"><meta name="robots" content="noindex,nofollow">
+  <title>單字闖關島・魔法冒險</title>
+  <link rel="stylesheet" href="style.css?v=24.0.0">
+</head>
+<body>
+  <main id="app">
+    <div id="scene" aria-label="森林車站三維遊戲場景"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <header class="topbar" hidden>
+      <button class="round" id="pause" aria-label="暫停與章節選單"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
+      <div class="chapter"><span>WORD ISLAND · CHAPTER 01</span><b>森林車站的約定</b></div>
+      <button class="crystal-pill" id="collection" aria-label="查看森林水晶收藏"><svg viewBox="0 0 24 24"><path d="m12 2 7 7-7 13L5 9Z M5 9h14M12 2l-2 7 2 13 2-13Z"/></svg><b id="crystals">0</b><span>/ 3</span></button>
+    </header>
+    <section class="mission" hidden aria-label="目前任務">
+      <div class="mission-head"><span id="section">01 · 彩虹木橋</span><div class="mission-tools"><button id="translate-mission" aria-label="看中文提示" aria-controls="task" aria-expanded="false">中文提示</button><button id="listen" aria-label="聽英文任務"><svg viewBox="0 0 24 24"><path d="m11 5-5 4H2v6h4l5 4ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg></button></div></div>
+      <b id="english" lang="en"></b>
+      <div id="spell-panel" hidden><div class="spell-word-row"><span id="spell-cue" role="img" aria-label="剛送達的物品"></span><div id="spell-slots" lang="en" aria-label="拼字進度"></div></div><div id="spell-choices" aria-label="選擇下一個字母"></div></div><p id="task" class="mission-translation" lang="zh-Hant" hidden></p><button id="memory-replay" hidden>再看一次順序</button><div class="task-progress"><i></i></div><small id="level-status">主線 1 / 3</small>
+    </section>
+    <div id="landmark" class="landmark" hidden><span>✦</span><b>森林營地</b></div>
+    <div id="markers" aria-label="場景中的互動物件"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div class="bottom-ui" hidden>
+      <div class="move-area">
+        <div id="joystick" aria-label="拖曳搖桿移動角色" role="group"><i></i><span>✥</span></div>
+        <span class="control-label">拖曳移動 · 也能點地面</span>
+      </div>
+      <div class="context-info"><span id="carry-label">點發光物件，走近互動</span><button id="hint">✦ 找個線索</button></div>
+      <div class="actions"><button id="jump" class="round" aria-label="跳躍"><svg viewBox="0 0 24 24"><path d="m6 11 6-6 6 6M12 5v15"/></svg><small>跳躍</small></button><button id="interact" disabled><svg viewBox="0 0 24 24"><path d="m9 12 3 3 8-9M4 13v6a2 2 0 0 0 2 2h12M4 8V4h4"/></svg><span>走近物件</span></button></div>
+    </div>
+    <div class="modal-layer" id="welcome">
+      <section class="welcome-card">
+        <div class="cover-art"><span class="preview-badge">單字闖關島・魔法冒險</span><div class="cover-title"><span>奇蹟知識島 · 單字冒險</span><h1>森林車站<br>的約定</h1><p>修好一座橋，接回小乘客。<br>讓停下來的森林列車，再次出發。</p></div></div>
+        <div class="welcome-content"><div class="route-strip"><span><i>01</i>修復木橋</span><b>⋯</b><span><i>02</i>接回乘客</span><b>⋯</b><span><i>03</i>列車出發</span></div>
+          <div class="choose-row"><span>選一位探險家</span><div class="avatar-options" role="group" aria-label="試玩角色"><button data-avatar="adv" aria-label="冒險家" aria-pressed="true"><img src="assets/avatar-adv.webp" alt="冒險家"></button><button data-avatar="wizard" aria-label="星帽魔法師" aria-pressed="false"><img src="assets/avatar-wizard.webp" alt="星帽魔法師"></button><button data-avatar="stargirl" aria-label="星光魔法女孩" aria-pressed="false"><img src="assets/avatar-stargirl.webp" alt="星光魔法女孩"></button><button data-avatar="blue" aria-label="藍髮探險家" aria-pressed="false"><img src="assets/avatar-blue.webp" alt="藍髮探險家"></button></div></div>
+          <button id="start" class="primary" disabled>正在準備森林…</button><p class="safe-note">沒有倒數壓力 · 提示不扣分<br>試玩進度僅保存在這個瀏覽器，不影響正式帳號</p><p id="storage-note" hidden>此瀏覽器無法儲存；關閉頁面後，試玩進度將不保留。</p><p id="load-error" hidden></p>
+        </div>
+      </section>
+    </div>
+    <div class="modal-layer" id="menu" hidden><section class="menu-card" role="dialog" aria-modal="true" aria-labelledby="menu-title"><span class="eyebrow">THE FOREST JOURNEY</span><h2 id="menu-title">冒險休息站</h2><p>先休息一下，回來再繼續。</p><ol id="chapter-stops"></ol><div class="settings"><button id="sound" aria-pressed="false">開啟音效</button><button id="motion" aria-pressed="false">柔和特效</button><button id="zoom">視野：標準</button><button id="quality" aria-pressed="false">畫質：精緻</button></div><p class="keyboard-note">電腦：WASD／方向鍵移動，空白鍵跳躍，E 互動。<br>手機／平板：拖曳搖桿，或點地面及物件前進。</p><button id="resume" class="primary">繼續冒險</button><button id="menu-map" class="secondary">回關卡地圖</button><button id="checkpoint" class="secondary">回到最近的休息點</button><button id="restart" class="text-button">重新開始這個章節</button><div id="reset-confirm" hidden><p>確定清除這個試玩章節的進度？正式紀錄不受影響。</p><button id="confirm-reset" class="secondary">確定重玩</button><button id="cancel-reset" class="text-button">保留進度</button></div></section></div>
+    <div class="modal-layer" id="result" hidden><section class="result-card" role="dialog" aria-modal="true" aria-labelledby="result-title"><div class="result-seal">✦</div><span class="eyebrow">CHAPTER COMPLETE</span><h2 id="result-title">森林車站，重新出發！</h2><p id="result-story">這座島恢復運作了，下一段旅程正在等你。</p><div class="stamp-row"><span>✓ 起點機關</span><span>✓ 中途任務</span><span>✓ 終點任務</span></div><p id="save-status">本關任務完成</p><div class="word-recap"><b>這段旅程遇見的單字</b><div id="word-recap"></div><small>點一下，聽聽它怎麼念</small></div><p id="result-crystals"></p><button id="next-level" class="primary">前往下一關</button><button id="return-map" class="secondary">回關卡地圖</button><button id="explore" class="secondary">留在本關，繼續找水晶</button><button id="result-menu" class="text-button">查看章節紀錄</button></section></div>
+    <div class="modal-layer" id="tutorial" hidden><section class="tutorial-card" role="dialog" aria-modal="true" aria-labelledby="tutorial-title"><span class="eyebrow">WELCOME, EXPLORER</span><h2 id="tutorial-title">先修好彩虹木橋</h2><p>點選場景中的彩色木板，角色會走過去拿起它。<br>再點橋邊的金色修橋標記，把木板送過去。</p><div class="tutorial-steps"><span>① 看任務</span><b>→</b><span>② 拿木板</span><b>→</b><span>③ 修木橋</span></div><small>也可以用搖桿移動，走近後按「互動」。<br>想再聽一次英文，按任務旁的喇叭。</small><button id="tutorial-go" class="primary">知道了，出發！</button></section></div>
+    <noscript>請使用允許 JavaScript 的瀏覽器開啟試玩版。</noscript>
+  </main>
+  <script src="assets/three-r128.min.js?v=24.0.0"></script><script src="core.js?v=24.0.0"></script><script src="avatars.js?v=24.0.0"></script><script src="game.js?v=24.0.0"></script>
+</body></html>
