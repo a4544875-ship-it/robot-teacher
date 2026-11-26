@@ -99,6 +99,9 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/habitat/scene.js?v=1.2.0"></script>
 <link rel="stylesheet" href="assets/v23/adventure.css?v=23.0.0">
 <link rel="stylesheet" href="assets/v24/map.css?v=24.0.0">
+<link rel="stylesheet" href="assets/v25/english.css?v=25.0.0">
+<link rel="stylesheet" href="assets/v25/carnival.css?v=25.0.0">
+<script src="assets/v25/english.js?v=25.0.0"></script>
 <script src="assets/v24/core.js?v=24.0.1"></script>
 </head>
 <body>
@@ -3660,7 +3663,7 @@ var OB=(function(){
     $('#obExit').addEventListener('click',function(){sfx('tap');stop();menu(g)});
     if(a.tok)Net.set({on:1,gm:g.id,k:who,n:nm(),ph:'run',tok:a.tok,rd:0,fin:0,pr:0,sc:0,wn:0});
     loadThree().then(function(t){T=t;if(A!==a)return;
-      a.rd=new T.WebGLRenderer({canvas:el.querySelector('canvas'),antialias:true});a.rd.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+      a.rd=new T.WebGLRenderer({canvas:el.querySelector('canvas'),antialias:true,alpha:g.id==='shoot'&&!!window.English25});a.rd.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
       a.sc=new T.Scene();a.cam=new T.PerspectiveCamera(60,1,.1,170);
       a.rs=function(){var w=el.clientWidth,h=el.clientHeight;a.rd.setSize(w,h,false);a.cam.aspect=w/h;a.asp=w/h;if(a.onRs)a.onRs(w/h);a.cam.updateProjectionMatrix()};
       window.addEventListener('resize',a.rs);a.rs();setup(a);a.rs();$('#obMsg').textContent='';
@@ -3744,11 +3747,14 @@ var OB=(function(){
 
   /* ---------- 單字射擊場／字母隕石：點目標發射 ---------- */
   function shoot(g,o,spell){
-    var X=seeded(o),b=X.b,N=spell?6:10,vs=!!o.tok,pool=spell?X.pool.filter(function(w){return /^[a-z]{3,6}$/.test(w[0])}):X.pool;
-    if(pool.length<N)pool=WORDS.filter(function(w){return w[3]<=b&&/^[a-z]{3,6}$/.test(w[0])});
+    var E25=window.English25,plus=!!E25&&!spell&&!g.math;var X=seeded(o),b=X.b,N=spell?6:10,vs=!!o.tok,pool=spell?X.pool.filter(function(w){return /^[a-z]{3,6}$/.test(w[0])}):X.pool;
+    if(!pool.length||spell&&pool.length<N)pool=WORDS.filter(function(w){return w[3]<=b&&/^[a-z]{3,6}$/.test(w[0])});
     var ws=g.math?mqs(g,o,X,N,b>=3?4:3):Learn.boost(X.sh(pool),o.tok).slice(0,N);
+    if(plus)ws=E25.deck(ws,pool,X.sh,N);
     arc(g,o,function(a){
-      var sc=a.sc,hp=3,ri=-1,score=0,cur=null,idx=0,tg=[],bul=[],busy=false,ray=new T.Raycaster(),v2=new T.Vector2();
+      if(plus)E25.prepare(a,english25Context());
+      function notify(text,kind){if(plus)E25.feedback(a,text,kind);else toast(text,kind)}
+      var shotPending=false;var sc=a.sc,hp=3,ri=-1,score=0,cur=null,idx=0,tg=[],bul=[],busy=false,ray=new T.Raycaster(),v2=new T.Vector2();
       function L(c){return new T.MeshLambertMaterial({color:c})}
       var night=spell,bg=night?0x141a3a:0x9fd8ff;sc.background=new T.Color(bg);sc.add(new T.HemisphereLight(0xffffff,night?0x3a3f7a:0x6fae5a,1));var dl=new T.DirectionalLight(0xffffff,.5);dl.position.set(3,8,8);sc.add(dl);
       if(night){var pts=[];for(var i=0;i<260;i++)pts.push((Math.random()-.5)*90,Math.random()*46-8,-30-Math.random()*20);var sg=new T.BufferGeometry();sg.setAttribute('position',new T.Float32BufferAttribute(pts,3));sc.add(new T.Points(sg,new T.PointsMaterial({color:0xffffff,size:.28})))}
@@ -3757,49 +3763,54 @@ var OB=(function(){
       var can=new T.Group(),base=new T.Mesh(new T.BoxGeometry(1.6,.9,1.6),L(0x27306b)),brl=new T.Mesh(new T.BoxGeometry(.5,.5,2),L(kidCol(who)));base.position.y=-.2;brl.position.set(0,.4,-.8);can.add(base);can.add(brl);can.position.set(0,-1.5,5);sc.add(can);
       a.cam.position.set(0,3.4,11);a.cam.lookAt(0,3.4,-6);
       a.onRs=function(asp){a.cam.fov=asp<.8?72:58;a.hw=Math.max(1.6,Math.tan(a.cam.fov*Math.PI/360)*17*asp-1.5)};a.rs();
-      function hud(){$('#arHp').textContent=vs?'':'❤️'.repeat(Math.max(0,hp))+'🤍'.repeat(3-Math.max(0,hp));$('#arInfo').textContent=Math.min(N,ri+1)+'/'+N;a.pr=clamp(ri/N,0,1)}
+      function hud(){$('#arHp').textContent=vs?'':'❤️'.repeat(Math.max(0,hp))+'🤍'.repeat(3-Math.max(0,hp));$('#arInfo').textContent=Math.min(N,ri+1)+'/'+N;a.pr=clamp(ri/N,0,1);if(plus)E25.progress(a,Math.max(0,ri),N,vs?'連線對戰 · 先完成十題獲勝':'完成三段挑戰，點亮嘉年華');}
       function slots(){var el=$('#obPrompt');el.hidden=false;el.innerHTML='<span class="pe">'+cur[1]+'</span><span>'+esc(cur[2])+'：</span><b class="en sl">'+cur[0].split('').map(function(c,i){return i<idx?c:'_'}).join(' ')+'</b>'}
       function spawn(items,size){
         tg.forEach(function(t){sc.remove(t.g)});tg=[];
         var n=items.length,cols=Math.max(1,Math.min(n,Math.floor((2*a.hw+.5)/(size+.5)))),rows=Math.ceil(n/cols),sx=Math.min(size+1.1,(2*a.hw)/Math.max(1,cols-1)),top=3.4+(rows-1)*(size*1.95+.35)/2+.2;
-        items.forEach(function(it,j){var gp=new T.Group(),col=[0xff6a5c,0xffc531,0x18c795,0x8d6cf2,0x2b8af0,0xff86c0][j%6];
+        items.forEach(function(it,j){var gp=new T.Group(),col=[0xe69889,0xe8c56c,0x7fc8b6,0xa79bd4,0x78afd1,0xd69cbb][j%6];if(plus)gp=E25.targetModel(a,it,size,col);else{
           var s=new T.Mesh(new T.PlaneGeometry(size,size),new T.MeshBasicMaterial({transparent:true,map:signTex(it.txt,it.emo,night?'#fff7d6':'#fff')}));gp.add(s);
           if(night){var rk=new T.Mesh(new T.IcosahedronGeometry(size*.78,0),new T.MeshLambertMaterial({color:0x8a7f9c,flatShading:true}));rk.position.z=-size*.7;gp.add(rk)}
-          else{var bl=new T.Mesh(new T.SphereGeometry(size*.42,12,10),L(col));bl.position.y=size*.95;gp.add(bl);var st=new T.Mesh(new T.BoxGeometry(.05,size*.3,.05),L(0x14173a));st.position.y=size*.6;gp.add(st)}
+          else{var bl=new T.Mesh(new T.SphereGeometry(size*.42,12,10),L(col));bl.position.y=size*.95;gp.add(bl);var st=new T.Mesh(new T.BoxGeometry(.05,size*.3,.05),L(0x14173a));st.position.y=size*.6;gp.add(st)}}
           var r=Math.floor(j/cols),cc=j%cols,inRow=Math.min(cols,n-r*cols),hx=(cc-(inRow-1)/2)*sx,hy=top-r*(size*1.95+.35);
           gp.position.set(hx,hy,-6);sc.add(gp);tg.push({g:gp,hx:hx,hy:hy,ph:Math.random()*6,sp:.9+b*.12+ri*.05+Math.random()*.3,amp:Math.min(.95,.3+ri*.06+b*.05)*Math.max(.1,Math.min(1,sx-size+.5)),it:it,alive:true,pop:0,shake:0})});
+        if(plus){a.v25.targets=tg;a.v25.reflow=function(){E25.layoutTargets(a,tg,size,fire)};a.rs();}
       }
       function next(){ri++;busy=false;hud();if(ri>=N)return end(true);cur=ws[ri];idx=0;
         if(spell){var ls=cur[0].split(''),abc='abcdefghijklmnopqrstuvwxyz';while(ls.length<cur[0].length+2){var c=abc[Math.floor(X.R()*26)];if(ls.indexOf(c)<0)ls.push(c)}
           spawn(X.sh(ls).map(function(c){return {txt:c,emo:false,ch:c}}),1.5);slots()}
-        else{var rev=!!cur.m||(b>=2&&ri%3===2),os=cur.m?X.sh(cur.os):X.sh([cur].concat(X.oth(cur,b>=3?3:2)));spawn(os.map(function(o){return {txt:rev?o[0]:o[1],emo:!rev,ok:o===cur}}),2.1);ask(cur,rev,'射下','的氣球！')}}
+        else{var mode=plus?(vs?(b>=2&&ri%3===2?'read':'match'):E25.shootingMode(ri,false)):'',rev=plus?mode==='read':!!cur.m||(b>=2&&ri%3===2),os=cur.m?X.sh(cur.os):X.sh([cur].concat(X.oth(cur,plus?(vs?(b>=3?3:2):ri<3?2:3):b>=3?3:2)));spawn(os.map(function(o){return {txt:rev?o[0]:o[1],emo:!rev,word:rev?null:o,ok:o===cur}}),2.1);if(plus)E25.renderShoot(a,cur,mode);else ask(cur,rev,'射下','的氣球！')}}
       function end(win){var what=(spell?'拼對 ':'射中 ')+score+' / '+N+(spell?' 個單字。':' 題。');
         if(!vs)return arcEnd(a,{win:win,score:score,total:N,icon:win?(score===N?'🏆':'🎯'):'💔',title:win?(score===N?'全部命中！':'射擊完成！'):'愛心用完了！',text:what,say:win?'神射手就是你！':'沒關係，再來一次會更準！'});
         var ms=Math.round(performance.now()-a.w0);busy=true;vsFinish(a,ms,function(w,on){if(w)award(3);arcEnd(a,{score:score,total:N,icon:w?'🏆':'🥈',title:w?'你贏了！':on+' 先完成！',text:'你的時間 '+ft(ms)+'。'+(w?'獲勝再加 30 分！':''),say:w?'神射手就是你！':'差一點點，再比一次！'})})}
-      function miss(t){if(a.v3)a.v3.combo=0;sfx('no');flash();Learn.bad(cur);t.shake=.4;if(vs){busy=true;setTimeout(function(){if(A===a&&!a.over)busy=false},1200);return}
+      function miss(t){if(plus)E25.remember(a,cur,true);if(a.v3)a.v3.combo=0;sfx('no');flash();Learn.bad(cur);t.shake=.4;if(vs){busy=true;setTimeout(function(){if(A===a&&!a.over)busy=false},1200);return}
         hp--;hud();if(hp<=0){busy=true;setTimeout(function(){if(A===a)end(false)},500)}}
       function hitT(t){
         if(a.over||!t.alive||tg.indexOf(t)<0)return;
         if(spell){if(t.it.ch===cur[0][idx]){t.alive=false;t.pop=.001;idx++;tone(520+idx*70,0,.12,'triangle');slots();
-            if(idx>=cur[0].length){busy=true;score++;award(2);Learn.ok(cur);sfx('ok');speak(cur[0]);toast('拼對了！'+cur[0]+' = '+cur[2],'ok');setTimeout(function(){if(A===a&&!a.over)next()},900)}}
-          else{miss(t);toast('下一個字母不是 '+t.it.ch+' 喔！','bad')}}
-        else{if(t.it.ok){busy=true;t.alive=false;t.pop=.001;score++;if(a.v3){a.v3.combo=(a.v3.combo||0)+1;if(a.v3.combo>=3)award(.5)}award(1);Learn.ok(cur);sfx('pop');sfx('ok');toast(PRAISE[rand(PRAISE.length)]+' '+eqs(cur),'ok');setTimeout(function(){if(A===a&&!a.over)next()},800)}
-          else{miss(t);toast(vs?'不是這個！暫停一下下…':'不是這個！','bad')}}
+            if(idx>=cur[0].length){busy=true;score++;award(2);Learn.ok(cur);sfx('ok');speak(cur[0]);notify('拼對了！'+cur[0]+' = '+cur[2],'ok');setTimeout(function(){if(A===a&&!a.over)next()},900)}}
+          else{miss(t);notify('下一個字母不是 '+t.it.ch+' 喔！','bad')}}
+        else{if(t.it.ok){if(plus)E25.remember(a,cur,false);busy=true;t.alive=false;t.pop=.001;score++;if(a.v3){a.v3.combo=(a.v3.combo||0)+1;if(a.v3.combo>=3)award(.5)}award(1);Learn.ok(cur);sfx('pop');sfx('ok');notify(PRAISE[rand(PRAISE.length)]+' '+eqs(cur),'ok');setTimeout(function(){if(A===a&&!a.over)next()},800)}
+          else{miss(t);notify(vs?'不是這個！暫停一下下…':'不是這個！','bad')}}
+      }
+      function fire(target,to){
+        if(busy||shotPending||a.over||plus&&a.v25.paused||target&&!target.alive)return;shotPending=true;
+        tone(700,0,.06,'square',.05);to=target?target.g.position.clone():to;
+        var m=new T.Mesh(new T.SphereGeometry(.22,8,8),new T.MeshBasicMaterial({color:0xfff17a}));var origin=plus&&a.v25.launchOrigin?a.v25.launchOrigin:can.position;m.position.copy(origin);sc.add(m);can.lookAt(to);
+        bul.push({m:m,from:origin.clone(),to:to,k:0,t:target});
       }
       a.el.addEventListener('pointerdown',function(e){if(e.target.closest('button,.obres'))return;e.preventDefault();if(busy||a.over)return;
-        var r=a.el.getBoundingClientRect();v2.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(v2,a.cam);
+        var r=a.rd.domElement.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)return;v2.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(v2,a.cam);
         var best=null;tg.forEach(function(t){if(!t.alive)return;var h=ray.intersectObject(t.g,true);if(h.length&&(!best||h[0].distance<best.d))best={t:t,d:h[0].distance}});
-        tone(700,0,.06,'square',.05);var to=best?best.t.g.position.clone():ray.ray.at(18,new T.Vector3());
-        var m=new T.Mesh(new T.SphereGeometry(.22,8,8),new T.MeshBasicMaterial({color:0xfff17a}));m.position.copy(can.position);sc.add(m);can.lookAt(to);
-        bul.push({m:m,from:can.position.clone(),to:to,k:0,t:best&&best.t})});
+        fire(best&&best.t,ray.ray.at(18,new T.Vector3()));});
       a.dbg=function(){return {tg:tg,cur:cur,idx:idx,hp:hp,ri:ri,busy:busy}};
       a.net=function(){return {pr:+a.pr.toFixed(3)}};
       a.w0=performance.now();say(vs?'比賽開始！誰先全部射完？':g.math?'算出答案，點對的氣球把它射下來！':spell?'照順序點字母隕石，把單字拼出來！':'聽題目，點對的氣球把它射下來！','happy');next();
       a.step=function(dt){
-        tg.forEach(function(t){var p=t.g.position;if(t.pop>0){t.pop+=dt*5;var s=1+t.pop*1.2;t.g.scale.set(s,s,s);if(t.pop>1){sc.remove(t.g);t.pop=-1}return}
+        tg.forEach(function(t){var p=t.g.position;if(t.pop>0){t.pop+=dt*5;var s=(plus?t.baseScale||t.g.scale.x:1)*(1+t.pop*1.2);if(plus&&!t.baseScale)t.baseScale=t.g.scale.x;t.g.scale.set(s,s,s);if(t.pop>1){sc.remove(t.g);t.pop=-1}return}
           if(t.pop<0)return;var sh=t.shake>0?(t.shake-=dt,Math.sin(a.t*60)*.18):0;p.x=t.hx+Math.sin(a.t*t.sp+t.ph)*t.amp+sh;p.y=t.hy+Math.cos(a.t*t.sp*.8+t.ph)*t.amp*.45});
         for(var i=bul.length-1;i>=0;i--){var u=bul[i];u.k+=dt*7;if(u.t&&u.t.alive)u.to.copy(u.t.g.position);u.m.position.lerpVectors(u.from,u.to,Math.min(1,u.k));
-          if(u.k>=1){sc.remove(u.m);bul.splice(i,1);if(u.t)hitT(u.t)}}
+          if(u.k>=1){shotPending=false;sc.remove(u.m);bul.splice(i,1);if(u.t)hitT(u.t)}}
       };
     });
   }
@@ -3808,13 +3819,15 @@ var OB=(function(){
   /* ---------- 對決遊戲：單字拔河（看題選圖）／單字爬塔（補上字母） ----------
      兩邊各自答自己的題目，只同步「答對幾題」；自己玩的時候對手是小機。 */
   function duel(g,o,tow){
-    var b=tier(),GOAL=tow?12:5,TL=60,vs=!!o.tok,towerCombo=0,towerShield=0;
+    var E25=window.English25,plus=!!E25&&tow&&!g.math,towerUsed=[];var b=tier(),GOAL=tow?12:5,TL=60,vs=!!o.tok,towerCombo=0,towerShield=0;
     arc(g,o,function(a){
+      if(plus)E25.prepare(a,english25Context());function notify(text,kind){if(plus)E25.feedback(a,text,kind);else toast(text,kind)}
       var sc=a.sc,my=0,op=0,lock=0,done=false,right=0,asked=0,seen=false,gone=0,botT=2.5,bi=(tow?3.7:3.5)-b*.3,q=null,qel=$('#arQ');a.bars=false;
       function L(c){return new T.MeshLambertMaterial({color:c})}
       function bx(w,h,d,c,x,y,z,par){var m=new T.Mesh(new T.BoxGeometry(w,h,d),L(c));m.position.set(x,y,z);(par||sc).add(m);return m}
       sc.background=new T.Color(tow?0xcfe9ff:0x9fd8ff);sc.fog=new T.Fog(tow?0xcfe9ff:0x9fd8ff,30,90);sc.add(new T.HemisphereLight(0xffffff,0x6fae5a,.95));var dl=new T.DirectionalLight(0xffffff,.5);dl.position.set(3,10,6);sc.add(dl);
       var opName=vs?'對手':'小機',SH=1.9,me=avatar(kidCol(who),tow?'':nm(),who),ot=avatar(vs?0xff6a5c:0x8d6cf2,tow?'':opName),rig=null,star=null;
+      if(plus){a.v25.hero=me;a.v25.guide=ot;}
       for(var i=0;i<8;i++){var c=bx(4+Math.random()*4,1,2,0xffffff,(Math.random()-.5)*50,6+Math.random()*(tow?16:6),-16-Math.random()*8);c.material.transparent=true;c.material.opacity=.9}
       if(tow){bx(40,1,20,0x6fd26b,0,-.5,0);
         [-2.2,2.2].forEach(function(x,s){for(var i=0;i<=GOAL;i++)bx(2.2,.3,2.2,i===GOAL?0xffc531:(i%2?0xffffff:[0x8fd3ff,0xffb3a8][s]),x,i*SH-.15,0);bx(.5,GOAL*SH,.5,0x9aa3c2,x,GOAL*SH/2-.3,-.8)});
@@ -3829,33 +3842,34 @@ var OB=(function(){
         if(g.math&&tow){var fa=o.tb||2+rand(8),fc=1+rand(9),ns=[fc];while(ns.length<4){var nn=1+rand(9);if(ns.indexOf(nn)<0)ns.push(nn)}
           q={ok:String(fc)};el.innerHTML='<b class="en mq">'+fa+' × ? = '+(fa*fc)+'</b>';qel.className='arq n4';qel.innerHTML=shuffle(ns).map(function(c){return '<button class="en" data-v="'+c+'">'+c+'</button>'}).join('');return}
         if(g.math){var mw=mq(Math.random,g.math,b,o.tb,3);q={w:mw,ok:mw[0]};ask(mw);qel.className='arq n3';qel.innerHTML=shuffle(mw.os).map(function(x){return '<button class="en" data-v="'+x[0]+'">'+x[0]+'</button>'}).join('');return}
+        if(plus&&!vs){var pl=poolW().filter(function(w){return /^[a-z]{3,8}$/.test(w[0])}),pg=isKid()&&PGX?PGX.pool(who):null;if(pg){var valid=pg.filter(function(w){return /^[a-z]{3,8}$/.test(w[0])});if(valid.length)pl=valid;}if(!pl.length)pl=WORDS.filter(function(w){return w[3]<=b&&/^[a-z]{3,8}$/.test(w[0])});var fresh=pl.filter(function(w){return towerUsed.indexOf(w[0])<0});if(!fresh.length){towerUsed=[];fresh=pl;}var w=Learn.pick(fresh);towerUsed.push(w[0]);q=E25.towerQuestion(w,my,false,Math.random);E25.renderTower(a,q,Math.random);return;}
         if(tow){var pl=poolW().filter(function(w){return /^[a-z]{3,7}$/.test(w[0])});if(!pl.length)pl=WORDS.filter(function(w){return /^[a-z]{3,7}$/.test(w[0])});
           var w=Learn.pick(pl),k=rand(w[0].length),ok=w[0][k],ls=[ok],abc='abcdefghijklmnopqrstuvwxyz';while(ls.length<4){var ch=abc[rand(26)];if(ls.indexOf(ch)<0)ls.push(ch)}
-          q={w:w,ok:ok};el.innerHTML='<span class="pe">'+w[1]+'</span><span>'+esc(w[2])+'：</span><b class="en sl">'+w[0].split('').map(function(c,i){return i===k?'_':c}).join('')+'</b>';
+          q={w:w,ok:ok};if(plus){q.mode=0;q.blanks=[k];q.step=0;E25.renderTower(a,q,Math.random);return;}el.innerHTML='<span class="pe">'+w[1]+'</span><span>'+esc(w[2])+'：</span><b class="en sl">'+w[0].split('').map(function(c,i){return i===k?'_':c}).join('')+'</b>';
           qel.className='arq n4';qel.innerHTML=shuffle(ls).map(function(c){return '<button class="en" data-v="'+c+'">'+c+'</button>'}).join('')}
         else{var w2=Learn.pick(poolW()),rev=b>=2&&Math.random()<.35,os=shuffle([w2].concat(others(w2,2)));q={w:w2,ok:w2[0]};ask(w2,rev,'哪一個是','？');
           qel.className='arq n3';qel.innerHTML=os.map(function(x){return '<button class="'+(rev?'en':'emo')+'" data-v="'+esc(x[0])+'">'+(rev?esc(x[0]):x[1])+'</button>'}).join('')}
       }
-      qel.addEventListener('pointerdown',function(e){var bt=e.target.closest('button');if(!bt||done||lock>0||a.t<1.2)return;e.preventDefault();
-        if(bt.dataset.v===q.ok){my++;right++;if(tow&&!g.math){towerCombo++;if(towerCombo%3===0)towerShield=1;if(a.v3){a.v3.combo=towerCombo;a.v3.shield=towerShield}if(towerCombo%3===0)toast('🛡️ 三連擊！獲得一次護盾！','ok')}award(1);if(q.w)Learn.ok(q.w);else Learn.pt('math');sfx('ok');bt.classList.add('right');if(tow&&!g.math)speak(q.w[0]);lock=.25;setTimeout(function(){if(A===a)show()},250)}
-        else{sfx('no');flash();if(q.w)Learn.bad(q.w);bt.classList.add('wrong');var protectedFloor=false;if(tow){if(!g.math&&towerShield>0){towerShield=0;protectedFloor=true}else my=Math.max(0,my-1);towerCombo=0;if(a.v3){a.v3.combo=0;a.v3.shield=towerShield}}lock=1;toast(protectedFloor?'🛡️ 護盾保住這一層！再看一次字母。':tow?'答錯了，往下掉一格！':'答錯了，暫停一下下…','bad');setTimeout(function(){if(A===a)show()},1000)}});
+      qel.addEventListener(plus?'click':'pointerdown',function(e){var bt=e.target.closest('button');if(!bt||done||lock>0||!plus&&a.t<1.2||plus&&a.v25.paused)return;e.preventDefault();
+        if(bt.dataset.v===q.ok){if(plus&&!vs&&!E25.advanceTower(q)){tone(620+q.step*75,0,.12,'triangle');E25.renderTower(a,q,Math.random);return;}if(plus)E25.remember(a,q.w,false);my++;right++;if(plus){qel.setAttribute('aria-busy','true');qel.querySelectorAll('button').forEach(function(b){b.disabled=true})}if(tow&&!g.math){towerCombo++;if(towerCombo%3===0)towerShield=1;if(a.v3){a.v3.combo=towerCombo;a.v3.shield=towerShield}if(towerCombo%3===0)notify('🛡️ 三連擊！獲得一次護盾！','ok')}award(1);if(q.w)Learn.ok(q.w);else Learn.pt('math');sfx('ok');bt.classList.add('right');if(tow&&!g.math)speak(q.w[0]);lock=.25;setTimeout(function(){if(A===a&&(!plus||my<GOAL))show()},250)}
+        else{if(plus){E25.remember(a,q.w,true);qel.setAttribute('aria-busy','true');qel.querySelectorAll('button').forEach(function(b){b.disabled=true})}sfx('no');flash();if(q.w)Learn.bad(q.w);bt.classList.add('wrong');var protectedFloor=false;if(tow){if(!g.math&&towerShield>0){towerShield=0;protectedFloor=true}else my=plus?E25.dropFloor(my,vs):Math.max(0,my-1);towerCombo=0;if(a.v3){a.v3.combo=0;a.v3.shield=towerShield}}lock=1;notify(protectedFloor?'🛡️ 護盾保住這一層！再看一次字母。':tow?(plus&&!vs?'先聽一次，再修復這個字。檢查點會保留。':'答錯了，往下掉一格！'):'答錯了，暫停一下下…','bad');setTimeout(function(){if(A!==a)return;if(plus&&!vs){asked++;q.step=0;E25.renderTower(a,q,Math.random);}else show()},1000)}});
       a.dbg=function(){return {ok:q&&q.ok,my:my,op:op,lock:lock,done:done}};
       a.net=function(){return {sc:my}};
       function fin(res,left){if(done)return;done=true;if(vs)Net.set({wn:res==='w'?1:res==='l'?-1:2,fin:1});if(res==='w')award(3);
-        arcEnd(a,{win:res!=='l',score:right,total:asked,icon:res==='w'?'🏆':res==='d'?'🤝':'🥈',title:res==='w'?(left?opName+' 離開了，你贏了！':'你贏了！'):res==='d'?'平手！':opName+' 贏了！',
+        arcEnd(a,{win:res!=='l',score:right,total:asked,icon:res==='w'?'🏆':res==='d'?'🤝':'🥈',title:plus&&!vs?'雲端城堡點亮了！':res==='w'?(left?opName+' 離開了，你贏了！':'你贏了！'):res==='d'?'平手！':opName+' 贏了！',
           text:'你答對 '+right+' 題。'+(res==='w'?'獲勝再加 30 分！':''),say:res==='w'?'太厲害了，你贏了！':'再比一次，一定可以贏！'})}
       var msg=$('#obMsg');msg.textContent='預備…';msg.className='obmsg big';
       setTimeout(function(){if(A===a&&!a.over){msg.textContent='GO!';tone(880,0,.2,'triangle');show();setTimeout(function(){if(A===a&&!a.over){msg.textContent='';msg.className='obmsg'}},500)}},900);
-      say(g.math?(tow?'找出缺的數字往上爬，先到塔頂的人贏！':'算對就把繩子拉過來，把對手拉過線就贏了！'):tow?'補上對的字母往上爬，先到塔頂的人贏！':'答對就把繩子拉過來，把對手拉過線就贏了！','happy');
+      say(g.math?(tow?'找出缺的數字往上爬，先到塔頂的人贏！':'算對就把繩子拉過來，把對手拉過線就贏了！'):tow?(plus&&!vs?'先補上字母，小機陪你點亮雲端城堡！':'補上對的字母往上爬，先到塔頂的人贏！'):'答對就把繩子拉過來，把對手拉過線就贏了！','happy');
       a.step=function(dt){
         lock-=dt;if(star)star.rotation.y+=dt*2;
         if(vs){var ps=vsPeers(a.tok),p=ps[0]&&ps[0].q;if(p){seen=true;gone=0;op=+p.sc||0;opName=String(p.n||'對手').slice(0,12);if(p.wn&&!done)return fin(p.wn===1?'l':p.wn===-1?'w':'d')}else if(seen&&(gone+=dt)>4)return fin('w',true)}
-        else if(a.t>1.2){botT-=dt;if(botT<=0){op++;botT=bi*(.7+Math.random()*.6)}}
+        else if(a.t>1.2){botT-=dt;if(botT<=0){op=plus?Math.min(my+1,op+1):op+1;botT=bi*(.7+Math.random()*.6)}}
         var d=my-op,tl=Math.max(0,TL-(a.t-1.2));
         if(tow){var ty=my*SH,oy=Math.min(op,GOAL)*SH;me.g.position.y+=(ty-me.g.position.y)*Math.min(1,dt*8);ot.g.position.y+=(oy-ot.g.position.y)*Math.min(1,dt*8);
           animate(me,Math.abs(ty-me.g.position.y)>.05?1:0,Math.abs(ty-me.g.position.y)<.05,dt);animate(ot,Math.abs(oy-ot.g.position.y)>.05?1:0,Math.abs(oy-ot.g.position.y)<.05,dt);
-          var cy=me.g.position.y;a.cam.position.set(0,cy+3,a.cz);a.cam.lookAt(0,cy-.6,0);$('#arInfo').textContent='你 '+my+'・'+opName+' '+Math.min(op,GOAL)+'・目標 '+GOAL;
-          if(my>=GOAL)fin('w');else if(op>=GOAL)fin('l')}
+          var cy=me.g.position.y;a.cam.position.set(0,cy+3,a.cz);a.cam.lookAt(0,cy-.6,0);$('#arInfo').textContent=plus&&!vs?my+' / 12 層 · 檢查點 '+Math.floor(my/4)*4:'你 '+my+'・'+opName+' '+Math.min(op,GOAL)+'・目標 '+GOAL;
+          if(my>=GOAL&&(!plus||vs||Math.abs(ty-me.g.position.y)<.12))fin('w');else if(op>=GOAL&&(!plus||vs))fin('l')}
         else{var tx=-clamp(d,-GOAL,GOAL)*.3;rig.position.x+=(tx-rig.position.x)*Math.min(1,dt*5);var pull=Math.abs(tx-rig.position.x)>.03?1:.25;
           animate(me,pull,true,dt);animate(ot,pull,true,dt);me.g.rotation.z=.22;ot.g.rotation.z=-.22;
           a.cam.position.set(0,3.4,a.cz);a.cam.lookAt(0,-.4,0);$('#arInfo').textContent=Math.ceil(tl)+' 秒・'+(d>0?'你領先 '+d:d<0?opName+' 領先 '+(-d):'平手');
@@ -5540,6 +5554,16 @@ function wi24Start(g,index){
 var wi24StopBefore=stop;stop=function(keep){if(WI24.listener)window.removeEventListener('message',WI24.listener);WI24.listener=null;if(WI24.frame){WI24.frame.remove();WI24.frame=null;WI24.session=null;try{speechSynthesis.cancel()}catch(e){}Music.play('lobby');}wi24StopBefore(keep)};
 map=wi24Map;
 /* WORD_ISLAND_V24_END */
+/* ENGLISH_V25_START */
+/* Inside OB's closure. This layer never changes persistence or network contracts. */
+function english25Context(){return {T:T,speak:speak,art:function(w){var src=V3_WORDS[w[0]]||SIMG[w[0]];if(!src){var key=DN_IDS.filter(function(k){return DN_F[k][0]===w[0]})[0];if(key)src=DNP[key]}return src||''}}}
+if(window.English25){
+ var e25SceneBefore=v3ArcScene;v3ArcScene=function(a,id){e25SceneBefore(a,id);if(a.v25)English25.decorate(a)};
+ var e25EndBefore=arcEnd;arcEnd=function(a,o){e25EndBefore(a,o);if(a.v25)English25.result(a)};
+ var e25MenuBefore=menu;menu=function(g){e25MenuBefore(g);if(g.id!=='tower'&&g.id!=='shoot')return;var cover=gBody.querySelector('.v3-cover');if(g.id==='shoot'&&cover)cover.style.backgroundImage='linear-gradient(transparent,#102e55bd),url(assets/v25/carnival-wide.webp)';var solo=$('#mSolo .nm b'),detail=$('#mSolo .nm small'),tip=gBody.querySelector('.obtip');if(solo)solo.textContent=g.id==='tower'?'雲端登塔 · 小機陪練':'魔法嘉年華 · 三段挑戰';if(detail)detail.textContent=g.id==='tower'?'每四層一個檢查點，逐步挑戰完整拼字':'看字找圖、聽音辨識、看圖選英文';if(tip)tip.textContent=g.id==='tower'?'自己玩：補一個字母、補兩個字母，再挑戰完整拼字；第 4、8 層有檢查點，小機陪練不倒數。連對三題取得護盾。雙人連線保留先到 12 層的競速玩法。':'點氣球發射魔法泡泡，也能用鍵盤 Tab 選擇目標、Enter 發射。先看字找圖，再聽音選圖，最後看圖辨認英文；需要時可以重聽或查看提示。';};
+ GAMES.forEach(function(g){if(g.id==='tower'){g.d='雲端魔法塔、三段拼字挑戰、每四層一個檢查點。';g.how='單人小機陪練，逐步從缺字母挑戰完整拼字；雙人連線競速登頂。';}if(g.id==='shoot'){g.d='進入魔法嘉年華，挑戰看字、聽音與看圖辨字。';g.how='點氣球發射泡泡；需要時可重聽英文、看提示，三段挑戰逐步進階。';}});
+}
+/* ENGLISH_V25_END */
   return {map:map,stop:stop,STG:STG,WORLDS:WORLDS,ft:ft,menu:menu,st:stPlay,mb:mbPlay,MB_G:MB_G,mbQs:mbQs};
 })();
 GAME_FN.obby=function(g){OB.map(g)};STN.forEach(function(s){GAME_FN[s.id]=function(g){stMenu(g)}});['kart','shoot','meteor','tug','tower','boss','diner','mbingo','msnake','mbond','mcmp','mboss','scisprint','scisort','sciorder','scimatch'].forEach(function(id){GAME_FN[id]=function(g){OB.menu(g)}});
@@ -5754,11 +5778,11 @@ var V2=(function(){
 
 /* Outer application integration for English Premium v3.0. */
 (function(){
-  var descriptions={obby:'四個立體世界、漂浮島、柔光角色與魔法傳送門，穿越單字冒險。',diner:'多桌點餐、數量與顏色、熱食製作、內用／外帶／外送，經營自己的餐廳。',tower:'登上雲端魔法城堡！連對三題獲得護盾，補上字母搭電梯。',shoot:'嘉年華氣球靶場，精緻單字圖、泡泡發射與連擊小費挑戰。'};
+  var descriptions={obby:'四個立體世界、漂浮島、柔光角色與魔法傳送門，穿越單字冒險。',diner:'多桌點餐、數量與顏色、熱食製作、內用／外帶／外送，經營自己的餐廳。',tower:'雲端登塔、三段拼字挑戰，每四層一個檢查點。',shoot:'魔法氣球嘉年華，看字、聽音、看圖辨字逐步進階。'};
   Object.keys(descriptions).forEach(function(id){var g=GAMES.filter(function(x){return x.id===id})[0];if(g){g.d=descriptions[id];g.tag='精緻版'}});
   var art={obby:'island',diner:'diner',tower:'tower',shoot:'shoot'},previous=renderGameHome;
   renderGameHome=function(){previous();var banner=document.querySelector('.v2welcome');if(banner){var small=banner.querySelector('small');if(small)small.textContent='ENGLISH PREMIUM · 3.0';var bh=banner.querySelector('h2');if(bh&&isKid())bh.textContent=nm()+'，今天想發現什麼？'}var upd=document.querySelector('.gupd');if(upd)upd.textContent='新版 3.0 · 英文四款精緻改版 + v2 八款新冒險';
-    document.querySelectorAll('.gcard[data-game-id]').forEach(function(card){var id=card.dataset.gameId;if(!art[id])return;card.classList.add('v3-card');var icon=card.querySelector('.ico');if(icon)icon.innerHTML='<img src="assets/adventure-'+art[id]+'.webp" alt="" loading="lazy">'});
+    document.querySelectorAll('.gcard[data-game-id]').forEach(function(card){var id=card.dataset.gameId;if(!art[id])return;card.classList.add('v3-card');var icon=card.querySelector('.ico');if(icon)icon.innerHTML='<img src="'+(id==='shoot'?'assets/v25/carnival-wide.webp':'assets/adventure-'+art[id]+'.webp')+'" alt="" loading="lazy">'});
   };
   window.MiracleEnglishPremium={version:'3.0.0',games:Object.keys(descriptions)};
 })();
