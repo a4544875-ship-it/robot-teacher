@@ -15,7 +15,7 @@
   let baseElapsed=state.elapsed||0;
   let started=false,paused=true,muted=boot.context.muted!==false,soft=matchMedia('(prefers-reduced-motion: reduce)').matches,closeView=false,lowQuality=false;
   let time=0,last=performance.now(),toastUntil=0,hintUntil=0,successTime=-100,departTime=-1,resultShown=false;
-  let path=[],pending=null,nearest=null,modalFocus=null,frameId=0,voiceTimer=null,resizeTimer=null,viewW=1,viewH=1,lastNearby='',hudRight=0,hudBottom=0,lastMissionKey='';
+  let path=[],pending=null,nearest=null,modalFocus=null,frameId=0,voiceTimer=null,resizeTimer=null,viewW=1,viewH=1,lastNearby='',hudBlocks=[],labelBounds={x:8,y:54,w:1,h:1},lastMissionKey='';
   const keys=new Set(),axis={x:0,y:0},player={x:0,z:12,y:0,vy:0,yaw:Math.PI};
   const objects=[],particles=[],trees=[],animalModels={},cargoModels={},plankModels={},bridgePieces=[],followers=[],smoke=[],waterfalls=[],butterflies=[];
   const theme=[
@@ -94,7 +94,7 @@
     const pieces=[];for(let k=0;k<12;k++){const p=rounded(2.48,.12,.43,palette.wood,0,.03,z+2.52-k*.46,parent,.045);p.rotation.z=Math.sin(k*.8)*.01;pieces.push(p);}
     tube([[-1.05,-.18,z-2.8],[-1.05,-.25,z],[-1.05,-.18,z+2.8]],.09,palette.wood,parent);tube([[1.05,-.18,z-2.8],[1.05,-.25,z],[1.05,-.18,z+2.8]],.09,palette.wood,parent);bridgePieces.push({first,pieces,parent});return parent;}
   function crystalModel(parent){const g=new T.Group();parent.add(g);const m=mesh(geo('crystal',()=>new T.OctahedronGeometry(.27,0)),new T.MeshStandardMaterial({color:0x76cdd0,roughness:.23,metalness:.3,emissive:0x2a7775,emissiveIntensity:.22}),0,.65,0,g);m.scale.y=1.6;ring(.22,.025,palette.gold,0,.64,0,g).rotation.x=Math.PI/2;return g;}
-  function addObject(id,x,z,model,event,kind,labelText,y=1){const vocabulary=!!(event.word&&C.WORDS[event.word]);if(vocabulary)labelText=kind==='plank'?event.word+' '+C.plan.roles.name:event.word;const o={id,x,z,model,event,kind,label:labelText,y,shown:true};model.position.x=x;model.position.z=z;scene.add(model);const b=document.createElement('button');b.type='button';b.className='world-marker'+(vocabulary?' vocabulary':'');b.dataset.object=id;if(vocabulary)b.lang='en';b.setAttribute('aria-label',labelText);b.innerHTML='<span class="bubble"></span><i class="dot"></i>';b.querySelector('.bubble').textContent=labelText;b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();goTo(o);});b.addEventListener('click',e=>{e.stopPropagation();if(e.detail===0)goTo(o);});$('#markers').appendChild(b);o.marker=b;objects.push(o);return o;}
+  function addObject(id,x,z,model,event,kind,labelText,y=1){const vocabulary=!!(event.word&&C.WORDS[event.word]);if(vocabulary)labelText=kind==='plank'?event.word+' '+C.plan.roles.name:event.word;const o={id,x,z,model,event,kind,label:labelText,y,shown:true};model.position.x=x;model.position.z=z;scene.add(model);const b=document.createElement('button');b.type='button';b.className='world-marker'+(vocabulary?' vocabulary':'');b.dataset.object=id;if(vocabulary)b.lang='en';b.setAttribute('aria-label',labelText);b.innerHTML='<span class="bubble"></span><i class="dot"></i><i class="marker-leader" aria-hidden="true"></i>';b.querySelector('.bubble').textContent=labelText;b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();goTo(o);});b.addEventListener('click',e=>{e.stopPropagation();if(e.detail===0)goTo(o);});$('#markers').appendChild(b);o.marker=b;objects.push(o);return o;}
   function plank(color){const g=new T.Group(),c={blue:0x5a9fc0,yellow:0xe3c563,red:0xcc7967}[color];rounded(1.2,.18,.47,c,0,.40,0,g,.065);rounded(1.2,.05,.015,0xffffff,0,.47,.2,g,.015).material=new T.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.16});for(let x of [-.46,.46])cylinder(.035,.035,.014,0xb6a16c,x,.503,0,g,8);contact(0,0,.8,g);return g;}
   function animal(kind){if(!['cat','dog','rabbit'].includes(kind))return companion(kind);const g=new T.Group(),body=kind==='cat'?0xe1aa6a:kind==='dog'?0xc09a72:0xf2e6cd,ink=0x31444d;const torso=sphere(.33,body,0,.38,0,g,1,.95,1.3),head=sphere(.32,body,0,.83,.18,g,1,.91,.88);for(let s of [-1,1]){sphere(.10,body,s*.21,.12,.22,g,1,.7,1.4);sphere(.075,0xfff2d6,s*.12,.82,.45,g,1,.7,.4);sphere(.036,ink,s*.115,.86,.448,g,1,1.4,.6);if(kind==='cat'){const e=mesh(geo('cat-ear',()=>new T.ConeGeometry(.14,.26,12)),material(body),s*.22,1.14,.16,g);e.rotation.z=-s*.25;sphere(.07,0xd9a08c,s*.22,1.12,.235,g,.6,1,.25);}else sphere(.13,body,s*.30,.94,.12,g,.6,kind==='rabbit'?2.2:1.5,.7);}
     sphere(.045,ink,0,.75,.478,g,1,.7,.6);const tail=ring(.20,.052,body,.28,.38,-.29,g);tail.rotation.y=.65;rounded(.41,.065,.42,0x386a82,0,.57,0,g,.03);sphere(.045,palette.gold,0,.57,.26,g);contact(0,0,.55,g);g.userData.body=torso;g.userData.head=head;return g;}
@@ -155,7 +155,7 @@
   function syncCarry(){if(carryObject){avatar.g.remove(carryObject);disposeObject(carryObject);carryObject=null;}if(state.carry){carryObject=state.carry.kind==='plank'?supply(state.carry.word):cargo(state.carry.word);carryObject.position.set(0,.57,.50);carryObject.scale.setScalar(.65);avatar.g.add(carryObject);}}
   function disposeObject(o){const ge=new Set(),ma=new Set();o.traverse(q=>{if(q.isMesh){ge.add(q.geometry);(Array.isArray(q.material)?q.material:[q.material]).forEach(m=>ma.add(m));}});/* Shared world geometry/material pools remain owned by the page. */for(const g of ge)if(![...geos.values()].includes(g))g.dispose();for(const m of ma)if(![...mats.values()].includes(m)){if(m.map&&m.map!==contact.map)m.map.dispose();m.dispose();}}
   function save(){state.elapsed=baseElapsed+Math.round(time*1000);if(isEmbedded){send('progress',{state,attempt:pendingAttempt});pendingAttempt=null;}else try{localStorage.setItem(storageKey,JSON.stringify(state));}catch(e){storeOK=false;$('#storage-note').hidden=false;}}
-  function showToast(t,duration=3.3){if(!t)return;$('#toast').textContent=t;$('#toast').classList.add('show');toastUntil=time+duration;}
+  function showToast(t,duration=3.3){if(!t)return;$('#toast').textContent=t;$('#toast').classList.add('show');toastUntil=time+duration;measureHUD();}
   function playSound(kind){if(muted)return;try{const ac=playSound.ac||(playSound.ac=new(window.AudioContext||window.webkitAudioContext)());ac.resume();const notes=kind==='wrong'?[230,185]:kind==='win'?[523,659,784,1047]:[523,698];notes.forEach((n,i)=>{const osc=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+i*.095;osc.type='sine';osc.frequency.value=n;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.035,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+.20);osc.connect(g);g.connect(ac.destination);osc.start(t);osc.stop(t+.22);});}catch(e){}}
   function speak(text){if(!('speechSynthesis'in window)){showToast('這個瀏覽器無法朗讀；可以看上方的英文與中文任務。');return;}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.78;const voices=speechSynthesis.getVoices();u.voice=voices.find(v=>v.lang==='en-US')||voices.find(v=>/^en/.test(v.lang))||null;speechSynthesis.speak(u);}catch(e){showToast('英文任務已顯示在上方，可以照文字繼續。');}}
   function objectVisible(o){
@@ -171,7 +171,7 @@
   }
   function syncWorld(initial=false){
     for(const o of objects){o.shown=objectVisible(o);o.marker.hidden=!o.shown;if(o.kind==='animal'&&LEVEL.middle==='escort'){o.model.visible=true;}else o.model.visible=o.shown;
-      if(o.kind==='station'){o.event={type:state.phase===1?'board':state.phase===2?'load':'depart'};o.label=state.phase===1?'前往終點島':state.phase===2?'交付貨物':LEVEL.landmark==='station'?'按發車鈴':'啟動光塔';o.marker.querySelector('.bubble').textContent=o.label;o.marker.setAttribute('aria-label',o.label);}
+      if(o.kind==='station'){o.event={type:state.phase===1?'board':state.phase===2?'load':'depart'};o.label=state.phase===1?'前往終點島':state.phase===2?'交付貨物':LEVEL.landmark==='station'?'按發車鈴':'啟動光塔';o.marker.querySelector('.bubble').textContent=o.label;o.marker.setAttribute('aria-label',o.label);o.markerW=0;}
       if(o.kind==='animal'&&o.model.userData.halo&&['sequence','memory'].includes(LEVEL.middle)){const on=state.animals.includes(o.id),m=o.model.userData.halo.material;m.color.setHex(on?0x88b99c:palette.gold);m.emissive.setHex(on?0x245f4a:0);m.emissiveIntensity=on?.35:0;}o.marker.classList.toggle('target',o.kind==='destination'||o.kind==='station');o.marker.classList.toggle('crystal',o.kind==='crystal');if(o.kind==='crystal')o.marker.querySelector('.bubble').textContent='✦';
     }
     for(const b of bridgePieces)b.pieces.forEach((p,i)=>{p.visible=b.first?i<Math.ceil(state.boards/C.COLORS.length*12):state.animals.length===C.ANIMALS.length;p.userData.targetY=.03;if(initial)p.position.y=.03;});
@@ -183,7 +183,7 @@
     state.cargo.forEach((word,i)=>{const g=cargo(word);g.position.set(-4.5+i*.55,1.02,0);g.scale.setScalar(.75);(LEVEL.landmark==='station'?train:displayShelf).add(g);train.userData.loaded.push(g);});
     if(state.phase>=2&&LEVEL.middle==='escort'){for(const [i,word]of C.ANIMALS.entries()){const g=animal(word);g.scale.setScalar(.65);g.position.set(-1.5+i*.75,LEVEL.landmark==='station'?1.0:0,.20);(LEVEL.landmark==='station'?train:displayShelf).add(g);train.userData.loaded.push(g);}}
     if(state.completed&&initial){departTime=-1;train.position.x=9;}
-    syncCarry();syncPuzzle();syncMilestones();save();
+    syncCarry();syncPuzzle();syncMilestones();save();measureHUD();
   }
   function doAction(o){if(paused||!o||!o.shown)return;if(o.event.type==='walk'){pending=null;syncWorld();return;}const before=state;const result=C.act(state,o.event);state=result.state;pendingAttempt=result.attempt||null;if(result.ok){playSound(result.effect==='depart'?'win':'ok');successTime=time;syncWorld();if(result.effect==='bridge'){bridgePieces[0].pieces.forEach((m,i)=>{if(i>=8)m.position.y=-1.3-i*.025;});showToast(result.message,4.8);}else if(result.effect==='invite'&&state.animals.length===C.ANIMALS.length){bridgePieces[1].pieces.forEach((m,i)=>m.position.y=-1.4-i*.035);showToast(result.message,4.8);}else showToast(result.message);if(result.effect==='depart'){departTime=time;path=[];pending=null;send('finish',{state});/* Completion follows game time and pauses with the game. */}if(before.phase!==state.phase){hintUntil=0;voiceTimer=setTimeout(()=>{if(!paused&&!muted)speak(C.mission(state).en);},1400);}}
     else{playSound('wrong');showToast(result.message);save();}pending=null;
@@ -192,8 +192,20 @@
   function placeAtCheckpoint(){const p=state.phase===0?[0,12]:state.phase===1?[0,-7]:[0,-21.4];player.x=p[0];player.z=p[1];player.y=player.vy=0;player.yaw=Math.PI;path=[];pending=null;focus.set(player.x,0,player.z-2);avatar.g.position.set(player.x,0,player.z);for(const [i,word]of followers.entries())animalModels[word].position.set(player.x+(i?-.6:.6),0,player.z+1.1+i*.6);trailMarker.visible=false;}
   function hint(){if(state.carry){const goal=state.phase===0?objects.find(o=>o.id==='repair'):state.phase===1?objects.find(o=>o.id==='basket-'+C.category(state.carry.word)):LEVEL.final==='position'?objects.find(o=>o.id==='platform-'+C.plan.sides[state.cargo.length]):objects.find(o=>o.id==='station');goTo(goal);return;}if(state.spell){speak(state.spell.word);showToast('再聽一次，找出下一個字母。');return;}if(state.phase===1&&state.animals.length===C.ANIMALS.length){goTo(objects.find(o=>o.id==='station'));showToast('小乘客跟上囉，沿著步道一起去車站！',4);return;}if(state.phase===1&&player.z>0){goTo(objects.find(o=>o.id==='forest'));showToast('沿著修好的木橋，前往乘客森林。',4);return;}const result=C.act(state,{type:'hint'});state=result.state;hintUntil=time+12;save();const target=currentGoal();if(target){showToast('跟著金色光點，找找「'+(state.carry?'送達位置':target.kind==='animal'?target.id:target.kind==='plank'?target.event.word+' '+C.plan.roles.name:target.kind==='cargo'?target.event.word:'月台')+'」。提示不扣分。',4);trailMarker.position.set(target.x,.08,target.z);trailMarker.visible=true;}}
   function currentGoal(){if(state.completed)return objects.find(o=>o.kind==='crystal'&&o.shown);if(state.carry)return state.phase===0?objects.find(o=>o.id==='repair'):state.phase===1?objects.find(o=>o.id==='basket-'+C.category(state.carry.word)):LEVEL.final==='position'?objects.find(o=>o.id==='platform-'+C.plan.sides[state.cargo.length]):objects.find(o=>o.id==='station');if(state.phase===0)return objects.find(o=>o.kind==='plank'&&o.event.word===C.target(state));if(state.phase===1&&state.animals.length<C.ANIMALS.length)return objects.find(o=>o.id===C.target(state));if(state.phase===2)return objects.find(o=>o.kind==='cargo'&&o.event.word===C.target(state));return objects.find(o=>o.id==='station');}
-  function measureHUD(){const r=$('.mission').getBoundingClientRect();hudRight=r.right+24;hudBottom=r.bottom+30;}
-  function size(){const w=$('#app').clientWidth,h=$('#app').clientHeight,aspect=w/h;viewW=w;viewH=h;renderer.setSize(w,h,false);const width=(aspect<.8?13.5:aspect<1.2?18:Math.min(34,19*aspect))*(closeView?.82:1);camera.left=-width/2;camera.right=width/2;camera.top=width/aspect/2;camera.bottom=-width/aspect/2;camera.updateProjectionMatrix();measureHUD();}
+  function measureHUD(){
+    const controls=['.move-area','.context-info','.actions'].map(sel=>$(sel).getBoundingClientRect()).filter(r=>r.width&&r.height);
+    hudBlocks=['.topbar','.mission','.landmark'].map(sel=>$(sel).getBoundingClientRect()).concat(controls).filter(r=>r.width&&r.height).map(r=>({x:r.x,y:r.y,w:r.width,h:r.height}));
+    if($('#toast').classList.contains('show')){const r=$('#toast').getBoundingClientRect();hudBlocks.push({x:r.x,y:r.y-14,w:r.width,h:r.height+28});}
+    const edge=$('.topbar').getBoundingClientRect(),bottom=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom'))||0,top=Math.max(54,edge.bottom+6);
+    labelBounds={x:Math.max(8,edge.x-4),y:top,w:Math.max(1,edge.width+8),h:Math.max(1,viewH-top-8-bottom)};
+    const r=$('.mission').getBoundingClientRect();
+    const aspect=viewW/viewH,width=(aspect<.8?13.5:aspect<1.2?18:Math.min(34,19*aspect))*(closeView?.82:1);
+    // Leave room for the left-hand task card on short landscape screens.
+    const shift=started&&aspect>1.2&&viewH<=600?Math.min(viewW*.19,r.right/2)/viewW*width:0;
+    const controlsTop=Math.min(...controls.map(b=>b.y)),down=started&&aspect<1.1&&r.bottom>viewH*.32?Math.max(0,(r.bottom+controlsTop)/2-viewH*.55):0,vertical=down/viewH*(width/aspect);
+    camera.left=-width/2-shift;camera.right=width/2-shift;camera.top=width/aspect/2+vertical;camera.bottom=-width/aspect/2+vertical;camera.updateProjectionMatrix();
+  }
+  function size(){const w=$('#app').clientWidth,h=$('#app').clientHeight;viewW=w;viewH=h;renderer.setSize(w,h,false);for(const o of objects)o.markerW=0;measureHUD();}
 
   let beacon=null,displayShelf=null,landmarkRotor=null,memoryUntil=-1,memoryStep=-1,puzzleKey='';
 
@@ -259,8 +271,25 @@
     const helper=state.spell?'♪ 再聽一次單字':state.carry?(state.phase===0?'↟ 送到橋邊':state.phase===1?'↟ 送到分類台':'↟ 送到交貨點'):state.phase===1&&state.animals.length===C.ANIMALS.length?'↟ 前往下一座島':state.phase===1&&player.z>0?'↟ 前往任務島':'✦ 找個線索';if($('#hint').textContent!==helper)$('#hint').textContent=helper;
     for(const [i,word]of followers.entries()){if(state.phase>=2||LEVEL.middle!=='escort')continue;const g=animalModels[word],distance=1.1+i*.85,tx=player.x-Math.sin(player.yaw)*distance+(i?-.35:.35),tz=player.z-Math.cos(player.yaw)*distance;const d=Math.hypot(tx-g.position.x,tz-g.position.z);if(d>.20){g.rotation.y=Math.atan2(tx-g.position.x,tz-g.position.z);g.position.x+=(tx-g.position.x)*Math.min(1,dt*3);g.position.z+=(tz-g.position.z)*Math.min(1,dt*3);}g.position.y=soft?0:Math.abs(Math.sin(time*8+i))*.035;}
   }
-  function updateMarkers(){const w=viewW,h=viewH,goal=hintUntil>time?currentGoal():null;for(const o of objects){if(o.kind==='route'){o.shown=objectVisible(o);o.model.visible=o.shown;}if(!o.shown){o.marker.hidden=true;continue;}project.set(o.x,o.y,o.z).project(camera);const x=(project.x*.5+.5)*w,y=(-project.y*.5+.5)*h;const distance=Math.hypot(o.x-player.x,o.z-player.z),hudOverlap=y<hudBottom&&x<hudRight,visible=project.z>-1&&project.z<1&&x>20&&x<w-20&&y>58&&y<h-125&&!hudOverlap&&distance<13;o.marker.hidden=!visible;if(visible){o.marker.style.left=Math.round(x)+'px';o.marker.style.top=Math.round(y)+'px';o.marker.classList.toggle('target',goal===o||o.kind==='destination'||o.kind==='station'||o.kind==='route');o.marker.classList.toggle('muted',distance>9);}}
+  function updateMarkers(){
+    const w=viewW,h=viewH,goal=currentGoal(),highlight=hintUntil>time?goal:null,placed=[],Layout=window.WordIsland24Layout;
+    const ordered=objects.slice().sort((a,b)=>(b===goal)-(a===goal)||(a.kind==='crystal')-(b.kind==='crystal')||Math.hypot(a.x-player.x,a.z-player.z)-Math.hypot(b.x-player.x,b.z-player.z));
+    for(const o of ordered){
+      if(o.kind==='route'){o.shown=objectVisible(o);o.model.visible=o.shown;}
+      if(!o.shown){o.marker.hidden=true;continue;}
+      project.set(o.x,o.y,o.z).project(camera);const x=(project.x*.5+.5)*w,y=(-project.y*.5+.5)*h,distance=Math.hypot(o.x-player.x,o.z-player.z);
+      const visible=project.z>-1&&project.z<1&&x>0&&x<w&&y>35&&y<h&&distance<13;o.marker.hidden=!visible;if(!visible)continue;
+      if(!o.markerW){o.markerW=o.marker.offsetWidth;o.markerH=o.marker.offsetHeight;}
+      const r=Layout.place(x,y,o.markerW,o.markerH,labelBounds,hudBlocks.concat(placed));
+      if(!r){o.marker.hidden=true;continue;}
+      placed.push(r);const cx=r.x+r.w/2,cy=r.y+r.h,dx=x-cx,dy=y-cy,length=Math.hypot(dx,dy);
+      o.marker.style.left=Math.round(cx)+'px';o.marker.style.top=Math.round(cy)+'px';
+      const leader=o.marker.querySelector('.marker-leader');leader.hidden=length<8;leader.style.width=length+'px';leader.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';
+      o.marker.classList.toggle('target',highlight===o||o.kind==='destination'||o.kind==='station'||o.kind==='route');o.marker.classList.toggle('muted',distance>9);
+    }
+    const layoutSize=w+'x'+h;if($('#app').dataset.layoutSize!==layoutSize)$('#app').dataset.layoutSize=layoutSize;
   }
+
   function updateWorld(dt){for(const b of bridgePieces)for(const p of b.pieces)if(p.visible&&p.position.y<.03)p.position.y=Math.min(.03,p.position.y+dt*2.7);
     if(!soft){for(const o of objects)if(o.kind==='crystal'&&o.shown){o.model.rotation.y=time*.5+o.event.id;o.model.position.y=Math.sin(time*2+o.event.id)*.10;}guideBot.position.y=Math.sin(time*1.8)*.05;particles[0].rotation.y=Math.sin(time*.08)*.025;waterfalls.forEach((m,i)=>m.material.opacity=.38+Math.sin(time*3+i)*.10);butterflies.forEach((b,i)=>{const [x,z]=b.userData.origin;b.position.set(x+Math.sin(time*.8+i)*.5,1.1+Math.sin(time*1.4+i)*.2,z+Math.cos(time*.7+i)*.4);b.userData.wings.forEach((w,k)=>w.rotation.z=Math.sin(time*13)*(k?1:-1)*.7);});}
     smoke.forEach((m,i)=>{const a=(time*.42+i/5)%1;m.visible=state.phase>=2&&!soft;m.position.set(train.position.x+2.05+a*.4,2.4+a*1.8,-26.3);m.scale.setScalar(.18+a*.35);m.material.opacity=(1-a)*.26;});
@@ -269,8 +298,8 @@
     if(state.completed&&departTime>=0&&time-departTime>(soft?1:5.2)&&!resultShown)openResult();
     const target=new T.Vector3(player.x,0,player.z-1.8);if(started){focus.lerp(target,1-Math.exp(-dt*3));}else focus.set(0,0,7);
     camera.position.copy(focus).add(offset);camera.lookAt(focus);camera.updateMatrixWorld();sun.position.set(player.x-12,22,player.z+12);sun.target.position.set(player.x,0,player.z);sun.target.updateMatrixWorld();
-    const name=player.z>2?'起點・'+C.plan.roles.section:player.z> -17?(LEVEL.middle==='escort'?'旅人森林':LEVEL.middle==='sort'?'分類工作站':'順序機關'):LEVEL.name;$('#landmark b').textContent=name;
-    if(time>toastUntil)$('#toast').classList.remove('show');updateMemory();updateMarkers();
+    const name=player.z>2?'起點・'+C.plan.roles.section:player.z> -17?(LEVEL.middle==='escort'?'旅人森林':LEVEL.middle==='sort'?'分類工作站':'順序機關'):LEVEL.name;if($('#landmark b').textContent!==name){$('#landmark b').textContent=name;measureHUD();}
+    if(time>toastUntil&&$('#toast').classList.contains('show')){$('#toast').classList.remove('show');measureHUD();}updateMemory();updateMarkers();
   }
   let diagnosticStart=performance.now(),diagnosticFrames=0,diagnosticSent=false;
   function tick(now){frameId=requestAnimationFrame(tick);const elapsed=Math.min(.18,(now-last)/1000);last=now;if(!paused){time+=elapsed;const steps=Math.max(1,Math.ceil(elapsed/.025));for(let n=0;n<steps;n++)updatePlayer(elapsed/steps);updateWorld(elapsed);}else if(!started)updateWorld(0);renderer.render(scene,camera);diagnosticFrames++;if(!diagnosticSent&&now-diagnosticStart>6000){console.info('Forest preview render diagnostic',JSON.stringify({fps:Math.round(diagnosticFrames*1000/(now-diagnosticStart)),draws:renderer.info.render.calls,triangles:renderer.info.render.triangles}));diagnosticSent=true;}}
@@ -293,7 +322,7 @@
   // Keep keyboard focus inside an open dialog, including on small screens.
   document.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const layer=[...document.querySelectorAll('.modal-layer')].find(el=>!el.hidden);if(!layer)return;const a=[...layer.querySelectorAll('button:not(:disabled)')].filter(el=>el.offsetParent!==null);if(!a.length)return;if(e.shiftKey&&document.activeElement===a[0]){e.preventDefault();a[a.length-1].focus();}else if(!e.shiftKey&&document.activeElement===a[a.length-1]){e.preventDefault();a[0].focus();}});
   const hudObserver=window.ResizeObserver?new ResizeObserver(measureHUD):null;if(hudObserver)hudObserver.observe($('.mission'));
-  window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(size,40);});window.addEventListener('pagehide',()=>{save();cancelAnimationFrame(frameId);clearTimeout(voiceTimer);clearTimeout(resizeTimer);if(hudObserver)hudObserver.disconnect();if('speechSynthesis'in window)speechSynthesis.cancel();renderer.dispose();});
+  window.addEventListener('resize',()=>{cancelAnimationFrame(resizeTimer);resizeTimer=requestAnimationFrame(()=>{size();updateMarkers();});});window.addEventListener('pagehide',()=>{save();cancelAnimationFrame(frameId);clearTimeout(voiceTimer);cancelAnimationFrame(resizeTimer);if(hudObserver)hudObserver.disconnect();if('speechSynthesis'in window)speechSynthesis.cancel();renderer.dispose();});
   configureChapter();
   document.body.classList.toggle('soft-motion',soft);$('#motion').setAttribute('aria-pressed',String(soft));
   try{buildWorld();size();syncAvatarChoices();$('#start').disabled=false;$('#start').textContent=state.completed?'查看本關成果':state.boards||state.carry?'繼續這一關':'進入第 '+(LEVEL.id+1)+' 關';tick(performance.now());}catch(e){console.error(e);$('#start').textContent='場景準備未完成';$('#load-error').hidden=false;$('#load-error').textContent='請重新開啟；若仍失敗，請記下裝置與瀏覽器，交給我們修正。';}

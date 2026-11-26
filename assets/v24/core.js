@@ -56,7 +56,7 @@
   let final=pick(level.final==='spell'&&spellable.length?spellable:current,level.final==='spell'?2:3);
   if(level.final==='spell'&&!spellable.length)final=pick([...dictionary.keys()].filter(w=>/^[a-z]{2,12}$/.test(w)),2);
   if(!final.length){dictionary.set('book',BASE.find(w=>w[0]==='book'));final=['book','book'];}
-  const roles=level.supply==='bridge'?{name:'plank',verb:'repair',section:'修復橋梁'}:level.supply==='pump'?{name:'water jar',verb:'fill',section:'接通水道'}:level.supply==='thaw'?{name:'crystal',verb:'warm',section:'解凍步道'}:{name:'crystal',verb:'power',section:'啟動能源橋'};
+  const roles=level.supply==='bridge'?{name:'plank',zh:'木板',verb:'repair',section:'修復橋梁'}:level.supply==='pump'?{name:'water jar',zh:'水罐',verb:'fill',section:'接通水道'}:level.supply==='thaw'?{name:'crystal',zh:'水晶',verb:'warm',section:'解凍步道'}:{name:'crystal',zh:'水晶',verb:'power',section:'啟動能源橋'};
   const all=[...new Set([...current,...animals,...final,...colors])];
   const options1=[...new Set(middle)];shuffle((level.middle==='escort'?animals:all).filter(w=>!options1.includes(w))).slice(0,Math.max(0,4-options1.length)).forEach(w=>options1.push(w));
   const options2=[...new Set(final)];shuffle(current.filter(w=>!options2.includes(w))).slice(0,Math.max(0,5-options2.length)).forEach(w=>options2.push(w));
@@ -80,7 +80,7 @@
   function title(w){return WORDS[w]?WORDS[w][1]:w;}
   function mission(s){const w=target(s),zh=title(w),level=plan.level;
    if(s.completed)return {section:'本關已完成',title:'前往下一關，或留下來探索水晶。',en:level.id===19?'The final beacon is shining!':'Mission complete. A new journey awaits!',progress:1};
-   if(s.phase===0)return {section:'01 · '+plan.roles.section,title:s.carry?'把'+zh+plan.roles.name+'帶到橋邊。':'找到'+zh+plan.roles.name+'。',en:s.carry?'Take the '+w+' '+plan.roles.name+' to the bridge.':'Find the '+w+' '+plan.roles.name+'.',progress:s.boards/COLORS.length};
+   if(s.phase===0)return {section:'01 · '+plan.roles.section,title:s.carry?'把'+zh+plan.roles.zh+'帶到橋邊。':'找到'+zh+plan.roles.zh+'。',en:s.carry?'Take the '+w+' '+plan.roles.name+' to the bridge.':'Find the '+w+' '+plan.roles.name+'.',progress:s.boards/COLORS.length};
    if(s.phase===1){const mode=level.middle;if(!w)return {section:'02 · 前往下一座島',title:mode==='escort'?'帶著乘客，前往前方的目的地。':'機關完成了，走過橋前往下一座島。',en:mode==='escort'?'Take your friends to the next island.':'Cross the bridge to the next island.',progress:1};
     if(mode==='escort')return {section:'02 · 接回小旅人',title:'找到'+zh+'，邀請牠一起走。',en:'Find the '+w+'.',progress:s.animals.length/ANIMALS.length};
     if(mode==='sort')return {section:'02 · 分類工作站',title:'把'+zh+'送到「'+CAT_ZH[category(w)]+'」分類台。',en:s.carry?'Sort “'+w+'” into “'+category(w)+'”.':'Pick up the '+w+'.',progress:s.animals.length/ANIMALS.length};

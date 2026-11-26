@@ -99,7 +99,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <script src="assets/habitat/scene.js?v=1.2.0"></script>
 <link rel="stylesheet" href="assets/v23/adventure.css?v=23.0.0">
 <link rel="stylesheet" href="assets/v24/map.css?v=24.0.0">
-<script src="assets/v24/core.js?v=24.0.0"></script>
+<script src="assets/v24/core.js?v=24.0.1"></script>
 </head>
 <body>
 <title>機器人老師</title>
@@ -5519,7 +5519,7 @@ function wi24Start(g,index){
  if(resume)roundPts=+record.runPoints||0;
  var engine=Core.make(index,context),initial=resume?engine.validate(record.state):engine.fresh(),runId=initial.runId,finished=false,claimMap=resume?JSON.parse(JSON.stringify(record.claims||{})):{};
  var frame=document.createElement('iframe'),session=wi24Token(),owner=who;
- frame.className='wi24-frame';frame.title='單字闖關島：'+Core.LEVELS[index].name;frame.allow='autoplay';frame.src='assets/v24/index.html?v=24.0.0&stage='+index+'&embedded='+encodeURIComponent(session);WI24.frame=frame;WI24.session=session;
+ frame.className='wi24-frame';frame.title='單字闖關島：'+Core.LEVELS[index].name;frame.allow='autoplay';frame.src='assets/v24/index.html?v=24.0.1&stage='+index+'&embedded='+encodeURIComponent(session);WI24.frame=frame;WI24.session=session;
  function validOwner(){return WI24.frame===frame&&frame.isConnected&&who===owner&&curGame==='obby'}
  function post(type,data){if(validOwner())frame.contentWindow.postMessage(Object.assign({channel:'word-island-24',session:session,type:type},data||{}),location.origin)}
  function persist(state){if(!isKid())return;Store.mut(owner,function(k){var o=k.obby||(k.obby={});if(!o.v24||typeof o.v24!=='object')o.v24={version:24,levels:{}};if(!o.v24.levels)o.v24.levels={};var old=o.v24.levels[index]||{};var savedContext={seed:context.seed,runId:state.runId,pool:context.pool,basics:context.basics,avatar:context.avatar};o.v24.levels[index]=Object.assign({},old,{context:savedContext,state:state,claims:claimMap,runPoints:roundPts,updated:Date.now()});});}
