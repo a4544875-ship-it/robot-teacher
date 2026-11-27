@@ -102,6 +102,9 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)try{
 <link rel="stylesheet" href="assets/v25/english.css?v=25.0.0">
 <link rel="stylesheet" href="assets/v25/carnival.css?v=25.0.0">
 <script src="assets/v25/english.js?v=25.0.0"></script>
+<link rel="stylesheet" href="assets/v26/science.css?v=26.0.0">
+<script src="assets/v26/science-core.js?v=26.0.0"></script>
+<script src="assets/v26/science.js?v=26.0.0"></script>
 <script src="assets/v24/core.js?v=24.0.1"></script>
 </head>
 <body>
@@ -2237,6 +2240,7 @@ function stMenu(g){
   h+=sxBtn(s.k,stamp);
   h+='</div><div class="strw'+(stamp?' got':'')+'"><img src="'+SCIA['rw_'+{mtrain:'train',mlamp:'lamp',mcloud:'cloud',msun:'sun',mdeer:'deer'}[s.rw]]+'" alt=""><div><b>'+(stamp?'已得到：':'全破獎勵：')+esc(s.rz)+'</b>'+(stamp?'到花園的商店「✨ 魔法」就能免費放上去！':'3 關都過關，花園就會多一個會動的「'+esc(s.rz)+'」。')+'</div></div>';
   gBody.innerHTML=h;
+  if(window.Science26)Science26.menu(gBody,s);
   gBody.querySelectorAll('[data-lv]').forEach(function(b){b.addEventListener('click',function(){sfx('tap');OB.st(g,+b.dataset.lv)})});sxBind(gBody,s.k,function(){stMenu(g)});
   say(stamp?'「'+s.gz+'」全破了！要再挑戰拿三顆星嗎？':'選一關開始！'+(nxt>=0?'下一關是第 '+(nxt+1)+' 關。':''),'happy');
 }
@@ -4354,11 +4358,14 @@ var OB=(function(){
         dots:function(N,cur,res){sciDots(N,cur,res)},bar:function(n,N){sciBar(n,N)},
         done:function(force){stFinish(C,force)}};
       a.dbg=function(){return C.dbg?C.dbg():{fin:C.fin}};
+      if(window.Science26&&Science26.run(C,{objects:SCIO,stations:SCIA,mark:function(key,ok){Learn.sci(key,ok)}}))return;
       fn(C)})}
-  function stFinish(C,force){if(C.fin)return;C.fin=true;var acc=C.right+C.wrong?C.right/(C.right+C.wrong):1;
+  function stFinish(C,force){if(C.fin)return;
+    if(C.v26&&force===0){C.fin=true;sciHide();sciCombo(0);padEnd(C.a,{win:false,score:C.v26.first,total:C.v26.total,icon:'🔎',title:'完成練習，再研究一次！',text:'首次完成 '+C.v26.first+' / '+C.v26.total+' 個任務。至少 60% 首次完成，才能取得本關星星；已得的學習分數會保留。',say:'你的發現已經整理好了，再挑戰一次，試著自己完成更多任務。'});var row=$('#obRes .row');if(row){row.innerHTML='<button class="btn alt" id="s26RetryRound">重新研究本關</button><button class="btn ghost" id="s26ReturnStation">回小島</button>';$('#s26RetryRound').addEventListener('click',function(){launch(C.g,{lv:C.lv})});$('#s26ReturnStation').addEventListener('click',function(){stop();stMenu(C.g)})}if(window.Science26)Science26.summary(C.a.el,C);return;}
+    C.fin=true;var acc=C.right+C.wrong?C.right/(C.right+C.wrong):1;
     var st=force||(acc>=.9?3:acc>=.7?2:1);C.stars=st;C.a.step=null;
     award(3);if(st===3)award(2);sciHide();sciCombo(0);
-    stQuiz(C,function(){stResult(C)})}
+    stQuiz(C,function(){stResult(C);if(C.v26&&window.Science26)Science26.summary(C.a.el,C)})}
   /* 知識小卡：同一單元的題目，二年級 2 張、其他 3 張；優先出錯題本裡的 */
   function stQuiz(C,cb){var bank=(SCI.g['三']||{mc:[]}).mc.filter(function(q){return q.t===C.s.t});if(!bank.length)return cb();
     var R=C.R,pool=sciSh(R,bank),wk=isKid()?pool.filter(function(q){return Learn.st(Store.kid(who),q.id)===1}):[];
